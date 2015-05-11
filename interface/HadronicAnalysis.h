@@ -1,5 +1,5 @@
-#ifndef FORMAT_H
-#define FORMAT_H
+#ifndef HADRONICANALYSIS_H 
+#define HADRONICANALYSIS_H 
 
 #include <iostream>
 #include <cmath>
@@ -10,6 +10,7 @@
 // Root headers 
 #include <TChain.h>
 #include <TTree.h>
+#include <TH1D.h>
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
@@ -18,6 +19,9 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
+
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1Info.h"
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1InfoClass.h"
 //
 // class declaration
 //
@@ -42,6 +46,7 @@ class HadronicAnalysis : public edm::EDAnalyzer{
 		const int                       reportEvery_; 
 		const std::string               inputTTree_;
 		const std::vector<std::string>  inputFiles_;
+		bool debugTH1InfoClass_;
 
 		edm::Service<TFileService> fs;
 		TChain*            chain_;
@@ -61,7 +66,7 @@ class HadronicAnalysis : public edm::EDAnalyzer{
 		//JetInfoBranches    JetInfo;
 		//LepInfoBranches    LepInfo;
 
-		//TH1InfoClass<TH1D> h1;
+		TH1InfoClass<TH1D> h1;
 
 		//bool   McFlagana;
 		//int RunNo;

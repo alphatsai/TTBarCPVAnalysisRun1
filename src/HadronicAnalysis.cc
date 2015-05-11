@@ -33,6 +33,7 @@
 #include "PhysicsTools/Utilities/interface/LumiReWeighting.h"
 #include "PhysicsTools/Utilities/interface/LumiReweightingStandAlone.h" 
 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1InfoClass.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/HadronicAnalysis.h" 
 
 //
@@ -42,7 +43,8 @@ HadronicAnalysis::HadronicAnalysis(const edm::ParameterSet& iConfig) :
 	maxEvents_(iConfig.getParameter<int>("MaxEvents")), 
 	reportEvery_(iConfig.getParameter<int>("ReportEvery")),
 	inputTTree_(iConfig.getParameter<std::string>("InputTTree")),
-	inputFiles_(iConfig.getParameter<std::vector<std::string> >("InputFiles"))
+	inputFiles_(iConfig.getParameter<std::vector<std::string> >("InputFiles")),
+	debugTH1InfoClass_(iConfig.getParameter<bool>("debugTH1InfoClass_"))
 	//jetPtMin_(iConfig.getParameter<double>("JetPtMin")),
 	//bJetPtMin_(iConfig.getParameter<double>("BJetPtMin")),
 	//bJetCSVDiscMin_(iConfig.getParameter<double>("BJetCSVDiscMin")),
@@ -61,6 +63,8 @@ HadronicAnalysis::~HadronicAnalysis()
 void HadronicAnalysis::beginJob()
 { 
 	//h1.CreateTH1(fs); h1.Sumw2();
+	h1 = TH1InfoClass<TH1D>(debugTH1InfoClass_);
+	h1.CreateTH1( fs );
 
 	chain_  = new TChain(inputTTree_.c_str());
 
