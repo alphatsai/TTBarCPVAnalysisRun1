@@ -142,7 +142,8 @@ void SemiLeptanicAnalysis::beginJob()
 }
 
 // ------------ method called for each event  ------------
-void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){ 
+void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+{ 
 	using namespace edm;
 	using namespace std;
 
@@ -155,20 +156,19 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 	ay.push_back(0); ay.push_back(1); ay.push_back(0);
 	az.push_back(0); az.push_back(0); az.push_back(1);
 
-	for(int entry=0; entry<maxEvents_; entry++){
+	for(int entry=0; entry<maxEvents_; entry++)
+	{
 		chain_->GetEntry(entry);
 
-		if( Debug_ ){
-			if( ( entry%reportEvery_) == 0 ) cout<<">> [DEBUG] "<<entry<<" of "<< maxEvents_<<endl;
-		}
+		if( Debug_ ){ if( ( entry%reportEvery_) == 0 ) cout<<">> [DEBUG] "<<entry<<" of "<< maxEvents_<<endl; }
 
 		h1.GetTH1("Evt_Events")->Fill(1);
 		h1.GetTH1("Evt_CutFlow")->Fill("All", 1);
 
-
 		// Vertex selection
 		vector<Vertex> selVertex;
-		for( int idx=0; idx < VtxInfo.Size; idx++){
+		for( int idx=0; idx < VtxInfo.Size; idx++)
+		{
 			Vertex vtx( VtxInfo, idx );
 			if( vtx.isFake ) continue;
 			if( vtx.Ndof < 4 ) continue;
@@ -179,7 +179,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 
 		//* Jet selection
 		vector<Jet> seljetCol, bjetCol;
-		for( int idx=0; idx < JetInfo.Size; idx++){
+		for( int idx=0; idx < JetInfo.Size; idx++)
+		{
 			Jet jet( JetInfo, idx );
 			h1.GetTH1("Jet_Pt")->Fill( jet.Pt );			
 			h1.GetTH1("Jet_Px")->Fill( jet.Px );			
@@ -199,7 +200,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( jet.NCH == 0 ) continue;
 			if( jet.NConstituents <= 1 ) continue;
 			if( abs( jet.Eta ) >= 2.4 ) continue;
-			if( jet.Pt > 30. ){ 
+			if( jet.Pt > 30. )
+			{ 
 				seljetCol.push_back(jet);
 				h1.GetTH1("SelJet_Pt")->Fill( jet.Pt );			
 				h1.GetTH1("SelJet_Px")->Fill( jet.Px );			
@@ -212,7 +214,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 				h1.GetTH1("SelJet_BTag")->Fill( jet.CombinedSVBJetTags );			
 			}
 
-			if(  jet.Pt > 30. && jet.CombinedSVBJetTags > 0.679 ){ 
+			if(  jet.Pt > 30. && jet.CombinedSVBJetTags > 0.679 )
+			{ 
 				bjetCol.push_back(jet);
 				h1.GetTH1("bJet_Pt")->Fill( jet.Pt );			
 				h1.GetTH1("bJet_Px")->Fill( jet.Px );			
@@ -229,9 +232,39 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		h1.GetTH1("Evt_NSelJets")->Fill(seljetCol.size());	
 		h1.GetTH1("Evt_NbJets")->Fill(bjetCol.size());
 
-		// Lepton selection
-		
-		// Event selection
+		//* Lepton selection
+		vector<Lepton> selMuCol, looseMuCol_isoMu, looseElCol_isoMu;
+		vector<Lepton> selElCol, looseMuCol_isoEl, looseElCol_isoEl;
+		for( int idx=0; idx < LepInfo.Size; idx++)
+		{
+			Lepton lepton( LepInfo, idx );
+			// Electron selections
+			if( lepton.LeptonType == 11 )
+			{
+				if( abs(lepton.Eta) > 2.5 ) continue;
+				if( abs(lepton.Eta) < 1.5 && abs(lepton.Eta) > 1.4442) continue;
+				if( lepton.Pt < 15) continue;
+				looseElCol_isoMu.push_back(lepton);	
+				if( lepton.Pt < 20) continue;
+				if( lepton.Pt < 45)
+					looseElCol_isoEl.push_back(lepton);
+				else
+					selElCol.push_back(lepton);	
+			}
+			// Muon selections
+			if( lepton.LeptonType == 13 )
+			{
+				if( abs(lepton.Eta) > 2.5 ) continue;
+				if( lepton.Pt < 10) continue; 
+					looseMuCol_isoEl.push_back(lepton);	
+				if( lepton.Pt < 35)
+					looseMuCol_isoMu.push_back(lepton);	
+				else if( lepton.Pt >= 35 && abs(lepton.Eta) < 2.1 )
+					selMuCol.push_back(lepton);
+			}
+		}
+
+		//* Event selection
 		Jet jet1;
 		if( selVertex.size() ){
 			h1.GetTH1("Evt_CutFlow")->Fill("#geq1 goodVtx", 1);
