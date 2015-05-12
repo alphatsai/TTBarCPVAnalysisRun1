@@ -177,7 +177,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			selVertex.push_back(vtx);
 		}
 
-		// Jet selection
+		//* Jet selection
 		vector<Jet> seljetCol, bjetCol;
 		for( int idx=0; idx < JetInfo.Size; idx++){
 			Jet jet( JetInfo, idx );
@@ -190,7 +190,14 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			h1.GetTH1("Jet_Eta")->Fill(  jet.Eta );			
 			h1.GetTH1("Jet_Phi")->Fill(  jet.Phi );			
 			h1.GetTH1("Jet_BTag")->Fill( jet.CombinedSVBJetTags );			
-
+			
+			// ID tight
+			if( jet.CHF == 0 ) continue;
+			if( jet.NEF > 0.99 ) continue;
+			if( jet.NHF > 0.99 ) continue;
+			if( jet.CEF > 0.99 ) continue;
+			if( jet.NCH == 0 ) continue;
+			if( jet.NConstituents <= 1 ) continue;
 			if( abs( jet.Eta ) >= 2.4 ) continue;
 			if( jet.Pt > 30. ){ 
 				seljetCol.push_back(jet);
@@ -221,7 +228,6 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		h1.GetTH1("Evt_NJets")->Fill(JetInfo.Size);	
 		h1.GetTH1("Evt_NSelJets")->Fill(seljetCol.size());	
 		h1.GetTH1("Evt_NbJets")->Fill(bjetCol.size());
-	
 
 		// Lepton selection
 		

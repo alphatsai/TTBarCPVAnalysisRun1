@@ -7,7 +7,7 @@ class Vertex{
  	public:
 		Vertex(){}
 		Vertex( VertexInfoBranches& VtxInfo, int idx ){
-			Fill( VtxInfo, idx )
+			Fill( VtxInfo, idx );
 		}
 		void Fill( VertexInfoBranches& VtxInfo, int idx ){
 			isValid = VtxInfo.isValid[idx];
