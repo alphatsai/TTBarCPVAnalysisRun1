@@ -21,7 +21,7 @@ options.register('reportEvery', 1000,
 	VarParsing.varType.int,
 	"Report every N events (default is N=1000)"
 	)
-options.register('ttreedir', 'ntuple',
+options.register('ttreedir', 'bprimeKit',
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.string,
 	"Name of ROOT TTree dir: Either 'ntuple' or 'skim' or 'bVeto'"
@@ -46,11 +46,12 @@ process.TFileService = cms.Service("TFileService",
 	fileName = cms.string(options.outFilename) 
 	)
 
-process.BprimebH = cms.EDAnalyzer('HadronicAnalysis',
+process.Hadronic = cms.EDAnalyzer('HadronicAnalysis',
 	MaxEvents           = cms.int32(options.MaxEvents),
 	ReportEvery         = cms.int32(options.reportEvery),  
-	InputTTree          = cms.string(options.ttreedir+'/tree'),
-	InputFiles          = cms.vstring(FileNames), 
+	InputTTree          = cms.string(options.ttreedir+'/root'),
+	#InputFiles          = cms.vstring(FileNames), 
+	InputFiles          = cms.vstring(FileNames_BprimtKits_SemiLept), 
 	) 
 
 process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )

@@ -74,21 +74,21 @@ void TH1InfoClass<TH1>::defaultTH1Info()
 	Info.push_back( TH1Info( "bJet_Px",     "px of b-Jet",	  "p_{x}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
 	Info.push_back( TH1Info( "bJet_Py",     "py of b-Jet",	  "p_{y}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
 	Info.push_back( TH1Info( "bJet_Pz",     "pz of b-Jet",	  "p_{z}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
-	Info.push_back( TH1Info( "bJet_M",		"Mass of b-Jet",  "Mass(B-tagged j)", 	"Yields", 	"GeV", 	"",		500, 0,   500 ) );
-	Info.push_back( TH1Info( "bJet_E",		"Energy of b-Jet","Energy(B-tagged j)",	"Yields", 	"GeV", 	"",		500, 0,   500 ) );
+	Info.push_back( TH1Info( "bJet_M",	"Mass of b-Jet",  "Mass(B-tagged j)", 	"Yields", 	"GeV", 	"",		500, 0,   500 ) );
+	Info.push_back( TH1Info( "bJet_E",	"Energy of b-Jet","Energy(B-tagged j)",	"Yields", 	"GeV", 	"",		500, 0,   500 ) );
 	Info.push_back( TH1Info( "bJet_Eta",	"Eta of b-Jet",	  "#eta(B-tagged j)", 	"Yields", 	"", 	"",		100, -5, 5 ) );
 	Info.push_back( TH1Info( "bJet_Phi",	"Phi of b-Jet",	  "#phi(B-tagged j)", 	"Yields", 	"", 	"",		64, -3.2,   3.2 ) );
 	Info.push_back( TH1Info( "bJet_BTag",	"b-Jet b-tagged",  "bTag", 		    "Yields", 	"", 	"",		2, 0,   2 ) );
-	Info.push_back( TH1Info( "bJet12_Px",     "px of b-Jet",	  "p_{x}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
-	Info.push_back( TH1Info( "bJet12_Py",     "py of b-Jet",	  "p_{y}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
-	Info.push_back( TH1Info( "bJet12_Pz",     "pz of b-Jet",	  "p_{z}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
-	Info.push_back( TH1Info( "Evt_Events",	"",	  		  "", 				"Events", 	"", 	"",		1, 1,   2) );
-	Info.push_back( TH1Info( "Evt_Channel",	"",	  		  "", 				"", 		"", 	"",		2, 0,   2) );
+	Info.push_back( TH1Info( "bJet12_Px",     "px of b-Jet",  "p_{x}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
+	Info.push_back( TH1Info( "bJet12_Py",     "py of b-Jet",  "p_{y}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
+	Info.push_back( TH1Info( "bJet12_Pz",     "pz of b-Jet",  "p_{z}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
+	Info.push_back( TH1Info( "Evt_Events",	"",	  	  "", 				"Events", 	"", 	"",		1, 1,   2) );
+	Info.push_back( TH1Info( "Evt_Channel",	"",	  	  "", 				"", 		"", 	"",		2, 0,   2) );
 	Info.push_back( TH1Info( "Evt_CutFlow", "",        	  "",     			"Evetns", 	"", 	"",     8, 0, 8 ));
 	Info.push_back( TH1Info( "Evt_NJets",	"Num. of jets",	  		  "N(j)", 			"Events", 	"", 	"",		20, 0,   20) );
 	Info.push_back( TH1Info( "Evt_NSelJets","Num. of selected jets",  "N(selected j).", "Events", 	"", 	"",		20, 0,   20) );
 	Info.push_back( TH1Info( "Evt_NbJets",	"Num. of b-jets",	  	  "N(B-tagged j)", 	"Events", 	"", 	"",		20, 0,   20) );
-	Info.push_back( TH1Info( "Evt_O7",		"O7",	  			"O_{7}", 	"Events", 	"", 	"",		40, -2,   2) );
+	Info.push_back( TH1Info( "Evt_O7",	"O7",	  			"O_{7}", 	"Events", 	"", 	"",		40, -2,   2) );
 	Info.push_back( TH1Info( "Evt_O7Asym",	"O7 Asymetric",	  	"", 	"Events", 	"", 	"",		2, 0,   2) );
 	Info.push_back( TH1Info( "Evt_O7_term1","Pz(pbj1-pbj2)",	"GeV", 	"Events", 	"", 	"",		1000, -500,   500) );
 	Info.push_back( TH1Info( "Evt_O7_term2","Pz(pbj1xpbj2)",	"GeV", 	"Events", 	"", 	"",		1000, -500,   500) );
@@ -151,13 +151,12 @@ void TH1InfoClass<TH1>::Sumw2(){
 //* Get Histogram
 template<typename TH1> 
 TH1* TH1InfoClass<TH1>::GetTH1(std::string name){
-	TH1* th1;
 	if( mapTH1.find(name) == mapTH1.end() ){
 		printf(">> [ERROR] %s is not found in TH1InfoClass::GetTH1(std::string)\n", name.c_str());
-	}else{	
-		th1=mapTH1.find(name)->second;
+		return NULL;
+	}else{
+		return mapTH1.find(name)->second;
 	}
-	return th1;
 }
 
 //* Get Info variables

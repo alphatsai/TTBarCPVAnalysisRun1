@@ -1,7 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
 from FWCore.ParameterSet.VarParsing import VarParsing
-
 from inputFiles_cfi import * 
 
 options = VarParsing('python')
@@ -21,7 +20,7 @@ options.register('reportEvery', 1000,
 	VarParsing.varType.int,
 	"Report every N events (default is N=1000)"
 	)
-options.register('ttreedir', 'ntuple',
+options.register('ttreedir', 'bprimeKit',
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.string,
 	"Name of ROOT TTree dir: Either 'ntuple' or 'skim' or 'bVeto'"
@@ -31,28 +30,30 @@ options.register('ttreedir', 'ntuple',
 #    VarParsing.varType.float,
 #    "Minimum b jet Pt"
 #    )
-#options.register('doPUReweighting', True,
-#    VarParsing.multiplicity.singleton,
-#    VarParsing.varType.bool,
-#    "Do pileup reweighting"
-#)
+options.register('Debug', True,
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.bool,
+    "Print out Debug info during run"
+)
 options.parseArguments()
 
 process = cms.Process("SemiLeptanic")
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.MaxEvents) ) 
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) ) 
 
 process.source = cms.Source("EmptySource")
 process.TFileService = cms.Service("TFileService",
 	fileName = cms.string(options.outFilename) 
 	)
 
-process.BprimebH = cms.EDAnalyzer('SemiLeptanicAnalysis',
-	MaxEvents           = cms.int32(options.MaxEvents),
-	ReportEvery         = cms.int32(options.reportEvery),  
-	InputTTree          = cms.string(options.ttreedir+'/tree'),
-	InputFiles          = cms.vstring(FileNames), 
+process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
+	MaxEvents   = cms.int32(options.MaxEvents),
+	ReportEvery = cms.int32(options.reportEvery),  
+	InputTTree  = cms.string(options.ttreedir+'/root'),
+	#InputFiles  = cms.vstring(FileNames), 
+	InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLept),
+	Debug    = cms.bool(options.Debug) 
 	) 
 
 process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
-process.p = cms.Path(process.Hadronic)
+process.p = cms.Path(process.SemiLeptanic)
 

@@ -37,6 +37,9 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		virtual void beginJob();
 		virtual void analyze(const edm::Event&, const edm::EventSetup&);
 		virtual void endJob();
+		
+		template<class TH1>
+		void setCutFlow( TH1* h, std::string channel="lj" );	
 
 		// ----------member data ---------------------------
 
@@ -46,32 +49,20 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		const int                       reportEvery_; 
 		const std::string               inputTTree_;
 		const std::vector<std::string>  inputFiles_;
-		bool debugTH1InfoClass_;
+
+		bool Debug_;
 
 		edm::Service<TFileService> fs;
 		TChain*            chain_;
  
 		//const double jetPtMin_;
-		//const double bJetPtMin_;
-		//const double bJetCSVDiscMin_;
-		//const double bJetCSVDiscMax_;
 
-		//const edm::ParameterSet jetSelParams_ ; 
-		//const edm::ParameterSet evtSelParams_ ; 
-
-		//EvtInfoBranches    EvtInfo;
-		//VertexInfoBranches VtxInfo;
-		//GenInfoBranches    GenInfo;
-		//JetInfoBranches    GenJetInfo;
-		//JetInfoBranches    JetInfo;
-		//LepInfoBranches    LepInfo;
+		EvtInfoBranches    EvtInfo;
+		VertexInfoBranches VtxInfo;
+		JetInfoBranches    JetInfo;
+		LepInfoBranches    LepInfo;
 
 		TH1InfoClass<TH1D> h1;
-
-		//bool   McFlagana;
-		//int RunNo;
-		//long int EvtNo;
-		//int LumiNo;
 
 };
 
