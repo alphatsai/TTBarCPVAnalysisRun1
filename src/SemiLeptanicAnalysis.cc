@@ -35,6 +35,8 @@
 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/format.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Vertex.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Jet.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1InfoClass.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SemiLeptanicAnalysis.h" 
 
@@ -166,7 +168,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 
 		// Vertex selection
 		vector<Vertex> selVertex;
-		for( int idx=0; idx<VtxInfo.Size; idx++){
+		for( int idx=0; idx < VtxInfo.Size; idx++){
 			Vertex vtx( VtxInfo, idx );
 			if( vtx.isFake ) continue;
 			if( vtx.Ndof < 4 ) continue;
@@ -175,10 +177,93 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			selVertex.push_back(vtx);
 		}
 
+		// Jet selection
+		vector<Jet> seljetCol, bjetCol;
+		for( int idx=0; idx < JetInfo.Size; idx++){
+			Jet jet( JetInfo, idx );
+			h1.GetTH1("Jet_Pt")->Fill( jet.Pt );			
+			h1.GetTH1("Jet_Px")->Fill( jet.Px );			
+			h1.GetTH1("Jet_Py")->Fill( jet.Py );			
+			h1.GetTH1("Jet_Pz")->Fill( jet.Pz );			
+			h1.GetTH1("Jet_M")->Fill(  jet.Mass );			
+			h1.GetTH1("Jet_E")->Fill(  jet.Energy );			
+			h1.GetTH1("Jet_Eta")->Fill(  jet.Eta );			
+			h1.GetTH1("Jet_Phi")->Fill(  jet.Phi );			
+			h1.GetTH1("Jet_BTag")->Fill( jet.CombinedSVBJetTags );			
+
+			if( abs( jet.Eta ) >= 2.4 ) continue;
+			if( jet.Pt > 30. ){ 
+				seljetCol.push_back(jet);
+				h1.GetTH1("SelJet_Pt")->Fill( jet.Pt );			
+				h1.GetTH1("SelJet_Px")->Fill( jet.Px );			
+				h1.GetTH1("SelJet_Py")->Fill( jet.Py );			
+				h1.GetTH1("SelJet_Pz")->Fill( jet.Pz );			
+				h1.GetTH1("SelJet_M")->Fill(  jet.Mass );			
+				h1.GetTH1("SelJet_E")->Fill(  jet.Energy );			
+				h1.GetTH1("SelJet_Eta")->Fill(  jet.Eta );			
+				h1.GetTH1("SelJet_Phi")->Fill(  jet.Phi );			
+				h1.GetTH1("SelJet_BTag")->Fill( jet.CombinedSVBJetTags );			
+			}
+
+			if(  jet.Pt > 30. && jet.CombinedSVBJetTags > 0.679 ){ 
+				bjetCol.push_back(jet);
+				h1.GetTH1("bJet_Pt")->Fill( jet.Pt );			
+				h1.GetTH1("bJet_Px")->Fill( jet.Px );			
+				h1.GetTH1("bJet_Py")->Fill( jet.Py );			
+				h1.GetTH1("bJet_Pz")->Fill( jet.Pz );			
+				h1.GetTH1("bJet_M")->Fill(  jet.Mass );			
+				h1.GetTH1("bJet_E")->Fill(  jet.Energy );			
+				h1.GetTH1("bJet_Eta")->Fill(  jet.Eta );			
+				h1.GetTH1("bJet_Phi")->Fill(  jet.Phi );			
+				h1.GetTH1("bJet_BTag")->Fill( jet.CombinedSVBJetTags );			
+			}
+		}
+		h1.GetTH1("Evt_NJets")->Fill(JetInfo.Size);	
+		h1.GetTH1("Evt_NSelJets")->Fill(seljetCol.size());	
+		h1.GetTH1("Evt_NbJets")->Fill(bjetCol.size());
+	
+
+		// Lepton selection
+		
 		// Event selection
+		Jet jet1;
 		if( selVertex.size() ){
 			h1.GetTH1("Evt_CutFlow")->Fill("#geq1 goodVtx", 1);
+			if( seljetCol.size() >= 3 ){ 	
+				h1.GetTH1("Evt_CutFlow")->Fill("#geq3 Jets", 1);
+				h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq3 Jets", 1);
+			}
+			// Lable the hardest non_bjet 
+			int j1=-1;
+			double pt1=0;
+			const int size_seljetCol = seljetCol.size();	
+			for( int i=0; i < size_seljetCol; i++){
+				if( seljetCol[i].CombinedSVBJetTags < 0.679 && pt1 < seljetCol[i].Pt ){
+					j1=i;
+					pt1=seljetCol[i].Pt;
+				}
+			}
+			jet1 = seljetCol[j1];
+			if( bjetCol.size() >= 2 ){
+				//isMuCh=true;	
+				h1.GetTH1("Evt_CutFlow")->Fill("#geq2 bjets", 1);
+				//h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq2 bjets", 1);
+				// Lable bjet by Pt
+				//sort2HighPt( bjetCol, bjet1, bjet2 );
 
+				//h1.GetTH1("bJet12_Px")->Fill(bjet1.P4().Px());
+				//h1.GetTH1("bJet12_Px")->Fill(bjet2.P4().Px());
+				//h1.GetTH1("bJet12_Py")->Fill(bjet1.P4().Py());
+				//h1.GetTH1("bJet12_Py")->Fill(bjet2.P4().Py());
+				//h1.GetTH1("bJet12_Pz")->Fill(bjet1.P4().Pz());
+				//h1.GetTH1("bJet12_Pz")->Fill(bjet2.P4().Pz());
+			}
+
+			if( bjetCol.size() == 2 ){	
+				//is2bMuCh=true;	
+				h1.GetTH1("Evt_CutFlow")->Fill("=2 bjets", 1);
+				//h1.GetTH1("Evt_CutFlow_Mu")->Fill("=2 bjets", 1);
+			}
 		}	
 
   	} //// entry loop 

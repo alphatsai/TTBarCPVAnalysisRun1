@@ -60,7 +60,7 @@ void TH1InfoClass<TH1>::defaultTH1Info()
 	Info.push_back( TH1Info( "Jet_E",		"Energy of Jet",		  "Energy(j)",		"Yields", 	"GeV", 	"",		500, 0,   500 ) );
 	Info.push_back( TH1Info( "Jet_Eta",		"Eta of Jet",	 		  "#eta(j)", 		"Yields", 	"", 	"",		100, -5, 5 ) );
 	Info.push_back( TH1Info( "Jet_Phi",		"Phi of Jet",	 		  "#phi(j)", 		"Yields", 	"", 	"",		64, -3.2,   3.2 ) );
-	Info.push_back( TH1Info( "Jet_BTag",	"Jet b-tagged",	 		  "bTag", 		    "Yields", 	"", 	"",		2, 0,   2 ) );
+	Info.push_back( TH1Info( "Jet_BTag",	"Jet b-tagged",	 		  "bTag", 		    "Yields", 	"", 	"",		100, 0,  1  ) );
 	Info.push_back( TH1Info( "SelJet_Pt",	"pT of selected Jet",	  "p_{T}(selected j)", 	"Yields", 	"GeV", 	"",		500, 0,   500 ) );
 	Info.push_back( TH1Info( "SelJet_Px",	"px of selected Jet",	  "p_{x}(selected j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
 	Info.push_back( TH1Info( "SelJet_Py",	"py of selected Jet",	  "p_{y}(selected j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
@@ -69,7 +69,7 @@ void TH1InfoClass<TH1>::defaultTH1Info()
 	Info.push_back( TH1Info( "SelJet_E",	"Energy of selected Jet", "Energy(selected j)",	"Yields", 	"GeV", 	"",		500, 0,   500 ) );
 	Info.push_back( TH1Info( "SelJet_Eta",	"Eta of selected Jet",	  "#eta(selected j)", 	"Yields", 	"", 	"",		100, -5, 5 ) );
 	Info.push_back( TH1Info( "SelJet_Phi",	"Phi of selected Jet",	  "#phi(selected j)", 	"Yields", 	"", 	"",		64, -3.2,   3.2 ) );
-	Info.push_back( TH1Info( "SelJet_BTag",	"Selected Jet b-tagged",  "bTag", 		    "Yields", 	"", 	"",		2, 0,   2 ) );
+	Info.push_back( TH1Info( "SelJet_BTag",	"Selected Jet b-tagged",  "bTag", 		    "Yields", 	"", 	"",		100, 0,   1 ) );
 	Info.push_back( TH1Info( "bJet_Pt",     "pT of b-Jet",	  "p_{T}(B-tagged j)", 	"Yields", 	"GeV", 	"",		500, 0,   500 ) );
 	Info.push_back( TH1Info( "bJet_Px",     "px of b-Jet",	  "p_{x}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
 	Info.push_back( TH1Info( "bJet_Py",     "py of b-Jet",	  "p_{y}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
@@ -78,7 +78,7 @@ void TH1InfoClass<TH1>::defaultTH1Info()
 	Info.push_back( TH1Info( "bJet_E",	"Energy of b-Jet","Energy(B-tagged j)",	"Yields", 	"GeV", 	"",		500, 0,   500 ) );
 	Info.push_back( TH1Info( "bJet_Eta",	"Eta of b-Jet",	  "#eta(B-tagged j)", 	"Yields", 	"", 	"",		100, -5, 5 ) );
 	Info.push_back( TH1Info( "bJet_Phi",	"Phi of b-Jet",	  "#phi(B-tagged j)", 	"Yields", 	"", 	"",		64, -3.2,   3.2 ) );
-	Info.push_back( TH1Info( "bJet_BTag",	"b-Jet b-tagged",  "bTag", 		    "Yields", 	"", 	"",		2, 0,   2 ) );
+	Info.push_back( TH1Info( "bJet_BTag",	"b-Jet b-tagged",  "bTag", 		    "Yields", 	"", 	"",	100, 0,   1 ) );
 	Info.push_back( TH1Info( "bJet12_Px",     "px of b-Jet",  "p_{x}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
 	Info.push_back( TH1Info( "bJet12_Py",     "py of b-Jet",  "p_{y}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
 	Info.push_back( TH1Info( "bJet12_Pz",     "pz of b-Jet",  "p_{z}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
