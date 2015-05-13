@@ -40,6 +40,10 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		
 		template<class TH1>
 		void setCutFlow( TH1* h, std::string channel="lj" );	
+		template<class TH1>
+		void setLeptonSelHist( TH1* h );
+		template <class Object>
+		void get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 );
 
 		// ----------member data ---------------------------
 
@@ -50,6 +54,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		const std::string               inputTTree_;
 		const std::vector<std::string>  inputFiles_;
 
+		double Owrt_;
 		bool Debug_;
 
 		edm::Service<TFileService> fs;

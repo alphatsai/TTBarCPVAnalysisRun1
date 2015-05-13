@@ -10,6 +10,7 @@
 #include <string>
 
 // Root headers 
+#include <TVector3.h>
 #include <TLorentzVector.h>
 #include <TChain.h>
 #include <TTree.h>
@@ -34,9 +35,10 @@
 #include "PhysicsTools/Utilities/interface/LumiReweightingStandAlone.h" 
 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/format.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Jet.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Vertex.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h" 
-#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Jet.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/functions.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1InfoClass.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SemiLeptanicAnalysis.h" 
 
@@ -48,6 +50,7 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
 	reportEvery_(iConfig.getParameter<int>("ReportEvery")),
 	inputTTree_(iConfig.getParameter<std::string>("InputTTree")),
 	inputFiles_(iConfig.getParameter<std::vector<std::string> >("InputFiles")),
+	Owrt_(iConfig.getParameter<double>("Owrt")),
 	Debug_(iConfig.getParameter<bool>("Debug"))
 {}
 
@@ -58,7 +61,8 @@ SemiLeptanicAnalysis::~SemiLeptanicAnalysis()
 
 // ------------ Other function -------------
 template<class TH1>
-void SemiLeptanicAnalysis::setCutFlow( TH1* h, std::string channel ){
+void SemiLeptanicAnalysis::setCutFlow( TH1* h, std::string channel )
+{
 	if( channel.compare("lj") == 0 || channel.compare("ljm") == 0 || channel.compare("lje") == 0){
 		h->GetXaxis()->SetBinLabel(1,"All");
 		h->GetXaxis()->SetBinLabel(2,"#geq1 goodVtx");
@@ -74,6 +78,39 @@ void SemiLeptanicAnalysis::setCutFlow( TH1* h, std::string channel ){
 	return ;
 }
 
+template<class TH1>
+void SemiLeptanicAnalysis::setLeptonSelHist( TH1* h )
+{
+	h->GetXaxis()->SetBinLabel(1,"1:0:0");
+	h->GetXaxis()->SetBinLabel(2,"0:1:0");
+	h->GetXaxis()->SetBinLabel(3,"0:0:1");
+	h->GetXaxis()->SetBinLabel(4,"1:1:0");
+	h->GetXaxis()->SetBinLabel(5,"0:1:1");
+	h->GetXaxis()->SetBinLabel(6,"1:0:1");
+}
+
+template <class Object>
+void SemiLeptanicAnalysis::get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 )
+{
+	int o1, o2;
+	double pt1, pt2;
+	o1=o2=-1;	
+	pt1=pt2=0;
+	const int size=col.size();
+	for( int i=0; i<size; i++){
+		if( pt1 < col[i].Pt ){
+			pt2=pt1;
+			pt1=col[i].Pt;
+			o2=o1;
+			o1=i;
+		}else if( pt2 < col[i].Pt ){
+			pt2=col[i].Pt;
+			o2=i;
+		}
+	}
+	obj1=col[o1];	
+	obj2=col[o2];
+}
 // ------------ method called once each job just before starting event loop  ------------
 void SemiLeptanicAnalysis::beginJob()
 { 
@@ -151,10 +188,10 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 
 	cout<<">> [INFO] Starting analysis loop with "<<maxEvents_<<" events..."<<endl;
 
-	vector<double> ax, ay, az;
-	ax.push_back(1); ax.push_back(0); ax.push_back(0);
-	ay.push_back(0); ay.push_back(1); ay.push_back(0);
-	az.push_back(0); az.push_back(0); az.push_back(1);
+	TVector3 ax, ay, az;
+	ax.SetXYZ(1, 0, 0);
+	ay.SetXYZ(0, 1, 0);
+	az.SetXYZ(0, 0, 1);
 
 	for(int entry=0; entry<maxEvents_; entry++)
 	{
@@ -163,7 +200,6 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		if( Debug_ ){ if( ( entry%reportEvery_) == 0 ) cout<<">> [DEBUG] "<<entry<<" of "<< maxEvents_<<endl; }
 
 		h1.GetTH1("Evt_Events")->Fill(1);
-		h1.GetTH1("Evt_CutFlow")->Fill("All", 1);
 
 		// Vertex selection
 		vector<Vertex> selVertex;
@@ -245,11 +281,17 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 				if( abs(lepton.Eta) > 2.5 ) continue;
 				if( abs(lepton.Eta) < 1.5 && abs(lepton.Eta) > 1.4442) continue;
 				if( lepton.Pt < 15) continue;
-				looseElCol_isoMu.push_back(lepton);	
+				if( relIso1 < 0.2 )
+					looseElCol_isoMu.push_back(lepton);	
 				if( lepton.Pt < 20) continue;
-				if( lepton.Pt < 45)
+				if( lepton.Pt < 45 &&
+				    relIso1 < 1.
+  				  )
 					looseElCol_isoEl.push_back(lepton);
-				else
+				else if( relIso1 < 0.1 &&
+					 lepton.Pt > 45	&&
+					 lepton.EgammaCutBasedEleIdTRIGGERWP70 
+					)
 					selElCol.push_back(lepton);	
 			}
 			// Muon selections
@@ -257,13 +299,15 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			{
 				if( relIso1 > 0.2 ) continue;	
 				if( abs(lepton.Eta) > 2.5 ) continue;
-				if( lepton.Pt < 10) continue; 
+				if( lepton.Pt < 10) continue;
+				if( (lepton.MuType&0x02) != 0 ) 
 					looseMuCol_isoEl.push_back(lepton);	
 				if( lepton.Pt < 35)
 					looseMuCol_isoMu.push_back(lepton);	
-				else if( relIso1 < 0.125 && 
+				else if( relIso1 < 0.125 &&
+					 (lepton.MuType&0x02) != 0 && // Global muon 
+					 (lepton.MuType&0x04) != 0 && // Tracker muon 
 					 lepton.Pt >= 35 && 
-					 lepton.MuType == 14 && 
 					 lepton.MuNMuonhits > 0  &&
 					 lepton.MuNPixelLayers > 0  &&
 					 lepton.MuNTrackerHits > 10  &&
@@ -278,47 +322,272 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		}
 
 		//* Event selection
-		Jet jet1;
-		if( selVertex.size() ){
+		Jet jet1, bjet1, bjet2;
+		Lepton isoMu, isoEl;
+		bool isMuonChannel(false), isMuonChannel2b(false), isEleChannel(false), isEleChannel2b(false);
+
+		h1.GetTH1("Evt_CutFlow")->Fill("All", 1);
+		h1.GetTH1("Evt_CutFlow_El")->Fill("All", 1);
+		h1.GetTH1("Evt_CutFlow_Mu")->Fill("All", 1);
+
+		if( selVertex.size() )
+		{
 			h1.GetTH1("Evt_CutFlow")->Fill("#geq1 goodVtx", 1);
-			if( seljetCol.size() >= 3 ){ 	
-				h1.GetTH1("Evt_CutFlow")->Fill("#geq3 Jets", 1);
-				h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq3 Jets", 1);
-			}
-			// Lable the hardest non_bjet 
-			int j1=-1;
-			double pt1=0;
-			const int size_seljetCol = seljetCol.size();	
-			for( int i=0; i < size_seljetCol; i++){
-				if( seljetCol[i].CombinedSVBJetTags < 0.679 && pt1 < seljetCol[i].Pt ){
-					j1=i;
-					pt1=seljetCol[i].Pt;
-				}
-			}
-			jet1 = seljetCol[j1];
-			if( bjetCol.size() >= 2 ){
-				//isMuCh=true;	
-				h1.GetTH1("Evt_CutFlow")->Fill("#geq2 bjets", 1);
-				//h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq2 bjets", 1);
-				// Lable bjet by Pt
-				//sort2HighPt( bjetCol, bjet1, bjet2 );
+			h1.GetTH1("Evt_CutFlow_El")->Fill("#geq1 goodVtx", 1);
+			h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq1 goodVtx", 1);
+			if( ( selMuCol.size() + selElCol.size()) == 1  )
+			{
+				h1.GetTH1("Evt_CutFlow")->Fill("1 isoLep", 1);
+				// Muon channel
+				if( selMuCol.size() == 1 )
+				{
+					isoMu = selMuCol[0];
+					h1.GetTH1("Evt_CutFlow_Mu")->Fill("1 isoMu", 1);
 
-				//h1.GetTH1("bJet12_Px")->Fill(bjet1.P4().Px());
-				//h1.GetTH1("bJet12_Px")->Fill(bjet2.P4().Px());
-				//h1.GetTH1("bJet12_Py")->Fill(bjet1.P4().Py());
-				//h1.GetTH1("bJet12_Py")->Fill(bjet2.P4().Py());
-				//h1.GetTH1("bJet12_Pz")->Fill(bjet1.P4().Pz());
-				//h1.GetTH1("bJet12_Pz")->Fill(bjet2.P4().Pz());
+					if( looseMuCol_isoMu.size() == 0 )
+					{
+						h1.GetTH1("Evt_CutFlow")->Fill("veto(Loose #mu)", 1);
+						h1.GetTH1("Evt_CutFlow_Mu")->Fill("veto(Loose #mu)", 1);
+
+						if( looseElCol_isoMu.size() == 0 )
+						{
+							h1.GetTH1("Evt_CutFlow")->Fill("veto(Loose e)", 1);
+							h1.GetTH1("Evt_CutFlow_Mu")->Fill("veto(Loose e)", 1);
+							if( seljetCol.size() >= 3 )
+							{ 	
+								h1.GetTH1("Evt_CutFlow")->Fill("#geq3 Jets", 1);
+								h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq3 Jets", 1);
+								// Lable the hardest non_bjet 
+								int j1=-1;
+								double pt1=0;
+								const int size_seljetCol = seljetCol.size();	
+								for( int i=0; i < size_seljetCol; i++)
+								{
+									if( seljetCol[i].CombinedSVBJetTags < 0.679 && pt1 < seljetCol[i].Pt ){
+										j1=i;
+										pt1=seljetCol[i].Pt;
+									}
+								}
+								jet1 = seljetCol[j1];
+							}
+							if( bjetCol.size() >= 2 )
+							{
+								isMuonChannel=true;	
+								h1.GetTH1("Evt_CutFlow")->Fill("#geq2 bjets", 1);
+								h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq2 bjets", 1);
+								//Lable bjet by Pt
+								get2HighPtObject( bjetCol, bjet1, bjet2 );
+								h1.GetTH1("bJet12_Px")->Fill(bjet1.Px);
+								h1.GetTH1("bJet12_Px")->Fill(bjet2.Px);
+								h1.GetTH1("bJet12_Py")->Fill(bjet1.Py);
+								h1.GetTH1("bJet12_Py")->Fill(bjet2.Py);
+								h1.GetTH1("bJet12_Pz")->Fill(bjet1.Pz);
+								h1.GetTH1("bJet12_Pz")->Fill(bjet2.Pz);
+							}
+							if( bjetCol.size() == 2 )
+							{	
+								isMuonChannel2b=true;	
+								h1.GetTH1("Evt_CutFlow")->Fill("=2 bjets", 1);
+								h1.GetTH1("Evt_CutFlow_Mu")->Fill("=2 bjets", 1);
+							}
+						}
+					}
+				} // [END] Muon channel
+				else if( selElCol.size() == 1 ) // Electron channel	
+				{
+					isoEl=selElCol[0];
+					h1.GetTH1("Evt_CutFlow_El")->Fill("1 isoEl", 1);
+
+					if( looseMuCol_isoEl.size() == 0 )
+					{
+						h1.GetTH1("Evt_CutFlow")->Fill("veto(Loose #mu)", 1);
+						h1.GetTH1("Evt_CutFlow_El")->Fill("veto(Loose #mu)", 1);
+
+						if( looseElCol_isoEl.size() == 0 )
+						{
+							h1.GetTH1("Evt_CutFlow")->Fill("veto(Loose e)", 1);
+							h1.GetTH1("Evt_CutFlow_El")->Fill("veto(Loose e)", 1);
+
+							if( seljetCol.size() >= 3 )
+							{ 	
+								h1.GetTH1("Evt_CutFlow")->Fill("#geq3 Jets", 1);
+								h1.GetTH1("Evt_CutFlow_El")->Fill("#geq3 Jets", 1);
+								// Lable the hardest non_bjet 
+								int j1=-1;
+								double pt1=0;	
+								const int size_seljetCol = seljetCol.size();	
+								for( int i=0; i<size_seljetCol; i++)
+								{
+									if( seljetCol[i].CombinedSVBJetTags < 0.679 && pt1 < seljetCol[i].Pt ){
+										j1=i;
+										pt1=seljetCol[i].Pt;
+									}
+								}
+								jet1=seljetCol[j1];
+
+								if( bjetCol.size() >= 2 )
+								{ 
+									isEleChannel=true;
+									h1.GetTH1("Evt_CutFlow")->Fill("#geq2 bjets", 1);
+									h1.GetTH1("Evt_CutFlow_El")->Fill("#geq2 bjets", 1);
+									// Lable bjet by Pt
+									get2HighPtObject( bjetCol, bjet1, bjet2 );
+									h1.GetTH1("bJet12_Px")->Fill(bjet1.Px);
+									h1.GetTH1("bJet12_Px")->Fill(bjet2.Px);
+									h1.GetTH1("bJet12_Py")->Fill(bjet1.Py);
+									h1.GetTH1("bJet12_Py")->Fill(bjet2.Py);
+									h1.GetTH1("bJet12_Pz")->Fill(bjet1.Pz);
+									h1.GetTH1("bJet12_Pz")->Fill(bjet2.Pz);
+								}
+								if( bjetCol.size() == 2 )
+								{
+									isEleChannel2b=true;	
+									h1.GetTH1("Evt_CutFlow")->Fill("=2 bjets", 1);
+									h1.GetTH1("Evt_CutFlow_El")->Fill("=2 bjets", 1);
+								}
+							}
+						}	
+					}				
+				} // [END] Electron channel
+				if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 0 )
+					h1.GetTH1("Evt_MuCut")->Fill("1:0:0", 1);
+				if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 0 )
+					h1.GetTH1("Evt_MuCut")->Fill("0:1:0", 1);
+				if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 1 )
+					h1.GetTH1("Evt_MuCut")->Fill("0:0:1", 1);
+				if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 0 )
+					h1.GetTH1("Evt_MuCut")->Fill("1:1:0", 1);
+				if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 1 )
+					h1.GetTH1("Evt_MuCut")->Fill("1:0:1", 1);
+				if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 1 )
+					h1.GetTH1("Evt_MuCut")->Fill("0:1:1", 1);
+				if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 1 )
+					h1.GetTH1("Evt_MuCut")->Fill("1:1:1", 1);
+				if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 0 )
+					h1.GetTH1("Evt_ElCut")->Fill("1:0:0", 1);
+				if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 0 )
+					h1.GetTH1("Evt_ElCut")->Fill("0:1:0", 1);
+				if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 1 )
+					h1.GetTH1("Evt_ElCut")->Fill("0:0:1", 1);
+				if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 0 )
+					h1.GetTH1("Evt_ElCut")->Fill("1:1:0", 1);
+				if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 1 )
+					h1.GetTH1("Evt_ElCut")->Fill("1:0:1", 1);
+				if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 1 )
+					h1.GetTH1("Evt_ElCut")->Fill("0:1:1", 1);
+				if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 1 )
+					h1.GetTH1("Evt_ElCut")->Fill("1:1:1", 1);
+			} // [END] one lepton selection
+		} // [END] Vxt selection
+
+		//* Fill observables O7 and O2
+		//* bJets >= 2
+		Lepton isoLep;
+		if( isMuonChannel && !isEleChannel ) isoLep = isoMu;
+		else if( !isMuonChannel && isEleChannel ) isoLep = isoEl;
+
+		TVector3 O2_1v =  bjet1.P3 + bjet2.P3;
+		TVector3 O2_2v = isoLep.P3.Cross( jet1.P3 );
+		double O2 = O2_1v.Dot( O2_2v );
+
+		double O7_1z = az.Dot( bjet1.P3 - bjet2.P3 );
+		double O7_2z = az.Dot( bjet1.P3.Cross( bjet2.P3 ));
+		double O7 = O7_1z * O7_2z;
+
+		if( isMuonChannel && !isEleChannel )
+		{
+			h1.GetTH1("Evt_O2")->Fill( O2/Owrt_ );	
+			h1.GetTH1("Evt_O2_Mu")->Fill( O2/Owrt_ );
+			if( O2 > 0 ){
+				h1.GetTH1("Evt_O2Asym")->Fill("O_{2}>0",1);
+				h1.GetTH1("Evt_O2Asym_Mu")->Fill("O_{2}>0",1);
+			}else{
+				h1.GetTH1("Evt_O2Asym")->Fill("O_{2}<0",1);
+				h1.GetTH1("Evt_O2Asym_Mu")->Fill("O_{2}<0",1);
 			}
 
-			if( bjetCol.size() == 2 ){	
-				//is2bMuCh=true;	
-				h1.GetTH1("Evt_CutFlow")->Fill("=2 bjets", 1);
-				//h1.GetTH1("Evt_CutFlow_Mu")->Fill("=2 bjets", 1);
+			h1.GetTH1("Evt_O7")->Fill( O7/Owrt_ );	
+			h1.GetTH1("Evt_O7_Mu")->Fill( O7/Owrt_ );
+			h1.GetTH1("Evt_O7_term1")->Fill( O7_1z );
+			h1.GetTH1("Evt_O7_term2")->Fill( O7_2z );
+			if( O7 > 0 ){
+				h1.GetTH1("Evt_O7Asym")->Fill("O_{7}>0",1);
+				h1.GetTH1("Evt_O7Asym_Mu")->Fill("O_{7}>0",1);
+			}else{
+				h1.GetTH1("Evt_O7Asym")->Fill("O_{7}<0",1);
+				h1.GetTH1("Evt_O7Asym_Mu")->Fill("O_{7}<0",1);
 			}
-		}	
+		}
+		else if( !isMuonChannel && isEleChannel )
+		{
+			h1.GetTH1("Evt_O2")->Fill(O2/Owrt_);	
+			h1.GetTH1("Evt_O2_El")->Fill(O2/Owrt_);
+			if( O2 > 0 ){
+				h1.GetTH1("Evt_O2Asym")->Fill("O_{2}>0",1);
+				h1.GetTH1("Evt_O2Asym_El")->Fill("O_{2}>0",1);
+			}else{
+				h1.GetTH1("Evt_O2Asym")->Fill("O_{2}<0",1);
+				h1.GetTH1("Evt_O2Asym_El")->Fill("O_{2}<0",1);
+			}
 
-  	} //// entry loop 
+			h1.GetTH1("Evt_O7")->Fill(O7/Owrt_);	
+			h1.GetTH1("Evt_O7_El")->Fill(O7/Owrt_);	
+			h1.GetTH1("Evt_O7_term1")->Fill(O7_1z);
+			h1.GetTH1("Evt_O7_term2")->Fill(O7_2z);
+			if( O7 > 0 ){
+				h1.GetTH1("Evt_O7Asym")->Fill("O_{7}>0", 1);
+				h1.GetTH1("Evt_O7Asym_El")->Fill("O_{7}>0",1);
+			}else{
+				h1.GetTH1("Evt_O7Asym")->Fill("O_{7}<0",1);
+				h1.GetTH1("Evt_O7Asym_El")->Fill("O_{7}<0",1);
+			}
+		}
+		//* bJets == 2
+		if( isMuonChannel2b && !isEleChannel2b )
+		{
+			h1.GetTH1("Evt2b_O2")->Fill(O2/Owrt_);	
+			h1.GetTH1("Evt2b_O2_Mu")->Fill(O2/Owrt_);
+			if( O2 > 0 ){
+				h1.GetTH1("Evt2b_O2Asym")->Fill("O_{2}>0",1);
+				h1.GetTH1("Evt2b_O2Asym_Mu")->Fill("O_{2}>0",1);
+			}else{
+				h1.GetTH1("Evt2b_O2Asym")->Fill("O_{2}<0",1);
+				h1.GetTH1("Evt2b_O2Asym_Mu")->Fill("O_{2}<0",1);
+			}
+
+			h1.GetTH1("Evt2b_O7")->Fill(O7/Owrt_);	
+			h1.GetTH1("Evt2b_O7_Mu")->Fill(O7/Owrt_);
+			if( O7 > 0 ){
+				h1.GetTH1("Evt2b_O7Asym")->Fill("O_{7}>0",1);
+				h1.GetTH1("Evt2b_O7Asym_Mu")->Fill("O_{7}>0",1);
+			}else{
+				h1.GetTH1("Evt2b_O7Asym")->Fill("O_{7}<0",1);
+				h1.GetTH1("Evt2b_O7Asym_Mu")->Fill("O_{7}<0",1);
+			}
+		}
+		else if( !isMuonChannel2b && isEleChannel2b )
+		{
+			h1.GetTH1("Evt2b_O2")->Fill(O2/Owrt_);	
+			h1.GetTH1("Evt2b_O2_El")->Fill(O2/Owrt_);
+			if( O2 > 0 ){
+				h1.GetTH1("Evt2b_O2Asym")->Fill("O_{2}>0",1);
+				h1.GetTH1("Evt2b_O2Asym_El")->Fill("O_{2}>0",1);
+			}else{
+				h1.GetTH1("Evt2b_O2Asym")->Fill("O_{2}<0",1);
+				h1.GetTH1("Evt2b_O2Asym_El")->Fill("O_{2}<0",1);
+			}
+
+			h1.GetTH1("Evt2b_O7")->Fill(O7/Owrt_);	
+			h1.GetTH1("Evt2b_O7_El")->Fill(O7/Owrt_);	
+			if( O7 > 0 ){
+				h1.GetTH1("Evt2b_O7Asym")->Fill("O_{7}>0", 1);
+				h1.GetTH1("Evt2b_O7Asym_El")->Fill("O_{7}>0",1);
+			}else{
+				h1.GetTH1("Evt2b_O7Asym")->Fill("O_{7}<0",1);
+				h1.GetTH1("Evt2b_O7Asym_El")->Fill("O_{7}<0",1);
+			}
+		}
+  	}//// [END] entry loop 
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
