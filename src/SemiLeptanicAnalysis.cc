@@ -238,6 +238,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		for( int idx=0; idx < LepInfo.Size; idx++)
 		{
 			Lepton lepton( LepInfo, idx );
+			float relIso1=( lepton.ChargedHadronIso + lepton.NeutralHadronIso + lepton.PhotonIso)/fabs(lepton.Pt);
 			// Electron selections
 			if( lepton.LeptonType == 11 )
 			{
@@ -254,12 +255,24 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			// Muon selections
 			if( lepton.LeptonType == 13 )
 			{
+				if( relIso1 > 0.2 ) continue;	
 				if( abs(lepton.Eta) > 2.5 ) continue;
 				if( lepton.Pt < 10) continue; 
 					looseMuCol_isoEl.push_back(lepton);	
 				if( lepton.Pt < 35)
 					looseMuCol_isoMu.push_back(lepton);	
-				else if( lepton.Pt >= 35 && abs(lepton.Eta) < 2.1 )
+				else if( relIso1 < 0.125 && 
+					 lepton.Pt >= 35 && 
+					 lepton.MuType == 14 && 
+					 lepton.MuNMuonhits > 0  &&
+					 lepton.MuNPixelLayers > 0  &&
+					 lepton.MuNTrackerHits > 10  &&
+					 lepton.MuInnerTrackNHits > 10  &&
+					 lepton.MuNMatchedStations > 1  &&
+					 lepton.MuInnerTrackDxy_BS < 0.02 &&
+					 lepton.MuGlobalNormalizedChi2 < 10 &&
+					 abs(lepton.Eta) < 2.1  
+					) // tight muon
 					selMuCol.push_back(lepton);
 			}
 		}
