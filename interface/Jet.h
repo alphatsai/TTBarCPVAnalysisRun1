@@ -1,6 +1,8 @@
 #ifndef JET_H 
 #define JET_H 
 
+#include "TVector3.h"
+#include "TLorentzVector.h"
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/format.h"
 
 class Jet{
@@ -74,7 +76,14 @@ class Jet{
 
 			NSubjets = JetInfo.NSubjets[idx];
 			SubjetsIdxStart = JetInfo.SubjetsIdxStart[idx];
+
+			P3.SetXYZ( Px, Py, Pz );
+			P4.SetPxPyPzE( Px, Py, Pz, Energy );
 		}
+
+		TVector3 P3;
+		TLorentzVector P4;
+	
 		int   Index;
 		int   NTracks;
 		float Et;

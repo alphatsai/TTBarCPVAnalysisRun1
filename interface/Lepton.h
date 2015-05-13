@@ -1,6 +1,8 @@
 #ifndef LEPTON_H 
 #define LEPTON_H 
 
+#include "TVector3.h"
+#include "TLorentzVector.h"
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/format.h"
 
 class Lepton{
@@ -95,7 +97,11 @@ class Lepton{
 			MuDThits = LepInfo.MuDThits[idx];
 			MuCSChits = LepInfo.MuCSChits[idx];
 			MuRPChits = LepInfo.MuRPChits[idx];
-			MuType = LepInfo.MuType[idx];
+			MuType = LepInfo.MuType[idx]; 
+			// GlobalMuon 0x02 -> 0000:0010-> 2
+			// TrackerMuon 0x04 -> 0000:0100 -> 4
+			// StandAloneMuon 0x08 -> 0000:1000 -> 8
+			// CaloMuon 0x16 -> 0001:0110 -> 16+6 = 22
 
 			EgammaMVANonTrig = LepInfo.EgammaMVANonTrig[idx]; 
 			EgammaMVATrig = LepInfo.EgammaMVATrig[idx]; 
@@ -174,7 +180,14 @@ class Lepton{
 			againstMuonLoose = LepInfo.againstMuonLoose[idx]; 
 			againstMuonMedium = LepInfo.againstMuonMedium[idx]; 
 			againstMuonTight = LepInfo.againstMuonTight[idx];
+
+			P3.SetXYZ( Px, Py, Pz );
+			P4.SetPxPyPzE( Px, Py, Pz, Energy );
 		}
+
+		TVector3 P3;
+		TLorentzVector P4;	
+		
 		int	Index;
 		int	isEcalDriven;
 		int	isTrackerDriven;
