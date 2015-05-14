@@ -5,7 +5,6 @@ FileNames_BprimtKits_SemiLeptTest = [
 	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/example/TTJets_SemiLeptMGDecays.root',
 ]
 FileNames_BprimtKits_SemiLept = [
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/example/TTJets_SemiLeptMGDecays.root',
 	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/results_1000_2_AYs.root',
 	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/results_1001_2_rqu.root',
 	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/results_1002_3_7Iq.root',
