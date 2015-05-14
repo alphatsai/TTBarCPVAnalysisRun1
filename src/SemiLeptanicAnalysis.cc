@@ -160,6 +160,7 @@ void SemiLeptanicAnalysis::beginJob()
 	setCutFlow( h1.GetTH1("Evt_CutFlow_Mu"), "ljm" );
 	setCutFlow( h1.GetTH1("Evt_CutFlow_El"), "lje" );
 
+	std::cout<<">> [INFO] Chaining "<<inputFiles_.size()<<" files..."
 	chain_  = new TChain(inputTTree_.c_str());
 
 	for(unsigned i=0; i<inputFiles_.size(); ++i){
