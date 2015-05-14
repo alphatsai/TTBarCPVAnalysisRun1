@@ -1,0 +1,2 @@
+# Dataset_name    Number_of_jobs    EOS_location    PyCfg_parameters (optional)
+TTJets_SemiLeptMGDecays 100 /eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1  outFilename=SemiLeptanicAnalysis.root

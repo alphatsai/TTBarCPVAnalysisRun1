@@ -122,7 +122,7 @@ def main():
 
   parser.add_option("-w", "--main_workdir", dest="main_workdir", action='store', help="Main working directory", metavar="MAIN_WORKDIR")
   parser.add_option("-d", "--dataset_list", dest="dataset_list", action='store', help="Text file containing a list of datasets to be processed", metavar="DATASET_LIST")
-  parser.add_option("-o", "--output_filename", dest="output_filename", action='store', default='ESSkim', help="Output ROOT filename (Default set to ESSkim)", metavar="OUTPUT_FILENAME")
+  parser.add_option("-o", "--output_filename", dest="output_filename", action='store', default'results', help="Output ROOT filename (Default set to results)", metavar="OUTPUT_FILENAME")
   parser.add_option("-E", "--eos_path", dest="eos_path", action='store', help="EOS path to copy output files to (This parameter is optional)", metavar="EOS_PATH")
   parser.add_option('-m', '--match', dest="match", action='store', help='Only files containing the MATCH string in their names will be considered (This parameter is optional)', metavar='MATCH')
   parser.add_option("-c", "--cmssw_cfg", dest="cmssw_cfg", action='store', help="CMSSW configuration file", metavar="CMSSW_CFG")
