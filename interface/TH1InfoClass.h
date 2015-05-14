@@ -13,7 +13,6 @@ class TH1InfoClass
 	public:
 		TH1InfoClass( bool deBug=false );
 		void addNewTH1( std::string name, std::string title, std::string xtitle, std::string ytitle, std::string xunit, std::string yunit, int bin, double min, double max);
-		//void initTH1Info(); // Be writen in custumer way
 		void defaultTH1Info(); 
 		void CreateTH1();
 		void CreateTH1( TFile* f, std::string dir_name=""); 
@@ -84,7 +83,7 @@ void TH1InfoClass<TH1>::defaultTH1Info()
 	Info.push_back( TH1Info( "bJet12_Pz",     "pz of b-Jet",  "p_{z}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
 	Info.push_back( TH1Info( "Evt_Events",	"",	  	  "", 				"Events", 	"", 	"",		1, 1,   2) );
 	Info.push_back( TH1Info( "Evt_Channel",	"",	  	  "", 				"", 		"", 	"",		2, 0,   2) );
-	Info.push_back( TH1Info( "Evt_CutFlow", "",        	  "",     			"Evetns", 	"", 	"",     8, 0, 8 ));
+	Info.push_back( TH1Info( "Evt_CutFlow", "",        	  "",     			"Evetns", 	"", 	"",     9, 0, 9 ));
 	Info.push_back( TH1Info( "Evt_NJets",	"Num. of jets",	  		  "N(j)", 			"Events", 	"", 	"",		20, 0,   20) );
 	Info.push_back( TH1Info( "Evt_NSelJets","Num. of selected jets",  "N(selected j).", "Events", 	"", 	"",		20, 0,   20) );
 	Info.push_back( TH1Info( "Evt_NbJets",	"Num. of b-jets",	  	  "N(B-tagged j)", 	"Events", 	"", 	"",		20, 0,   20) );
