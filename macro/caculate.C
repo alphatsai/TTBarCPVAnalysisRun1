@@ -1,6 +1,6 @@
 ////* Caculate ACP
 template<class th1>
-double caculateACPerror( th1* Oh)
+double caculateACPerror( th1* Oh, bool murmur=false)
 {
    int binOg0=2; 	
    int binOl0=1; 	
@@ -11,11 +11,12 @@ double caculateACPerror( th1* Oh)
    double n3  = (Og0+Ol0)*(Og0+Ol0)*(Og0+Ol0);
    double ACPe = 2*sqrt(Og0*Ol0/n3);
 
+   if ( murmur ) printf("O<0 : %.1f, O>0 : %.1f\n", Ol0, Og0);
    printf("Call caculateACPerror: %f\n", ACPe);	
    return ACPe;
 }
 template<class th1>
-double caculateACP( th1* Oh)
+double caculateACP( th1* Oh, bool murmur=false)
 {
    int binOg0=2; 	
    int binOl0=1; 	
@@ -24,6 +25,7 @@ double caculateACP( th1* Oh)
    double Ol0 = Oh->GetBinContent(binOl0);
 
    double ACP = (Og0-Ol0)/(Og0+Ol0);
+   if ( murmur ) printf("O<0 : %.1f, O>0 : %.1f\n", Ol0, Og0);
    printf("Call caculateACP: %f\n", ACP);	
    return ACP;	
 }

@@ -63,6 +63,7 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
 	ReportEvery = cms.int32(options.reportEvery),  
 	InputTTree  = cms.string(options.ttreedir+'/root'),
 	#InputFiles  = cms.vstring(FileNames), 
+	#InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLeptTest),
 	InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLept),
 	Owrt    = cms.double(Oweight), 
 	Debug    = cms.bool(options.Debug) 

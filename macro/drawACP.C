@@ -1,17 +1,19 @@
 #include "caculate.C"
 void drawACPLepJet( TFile* f, 
               std::string evtcat="Evt2b",
+              std::string analysis="SemiLeptanic",
               std::string output=".",
               std::string ytitle="ACP",
               double wrt=1,
               int legX=1 )
 {
-	TH1D*  hlj_o2    = (TH1D*)f->Get((evtcat+"_O2Asym").c_str()); 
-	TH1D*  hlj_o2_mu = (TH1D*)f->Get((evtcat+"_O2Asym_Mu").c_str()); 
-	TH1D*  hlj_o2_el = (TH1D*)f->Get((evtcat+"_O2Asym_El").c_str()); 
-	TH1D*  hlj_o7    = (TH1D*)f->Get((evtcat+"_O7Asym").c_str()); 
-	TH1D*  hlj_o7_mu = (TH1D*)f->Get((evtcat+"_O7Asym_Mu").c_str()); 
-	TH1D*  hlj_o7_el = (TH1D*)f->Get((evtcat+"_O7Asym_El").c_str()); 
+	bool murmur=true;
+	TH1D*  hlj_o2    = (TH1D*)f->Get((analysis+"/"+evtcat+"_O2Asym").c_str()); 
+	TH1D*  hlj_o2_mu = (TH1D*)f->Get((analysis+"/"+evtcat+"_O2Asym_Mu").c_str()); 
+	TH1D*  hlj_o2_el = (TH1D*)f->Get((analysis+"/"+evtcat+"_O2Asym_El").c_str()); 
+	TH1D*  hlj_o7    = (TH1D*)f->Get((analysis+"/"+evtcat+"_O7Asym").c_str()); 
+	TH1D*  hlj_o7_mu = (TH1D*)f->Get((analysis+"/"+evtcat+"_O7Asym_Mu").c_str()); 
+	TH1D*  hlj_o7_el = (TH1D*)f->Get((analysis+"/"+evtcat+"_O7Asym_El").c_str()); 
 
 	const int allh=6;
 
@@ -25,27 +27,27 @@ void drawACPLepJet( TFile* f,
 	h->GetXaxis()->SetBinLabel(6, "O_{7}^{e}");
 
 	printf("O_{2}^{e+#mu}:\n");
-	h->Fill(0, caculateACP( hlj_o2 ));
+	h->Fill(0, caculateACP( hlj_o2, murmur ));
 	h->SetBinError(1, caculateACPerror( hlj_o2 ));
 
 	printf("O_{2}^{#mu}:\n");
-	h->Fill(1,     caculateACP( hlj_o2_mu ));
+	h->Fill(1,     caculateACP( hlj_o2_mu, murmur ));
 	h->SetBinError(2, caculateACPerror( hlj_o2_mu ));
 
 	printf("O_{2}^{e}:\n");
-	h->Fill(2,   caculateACP( hlj_o2_el ));
+	h->Fill(2,   caculateACP( hlj_o2_el, murmur ));
 	h->SetBinError(3, caculateACPerror( hlj_o2_el ));
 
 	printf("O_{7}^{e+#mu}:\n");
-	h->Fill(3, caculateACP( hlj_o7 ));
+	h->Fill(3, caculateACP( hlj_o7, murmur ));
 	h->SetBinError(4, caculateACPerror( hlj_o7 ));
 
 	printf("O_{7}^{#mu}:\n");
-	h->Fill(4,     caculateACP( hlj_o7_mu ));
+	h->Fill(4,     caculateACP( hlj_o7_mu, murmur ));
 	h->SetBinError(5, caculateACPerror( hlj_o7_mu ));
 
 	printf("O_{7}^{e}:\n");
-	h->Fill(5,   caculateACP( hlj_o7_el ));
+	h->Fill(5,   caculateACP( hlj_o7_el, murmur ));
 	h->SetBinError(6, caculateACPerror( hlj_o7_el ));
 
 	h->Scale(wrt);

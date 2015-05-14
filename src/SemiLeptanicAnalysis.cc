@@ -81,6 +81,12 @@ void SemiLeptanicAnalysis::setCutFlow( TH1* h, std::string channel )
 }
 
 template<class TH1>
+void SemiLeptanicAnalysis::setObservableHist(TH1* h, string ob ){
+	h->GetXaxis()->SetBinLabel(1,(ob+"<0").c_str());
+	h->GetXaxis()->SetBinLabel(2,(ob+">0").c_str());
+}
+
+template<class TH1>
 void SemiLeptanicAnalysis::setLeptonSelHist( TH1* h )
 {
 	h->GetXaxis()->SetBinLabel(1,"1:0:0");
@@ -163,6 +169,20 @@ void SemiLeptanicAnalysis::beginJob()
 	setCutFlow( h1.GetTH1("Evt_CutFlow"), "lj" );
 	setCutFlow( h1.GetTH1("Evt_CutFlow_Mu"), "ljm" );
 	setCutFlow( h1.GetTH1("Evt_CutFlow_El"), "lje" );
+	setObservableHist(h1.GetTH1("Evt_O7Asym"),    "O_{7}");
+	setObservableHist(h1.GetTH1("Evt_O7Asym_Mu"), "O_{7}");
+	setObservableHist(h1.GetTH1("Evt_O7Asym_El"), "O_{7}");
+	setObservableHist(h1.GetTH1("Evt_O2Asym"),    "O_{2}");
+	setObservableHist(h1.GetTH1("Evt_O2Asym_Mu"), "O_{2}");
+	setObservableHist(h1.GetTH1("Evt_O2Asym_El"), "O_{2}");
+	setObservableHist(h1.GetTH1("Evt2b_O7Asym"),    "O_{7}");
+	setObservableHist(h1.GetTH1("Evt2b_O7Asym_Mu"), "O_{7}");
+	setObservableHist(h1.GetTH1("Evt2b_O7Asym_El"), "O_{7}");
+	setObservableHist(h1.GetTH1("Evt2b_O2Asym"),    "O_{2}");
+	setObservableHist(h1.GetTH1("Evt2b_O2Asym_Mu"), "O_{2}");
+	setObservableHist(h1.GetTH1("Evt2b_O2Asym_El"), "O_{2}");
+	setLeptonSelHist(h1.GetTH1("Evt_MuCut"));
+	setLeptonSelHist(h1.GetTH1("Evt_ElCut"));
 
 	std::cout<<">> [INFO] Chaining "<<inputFiles_.size()<<" files..."<<endl;
 	chain_  = new TChain(inputTTree_.c_str());

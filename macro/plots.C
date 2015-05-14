@@ -20,6 +20,8 @@ void drawObservableDist( TFile* f, std::string output=".", std::string histName=
    TH1D* Oh0 = (TH1D*)f->Get(histName.c_str());
    TH1D* Oh = (TH1D*)Oh0->Clone("CopyOriginal");
    TH1D* Oh_mu, *Oh_el, *Oh_p5, *Oh_p6;
+   double wrtOh = 1/Oh->Integral();
+   Oh->Scale(wrtOh);
    Oh->SetLineColor(4);
    Oh->SetLineWidth(3);
    Oh->GetXaxis()->SetTitle(unit.c_str());
@@ -28,7 +30,7 @@ void drawObservableDist( TFile* f, std::string output=".", std::string histName=
    Oh->GetXaxis()->SetLabelSize(0.05);
    Oh->GetXaxis()->SetLabelFont(62);
    Oh->GetYaxis()->SetLabelFont(62);
-   Oh->GetYaxis()->SetTitle("Events");
+   Oh->GetYaxis()->SetTitle("Events/Total");
    Oh->GetYaxis()->SetTitleSize(0.06);
    Oh->GetYaxis()->SetTitleOffset(0.77);
    Oh->GetYaxis()->SetTitleFont(42);
@@ -40,6 +42,12 @@ void drawObservableDist( TFile* f, std::string output=".", std::string histName=
    if( isLepJets ){
     Oh_mu = (TH1D*)f->Get((histName+"_Mu").c_str());
     Oh_el = (TH1D*)f->Get((histName+"_El").c_str());
+    double wrtmu = 1/Oh_mu->Integral();
+    double wrtel = 1/Oh_el->Integral();
+    //Oh_mu->Scale(wrtmu);
+    //Oh_el->Scale(wrtel);
+    Oh_mu->Scale(wrtOh);
+    Oh_el->Scale(wrtOh);
     Oh_mu->SetLineColor(kOrange+4);
     Oh_el->SetLineColor(kGreen+3);
     Oh_mu->SetLineWidth(3);
@@ -50,6 +58,12 @@ void drawObservableDist( TFile* f, std::string output=".", std::string histName=
    if( isMultiJets ){
     Oh_p5 = (TH1D*)f->Get((histName+"_PT50").c_str());
     Oh_p6 = (TH1D*)f->Get((histName+"_PT60").c_str());
+    double wrtp5 = 1/Oh_p5->Integral();
+    double wrtp6 = 1/Oh_p6->Integral();
+    //Oh_p5->Scale(wrtp5);
+    //Oh_p6->Scale(wrtp6);
+    Oh_p5->Scale(wrtOh);
+    Oh_p6->Scale(wrtOh);
     Oh_p5->SetLineColor(kOrange+4);
     Oh_p6->SetLineColor(kGreen+3);
     Oh_p5->SetLineWidth(3);
@@ -83,7 +97,7 @@ void drawObservableDist( TFile* f, std::string output=".", std::string histName=
    c1->SaveAs((output+"/"+histName+".pdf").c_str());
 }
 
-void drawObservable( TFile* f, std::string output=".", std::string histName, std::string Oname="O", std::string CHname="", bool legX=0 )
+void drawObservable( TFile* f, std::string output=".", std::string histName, std::string Oname="O", std::string CHname="", float range=0.1, bool legX=0 )
 {
    TCanvas *c1 = new TCanvas("c1", "c1",113,93,1099,750);
    gStyle->SetOptStat(0);
@@ -94,9 +108,11 @@ void drawObservable( TFile* f, std::string output=".", std::string histName, std
    c1->SetFrameBorderMode(0);
    c1->SetFrameBorderMode(0);
 	
-   TH1D* OSigma0 = (TH1D*)f->Get(histName.c_str());
-   TH1D* OSigma = (TH1D*)OSigma0->Clone("CopyOriginal");
-   TH1D *O = (TH1D*)OSigma->Clone("O");
+   TH1D* h0 = (TH1D*)f->Get(histName.c_str());
+   TH1D* O = (TH1D*)h0->Clone("O");
+   double wrt = 1/(O->Integral());
+   O->Scale(wrt);	
+   TH1D* OSigma = (TH1D*)O->Clone("CopyOriginal");
    Int_t ci;      // for color index setting
    TColor *color; // for color definition with alpha
    ci = TColor::GetColor("#9999ff");
@@ -106,10 +122,11 @@ void drawObservable( TFile* f, std::string output=".", std::string histName, std
    OSigma->GetXaxis()->SetTitleSize(0.035);
    OSigma->GetXaxis()->SetTitleFont(62);
    OSigma->GetYaxis()->SetLabelFont(62);
-   OSigma->GetYaxis()->SetTitle("Events");
+   OSigma->GetYaxis()->SetTitle("Events/Total");
    OSigma->GetYaxis()->SetTitleSize(0.06);
    OSigma->GetYaxis()->SetTitleOffset(0.77);
    OSigma->GetYaxis()->SetTitleFont(42);
+   OSigma->GetYaxis()->SetRangeUser(0.5-range,0.5+range);
    OSigma->GetZaxis()->SetLabelFont(62);
    OSigma->GetZaxis()->SetLabelSize(0.035);
    OSigma->GetZaxis()->SetTitleSize(0.035);

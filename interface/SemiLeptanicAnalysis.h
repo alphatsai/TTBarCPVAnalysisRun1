@@ -41,6 +41,8 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		template<class TH1>
 		void setCutFlow( TH1* h, std::string channel="lj" );	
 		template<class TH1>
+		void setObservableHist(TH1* h, string ob="O" );
+		template<class TH1>
 		void setLeptonSelHist( TH1* h );
 		template <class Object>
 		void get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 );
