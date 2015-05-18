@@ -364,6 +364,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( ( selMuCol.size() + selElCol.size()) > 0 )
 			{
 				h1.GetTH1("Evt_CutFlow")->Fill("#geq1 Lep", 1);
+				if( selMuCol.size() ==1 || selElCol.size() == 1 ) h1.GetTH1("Evt_CutFlow")->Fill("1 isoLep", 1);
+
 				// Muon channel
 				if( selMuCol.size() > 0 )
 				{ 
@@ -371,7 +373,6 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 					if( selMuCol.size() == 1 )
 					{
 						isoMu = selMuCol[0];
-						h1.GetTH1("Evt_CutFlow")->Fill("1 isoLep", 1);
 						h1.GetTH1("Evt_CutFlow_Mu")->Fill("1 isoMu", 1);
 
 						if( looseMuCol_isoMu.size() == 0 )
@@ -431,7 +432,6 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 					if( selElCol.size() == 1 ) // Electron channel	
 					{
 						isoEl=selElCol[0];
-						h1.GetTH1("Evt_CutFlow")->Fill("1 isoLep", 1);
 						h1.GetTH1("Evt_CutFlow_El")->Fill("1 isoEl", 1);
 
 						if( looseMuCol_isoEl.size() == 0 )
