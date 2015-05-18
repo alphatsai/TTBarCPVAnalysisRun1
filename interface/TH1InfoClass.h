@@ -83,14 +83,12 @@ void TH1InfoClass<TH1>::defaultTH1Info()
 	Info.push_back( TH1Info( "bJet12_Pz",     "pz of b-Jet",  "p_{z}(B-tagged j)", 	"Yields", 	"GeV", 	"",		1000, -500,   500 ) );
 	Info.push_back( TH1Info( "Evt_Events",	"",	  	  "", 				"Events", 	"", 	"",		1, 1,   2) );
 	Info.push_back( TH1Info( "Evt_Channel",	"",	  	  "", 				"", 		"", 	"",		2, 0,   2) );
-	Info.push_back( TH1Info( "Evt_CutFlow", "",        	  "",     			"Evetns", 	"", 	"",     9, 0, 9 ));
+	Info.push_back( TH1Info( "Evt_CutFlow", "",        	  "",     			"Evetns", 	"", 	"",    10, 0, 10 ));
 	Info.push_back( TH1Info( "Evt_NJets",	"Num. of jets",	  		  "N(j)", 			"Events", 	"", 	"",		20, 0,   20) );
 	Info.push_back( TH1Info( "Evt_NSelJets","Num. of selected jets",  "N(selected j).", "Events", 	"", 	"",		20, 0,   20) );
 	Info.push_back( TH1Info( "Evt_NbJets",	"Num. of b-jets",	  	  "N(B-tagged j)", 	"Events", 	"", 	"",		20, 0,   20) );
 	Info.push_back( TH1Info( "Evt_O7",	"O7",	  			"O_{7}", 	"Events", 	"", 	"",		40, -2,   2) );
 	Info.push_back( TH1Info( "Evt_O7Asym",	"O7 Asymetric",	  	"", 	"Events", 	"", 	"",		2, 0,   2) );
-	Info.push_back( TH1Info( "Evt_O7_term1","Pz(pbj1-pbj2)",	"GeV", 	"Events", 	"", 	"",		1000, -500,   500) );
-	Info.push_back( TH1Info( "Evt_O7_term2","Pz(pbj1xpbj2)",	"GeV", 	"Events", 	"", 	"",		1000, -500,   500) );
 }
 
 //* Create Histogram

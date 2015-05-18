@@ -8,6 +8,7 @@
 #include <string>
 
 // Root headers 
+#include <TVector3.h>
 #include <TChain.h>
 #include <TTree.h>
 #include <TH1D.h>
@@ -22,6 +23,8 @@
 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1Info.h"
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1InfoClass.h"
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Jet.h"
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h"
 //
 // class declaration
 //
@@ -39,13 +42,16 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		virtual void endJob();
 		
 		template<class TH1>
-		void setCutFlow( TH1* h, std::string channel="lj" );	
+		void setCutFlow( TH1* h );	
 		template<class TH1>
 		void setObservableHist(TH1* h, string ob="O" );
 		template<class TH1>
 		void setLeptonSelHist( TH1* h );
 		template <class Object>
 		void get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 );
+
+		double Obs2( Lepton isoLep, Jet hardJet, Jet bjet1, Jet bjet2 );
+		double Obs7( TVector3 beam, Jet bjet1, Jet bjet2 );
 
 		// ----------member data ---------------------------
 
@@ -56,8 +62,14 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		const std::string               inputTTree_;
 		const std::vector<std::string>  inputFiles_;
 
-		double Owrt_;
-		bool Debug_;
+		vector<int> MuonHLT_;
+		vector<int> ElectronHLT_;
+		const unsigned int    NJets_;
+		const double IsoElePt_;
+		const double IsoMuonPt_;
+		const double NonBjetCSVThr_;
+		const double Owrt_;
+		bool   Debug_;
 
 		edm::Service<TFileService> fs;
 		TChain*            chain_;

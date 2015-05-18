@@ -49,6 +49,12 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
 	reportEvery_(iConfig.getParameter<int>("ReportEvery")),
 	inputTTree_(iConfig.getParameter<std::string>("InputTTree")),
 	inputFiles_(iConfig.getParameter<std::vector<std::string> >("InputFiles")),
+	MuonHLT_(iConfig.getParameter<std::vector<int>>("MuonHLT")),
+	ElectronHLT_(iConfig.getParameter<std::vector<int>>("ElectronHLT")),
+	NJets_(iConfig.getParameter<double>("NJets")),
+	IsoElePt_(iConfig.getParameter<double>("IsoElePt")),
+	IsoMuonPt_(iConfig.getParameter<double>("IsoMuonPt")),
+	NonBjetCSVThr_(iConfig.getParameter<double>("NonBjetCSVThr")),
 	Owrt_(iConfig.getParameter<double>("Owrt")),
 	Debug_(iConfig.getParameter<bool>("Debug"))
 {}
@@ -60,23 +66,18 @@ SemiLeptanicAnalysis::~SemiLeptanicAnalysis()
 
 // ------------ Other function -------------
 template<class TH1>
-void SemiLeptanicAnalysis::setCutFlow( TH1* h, std::string channel )
+void SemiLeptanicAnalysis::setCutFlow( TH1* h )
 {
-	if( channel.compare("lj") == 0 || channel.compare("ljm") == 0 || channel.compare("lje") == 0){
-		h->GetXaxis()->SetBinLabel(1,"All");
-		h->GetXaxis()->SetBinLabel(2,"#geq1 goodVtx");
-		if( channel.compare("lj") == 0  ) h->GetXaxis()->SetBinLabel(3,"#geq1 Lep");
-		if( channel.compare("ljm") == 0 ) h->GetXaxis()->SetBinLabel(3,"#geq1 Mu");
-		if( channel.compare("lje") == 0 ) h->GetXaxis()->SetBinLabel(3,"#geq1 El");
-		if( channel.compare("lj") == 0  ) h->GetXaxis()->SetBinLabel(4,"1 isoLep");
-		if( channel.compare("ljm") == 0 ) h->GetXaxis()->SetBinLabel(4,"1 isoMu");
-		if( channel.compare("lje") == 0 ) h->GetXaxis()->SetBinLabel(4,"1 isoEl");
-		h->GetXaxis()->SetBinLabel(5,"veto(Loose #mu)");
-		h->GetXaxis()->SetBinLabel(6,"veto(Loose e)");
-		h->GetXaxis()->SetBinLabel(7,"#geq3 Jets");
-		h->GetXaxis()->SetBinLabel(8,"#geq2 bjets");
-		h->GetXaxis()->SetBinLabel(9,"=2 bjets");
-	}
+	h->GetXaxis()->SetBinLabel(1,"All");
+	h->GetXaxis()->SetBinLabel(2,"#geq1 goodVtx");
+	h->GetXaxis()->SetBinLabel(3,"HLT");
+	h->GetXaxis()->SetBinLabel(4,"#geq1 Lep");
+	h->GetXaxis()->SetBinLabel(5,"1 isoLep");
+	h->GetXaxis()->SetBinLabel(6,"veto(Loose #mu)");
+	h->GetXaxis()->SetBinLabel(7,"veto(Loose e)");
+	h->GetXaxis()->SetBinLabel(8,"#geq3 Jets");
+	h->GetXaxis()->SetBinLabel(9,"#geq2 bjets");
+	h->GetXaxis()->SetBinLabel(10,"=2 bjets");
 	return ;
 }
 
@@ -119,6 +120,22 @@ void SemiLeptanicAnalysis::get2HighPtObject( vector<Object> col, Object &obj1, O
 	obj1=col[o1];	
 	obj2=col[o2];
 }
+
+double SemiLeptanicAnalysis::Obs2( Lepton isoLep, Jet hardJet, Jet bjet1, Jet bjet2 )
+{
+	TVector3 O2_1v =  bjet1.P3 + bjet2.P3;
+	TVector3 O2_2v = isoLep.P3.Cross( hardJet.P3 );
+	double O2 = O2_1v.Dot( O2_2v );
+	return O2;
+}
+
+double SemiLeptanicAnalysis::Obs7( TVector3 beam, Jet bjet1, Jet bjet2 )
+{
+	double O7_1z = beam.Dot( bjet1.P3 - bjet2.P3 );
+	double O7_2z = beam.Dot( bjet1.P3.Cross( bjet2.P3 ));
+	double O7 = O7_1z * O7_2z;
+	return O7;
+}
 // ------------ method called once each job just before starting event loop  ------------
 void SemiLeptanicAnalysis::beginJob()
 { 
@@ -156,19 +173,20 @@ void SemiLeptanicAnalysis::beginJob()
 	h1.addNewTH1( "Evt_NSelElectrons", "Num. of selected electron",	"N(selected e)",  "Events", 	"", 	"",		10, 0,   10) ;
 	h1.addNewTH1( "Evt_NLooseMuIsoEl", "Num. of loose muon", 	"N(loose #mu)",	  "Events", 	"", 	"",		10, 0,   10) ;
 	h1.addNewTH1( "Evt_NLooseElIsoEl", "Num. of loose electron", 	"N(loose e)",	  "Events", 	"", 	"",		10, 0,   10) ;
-	h1.addNewTH1( "Evt_CutFlow_Mu",    "",         	 		"",     "Evetns", "", "",    9, 0, 9 );
-	h1.addNewTH1( "Evt_CutFlow_El",    "",         	  		"",     "Evetns", "", "",    9, 0, 9 );
+	h1.addNewTH1( "Evt_CutFlow_Mu",    "",         	 		"",     "Evetns", "", "",    10, 0, 10 );
+	h1.addNewTH1( "Evt_CutFlow_El",    "",         	  		"",     "Evetns", "", "",    10, 0, 10 );
 	h1.addNewTH1( "Evt_MuCut",     	   "isoMu:looseMu:looseEl",    	"",     "Evetns", "", "",    7, 0, 7 );
 	h1.addNewTH1( "Evt_ElCut",     	   "isoEl:looseMu:looseEl",     "",     "Evetns", "", "",    7, 0, 7 );
 	h1.addNewTH1( "Evt_SameChannel",   "",     "",     "Evetns", "", "",    1, 0, 1 );
 	h1.addNewTH1( "Evt2b_SameChannel", "",     "",     "Evetns", "", "",    1, 0, 1 );
+	h1.addNewTH1( "Evt_Triger", "",     "",     "", "", "",    5900, 0, 5900 );
 
 	h1.CreateTH1( fs );
 	h1.Sumw2();
 
-	setCutFlow( h1.GetTH1("Evt_CutFlow"), "lj" );
-	setCutFlow( h1.GetTH1("Evt_CutFlow_Mu"), "ljm" );
-	setCutFlow( h1.GetTH1("Evt_CutFlow_El"), "lje" );
+	setCutFlow( h1.GetTH1("Evt_CutFlow") );
+	setCutFlow( h1.GetTH1("Evt_CutFlow_Mu") );
+	setCutFlow( h1.GetTH1("Evt_CutFlow_El") );
 	setObservableHist(h1.GetTH1("Evt_O7Asym"),    "O_{7}");
 	setObservableHist(h1.GetTH1("Evt_O7Asym_Mu"), "O_{7}");
 	setObservableHist(h1.GetTH1("Evt_O7Asym_El"), "O_{7}");
@@ -226,15 +244,38 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 
 		h1.GetTH1("Evt_Events")->Fill(1);
 
+		// HLT selection
+		for( int i=0; i<EvtInfo.nTrgBook; i++){
+			if( int(EvtInfo.TrgBook[i]) == 1)
+				h1.GetTH1("Evt_Triger")->Fill(i);
+		}	
+		bool passMuonHLT=false;
+		bool passElectronHLT=false;
+		for( std::vector<int>::const_iterator ihlt = ElectronHLT_.begin(); ihlt != ElectronHLT_.end(); ++ihlt )
+		{	
+			if( int(EvtInfo.TrgBook[*ihlt]) == 1 ){
+				passElectronHLT=true;
+				break;
+			}
+		}	
+		for( std::vector<int>::const_iterator ihlt = MuonHLT_.begin(); ihlt != MuonHLT_.end(); ++ihlt )
+		{
+			if( int(EvtInfo.TrgBook[*ihlt]) == 1 ){
+				passMuonHLT=true;
+				break;
+			}
+		}
+
 		// Vertex selection
 		vector<Vertex> selVertex;
 		for( int idx=0; idx < VtxInfo.Size; idx++)
 		{
 			Vertex vtx( VtxInfo, idx );
+			if( vtx.Type != 1 ) continue;
 			if( vtx.isFake ) continue;
 			if( vtx.Ndof < 4 ) continue;
 			if( abs(vtx.z) > 24 ) continue;
-			if( sqrt((vtx.x*vtx.x)+(vtx.y*vtx.y)) > 2 ) continue;
+			if( vtx.Rho > 2 ) continue;
 			selVertex.push_back(vtx);
 		}
 
@@ -305,17 +346,16 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			{
 				if( abs(lepton.Eta) > 2.5 ) continue;
 				if( abs(lepton.Eta) < 1.5 && abs(lepton.Eta) > 1.4442) continue;
-				if( lepton.Pt < 15) continue;
+				if( lepton.Pt < 15 ) continue;
 				if( relIso1 < 0.2 )
 					looseElCol_isoMu.push_back(lepton);	
-				if( lepton.Pt < 20) continue;
-				if( lepton.Pt < 45 &&
+				if( lepton.Pt < 20 ) continue;
+				if( lepton.Pt < IsoElePt_ &&
 				    relIso1 < 1.
   				  )
 					looseElCol_isoEl.push_back(lepton);
 				else if( relIso1 < 0.1 &&
-					 lepton.Pt > 45	&&
-					 lepton.EgammaCutBasedEleIdTRIGGERWP70 
+					 lepton.Pt > IsoElePt_ 
 					)
 					selElCol.push_back(lepton);	
 			}
@@ -327,12 +367,10 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 				if( lepton.Pt < 10) continue;
 				if( (lepton.MuType&0x02) != 0 ) 
 					looseMuCol_isoEl.push_back(lepton);	
-				if( lepton.Pt < 35)
+				if( lepton.Pt < IsoMuonPt_ )
 					looseMuCol_isoMu.push_back(lepton);	
 				else if( relIso1 < 0.125 &&
-					 (lepton.MuType&0x02) != 0 && // Global muon 
-					 (lepton.MuType&0x04) != 0 && // Tracker muon 
-					 lepton.Pt >= 35 && 
+					 lepton.Pt >= IsoMuonPt_ && 
 					 lepton.MuNMuonhits > 0  &&
 					 lepton.MuNPixelLayers > 0  &&
 					 lepton.MuNTrackerHits > 10  &&
@@ -340,6 +378,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 					 lepton.MuNMatchedStations > 1  &&
 					 lepton.MuInnerTrackDxy_BS < 0.02 &&
 					 lepton.MuGlobalNormalizedChi2 < 10 &&
+					 (lepton.MuType&0x02) != 0 && // Global muon 
+					 (lepton.MuType&0x04) != 0 && // Tracker muon 
 					 abs(lepton.Eta) < 2.1  
 					) // tight muon
 					selMuCol.push_back(lepton);
@@ -347,9 +387,9 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		}
 
 		//* Event selection
-		Jet jet1, bjet1, bjet2;
+		Jet hardJet, bjet1, bjet2;
 		Lepton isoMu, isoEl;
-		bool isMuonChannel(false), isMuonChannel2b(false), isEleChannel(false), isEleChannel2b(false);
+		bool isGoodMuonEvt(false), isGoodMuonEvt2b(false), isGoodElectronEvt(false), isGoodElectronEvt2b(false);
 
 		h1.GetTH1("Evt_CutFlow")->Fill("All", 1);
 		h1.GetTH1("Evt_CutFlow_El")->Fill("All", 1);
@@ -360,182 +400,160 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			h1.GetTH1("Evt_CutFlow")->Fill("#geq1 goodVtx", 1);
 			h1.GetTH1("Evt_CutFlow_El")->Fill("#geq1 goodVtx", 1);
 			h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq1 goodVtx", 1);
-			//if( ( selMuCol.size() + selElCol.size()) == 1  )
-			if( ( selMuCol.size() + selElCol.size()) > 0 )
-			{
-				h1.GetTH1("Evt_CutFlow")->Fill("#geq1 Lep", 1);
-				if( selMuCol.size() ==1 || selElCol.size() == 1 ) h1.GetTH1("Evt_CutFlow")->Fill("1 isoLep", 1);
 
-				// Muon channel
+			bool passElectronSel(false), passMuonSel(false);
+			// Muon channel
+			if( passMuonHLT )
+			{
+				h1.GetTH1("Evt_CutFlow_Mu")->Fill("HLT", 1);
 				if( selMuCol.size() > 0 )
 				{ 
-					h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq1 Mu", 1);
+					h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq1 Lep", 1);
 					if( selMuCol.size() == 1 )
 					{
 						isoMu = selMuCol[0];
-						h1.GetTH1("Evt_CutFlow_Mu")->Fill("1 isoMu", 1);
+						h1.GetTH1("Evt_CutFlow_Mu")->Fill("1 isoLep", 1);
 
 						if( looseMuCol_isoMu.size() == 0 )
 						{
-							h1.GetTH1("Evt_CutFlow")->Fill("veto(Loose #mu)", 1);
 							h1.GetTH1("Evt_CutFlow_Mu")->Fill("veto(Loose #mu)", 1);
 
 							if( looseElCol_isoMu.size() == 0 )
 							{
-								h1.GetTH1("Evt_CutFlow")->Fill("veto(Loose e)", 1);
 								h1.GetTH1("Evt_CutFlow_Mu")->Fill("veto(Loose e)", 1);
-								if( seljetCol.size() >= 3 )
-								{ 	
-									h1.GetTH1("Evt_CutFlow")->Fill("#geq3 Jets", 1);
-									h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq3 Jets", 1);
-									// Lable the hardest non_bjet 
-									int j1=-1;
-									double pt1=0;
-									const int size_seljetCol = seljetCol.size();	
-									for( int i=0; i < size_seljetCol; i++)
-									{
-										if( seljetCol[i].CombinedSVBJetTags < 0.679 && pt1 < seljetCol[i].Pt ){
-											j1=i;
-											pt1=seljetCol[i].Pt;
-										}
-									}
-									jet1 = seljetCol[j1];
-								}
-								if( bjetCol.size() >= 2 )
-								{
-									isMuonChannel=true;	
-									h1.GetTH1("Evt_CutFlow")->Fill("#geq2 bjets", 1);
-									h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq2 bjets", 1);
-									//Lable bjet by Pt
-									get2HighPtObject( bjetCol, bjet1, bjet2 );
-									h1.GetTH1("bJet12_Px")->Fill(bjet1.Px);
-									h1.GetTH1("bJet12_Px")->Fill(bjet2.Px);
-									h1.GetTH1("bJet12_Py")->Fill(bjet1.Py);
-									h1.GetTH1("bJet12_Py")->Fill(bjet2.Py);
-									h1.GetTH1("bJet12_Pz")->Fill(bjet1.Pz);
-									h1.GetTH1("bJet12_Pz")->Fill(bjet2.Pz);
-								}
-								if( bjetCol.size() == 2 )
-								{	
-									isMuonChannel2b=true;	
-									h1.GetTH1("Evt_CutFlow")->Fill("=2 bjets", 1);
-									h1.GetTH1("Evt_CutFlow_Mu")->Fill("=2 bjets", 1);
-								}
+								passMuonSel=true;
 							}
 						}
 					}
-				} // [END] Muon channel
-				//else if( selElCol.size() == 1 ) // Electron channel	
+				}
+			} // [END] Muon channel
+
+			// Electron channel
+			if( passElectronHLT )
+			{
+				h1.GetTH1("Evt_CutFlow_El")->Fill("HLT", 1);
 				if( selElCol.size() > 0 )
 				{ 
-					h1.GetTH1("Evt_CutFlow_El")->Fill("#geq1 El", 1);
-					if( selElCol.size() == 1 ) // Electron channel	
+					h1.GetTH1("Evt_CutFlow_El")->Fill("#geq1 Lep", 1);
+					if( selElCol.size() == 1 ) 
 					{
 						isoEl=selElCol[0];
-						h1.GetTH1("Evt_CutFlow_El")->Fill("1 isoEl", 1);
+						h1.GetTH1("Evt_CutFlow_El")->Fill("1 isoLep", 1);
 
 						if( looseMuCol_isoEl.size() == 0 )
 						{
-							h1.GetTH1("Evt_CutFlow")->Fill("veto(Loose #mu)", 1);
 							h1.GetTH1("Evt_CutFlow_El")->Fill("veto(Loose #mu)", 1);
 
 							if( looseElCol_isoEl.size() == 0 )
 							{
-								h1.GetTH1("Evt_CutFlow")->Fill("veto(Loose e)", 1);
 								h1.GetTH1("Evt_CutFlow_El")->Fill("veto(Loose e)", 1);
-
-								if( seljetCol.size() >= 3 )
-								{ 	
-									h1.GetTH1("Evt_CutFlow")->Fill("#geq3 Jets", 1);
-									h1.GetTH1("Evt_CutFlow_El")->Fill("#geq3 Jets", 1);
-									// Lable the hardest non_bjet 
-									int j1=-1;
-									double pt1=0;	
-									const int size_seljetCol = seljetCol.size();	
-									for( int i=0; i<size_seljetCol; i++)
-									{
-										if( seljetCol[i].CombinedSVBJetTags < 0.679 && pt1 < seljetCol[i].Pt ){
-											j1=i;
-											pt1=seljetCol[i].Pt;
-										}
-									}
-									jet1=seljetCol[j1];
-
-									if( bjetCol.size() >= 2 )
-									{ 
-										isEleChannel=true;
-										h1.GetTH1("Evt_CutFlow")->Fill("#geq2 bjets", 1);
-										h1.GetTH1("Evt_CutFlow_El")->Fill("#geq2 bjets", 1);
-										// Lable bjet by Pt
-										get2HighPtObject( bjetCol, bjet1, bjet2 );
-										h1.GetTH1("bJet12_Px")->Fill(bjet1.Px);
-										h1.GetTH1("bJet12_Px")->Fill(bjet2.Px);
-										h1.GetTH1("bJet12_Py")->Fill(bjet1.Py);
-										h1.GetTH1("bJet12_Py")->Fill(bjet2.Py);
-										h1.GetTH1("bJet12_Pz")->Fill(bjet1.Pz);
-										h1.GetTH1("bJet12_Pz")->Fill(bjet2.Pz);
-									}
-									if( bjetCol.size() == 2 )
-									{
-										isEleChannel2b=true;	
-										h1.GetTH1("Evt_CutFlow")->Fill("=2 bjets", 1);
-										h1.GetTH1("Evt_CutFlow_El")->Fill("=2 bjets", 1);
-									}
-								}
+								passElectronSel=true;
 							}	
 						}
 					}				
-				} // [END] Electron channel
-				if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 0 )
-					h1.GetTH1("Evt_MuCut")->Fill("1:0:0", 1);
-				if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 0 )
-					h1.GetTH1("Evt_MuCut")->Fill("0:1:0", 1);
-				if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 1 )
-					h1.GetTH1("Evt_MuCut")->Fill("0:0:1", 1);
-				if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 0 )
-					h1.GetTH1("Evt_MuCut")->Fill("1:1:0", 1);
-				if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 1 )
-					h1.GetTH1("Evt_MuCut")->Fill("1:0:1", 1);
-				if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 1 )
-					h1.GetTH1("Evt_MuCut")->Fill("0:1:1", 1);
-				if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 1 )
-					h1.GetTH1("Evt_MuCut")->Fill("1:1:1", 1);
-				if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 0 )
-					h1.GetTH1("Evt_ElCut")->Fill("1:0:0", 1);
-				if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 0 )
-					h1.GetTH1("Evt_ElCut")->Fill("0:1:0", 1);
-				if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 1 )
-					h1.GetTH1("Evt_ElCut")->Fill("0:0:1", 1);
-				if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 0 )
-					h1.GetTH1("Evt_ElCut")->Fill("1:1:0", 1);
-				if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 1 )
-					h1.GetTH1("Evt_ElCut")->Fill("1:0:1", 1);
-				if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 1 )
-					h1.GetTH1("Evt_ElCut")->Fill("0:1:1", 1);
-				if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 1 )
-					h1.GetTH1("Evt_ElCut")->Fill("1:1:1", 1);
-			} // [END] one lepton selection
+				}
+			} // [END] Electron channel
+
+			if( passElectronSel || passMuonSel )
+			{
+				if( seljetCol.size() >= NJets_ )
+				{ 	
+					if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq3 Jets", 1);
+					if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill("#geq3 Jets", 1);
+					// Lable the hardest non_bjet 
+					int j1=-1;
+					double pt1=0;
+					const int size_seljetCol = seljetCol.size();	
+					for( int i=0; i < size_seljetCol; i++)
+					{
+						if( seljetCol[i].CombinedSVBJetTags > NonBjetCSVThr_ ) continue;
+						if( pt1 < seljetCol[i].Pt ){
+							j1=i;
+							pt1=seljetCol[i].Pt;
+						}
+					}
+					hardJet = seljetCol[j1];
+				}
+				if( bjetCol.size() >= 2 )
+				{
+					//Lable bjet by Pt
+					get2HighPtObject( bjetCol, bjet1, bjet2 );
+					h1.GetTH1("bJet12_Px")->Fill(bjet1.Px);
+					h1.GetTH1("bJet12_Px")->Fill(bjet2.Px);
+					h1.GetTH1("bJet12_Py")->Fill(bjet1.Py);
+					h1.GetTH1("bJet12_Py")->Fill(bjet2.Py);
+					h1.GetTH1("bJet12_Pz")->Fill(bjet1.Pz);
+					h1.GetTH1("bJet12_Pz")->Fill(bjet2.Pz);
+
+					if( passMuonSel )
+					{     
+						isGoodMuonEvt=true;	
+						h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq2 bjets", 1);
+						if( bjetCol.size() == 2 )
+						{
+							isGoodMuonEvt2b=true;	
+							h1.GetTH1("Evt_CutFlow_Mu")->Fill("=2 bjets", 1);
+						}
+					}
+					if( passElectronSel )
+					{ 
+						isGoodElectronEvt=true;
+						h1.GetTH1("Evt_CutFlow_El")->Fill("#geq2 bjets", 1);
+						if( bjetCol.size() == 2 )
+						{
+							isGoodElectronEvt2b=true;
+							h1.GetTH1("Evt_CutFlow_El")->Fill("=2 bjets", 1);
+						}
+					}
+
+				}
+			}//[END] Jet and bjet cutflow
+
+			// Check events
+			if( passElectronHLT || passMuonHLT ){ 
+				h1.GetTH1("Evt_CutFlow")->Fill("HLT", 1);
+				if( ( selMuCol.size() + selElCol.size()) > 0 ) h1.GetTH1("Evt_CutFlow")->Fill("#geq1 Lep", 1);
+				if( ( selMuCol.size() + selElCol.size()) == 1 ){ 
+					h1.GetTH1("Evt_CutFlow")->Fill("1 isoLep", 1);
+					if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 0 )
+						h1.GetTH1("Evt_MuCut")->Fill("1:0:0", 1);
+					if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 0 )
+						h1.GetTH1("Evt_MuCut")->Fill("0:1:0", 1);
+					if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 1 )
+						h1.GetTH1("Evt_MuCut")->Fill("0:0:1", 1);
+					if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 0 )
+						h1.GetTH1("Evt_MuCut")->Fill("1:1:0", 1);
+					if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 1 )
+						h1.GetTH1("Evt_MuCut")->Fill("1:0:1", 1);
+					if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 1 )
+						h1.GetTH1("Evt_MuCut")->Fill("0:1:1", 1);
+					if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 1 )
+						h1.GetTH1("Evt_MuCut")->Fill("1:1:1", 1);
+					if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 0 )
+						h1.GetTH1("Evt_ElCut")->Fill("1:0:0", 1);
+					if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 0 )
+						h1.GetTH1("Evt_ElCut")->Fill("0:1:0", 1);
+					if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 1 )
+						h1.GetTH1("Evt_ElCut")->Fill("0:0:1", 1);
+					if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 0 )
+						h1.GetTH1("Evt_ElCut")->Fill("1:1:0", 1);
+					if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 1 )
+						h1.GetTH1("Evt_ElCut")->Fill("1:0:1", 1);
+					if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 1 )
+						h1.GetTH1("Evt_ElCut")->Fill("0:1:1", 1);
+					if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 1 )
+						h1.GetTH1("Evt_ElCut")->Fill("1:1:1", 1);
+				}
+			}
 		} // [END] Vxt selection
 
 		//* Fill observables O7 and O2
-		//* bJets >= 2
-		Lepton isoLep;
-		if( isMuonChannel && !isEleChannel ) isoLep = isoMu;
-		else if( !isMuonChannel && isEleChannel ) isoLep = isoEl;
-
-		TVector3 O2_1v =  bjet1.P3 + bjet2.P3;
-		TVector3 O2_2v = isoLep.P3.Cross( jet1.P3 );
-		double O2 = O2_1v.Dot( O2_2v );
-
-		double O7_1z = az.Dot( bjet1.P3 - bjet2.P3 );
-		double O7_2z = az.Dot( bjet1.P3.Cross( bjet2.P3 ));
-		double O7 = O7_1z * O7_2z;
-
-		//if( isMuonChannel && !isEleChannel )
-		if( isMuonChannel   && isEleChannel   ) h1.GetTH1("Evt_SameChannel")->Fill(0);
-		if( isMuonChannel2b && isEleChannel2b ) h1.GetTH1("Evt2b_SameChannel")->Fill(0);
-		if( isMuonChannel )
+		if( isGoodMuonEvt   && isGoodElectronEvt   ) h1.GetTH1("Evt_SameChannel")->Fill(0);
+		if( isGoodMuonEvt2b && isGoodElectronEvt2b ) h1.GetTH1("Evt2b_SameChannel")->Fill(0);
+		if( isGoodMuonEvt )
 		{
+			//* bJets >= 2
+			double O2 = Obs2( isoMu, hardJet, bjet1, bjet2 );
 			h1.GetTH1("Evt_O2")->Fill( O2/Owrt_ );	
 			h1.GetTH1("Evt_O2_Mu")->Fill( O2/Owrt_ );
 			if( O2 > 0 ){
@@ -546,10 +564,9 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 				h1.GetTH1("Evt_O2Asym_Mu")->Fill("O_{2}<0",1);
 			}
 
+			double O7 = Obs7( az, bjet1, bjet2 );
 			h1.GetTH1("Evt_O7")->Fill( O7/Owrt_ );	
 			h1.GetTH1("Evt_O7_Mu")->Fill( O7/Owrt_ );
-			h1.GetTH1("Evt_O7_term1")->Fill( O7_1z );
-			h1.GetTH1("Evt_O7_term2")->Fill( O7_2z );
 			if( O7 > 0 ){
 				h1.GetTH1("Evt_O7Asym")->Fill("O_{7}>0",1);
 				h1.GetTH1("Evt_O7Asym_Mu")->Fill("O_{7}>0",1);
@@ -557,10 +574,35 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 				h1.GetTH1("Evt_O7Asym")->Fill("O_{7}<0",1);
 				h1.GetTH1("Evt_O7Asym_Mu")->Fill("O_{7}<0",1);
 			}
+
+			//* bJets == 2
+			if( isGoodMuonEvt2b )
+			{
+				h1.GetTH1("Evt2b_O2")->Fill(O2/Owrt_);	
+				h1.GetTH1("Evt2b_O2_Mu")->Fill(O2/Owrt_);
+				if( O2 > 0 ){
+					h1.GetTH1("Evt2b_O2Asym")->Fill("O_{2}>0",1);
+					h1.GetTH1("Evt2b_O2Asym_Mu")->Fill("O_{2}>0",1);
+				}else{
+					h1.GetTH1("Evt2b_O2Asym")->Fill("O_{2}<0",1);
+					h1.GetTH1("Evt2b_O2Asym_Mu")->Fill("O_{2}<0",1);
+				}
+
+				h1.GetTH1("Evt2b_O7")->Fill(O7/Owrt_);	
+				h1.GetTH1("Evt2b_O7_Mu")->Fill(O7/Owrt_);
+				if( O7 > 0 ){
+					h1.GetTH1("Evt2b_O7Asym")->Fill("O_{7}>0",1);
+					h1.GetTH1("Evt2b_O7Asym_Mu")->Fill("O_{7}>0",1);
+				}else{
+					h1.GetTH1("Evt2b_O7Asym")->Fill("O_{7}<0",1);
+					h1.GetTH1("Evt2b_O7Asym_Mu")->Fill("O_{7}<0",1);
+				}
+			}
 		}
-		//else if( !isMuonChannel && isEleChannel )
-		if( isEleChannel )
+		if( isGoodElectronEvt )
 		{
+			//* bJets >= 2
+			double O2 = Obs2( isoEl, hardJet, bjet1, bjet2 );
 			h1.GetTH1("Evt_O2")->Fill(O2/Owrt_);	
 			h1.GetTH1("Evt_O2_El")->Fill(O2/Owrt_);
 			if( O2 > 0 ){
@@ -571,10 +613,9 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 				h1.GetTH1("Evt_O2Asym_El")->Fill("O_{2}<0",1);
 			}
 
+			double O7 = Obs7( az, bjet1, bjet2 );
 			h1.GetTH1("Evt_O7")->Fill(O7/Owrt_);	
 			h1.GetTH1("Evt_O7_El")->Fill(O7/Owrt_);	
-			h1.GetTH1("Evt_O7_term1")->Fill(O7_1z);
-			h1.GetTH1("Evt_O7_term2")->Fill(O7_2z);
 			if( O7 > 0 ){
 				h1.GetTH1("Evt_O7Asym")->Fill("O_{7}>0", 1);
 				h1.GetTH1("Evt_O7Asym_El")->Fill("O_{7}>0",1);
@@ -582,52 +623,29 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 				h1.GetTH1("Evt_O7Asym")->Fill("O_{7}<0",1);
 				h1.GetTH1("Evt_O7Asym_El")->Fill("O_{7}<0",1);
 			}
-		}
-		//* bJets == 2
-		//if( isMuonChannel2b && !isEleChannel2b )
-		if( isMuonChannel2b )
-		{
-			h1.GetTH1("Evt2b_O2")->Fill(O2/Owrt_);	
-			h1.GetTH1("Evt2b_O2_Mu")->Fill(O2/Owrt_);
-			if( O2 > 0 ){
-				h1.GetTH1("Evt2b_O2Asym")->Fill("O_{2}>0",1);
-				h1.GetTH1("Evt2b_O2Asym_Mu")->Fill("O_{2}>0",1);
-			}else{
-				h1.GetTH1("Evt2b_O2Asym")->Fill("O_{2}<0",1);
-				h1.GetTH1("Evt2b_O2Asym_Mu")->Fill("O_{2}<0",1);
-			}
 
-			h1.GetTH1("Evt2b_O7")->Fill(O7/Owrt_);	
-			h1.GetTH1("Evt2b_O7_Mu")->Fill(O7/Owrt_);
-			if( O7 > 0 ){
-				h1.GetTH1("Evt2b_O7Asym")->Fill("O_{7}>0",1);
-				h1.GetTH1("Evt2b_O7Asym_Mu")->Fill("O_{7}>0",1);
-			}else{
-				h1.GetTH1("Evt2b_O7Asym")->Fill("O_{7}<0",1);
-				h1.GetTH1("Evt2b_O7Asym_Mu")->Fill("O_{7}<0",1);
-			}
-		}
-		//else if( !isMuonChannel2b && isEleChannel2b )
-		if( isEleChannel2b )
-		{
-			h1.GetTH1("Evt2b_O2")->Fill(O2/Owrt_);	
-			h1.GetTH1("Evt2b_O2_El")->Fill(O2/Owrt_);
-			if( O2 > 0 ){
-				h1.GetTH1("Evt2b_O2Asym")->Fill("O_{2}>0",1);
-				h1.GetTH1("Evt2b_O2Asym_El")->Fill("O_{2}>0",1);
-			}else{
-				h1.GetTH1("Evt2b_O2Asym")->Fill("O_{2}<0",1);
-				h1.GetTH1("Evt2b_O2Asym_El")->Fill("O_{2}<0",1);
-			}
+			//* bJets == 2
+			if( isGoodElectronEvt2b )
+			{
+				h1.GetTH1("Evt2b_O2")->Fill(O2/Owrt_);	
+				h1.GetTH1("Evt2b_O2_El")->Fill(O2/Owrt_);
+				if( O2 > 0 ){
+					h1.GetTH1("Evt2b_O2Asym")->Fill("O_{2}>0",1);
+					h1.GetTH1("Evt2b_O2Asym_El")->Fill("O_{2}>0",1);
+				}else{
+					h1.GetTH1("Evt2b_O2Asym")->Fill("O_{2}<0",1);
+					h1.GetTH1("Evt2b_O2Asym_El")->Fill("O_{2}<0",1);
+				}
 
-			h1.GetTH1("Evt2b_O7")->Fill(O7/Owrt_);	
-			h1.GetTH1("Evt2b_O7_El")->Fill(O7/Owrt_);	
-			if( O7 > 0 ){
-				h1.GetTH1("Evt2b_O7Asym")->Fill("O_{7}>0", 1);
-				h1.GetTH1("Evt2b_O7Asym_El")->Fill("O_{7}>0",1);
-			}else{
-				h1.GetTH1("Evt2b_O7Asym")->Fill("O_{7}<0",1);
-				h1.GetTH1("Evt2b_O7Asym_El")->Fill("O_{7}<0",1);
+				h1.GetTH1("Evt2b_O7")->Fill(O7/Owrt_);	
+				h1.GetTH1("Evt2b_O7_El")->Fill(O7/Owrt_);	
+				if( O7 > 0 ){
+					h1.GetTH1("Evt2b_O7Asym")->Fill("O_{7}>0", 1);
+					h1.GetTH1("Evt2b_O7Asym_El")->Fill("O_{7}>0",1);
+				}else{
+					h1.GetTH1("Evt2b_O7Asym")->Fill("O_{7}<0",1);
+					h1.GetTH1("Evt2b_O7Asym_El")->Fill("O_{7}<0",1);
+				}
 			}
 		}
 	}//// [END] entry loop 
