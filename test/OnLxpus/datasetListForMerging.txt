@@ -1,18 +1,58 @@
 # Dataset_name xs (in pb, for data set to -1)
-DATA:
-/Jet/Run2012A-22Jan2013-v1/AOD -1
-/Jet/Run2012A_missingPart-22Jan2013-v1/AOD -1
-/JetHT/Run2012B-22Jan2013-v1/AOD -1
-/JetHT/Run2012B_missingPart-22Jan2013-v1/AOD -1
-/JetHT/Run2012C-22Jan2013-v1/AOD -1
-/JetHT/Run2012D-22Jan2013-v1/AOD -1
-/JetHT/Run2012D_missingPart-22Jan2013-v1/AOD -1
+#DATA:
+#/Jet/Run2012A-22Jan2013-v1/AOD -1
+#/Jet/Run2012A_missingPart-22Jan2013-v1/AOD -1
+#/JetHT/Run2012B-22Jan2013-v1/AOD -1
+#/JetHT/Run2012B_missingPart-22Jan2013-v1/AOD -1
+#/JetHT/Run2012C-22Jan2013-v1/AOD -1
+#/JetHT/Run2012D-22Jan2013-v1/AOD -1
+#/JetHT/Run2012D_missingPart-22Jan2013-v1/AOD -1
+
 
 # Dataset_name xs (in pb, for data set to -1)
-BprimeBprimeToBHBHinc_M-1000: L=19707
-/BprimeBprimeToBHBHinc_M-1000_TuneZ2star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7C-v1/AODSIM 0.00328
-BprimeBprimeToBHBHinc_M-1200: L=19707
-/BprimeBprimeToBHBHinc_M-1200_TuneZ2star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7C-v1/AODSIM 0.000585
+# HadronicMGDecays : 245.8*67.6%*67.6% 
+# SemiLeptMGDecays : 245.8*2*(10.75+10.57+11.25)%*67.6% 
+# FullLeptMGDecays : 245.8*(10.75+10.57+11.25)%^2 
+TTJets_SemiLeptMGDecays: L=19707
+TTJets_SemiLeptMGDecays 70.79
+
+TTJets_HadronicMGDecays: L=19707
+TTJets_HadronicMGDecays 112.3247008
+
+TTJets_FullLeptMGDecays: L=19707
+TTJets_FullLeptMGDecays 25.962625
+
+TTJets: L=19707
+TTJets_HadronicMGDecays 112.3247008
+TTJets_SemiLeptMGDecays 108.237
+TTJets_FullLeptMGDecays 25.962625
+
+#### Dataset_name xs (in pb, for data set to -1)
+SigleT: L=19707
+T_t-channel 56.4
+T_s-channel 3.79
+T_tW-channel 11.1
+Tbar_t-channel 30.7
+Tbar_s-channel 1.76
+Tbar_tW-channel 11.1
+
+#### Dataset_name xs (in pb, for data set to -1)
+Boson: L=19707
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+
+#### Dataset_name xs (in pb, for data set to -1)
+BkgMC: L=19707
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+T_t-channel 56.4
+T_s-channel 3.79
+T_tW-channel 11.1
+Tbar_t-channel 30.7
+Tbar_s-channel 1.76
+Tbar_tW-channel 11.1
+
+#
 #### Dataset_name xs (in pb, for data set to -1)
 #QCD: L=19707
 #/QCD_Pt-170to300_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v2/AODSIM 34138.15
@@ -24,10 +64,6 @@ BprimeBprimeToBHBHinc_M-1200: L=19707
 #/QCD_Pt-1400to1800_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 0.03352235
 #/QCD_Pt-1800_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 0.001829005
 #
-# Dataset_name xs (in pb, for data set to -1)
-TTJets: L=19707
-#/TTJets_HadronicMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 112.3247008
-TTJets_SemiLeptMGDecays 70.79 
 
 #TTJets_TopPtReWrtUp: L=19707
 #/TTJets_TopPtReWrtUp_HadronicMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 112.3247008
@@ -53,11 +89,3 @@ TTJets_SemiLeptMGDecays 70.79
 #/QCD_Pt-1400to1800_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 0.03352235
 #/QCD_Pt-1800_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 0.001829005
 #/TTJets_HadronicMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 112.3247008
-
-## Dataset_name xs (in pb, for data set to -1)
-#QCDMadgraph: L=19707 
-#/QCD_HT-100To250_TuneZ2star_8TeV-madgraph-pythia/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 10360000
-#/QCD_HT-250To500_TuneZ2star_8TeV-madgraph-pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 276000.0
-#/QCD_HT-500To1000_TuneZ2star_8TeV-madgraph-pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 8426.0
-#/QCD_HT-1000ToInf_TuneZ2star_8TeV-madgraph-pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 204.0 
-

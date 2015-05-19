@@ -65,7 +65,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		vector<int> MuonHLT_;
 		vector<int> ElectronHLT_;
 		const unsigned int    NJets_;
-		const double IsoElePt_;
+		const double IsoEleEt_;
 		const double IsoMuonPt_;
 		const double NonBjetCSVThr_;
 		const double Owrt_;

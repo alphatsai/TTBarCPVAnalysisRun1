@@ -52,7 +52,7 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
 	MuonHLT_(iConfig.getParameter<std::vector<int>>("MuonHLT")),
 	ElectronHLT_(iConfig.getParameter<std::vector<int>>("ElectronHLT")),
 	NJets_(iConfig.getParameter<double>("NJets")),
-	IsoElePt_(iConfig.getParameter<double>("IsoElePt")),
+	IsoEleEt_(iConfig.getParameter<double>("IsoEleEt")),
 	IsoMuonPt_(iConfig.getParameter<double>("IsoMuonPt")),
 	NonBjetCSVThr_(iConfig.getParameter<double>("NonBjetCSVThr")),
 	Owrt_(iConfig.getParameter<double>("Owrt")),
@@ -345,19 +345,25 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( lepton.LeptonType == 11 )
 			{
 				if( abs(lepton.Eta) > 2.5 ) continue;
-				if( abs(lepton.Eta) < 1.5 && abs(lepton.Eta) > 1.4442) continue;
-				if( lepton.Pt < 15 ) continue;
-				if( relIso1 < 0.2 )
-					looseElCol_isoMu.push_back(lepton);	
-				if( lepton.Pt < 20 ) continue;
-				if( lepton.Pt < IsoElePt_ &&
-				    relIso1 < 1.
-  				  )
+				if( abs(lepton.Eta) < 1.566 && abs(lepton.Eta) > 1.4442) continue;
+				if( lepton.Et < 20 ) continue;
+				if( relIso1 > 0.15 ) continue;
+	
+				looseElCol_isoMu.push_back(lepton);	
+
+				if( lepton.Et < IsoEleEt_ )
+				{
 					looseElCol_isoEl.push_back(lepton);
+				}
 				else if( relIso1 < 0.1 &&
-					 lepton.Pt > IsoElePt_ 
+					 lepton.Et > IsoEleEt_ &&
+					 lepton.ElTrackDxy_PV < 0.5 && 
+					 abs(lepton.Eta) < 2.1 
+					 //sqrt(lepton.ElTrackDz_BS*lepton.ElTrackDz_BS+lepton.ElTrackDxy_BS*lepton.ElTrackDxy_BS)<0.02 
 					)
-					selElCol.push_back(lepton);	
+				{
+					selElCol.push_back(lepton);
+				}	
 			}
 			// Muon selections
 			if( lepton.LeptonType == 13 )
@@ -365,10 +371,14 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 				if( relIso1 > 0.2 ) continue;	
 				if( abs(lepton.Eta) > 2.5 ) continue;
 				if( lepton.Pt < 10) continue;
-				if( (lepton.MuType&0x02) != 0 ) 
-					looseMuCol_isoEl.push_back(lepton);	
+				if( (lepton.MuType&0x02) == 0 && (lepton.MuType&0x04) == 0 ) continue; 
+
+				looseMuCol_isoEl.push_back(lepton);	
+
 				if( lepton.Pt < IsoMuonPt_ )
+				{
 					looseMuCol_isoMu.push_back(lepton);	
+				}
 				else if( relIso1 < 0.125 &&
 					 lepton.Pt >= IsoMuonPt_ && 
 					 lepton.MuNMuonhits > 0  &&
@@ -379,10 +389,12 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 					 lepton.MuInnerTrackDxy_BS < 0.02 &&
 					 lepton.MuGlobalNormalizedChi2 < 10 &&
 					 (lepton.MuType&0x02) != 0 && // Global muon 
-					 (lepton.MuType&0x04) != 0 && // Tracker muon 
+					 //(lepton.MuType&0x04) != 0 && // Tracker muon 
 					 abs(lepton.Eta) < 2.1  
 					) // tight muon
+				{
 					selMuCol.push_back(lepton);
+				}
 			}
 		}
 
