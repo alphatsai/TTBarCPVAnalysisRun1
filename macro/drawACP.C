@@ -8,12 +8,23 @@ void drawACPLepJet( TFile* f,
               int legX=1 )
 {
 	bool murmur=true;
-	TH1D*  hlj_o2    = (TH1D*)f->Get((analysis+"/"+evtcat+"_O2Asym").c_str()); 
-	TH1D*  hlj_o2_mu = (TH1D*)f->Get((analysis+"/"+evtcat+"_O2Asym_Mu").c_str()); 
-	TH1D*  hlj_o2_el = (TH1D*)f->Get((analysis+"/"+evtcat+"_O2Asym_El").c_str()); 
-	TH1D*  hlj_o7    = (TH1D*)f->Get((analysis+"/"+evtcat+"_O7Asym").c_str()); 
-	TH1D*  hlj_o7_mu = (TH1D*)f->Get((analysis+"/"+evtcat+"_O7Asym_Mu").c_str()); 
-	TH1D*  hlj_o7_el = (TH1D*)f->Get((analysis+"/"+evtcat+"_O7Asym_El").c_str()); 
+	TH1D *hlj_o2, *hlj_o2_mu, *hlj_o2_el, *hlj_o7, *hlj_o7_mu, *hlj_o7_el;
+	if( analysis.compare("") != 0 )
+	{ 
+		hlj_o2    = (TH1D*)f->Get((analysis+"/"+evtcat+"_O2Asym").c_str()); 
+		hlj_o2_mu = (TH1D*)f->Get((analysis+"/"+evtcat+"_O2Asym_Mu").c_str()); 
+		hlj_o2_el = (TH1D*)f->Get((analysis+"/"+evtcat+"_O2Asym_El").c_str()); 
+		hlj_o7    = (TH1D*)f->Get((analysis+"/"+evtcat+"_O7Asym").c_str()); 
+		hlj_o7_mu = (TH1D*)f->Get((analysis+"/"+evtcat+"_O7Asym_Mu").c_str()); 
+		hlj_o7_el = (TH1D*)f->Get((analysis+"/"+evtcat+"_O7Asym_El").c_str()); 
+	}else{
+		hlj_o2    = (TH1D*)f->Get((evtcat+"_O2Asym").c_str()); 
+		hlj_o2_mu = (TH1D*)f->Get((evtcat+"_O2Asym_Mu").c_str()); 
+		hlj_o2_el = (TH1D*)f->Get((evtcat+"_O2Asym_El").c_str()); 
+		hlj_o7    = (TH1D*)f->Get((evtcat+"_O7Asym").c_str()); 
+		hlj_o7_mu = (TH1D*)f->Get((evtcat+"_O7Asym_Mu").c_str()); 
+		hlj_o7_el = (TH1D*)f->Get((evtcat+"_O7Asym_El").c_str()); 
+	}
 
 	const int allh=6;
 
@@ -50,7 +61,7 @@ void drawACPLepJet( TFile* f,
 	h->Fill(5,   caculateACP( hlj_o7_el, murmur ));
 	h->SetBinError(6, caculateACPerror( hlj_o7_el ));
 
-	h->Scale(wrt);
+	//h->Scale(wrt);
 
 	TCanvas *c1 = new TCanvas("c1", "c1",41,89,1213,664);
 	gStyle->SetOptStat(0);

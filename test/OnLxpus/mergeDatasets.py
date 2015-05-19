@@ -109,7 +109,7 @@ def main():
 
       # open input ROOT file
       root_file = TFile(input_root_file)
-      htemp = root_file.Get(os.path.join(options.analyzer_module,'h_cutflow'))
+      htemp = root_file.Get(os.path.join(options.analyzer_module,'Evt_Events'))
       nEventsAll = htemp.GetBinContent(1)
       nEventsStored = htemp.GetBinContent(1)
       scale = 1.
