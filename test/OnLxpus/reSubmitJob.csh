@@ -19,7 +19,7 @@ endif
 cd $1
 	set nowPath=`pwd`
 	mv $2/output/job_$3.log $2
-	rm -f $2/output/bprimeTobH_BkgABCDMethod_$3.root
+	rm -f $2/output/SemiLeptanicAnalysis_$3.root
 	echo resubmit job_$3.sh...
 	bsub -q $q -o $nowPath/$2/output/job_$3.log source $nowPath/$2/input/job_$3.sh
 cd -

@@ -40,6 +40,7 @@ cd $1
 		set jobNum=`ls -l $sample/input | grep '.sh' | wc -l`
 		set lognum=`ls -l $sample/output | grep '.log' | wc -l`
 		set killedJobs=`grep Killed $sample/output/*.log | grep -v 'cpu usage'| sed 's/.*job_\(.*\)\.sh.*/\1/g'`
+		set kRoot=`grep 'Fatal Root Error' $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
 		set ksegJobs=`grep 'Segmentation' $sample/output/*.log | sed 's/.*job_\(.*\)\.sh.*/\1/g'`
 		set kbadallocJobs_=`grep -r 'bad_alloc' $sample/output | sed 's/.*job_\(.*\)\.log.*/\1/g'`
 		set kbadallocNum_=`echo $kbadallocJobs_ | wc -w` 
@@ -63,6 +64,8 @@ cd $1
 		set kCPUJobs2=`grep 'CPU time limit exceeded' $sample/output/*.log | grep 'sh:Exited' | sed 's/.*job_\(.*\)\.sh.*/\1/g'`
 		set kCPUJobs3=`grep 'CPU time limit exceeded' $sample/output/*.log | grep 'sh: line' | sed 's/.*job_\(.*\)\.sh.*/\1/g'`
 		set abJobs=`grep Aborted $sample/output/*.log | sed 's/.*job_\(.*\)\.sh.*/\1/g'`
+
+		set kRootNum=`echo $kRoot | wc -w`
 		set ksegNum=`echo $ksegJobs | wc -w `
 		set kbadallocNum=`echo $kbadallocJobs| wc -w `
 		set kCPUNum=`echo $kCPUJobs | wc -w `
@@ -71,12 +74,15 @@ cd $1
 		set killedNum=`echo $killedJobs | wc -w `
 		set abNum=`echo $abJobs | wc -w `
 		#set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed 's/bprimeTobH_\(.*\)\.root/\1/g'` 
-		set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed 's/ESSkim_\(.*\)\.root/\1/g'` 
+		set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed 's/SemiLeptanicAnalysis_\(.*\)\.root/\1/g'` 
 		set doneNum=`echo $doneJobs | wc -w`	
-		set realdoneNum=`echo $doneNum'-'$killedNum'-'$abNum'-'$kCPUNum2'-'$kCPUNum3'-'$ksegNum'-'$kbadallocNum | bc`
+		set realdoneNum=`echo $doneNum'-'$killedNum'-'$abNum'-'$kCPUNum2'-'$kCPUNum3'-'$ksegNum'-'$kbadallocNum'-'$kRootNum | bc`
 		echo "Num Log Files $lognum/$jobNum"	
 		echo "Status(root): $doneNum/$jobNum"
 		echo "Status(real): $realdoneNum/$jobNum"
+		if ( $kRootNum != 0 ) then
+			echo "Input root broken: $kRoot"
+		endif
 		if ( $doneNum == 0 && $lognum == 0 ) then
 			echo "Nothing output..."	
 		else if ( $realdoneNum == $jobNum ) then
@@ -134,7 +140,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $killedNum != 0 ) then
 			foreach kn($killedJobs)
 				mv $nowPath/$sample/output/job_$kn.log $nowPath/$sample
-				rm -f $sample/output/ESSkim_$kn.root
+				rm -f $sample/output/SemiLeptanicAnalysis_$kn.root
 				echo resubmit job_$kn.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kn.log source $nowPath/$sample/input/job_$kn.sh
 			end	
@@ -142,7 +148,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $kCPUNum2 != 0 ) then
 			foreach kcn($kCPUJobs2)
 				mv $nowPath/$sample/output/job_$kcn.log $nowPath/$sample
-				rm -f $sample/output/ESSkim_$kcn.root
+				rm -f $sample/output/SemiLeptanicAnalysis_$kcn.root
 				echo resubmit job_$kcn.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kcn.log source $nowPath/$sample/input/job_$kcn.sh
 			end	
@@ -150,7 +156,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $kCPUNum3 != 0 ) then
 			foreach kcn3($kCPUJobs3)
 				mv $nowPath/$sample/output/job_$kcn3.log $nowPath/$sample
-				rm -f $sample/output/ESSkim_$kcn3.root
+				rm -f $sample/output/SemiLeptanicAnalysis_$kcn3.root
 				echo resubmit job_$kcn3.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kcn3.log source $nowPath/$sample/input/job_$kcn3.sh
 			end	
@@ -158,7 +164,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $abNum != 0 ) then
 			foreach an($abJobs)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
-				rm -f $sample/output/ESSkim_$an.root
+				rm -f $sample/output/SemiLeptanicAnalysis_$an.root
 				echo resubmit job_$an.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$an.log source $nowPath/$sample/input/job_$an.sh
 			end	
@@ -166,7 +172,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $kbadallocNum != 0 ) then
 			foreach an($kbadallocJobs)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
-				rm -f $sample/output/ESSkim_$an.root
+				rm -f $sample/output/SemiLeptanicAnalysis_$an.root
 				echo resubmit job_$an.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$an.log source $nowPath/$sample/input/job_$an.sh
 			end	

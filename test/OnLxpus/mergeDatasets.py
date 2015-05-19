@@ -2,7 +2,8 @@
 
 import sys, os, string, re, copy
 from optparse import OptionParser
-from ROOT import TFile
+#from ROOT import TFile
+from ROOT import *
 
 
 # usage description
