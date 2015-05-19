@@ -50,7 +50,7 @@ options.register('Owrt', 'MT:3',
 	VarParsing.varType.string,
 	"Weight the obseverble in top mass"
 	)
-options.register('Debug', True,
+options.register('Debug', False,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
 	"Print out Debug info during run"
