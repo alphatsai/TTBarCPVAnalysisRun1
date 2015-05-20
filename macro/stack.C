@@ -1,0 +1,105 @@
+#include "help.C"
+void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string ytitle="Events", std::string output=".", int rebin=1, bool logy=false ){
+
+	int lineWidth=3;
+	Color_t c_tt = kOrange+1;
+	Color_t c_t = kSpring+9;
+	Color_t c_b = kAzure+2;
+	Color_t c_unc = kRed-7;
+	Color_t c_allunc = kRed-1;
+
+	TH1D *h_tt, *h_t, *h_b, *h_bkg;
+	h_tt  = (TH1D*)((TH1D*)f->Get(("TTJets__"+hName).c_str()))->Clone("TTBar");
+	h_t   = (TH1D*)((TH1D*)f->Get(("SigleT__"+hName).c_str()))->Clone("SingleTop");
+	h_b   = (TH1D*)((TH1D*)f->Get(("Boson__"+hName).c_str()))->Clone("Boson");
+	h_bkg = (TH1D*)((TH1D*)f->Get(("BkgMC__"+hName).c_str()))->Clone("BkgUnc");
+	h_all = (TH1D*)((TH1D*)f->Get(("MC__"+hName).c_str()))->Clone("AllUnc");
+
+	fix(h_tt); 	h_tt->Rebin(rebin);
+	fix(h_t);	h_t->Rebin(rebin);
+	fix(h_b); 	h_b->Rebin(rebin);
+	fix(h_bkg);	h_bkg->Rebin(rebin);
+	fix(h_all);	h_all->Rebin(rebin);
+
+	int bins = h_all->GetXaxis()->GetLast();
+	int xMin = h_all->GetXaxis()->GetBinLowEdge(1);
+	int xMax = h_all->GetXaxis()->GetBinUpEdge(bins);
+
+	h_tt->SetLineWidth(lineWidth);
+	h_tt->SetLineColor(c_tt);
+	h_tt->SetFillColor(c_tt);
+
+	h_t->SetLineWidth(lineWidth);
+	h_t->SetLineColor(c_t);
+	h_t->SetFillColor(c_t);
+
+	h_b->SetLineWidth(lineWidth);
+	h_b->SetLineColor(c_b);
+	h_b->SetFillColor(c_b);
+
+	h_bkg->SetFillStyle(3244);
+	h_bkg->SetFillColor(c_unc);
+
+	h_all->SetFillStyle(3244);
+	h_all->SetFillColor(c_allunc);
+
+	hs = new TH1F(("TH1DinStack"+hName).c_str(), "", bins, xMin, xMax);
+	hs->GetXaxis()->SetTitle(xtitle.c_str());
+	hs->GetYaxis()->SetTitle(ytitle.c_str());
+
+	hs->GetXaxis()->SetLabelFont(42);
+	hs->GetXaxis()->SetLabelSize(0.05);
+	hs->GetXaxis()->SetTitleSize(0.06);
+	hs->GetXaxis()->SetTitleOffset(1.04);
+	hs->GetXaxis()->SetTitleFont(42);
+	hs->GetYaxis()->SetLabelFont(42);
+	hs->GetYaxis()->SetTitleSize(0.06);
+	hs->GetYaxis()->SetTitleFont(42);
+	hs->GetZaxis()->SetLabelFont(42);
+	hs->GetZaxis()->SetLabelSize(0.035);
+	hs->GetZaxis()->SetTitleSize(0.035);
+	hs->GetZaxis()->SetTitleFont(42);
+
+	h_stack = new THStack("THStcak", "");
+	h_stack->SetHistogram(hs);
+
+	h_stack->Add(h_b);
+	h_stack->Add(h_t);
+	h_stack->Add(h_tt);
+
+	TCanvas* c1 = new TCanvas( ("C_"+hName).c_str(), "",1320,26,1179,808);
+	c1->Range(-2.617021,-15417.76,2.382979,82102.71);
+	c1->SetFillColor(0);
+	c1->SetBorderMode(0);
+	c1->SetBorderSize(2);
+	c1->SetLeftMargin(0.1234043);
+	c1->SetRightMargin(0.07659575);
+	c1->SetTopMargin(0.04113111);
+	c1->SetBottomMargin(0.1580977);
+	c1->SetFrameBorderMode(0);
+	c1->SetFrameBorderMode(0);
+
+	gStyle->SetOptStat(0);
+	gStyle->SetOptTitle(0);	
+	
+	if( logy ) c1->SetLogy(1);
+	TLegend *leg;
+   	leg = new TLegend(0.6451064,0.7320513,0.9617021,0.9371795,NULL,"brNDC");
+	leg->SetBorderSize(0);
+	leg->SetLineStyle(0);
+	leg->SetLineWidth(0);
+	leg->SetFillColor(0);
+	leg->SetFillStyle(0);
+	leg->AddEntry(h_tt, "t#bar{t}+jet", "f");
+	leg->AddEntry(h_t, "Single top", "f");
+	leg->AddEntry(h_b, "Z/#gamma*, W", "f");
+	leg->AddEntry(h_bkg, "1#sigma non t#bar{t}+jet stat.", "f");
+	leg->AddEntry(h_all, "1#sigma Total stat.", "f");
+
+	h_stack->Draw("HIST");
+	h_all->Draw("SAMEE2");
+	h_bkg->Draw("SAMEE2");
+	leg->Draw();
+
+	c1->SaveAs((output+"/Stack_"+hName+".pdf").c_str());
+}
