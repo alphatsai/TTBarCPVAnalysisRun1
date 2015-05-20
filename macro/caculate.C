@@ -48,20 +48,25 @@ double caculateACP( th1* Oh, bool murmur=false)
    printf("Call caculateACP: %f\n", ACP);	
    return ACP;	
 }
-void caculateACP( TFile* f, std::string histName, std::string Oname="O")
+
+template<class th1>
+void caculateACPDetail( th1* h, std::string Oname="O" )
 {
    int binOg0=2; 	
    int binOl0=1; 	
   
-   TH1D* Oh = (TH1D*)f->Get(histName.c_str());
+   double Og0 = h->GetBinContent(binOg0);
+   double Ol0 = h->GetBinContent(binOl0);
 
-   double Og0 = Oh->GetBinContent(binOg0);
-   double Ol0 = Oh->GetBinContent(binOl0);
-
-   double ACP = caculateACP(Oh);
-   double ACPe = caculateACPerrorWrt(Oh);
-   //double ACPe = caculateACPerror(Oh);
+   double ACP = caculateACP(h);
+   double ACPe = caculateACPerrorWrt(h);
+   //double ACPe = caculateACPerror(h);
   
-   printf("%-15s: %s>0=%5.0f, %s<0=%5.0f, ACP=%6.3f +/-%6.3f \n", histName.c_str(), Oname.c_str(), Og0, Oname.c_str(), Ol0, ACP, ACPe);
-
+   printf("%s>0=%5.0f, %s<0=%5.0f, ACP=%6.3f +/-%6.3f \n", Oname.c_str(), Og0, Oname.c_str(), Ol0, ACP, ACPe);
+}
+void caculateACPDetail( TFile* f, std::string histName, std::string Oname="O")
+ {
+   TH1D* Oh = (TH1D*)f->Get(histName.c_str());
+   printf("%-15s: ", histName.c_str());	
+   caculateACPDetail(Oh, Oname);
 }

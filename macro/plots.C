@@ -6,7 +6,7 @@ void drawObservableDist( TFile* f, std::string output=".", std::string histName=
    if( CHname.compare("LepJets") == 0 ) isLepJets=true;
    if( CHname.compare("MultiJets") == 0 ) isMultiJets=true;
 
-   TCanvas *c1 = new TCanvas("c1", "c1",57,97,1099,752);
+   TCanvas *c1 = new TCanvas(("c1_obdist_"+histName).c_str(), "c1",57,97,1099,752);
    gStyle->SetOptStat(0);
    c1->Range(-2.530337,-153.6535,2.391011,1015.73);
    c1->SetFillColor(0);
@@ -41,8 +41,8 @@ void drawObservableDist( TFile* f, std::string output=".", std::string histName=
    Oh->GetZaxis()->SetTitleFont(62);
    Oh->Draw("HISTE");
    if( isLepJets ){
-    Oh_mu = (TH1D*)f->Get((histName+"_Mu").c_str());
-    Oh_el = (TH1D*)f->Get((histName+"_El").c_str());
+    Oh_mu = (TH1D*)((TH1D*)f->Get((histName+"_Mu").c_str()))->Clone("muon");
+    Oh_el = (TH1D*)((TH1D*)f->Get((histName+"_El").c_str()))->Clone("electron");
     //double wrtmu = 1/Oh_mu->Integral();
     //double wrtel = 1/Oh_el->Integral();
     //Oh_mu->Scale(wrtmu);
@@ -100,7 +100,7 @@ void drawObservableDist( TFile* f, std::string output=".", std::string histName=
 
 void drawObservable( TFile* f, std::string histName, std::string output=".", std::string Oname="O", std::string CHname="", float range=0.1, bool legX=0 )
 {
-   TCanvas *c1 = new TCanvas("c1", "c1",113,93,1099,750);
+   TCanvas *c1 = new TCanvas(("c1_ob_"+histName).c_str(), "c1",113,93,1099,750);
    gStyle->SetOptStat(0);
    c1->Range(-0.25,1247.471,2.25,1397.296);
    c1->SetFillColor(0);

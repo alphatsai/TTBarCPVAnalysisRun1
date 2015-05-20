@@ -1,4 +1,5 @@
 #include "caculate.C"
+#include <fstream>
 void drawACPLepJet( TFile* f, 
               std::string evtcat="Evt2b",
               std::string analysis="SemiLeptanic",
@@ -27,6 +28,22 @@ void drawACPLepJet( TFile* f,
 	}
 
 	const int allh=6;
+
+	fstream out;
+	out.open((output+"/ACPCounting_"+evtcat+".txt").c_str(),ios_base::out);
+	out<<"O2: "<<endl;
+	out<<caculateACPDetail( hlj_o2 )<<endl;
+	out<<"O2 muon: "<<endl;
+	out<<caculateACPDetail( hlj_o2_mu )<<endl;
+	out<<"O2 electron: "<<endl;
+	out<<caculateACPDetail( hlj_o2_el)<<endl;
+	out<<"O7: "<<endl;
+	out<<caculateACPDetail( hlj_o7)<<endl;
+	out<<"O7 muon: "<<endl;
+	out<<caculateACPDetail( hlj_o7_mu )<<endl;
+	out<<"O7 electron: "<<endl;
+	out<<caculateACPDetail( hlj_o7_el)<<endl;
+	out.close();
 
 	TH1D* h = new TH1D("all", "", allh, 0, allh);
 

@@ -43,7 +43,10 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
 	h_all->SetFillStyle(3244);
 	h_all->SetFillColor(c_allunc);
 
-	hs = new TH1D(("TH1DinStack"+hName).c_str(), "", bins, xMin, xMax);
+	if( logy )
+		hs = new TH1D(("TH1DinStackLog"+hName).c_str(), "", bins, xMin, xMax);
+	else
+		hs = new TH1D(("TH1DinStackLinear"+hName).c_str(), "", bins, xMin, xMax);
 	hs->GetXaxis()->SetTitle(xtitle.c_str());
 	hs->GetYaxis()->SetTitle(ytitle.c_str());
 
