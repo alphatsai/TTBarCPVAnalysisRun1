@@ -47,6 +47,8 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
 		hs = new TH1D(("TH1DinStackLog"+hName).c_str(), "", bins, xMin, xMax);
 	else
 		hs = new TH1D(("TH1DinStackLinear"+hName).c_str(), "", bins, xMin, xMax);
+	
+    hs->SetMinimum(0.8995655);
 	hs->GetXaxis()->SetTitle(xtitle.c_str());
 	hs->GetYaxis()->SetTitle(ytitle.c_str());
 
@@ -69,6 +71,13 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
 	h_stack->Add(h_b);
 	h_stack->Add(h_t);
 	h_stack->Add(h_tt);
+
+	if( logy ){
+		if( h_all->GetMinimum() > 0 )	
+			h_stack->SetMinimum(h_all->GetMinimum()/10);
+		else
+			h_stack->SetMinimum(10);
+	}
 
 	TCanvas* c1;
 	if( logy ) 
