@@ -8,6 +8,7 @@
 #include <TCanvas.h>
 #include <TMath.h>
 #include <TF1.h>
+#include <TLine.h>
 #include <TLegend.h>
 #include <TProfile.h>
 #include <TLatex.h>

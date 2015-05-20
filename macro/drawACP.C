@@ -45,7 +45,7 @@ void drawACPLepJet( TFile* f,
 	out<<caculateACPDetail( hlj_o7_el)<<endl;
 	out.close();
 
-	TH1D* h = new TH1D("all", "", allh, 0, allh);
+	TH1D* h = new TH1D(("all"+evtcat).c_str(), "", allh, 0, allh);
 
 	h->GetXaxis()->SetBinLabel(1, "O_{2}^{e+#mu}");
 	h->GetXaxis()->SetBinLabel(2, "O_{2}^{#mu}");

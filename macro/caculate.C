@@ -1,3 +1,12 @@
+#include <sstream>
+#include <string>
+std::string double2str( double i )
+{
+	std::string s;
+	stringstream ss(s);
+	ss << i;
+	return ss.str();	
+}
 ////* Caculate ACP
 template<class th1>
 double caculateACPerror( th1* Oh, bool murmur=false)
@@ -50,7 +59,7 @@ double caculateACP( th1* Oh, bool murmur=false)
 }
 
 template<class th1>
-void caculateACPDetail( th1* h, std::string Oname="O" )
+std::string caculateACPDetail( th1* h, std::string Oname="O" )
 {
    int binOg0=2; 	
    int binOl0=1; 	
@@ -61,12 +70,14 @@ void caculateACPDetail( th1* h, std::string Oname="O" )
    double ACP = caculateACP(h);
    double ACPe = caculateACPerrorWrt(h);
    //double ACPe = caculateACPerror(h);
-  
+   
    printf("%s>0=%5.0f, %s<0=%5.0f, ACP=%6.3f +/-%6.3f \n", Oname.c_str(), Og0, Oname.c_str(), Ol0, ACP, ACPe);
+   std::string out = Oname+">0="+double2str(Og0)+", "+Oname+"<0="+double2str(Ol0)+", ACP="+double2str(ACP)+" +/- "+double2str(ACPe);
+   return out; 
 }
 void caculateACPDetail( TFile* f, std::string histName, std::string Oname="O")
  {
    TH1D* Oh = (TH1D*)f->Get(histName.c_str());
    printf("%-15s: ", histName.c_str());	
-   caculateACPDetail(Oh, Oname);
+   std::cout<<caculateACPDetail(Oh, Oname)<<std::endl;;
 }
