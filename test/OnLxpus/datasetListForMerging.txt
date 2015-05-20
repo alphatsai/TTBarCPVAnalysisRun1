@@ -35,9 +35,27 @@ Tbar_t-channel 30.7
 Tbar_s-channel 1.76
 Tbar_tW-channel 11.1
 
+T_t-channel: L=19707
+T_t-channel 56.4
+T_s-channel: L=19707
+T_s-channel 3.79
+T_tw-channel: L=19707
+T_tW-channel 11.1
+Tbar_t-channel: L=19707
+Tbar_t-channel 30.7
+Tbar_s-channel: L=19707
+Tbar_s-channel 1.76
+Tbar_tW-channel: L=19707
+Tbar_tW-channel 11.1
+
 ##### Dataset_name xs (in pb, for data set to -1)
 Boson: L=19707
 DYJetsToLL 3503.7
+WJetsToLNu 37509
+
+DYJetsToLL: L=19707
+DYJetsToLL 3503.7
+WJetsToLNu: L=19707
 WJetsToLNu 37509
 
 ##### Dataset_name xs (in pb, for data set to -1)
