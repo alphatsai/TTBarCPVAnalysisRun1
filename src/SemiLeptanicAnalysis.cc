@@ -4,6 +4,7 @@
 #include <cmath>
 #include <ctime>
 #include <fstream>
+#include <sstream>
 #include <assert.h>
 #include <vector>
 #include <map>
@@ -65,6 +66,13 @@ SemiLeptanicAnalysis::~SemiLeptanicAnalysis()
 }
 
 // ------------ Other function -------------
+std::string SemiLeptanicAnalysis::int2str( int i )
+{
+	std::string s;
+	stringstream ss(s);
+	ss << i;
+	return ss.str();	
+}
 template<class TH1>
 void SemiLeptanicAnalysis::setCutFlow( TH1* h )
 {
@@ -75,7 +83,7 @@ void SemiLeptanicAnalysis::setCutFlow( TH1* h )
 	h->GetXaxis()->SetBinLabel(5,"1 isoLep");
 	h->GetXaxis()->SetBinLabel(6,"veto(Loose #mu)");
 	h->GetXaxis()->SetBinLabel(7,"veto(Loose e)");
-	h->GetXaxis()->SetBinLabel(8,"#geq3 Jets");
+	h->GetXaxis()->SetBinLabel(8,("#geq"+int2str(NJets_)+" Jets").c_str());
 	h->GetXaxis()->SetBinLabel(9,"#geq2 bjets");
 	h->GetXaxis()->SetBinLabel(10,"=2 bjets");
 	return ;

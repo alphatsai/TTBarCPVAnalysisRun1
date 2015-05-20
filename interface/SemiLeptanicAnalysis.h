@@ -2,6 +2,7 @@
 #define HADRONICANALYSIS_H 
 
 #include <iostream>
+#include <sstream>
 #include <cmath>
 #include <vector>
 #include <map>
@@ -41,6 +42,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		virtual void analyze(const edm::Event&, const edm::EventSetup&);
 		virtual void endJob();
 		
+		std::string int2str( int i=3 );
 		template<class TH1>
 		void setCutFlow( TH1* h );	
 		template<class TH1>
