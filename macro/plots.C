@@ -1,3 +1,4 @@
+#include "TColor.h"
 void drawObservableDist( TFile* f, std::string output=".", std::string histName="Evt_O", std::string unit="O/M_{top}^{3}", std::string CHname="LepJets", bool legX=1 )
 {
    bool isLepJets=false;
@@ -42,8 +43,8 @@ void drawObservableDist( TFile* f, std::string output=".", std::string histName=
    if( isLepJets ){
     Oh_mu = (TH1D*)f->Get((histName+"_Mu").c_str());
     Oh_el = (TH1D*)f->Get((histName+"_El").c_str());
-    double wrtmu = 1/Oh_mu->Integral();
-    double wrtel = 1/Oh_el->Integral();
+    //double wrtmu = 1/Oh_mu->Integral();
+    //double wrtel = 1/Oh_el->Integral();
     //Oh_mu->Scale(wrtmu);
     //Oh_el->Scale(wrtel);
     Oh_mu->Scale(wrtOh);
@@ -58,8 +59,8 @@ void drawObservableDist( TFile* f, std::string output=".", std::string histName=
    if( isMultiJets ){
     Oh_p5 = (TH1D*)f->Get((histName+"_PT50").c_str());
     Oh_p6 = (TH1D*)f->Get((histName+"_PT60").c_str());
-    double wrtp5 = 1/Oh_p5->Integral();
-    double wrtp6 = 1/Oh_p6->Integral();
+    //double wrtp5 = 1/Oh_p5->Integral();
+    //double wrtp6 = 1/Oh_p6->Integral();
     //Oh_p5->Scale(wrtp5);
     //Oh_p6->Scale(wrtp6);
     Oh_p5->Scale(wrtOh);
@@ -97,7 +98,7 @@ void drawObservableDist( TFile* f, std::string output=".", std::string histName=
    c1->SaveAs((output+"/"+histName+".pdf").c_str());
 }
 
-void drawObservable( TFile* f, std::string output=".", std::string histName, std::string Oname="O", std::string CHname="", float range=0.1, bool legX=0 )
+void drawObservable( TFile* f, std::string histName, std::string output=".", std::string Oname="O", std::string CHname="", float range=0.1, bool legX=0 )
 {
    TCanvas *c1 = new TCanvas("c1", "c1",113,93,1099,750);
    gStyle->SetOptStat(0);
@@ -113,10 +114,7 @@ void drawObservable( TFile* f, std::string output=".", std::string histName, std
    double wrt = 1/(O->Integral());
    O->Scale(wrt);	
    TH1D* OSigma = (TH1D*)O->Clone("CopyOriginal");
-   Int_t ci;      // for color index setting
-   TColor *color; // for color definition with alpha
-   ci = TColor::GetColor("#9999ff");
-   OSigma->SetFillColor(ci);
+   OSigma->SetFillColor(kBlue-9);
    OSigma->GetXaxis()->SetLabelSize(0.08);
    OSigma->GetXaxis()->SetLabelFont(62);
    OSigma->GetXaxis()->SetTitleSize(0.035);
@@ -133,8 +131,7 @@ void drawObservable( TFile* f, std::string output=".", std::string histName, std
    OSigma->GetZaxis()->SetTitleFont(62);
    OSigma->Draw("E2");
  
-   ci = TColor::GetColor("#000099");
-   O->SetLineColor(ci);
+   O->SetLineColor(kBlue+3);
    O->SetLineWidth(3);
    O->GetXaxis()->SetBinLabel(1,(Oname+"<0").c_str());
    O->GetXaxis()->SetBinLabel(2,(Oname+">0").c_str());

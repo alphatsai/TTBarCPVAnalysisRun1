@@ -8,7 +8,7 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
 	Color_t c_unc = kRed-7;
 	Color_t c_allunc = kRed-1;
 
-	TH1D *h_tt, *h_t, *h_b, *h_bkg;
+	TH1D *h_tt, *h_t, *h_b, *h_bkg, *h_all, *hs;
 	h_tt  = (TH1D*)((TH1D*)f->Get(("TTJets__"+hName).c_str()))->Clone("TTBar");
 	h_t   = (TH1D*)((TH1D*)f->Get(("SigleT__"+hName).c_str()))->Clone("SingleTop");
 	h_b   = (TH1D*)((TH1D*)f->Get(("Boson__"+hName).c_str()))->Clone("Boson");
@@ -43,7 +43,7 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
 	h_all->SetFillStyle(3244);
 	h_all->SetFillColor(c_allunc);
 
-	hs = new TH1F(("TH1DinStack"+hName).c_str(), "", bins, xMin, xMax);
+	hs = new TH1D(("TH1DinStack"+hName).c_str(), "", bins, xMin, xMax);
 	hs->GetXaxis()->SetTitle(xtitle.c_str());
 	hs->GetYaxis()->SetTitle(ytitle.c_str());
 
@@ -60,14 +60,18 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
 	hs->GetZaxis()->SetTitleSize(0.035);
 	hs->GetZaxis()->SetTitleFont(42);
 
-	h_stack = new THStack("THStcak", "");
+	THStack* h_stack = new THStack("THStcak", "");
 	h_stack->SetHistogram(hs);
 
 	h_stack->Add(h_b);
 	h_stack->Add(h_t);
 	h_stack->Add(h_tt);
 
-	TCanvas* c1 = new TCanvas( ("C_"+hName).c_str(), "",1320,26,1179,808);
+	TCanvas* c1;
+	if( logy ) 
+		c1 = new TCanvas( ("C_Log_"+hName).c_str(), "",1320,26,1179,808);
+	else
+		c1 = new TCanvas( ("C_Linear_"+hName).c_str(), "",1320,26,1179,808);
 	c1->Range(-2.617021,-15417.76,2.382979,82102.71);
 	c1->SetFillColor(0);
 	c1->SetBorderMode(0);
@@ -83,6 +87,7 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
 	gStyle->SetOptTitle(0);	
 	
 	if( logy ) c1->SetLogy(1);
+	else c1->SetLogy(0);
 	TLegend *leg;
    	leg = new TLegend(0.6451064,0.7320513,0.9617021,0.9371795,NULL,"brNDC");
 	leg->SetBorderSize(0);
@@ -101,5 +106,8 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
 	h_bkg->Draw("SAMEE2");
 	leg->Draw();
 
-	c1->SaveAs((output+"/Stack_"+hName+".pdf").c_str());
+	if( logy )
+		c1->SaveAs((output+"/Stack_Log_"+hName+".pdf").c_str());
+	else
+		c1->SaveAs((output+"/Stack_Linear_"+hName+".pdf").c_str());
 }

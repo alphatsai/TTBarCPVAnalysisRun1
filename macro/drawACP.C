@@ -38,32 +38,38 @@ void drawACPLepJet( TFile* f,
 	h->GetXaxis()->SetBinLabel(6, "O_{7}^{e}");
 
 	printf("O_{2}^{e+#mu}:\n");
-	h->Fill(0, caculateACP( hlj_o2, murmur ));
-	h->SetBinError(1, caculateACPerror( hlj_o2 ));
+	h->Fill(0., caculateACP( hlj_o2, murmur ));
+	h->SetBinError(1, caculateACPerrorWrt( hlj_o2 ));
+	//h->SetBinError(1, caculateACPerror( hlj_o2 ));
 
 	printf("O_{2}^{#mu}:\n");
-	h->Fill(1,     caculateACP( hlj_o2_mu, murmur ));
-	h->SetBinError(2, caculateACPerror( hlj_o2_mu ));
+	h->Fill(1.,     caculateACP( hlj_o2_mu, murmur ));
+	h->SetBinError(2, caculateACPerrorWrt( hlj_o2_mu ));
+	//h->SetBinError(2, caculateACPerror( hlj_o2_mu ));
 
 	printf("O_{2}^{e}:\n");
-	h->Fill(2,   caculateACP( hlj_o2_el, murmur ));
-	h->SetBinError(3, caculateACPerror( hlj_o2_el ));
+	h->Fill(2.,   caculateACP( hlj_o2_el, murmur ));
+	h->SetBinError(3, caculateACPerrorWrt( hlj_o2_el ));
+	//h->SetBinError(3, caculateACPerror( hlj_o2_el ));
 
 	printf("O_{7}^{e+#mu}:\n");
-	h->Fill(3, caculateACP( hlj_o7, murmur ));
-	h->SetBinError(4, caculateACPerror( hlj_o7 ));
+	h->Fill(3., caculateACP( hlj_o7, murmur ));
+	h->SetBinError(4, caculateACPerrorWrt( hlj_o7 ));
+	//h->SetBinError(4, caculateACPerror( hlj_o7 ));
 
 	printf("O_{7}^{#mu}:\n");
-	h->Fill(4,     caculateACP( hlj_o7_mu, murmur ));
-	h->SetBinError(5, caculateACPerror( hlj_o7_mu ));
+	h->Fill(4.,     caculateACP( hlj_o7_mu, murmur ));
+	h->SetBinError(5, caculateACPerrorWrt( hlj_o7_mu ));
+	//h->SetBinError(5, caculateACPerror( hlj_o7_mu ));
 
 	printf("O_{7}^{e}:\n");
-	h->Fill(5,   caculateACP( hlj_o7_el, murmur ));
-	h->SetBinError(6, caculateACPerror( hlj_o7_el ));
+	h->Fill(5.,   caculateACP( hlj_o7_el, murmur ));
+	h->SetBinError(6, caculateACPerrorWrt( hlj_o7_el ));
+	//h->SetBinError(6, caculateACPerror( hlj_o7_el ));
 
 	//h->Scale(wrt);
 
-	TCanvas *c1 = new TCanvas("c1", "c1",41,89,1213,664);
+	TCanvas *c1 = new TCanvas(("CAcp_"+evtcat).c_str(), "c1",41,89,1213,664);
 	gStyle->SetOptStat(0);
 	c1->Range(-1.887097,-0.07984252,12.7379,0.07015748);
 	c1->SetFillColor(0);
@@ -77,11 +83,9 @@ void drawACPLepJet( TFile* f,
 	c1->SetFrameBorderMode(0);
 
 	TH1D* h0 = (TH1D*)h->Clone("Original");
-	TColor *color; // for color definition with alpha
-	ci = TColor::GetColor("#9999ff");
 	h->SetMaximum(0.1*wrt);
 	h->SetMinimum(-0.1*wrt);
-	h->SetFillColor(ci);
+	h->SetFillColor(kBlue-9);
 	h->GetXaxis()->SetLabelOffset(0.01);
 	h->GetXaxis()->SetLabelSize(0.05);
 	h->GetXaxis()->SetLabelFont(62);
@@ -162,54 +166,66 @@ void drawACP2Channel( std::string pathLepJets="../results/TTtoLepJet/result.root
 	h->GetXaxis()->SetBinLabel(12, "O_{7}(p_{T}^{Bjet}#geq60)");
 
 	printf("O_{2}^{e+#mu}:\n");
-	h->Fill(0, caculateACP( hlj_o2 ));
-	h->SetBinError(1, caculateACPerror( hlj_o2 ));
+	h->Fill(0., caculateACP( hlj_o2 ));
+	h->SetBinError(1, caculateACPerrorWrt( hlj_o2 ));
+	//h->SetBinError(1, caculateACPerror( hlj_o2 ));
 
 	printf("O_{2}^{#mu}:\n");
-	h->Fill(1,     caculateACP( hlj_o2_mu ));
-	h->SetBinError(2, caculateACPerror( hlj_o2_mu ));
+	h->Fill(1.,     caculateACP( hlj_o2_mu ));
+	h->SetBinError(2, caculateACPerrorWrt( hlj_o2_mu ));
+	//h->SetBinError(2, caculateACPerror( hlj_o2_mu ));
 
 	printf("O_{2}^{e}:\n");
-	h->Fill(2,   caculateACP( hlj_o2_el ));
-	h->SetBinError(3, caculateACPerror( hlj_o2_el ));
+	h->Fill(2.,   caculateACP( hlj_o2_el ));
+	h->SetBinError(3, caculateACPerrorWrt( hlj_o2_el ));
+	//h->SetBinError(3, caculateACPerror( hlj_o2_el ));
 
 	printf("O_{7}^{e+#mu}:\n");
-	h->Fill(3, caculateACP( hlj_o7 ));
-	h->SetBinError(4, caculateACPerror( hlj_o7 ));
+	h->Fill(3., caculateACP( hlj_o7 ));
+	h->SetBinError(4, caculateACPerrorWrt( hlj_o7 ));
+	//h->SetBinError(4, caculateACPerror( hlj_o7 ));
 
 	printf("O_{7}^{#mu}:\n");
-	h->Fill(4,     caculateACP( hlj_o7_mu ));
-	h->SetBinError(5, caculateACPerror( hlj_o7_mu ));
+	h->Fill(4.,     caculateACP( hlj_o7_mu ));
+	h->SetBinError(5, caculateACPerrorWrt( hlj_o7_mu ));
+	//h->SetBinError(5, caculateACPerror( hlj_o7_mu ));
 
 	printf("O_{7}^{e}:\n");
-	h->Fill(5,   caculateACP( hlj_o7_el ));
-	h->SetBinError(6, caculateACPerror( hlj_o7_el ));
+	h->Fill(5.,   caculateACP( hlj_o7_el ));
+	h->SetBinError(6, caculateACPerrorWrt( hlj_o7_el ));
+	//h->SetBinError(6, caculateACPerror( hlj_o7_el ));
 
 	printf("O_{5}(p_{T}^{Bjet}#geq40):\n");
-	h->Fill(6, caculateACP( hmj_o5_p4 ));
-	h->SetBinError(7, caculateACPerror( hmj_o5_p4 ));
+	h->Fill(6., caculateACP( hmj_o5_p4 ));
+	h->SetBinError(7, caculateACPerrorWrt( hmj_o5_p4 ));
+	//h->SetBinError(7, caculateACPerror( hmj_o5_p4 ));
 
 	printf("O_{5}(p_{T}^{Bjet}#geq50):\n");
-	h->Fill(7, caculateACP( hmj_o5_p5 ));
-	h->SetBinError(8, caculateACPerror( hmj_o5_p5 ));
+	h->Fill(7., caculateACP( hmj_o5_p5 ));
+	h->SetBinError(8, caculateACPerrorWrt( hmj_o5_p5 ));
+	//h->SetBinError(8, caculateACPerror( hmj_o5_p5 ));
 
 	printf("O_{5}(p_{T}^{Bjet}#geq60):\n");
-	h->Fill(8, caculateACP( hmj_o5_p6 ));
-	h->SetBinError(9, caculateACPerror( hmj_o5_p6 ));
+	h->Fill(8., caculateACP( hmj_o5_p6 ));
+	h->SetBinError(9, caculateACPerrorWrt( hmj_o5_p6 ));
+	//h->SetBinError(9, caculateACPerror( hmj_o5_p6 ));
 
 	printf("O_{7}(p_{T}^{Bjet}#geq40):\n");
-	h->Fill(9, caculateACP( hmj_o7_p4 ));
-	h->SetBinError(10, caculateACPerror( hmj_o7_p4 ));
+	h->Fill(9., caculateACP( hmj_o7_p4 ));
+	h->SetBinError(10, caculateACPerrorWrt( hmj_o7_p4 ));
+	//h->SetBinError(10, caculateACPerror( hmj_o7_p4 ));
 
 	printf("O_{7}(p_{T}^{Bjet}#geq50):\n");
-	h->Fill(10, caculateACP( hmj_o7_p5 ));
-	h->SetBinError(11, caculateACPerror( hmj_o7_p5 ));
+	h->Fill(10., caculateACP( hmj_o7_p5 ));
+	h->SetBinError(11, caculateACPerrorWrt( hmj_o7_p5 ));
+	//h->SetBinError(11, caculateACPerror( hmj_o7_p5 ));
 
 	printf("O_{7}(p_{T}^{Bjet}#geq60):\n");
-	h->Fill(11, caculateACP( hmj_o7_p6 ));
-	h->SetBinError(12, caculateACPerror( hmj_o7_p6 ));
+	h->Fill(11., caculateACP( hmj_o7_p6 ));
+	h->SetBinError(12, caculateACPerrorWrt( hmj_o7_p6 ));
+	//h->SetBinError(12, caculateACPerror( hmj_o7_p6 ));
 
-	h->Scale(wrt);
+	//h->Scale(wrt);
 
 	TCanvas *c1 = new TCanvas("c1", "c1",41,89,1213,664);
 	gStyle->SetOptStat(0);
@@ -224,12 +240,15 @@ void drawACP2Channel( std::string pathLepJets="../results/TTtoLepJet/result.root
 	c1->SetFrameBorderMode(0);
 	c1->SetFrameBorderMode(0);
 
+	TLine* line = new TLine(0,0,allh,0);
+	line->SetLineColor(2);
+	line->SetLineWidth(3);
+	line->Draw();
+
 	TH1D* h0 = (TH1D*)h->Clone("Original");
-	TColor *color; // for color definition with alpha
-	ci = TColor::GetColor("#9999ff");
 	h->SetMaximum(0.06*wrt);
 	h->SetMinimum(-0.06*wrt);
-	h->SetFillColor(ci);
+	h->SetFillColor(kBlue-9);
 	h->GetXaxis()->SetLabelOffset(0.01);
 	h->GetXaxis()->SetLabelSize(0.05);
 	h->GetXaxis()->SetLabelFont(62);
@@ -247,10 +266,10 @@ void drawACP2Channel( std::string pathLepJets="../results/TTtoLepJet/result.root
 	h0->SetMarkerStyle(21);
 	h0->SetMarkerSize(2);
 	h0->Draw("psame");
-	TLine* line = new TLine(0,0,allh,0);
-	line->SetLineColor(2);
-	line->SetLineWidth(3);
-	line->Draw();
+	//TLine* line = new TLine(0,0,allh,0);
+	//line->SetLineColor(2);
+	//line->SetLineWidth(3);
+	//line->Draw();
 
 	TLegend *leg;
 	if( legX == 0 ) //Left 
