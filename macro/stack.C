@@ -81,17 +81,17 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
 
 	TCanvas* c1;
 	if( logy ) 
-		c1 = new TCanvas( ("C_Log_"+hName).c_str(), "",1320,26,1179,808);
+		c1 = new TCanvas( ("C_Log_"+hName).c_str(), "",261,48,1179,808);
 	else
-		c1 = new TCanvas( ("C_Linear_"+hName).c_str(), "",1320,26,1179,808);
-	c1->Range(-2.617021,-15417.76,2.382979,82102.71);
+		c1 = new TCanvas( ("C_Linear_"+hName).c_str(), "",261,48,1179,808);
+	c1->Range(-2.617021,-1.006188,2.382979,5.162451);
 	c1->SetFillColor(0);
 	c1->SetBorderMode(0);
 	c1->SetBorderSize(2);
 	c1->SetLeftMargin(0.1234043);
 	c1->SetRightMargin(0.07659575);
-	c1->SetTopMargin(0.04113111);
-	c1->SetBottomMargin(0.1580977);
+	c1->SetTopMargin(0.06209987);
+	c1->SetBottomMargin(0.1376441);
 	c1->SetFrameBorderMode(0);
 	c1->SetFrameBorderMode(0);
 
@@ -101,7 +101,7 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
 	if( logy ) c1->SetLogy(1);
 	else c1->SetLogy(0);
 	TLegend *leg;
-   	leg = new TLegend(0.6451064,0.7320513,0.9617021,0.9371795,NULL,"brNDC");
+	leg = new TLegend(0.6561702,0.7067862,0.972766,0.9116517,NULL,"brNDC");
 	leg->SetBorderSize(0);
 	leg->SetLineStyle(0);
 	leg->SetLineWidth(0);
@@ -113,10 +113,21 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
 	leg->AddEntry(h_bkg, "1#sigma non t#bar{t}+jet stat.", "f");
 	leg->AddEntry(h_all, "1#sigma Total stat.", "f");
 
+	TPaveText* t_title;
+	t_title = new TPaveText(0.0893617,0.9443022,0.7191489,0.9891165,"brNDC");
+	t_title->AddText("CMS Simulation, L = 19.7/fb, #sqrt{s} = 8TeV");
+	t_title->SetTextColor(kBlack);
+	t_title->SetFillColor(kWhite);
+	t_title->SetFillStyle(0);
+	t_title->SetBorderSize(0);
+	t_title->SetTextAlign(12);
+	t_title->SetTextSize(0.04);
+
 	h_stack->Draw("HIST");
 	h_all->Draw("SAMEE2");
 	h_bkg->Draw("SAMEE2");
 	leg->Draw();
+	t_title->Draw();
 
 	if( logy )
 		c1->SaveAs((output+"/Stack_Log_"+hName+".pdf").c_str());

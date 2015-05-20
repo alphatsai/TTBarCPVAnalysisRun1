@@ -104,7 +104,7 @@ void drawACPLepJet( TFile* f,
 	h->SetMinimum(-0.1*wrt);
 	h->SetFillColor(kBlue-9);
 	h->GetXaxis()->SetLabelOffset(0.01);
-	h->GetXaxis()->SetLabelSize(0.05);
+	h->GetXaxis()->SetLabelSize(0.07);
 	h->GetXaxis()->SetLabelFont(62);
 	h->GetXaxis()->SetTitleSize(0.035);
 	h->GetYaxis()->SetTitle(ytitle.c_str());
@@ -137,7 +137,18 @@ void drawACPLepJet( TFile* f,
 	leg->SetFillStyle(0);
 	leg->AddEntry(h,"1#sigma stat. error","f");
 	leg->Draw();
-	
+
+	TPaveText* t_title;
+   	t_title = new TPaveText(0.09842845,0.9387755,0.7278743,0.9843014,"brNDC");
+	t_title->AddText("CMS Simulation, L = 19.7/fb, #sqrt{s} = 8TeV");
+	t_title->SetTextColor(kBlack);
+	t_title->SetFillColor(kWhite);
+	t_title->SetFillStyle(0);
+	t_title->SetBorderSize(0);
+	t_title->SetTextAlign(12);
+	t_title->SetTextSize(0.04);
+	t_title->Draw();
+
 	c1->SaveAs((output+"/ACP_"+evtcat+".pdf").c_str());
 }
 void drawACP2Channel( std::string pathLepJets="../results/TTtoLepJet/result.root", 
