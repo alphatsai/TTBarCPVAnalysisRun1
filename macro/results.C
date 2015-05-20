@@ -27,26 +27,26 @@
 using namespace std;
 void getResultsLepJet(TFile* f, string output="."){
 
-	drawObservable( f, "MC__Evt_O7Asym", output, "O_{7}", "Combined", 0.1, 0);
-	drawObservable( f, "MC__Evt_O2Asym", output, "O_{2}", "Combined", 0.3, 1);
-	drawObservable( f, "MC__Evt_O7Asym_Mu", output, "O_{7}", "Muon", 0.1, 0);
-	drawObservable( f, "MC__Evt_O2Asym_Mu", output, "O_{2}", "Muon", 0.3, 1);
-	drawObservable( f, "MC__Evt_O7Asym_El", output, "O_{7}", "Electron", 0.1, 0);
-	drawObservable( f, "MC__Evt_O2Asym_El", output, "O_{2}", "Electron", 0.3, 1);
-	drawObservable( f, "MC__Evt2b_O7Asym", output, "O_{7}", "Combined", 0.1, 0);
-	drawObservable( f, "MC__Evt2b_O2Asym", output, "O_{2}", "Combined", 0.3, 1);
-	drawObservable( f, "MC__Evt2b_O7Asym_Mu", output, "O_{7}", "Muon", 0.1, 0);
-	drawObservable( f, "MC__Evt2b_O2Asym_Mu", output, "O_{2}", "Muon", 0.3, 1);
-	drawObservable( f, "MC__Evt2b_O7Asym_El", output, "O_{7}", "Electron", 0.1, 0);
-	drawObservable( f, "MC__Evt2b_O2Asym_El", output, "O_{2}", "Electron", 0.3, 1);
+	drawObservable( f, "MC__Evt_O7Asym", output, "O_{7}", "Combined", 0.05, 0);
+	drawObservable( f, "MC__Evt_O2Asym", output, "O_{2}", "Combined", 0.05, 1);
+	drawObservable( f, "MC__Evt_O7Asym_Mu", output, "O_{7}", "Muon", 0.05, 0);
+	drawObservable( f, "MC__Evt_O2Asym_Mu", output, "O_{2}", "Muon", 0.05, 1);
+	drawObservable( f, "MC__Evt_O7Asym_El", output, "O_{7}", "Electron", 0.05, 0);
+	drawObservable( f, "MC__Evt_O2Asym_El", output, "O_{2}", "Electron", 0.05, 1);
+	drawObservable( f, "MC__Evt2b_O7Asym", output, "O_{7}", "Combined", 0.05, 0);
+	drawObservable( f, "MC__Evt2b_O2Asym", output, "O_{2}", "Combined", 0.05, 1);
+	drawObservable( f, "MC__Evt2b_O7Asym_Mu", output, "O_{7}", "Muon", 0.05, 0);
+	drawObservable( f, "MC__Evt2b_O2Asym_Mu", output, "O_{2}", "Muon", 0.05, 1);
+	drawObservable( f, "MC__Evt2b_O7Asym_El", output, "O_{7}", "Electron", 0.05, 0);
+	drawObservable( f, "MC__Evt2b_O2Asym_El", output, "O_{2}", "Electron", 0.05, 1);
 
 	drawObservableDist( f, output, "MC__Evt_O7", "O_{7}/M_{top}^{3}", "LepJets", 1);
 	drawObservableDist( f, output, "MC__Evt_O2", "O_{2}/M_{top}^{3}", "LepJets", 1);
 	drawObservableDist( f, output, "MC__Evt2b_O7", "O_{7}/M_{top}^{3}", "LepJets", 1);
 	drawObservableDist( f, output, "MC__Evt2b_O2", "O_{2}/M_{top}^{3}", "LepJets", 1);
 
-	drawACPLepJet( f, "MC__Evt", "", output, "ACP", 10, 1 );
-	drawACPLepJet( f, "MC__Evt2b", "", output, "ACP", 10, 1 );
+	drawACPLepJet( f, "MC__Evt", "", output, "ACP", 1, 1 );
+	drawACPLepJet( f, "MC__Evt2b", "", output, "ACP", 1, 1 );
 
 	drawStack( f, "Evt2b_O2", "O_{2}/M_{top}^{3}", "Events", output, 1, false );
 	drawStack( f, "Evt2b_O2", "O_{2}/M_{top}^{3}", "Events", output, 1, true );
