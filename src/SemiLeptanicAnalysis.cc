@@ -541,8 +541,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			{
 				if( seljetCol.size() >= NJets_ )
 				{ 	
-					if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq3 Jets", 1);
-					if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill("#geq3 Jets", 1);
+					if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#geq"+int2str(NJets_)+" Jets").c_str(), 1);
+					if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#geq"+int2str(NJets_)+" Jets").c_str(), 1);
 
 					if( nonbjetCol.size() >= 1 ){ 
 						if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq1 non-bjets", 1);
