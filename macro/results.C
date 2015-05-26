@@ -33,41 +33,20 @@ void getResultsLepJet(TFile* f, string output="."){
 	drawObservable( f, "MC__Evt_O2Asym_Mu",   output, "O_{2}^{#mu}", 	"Muon", 	0.05, 1);
 	drawObservable( f, "MC__Evt_O7Asym_El",   output, "O_{7}^{e}", 		"Electron", 0.05, 0);
 	drawObservable( f, "MC__Evt_O2Asym_El",   output, "O_{2}^{e}", 		"Electron", 0.05, 1);
-	drawObservable( f, "MC__Evt2b_O7Asym",    output, "O_{7}^{e+#mu}", 	"Combined", 0.05, 0);
-	drawObservable( f, "MC__Evt2b_O2Asym",    output, "O_{2}^{e+#mu}", 	"Combined", 0.05, 1);
-	drawObservable( f, "MC__Evt2b_O7Asym_Mu", output, "O_{7}^{#mu}", 	"Muon", 	0.05, 0);
-	drawObservable( f, "MC__Evt2b_O2Asym_Mu", output, "O_{2}^{#mu}", 	"Muon", 	0.05, 1);
-	drawObservable( f, "MC__Evt2b_O7Asym_El", output, "O_{7}^{e}", 		"Electron",	0.05, 0);
-	drawObservable( f, "MC__Evt2b_O2Asym_El", output, "O_{2}^{e}", 		"Electron", 0.05, 1);
 
 	drawObservableDist( f, output, "MC__Evt_O7", 	"O_{7}/M_{top}^{3}", "LepJets", 1);
 	drawObservableDist( f, output, "MC__Evt_O2", 	"O_{2}/M_{top}^{3}", "LepJets", 1);
-	drawObservableDist( f, output, "MC__Evt2b_O7", 	"O_{7}/M_{top}^{3}", "LepJets", 1);
-	drawObservableDist( f, output, "MC__Evt2b_O2", 	"O_{2}/M_{top}^{3}", "LepJets", 1);
 
 	drawACPLepJet( f, "MC__Evt", 	"", output, "ACP", 1, 1 );
-	drawACPLepJet( f, "MC__Evt2b", 	"", output, "ACP", 1, 1 );
 
-	drawStack( f, "Evt2b_O2", "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, 1, false );
-	drawStack( f, "Evt2b_O2", "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, 1, true );
-	drawStack( f, "Evt2b_O7", "O_{7}^{e+#mu}/M_{top}^{3}", "Events", output, 1, false );
-	drawStack( f, "Evt2b_O7", "O_{7}^{e+#mu}/M_{top}^{3}", "Events", output, 1, true );
 	drawStack( f, "Evt_O2",   "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, 1, false );
 	drawStack( f, "Evt_O2",   "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, 1, true );
 	drawStack( f, "Evt_O7",   "O_{7}^{e+#mu}/M_{top}^{3}", "Events", output, 1, false );
 	drawStack( f, "Evt_O7",   "O_{7}^{e+#mu}/M_{top}^{3}", "Events", output, 1, true );
-	drawStack( f, "Evt2b_O2_Mu", "O_{2}^{#mu}/M_{top}^{3}", "Events", output, 1, false );
-	drawStack( f, "Evt2b_O2_Mu", "O_{2}^{#mu}/M_{top}^{3}", "Events", output, 1, true );
-	drawStack( f, "Evt2b_O7_Mu", "O_{7}^{#mu}/M_{top}^{3}", "Events", output, 1, false );
-	drawStack( f, "Evt2b_O7_Mu", "O_{7}^{#mu}/M_{top}^{3}", "Events", output, 1, true );
 	drawStack( f, "Evt_O2_Mu",   "O_{2}^{#mu}/M_{top}^{3}", "Events", output, 1, false );
 	drawStack( f, "Evt_O2_Mu",   "O_{2}^{#mu}/M_{top}^{3}", "Events", output, 1, true );
 	drawStack( f, "Evt_O7_Mu",   "O_{7}^{#mu}/M_{top}^{3}", "Events", output, 1, false );
 	drawStack( f, "Evt_O7_Mu",   "O_{7}^{#mu}/M_{top}^{3}", "Events", output, 1, true );
-	drawStack( f, "Evt2b_O2_El", "O_{2}^{e}/M_{top}^{3}", "Events", output, 1, false );
-	drawStack( f, "Evt2b_O2_El", "O_{2}^{e}/M_{top}^{3}", "Events", output, 1, true );
-	drawStack( f, "Evt2b_O7_El", "O_{7}^{e}/M_{top}^{3}", "Events", output, 1, false );
-	drawStack( f, "Evt2b_O7_El", "O_{7}^{e}/M_{top}^{3}", "Events", output, 1, true );
 	drawStack( f, "Evt_O2_El",   "O_{2}^{e}/M_{top}^{3}", "Events", output, 1, false );
 	drawStack( f, "Evt_O2_El",   "O_{2}^{e}/M_{top}^{3}", "Events", output, 1, true );
 	drawStack( f, "Evt_O7_El",   "O_{7}^{e}/M_{top}^{3}", "Events", output, 1, false );
