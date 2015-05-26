@@ -411,27 +411,30 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		for( int idx=0; idx < LepInfo.Size; idx++)
 		{
 			Lepton lepton( LepInfo, idx );
-			float relIso1=( lepton.ChargedHadronIso + lepton.NeutralHadronIso + lepton.PhotonIso)/fabs(lepton.Pt);
 			// Electron selections
 			if( lepton.LeptonType == 11 )
 			{
+				float relIso1=( lepton.ChargedHadronIsoR03 + lepton.NeutralHadronIsoR03 + lepton.PhotonIsoR03)/fabs(lepton.Pt);
 				if( abs(lepton.Eta) > 2.5 ) continue;
 				if( abs(lepton.Eta) < 1.566 && abs(lepton.Eta) > 1.4442) continue;
 				if( lepton.Et < 20 ) continue;
 				if( relIso1 > 0.15 ) continue;
 	
-				looseElCol_isoMu.push_back(lepton);	
-
-				if( lepton.Et < IsoEleEt_ )
+				if( lepton.EgammaMVATrig > 0 && lepton.EgammaMVATrig < 1. )
 				{
-					looseElCol_isoEl.push_back(lepton);
+					looseElCol_isoMu.push_back(lepton);	
+					if( lepton.Et < IsoEleEt_ )
+					{
+						looseElCol_isoEl.push_back(lepton);
+					}
 				}
-				else if( relIso1 < 0.1 &&
-					 lepton.Et > IsoEleEt_ &&
-					 lepton.ElTrackDxy_PV < 0.5 && 
-					 abs(lepton.Eta) < 2.1 
-					 //sqrt(lepton.ElTrackDz_BS*lepton.ElTrackDz_BS+lepton.ElTrackDxy_BS*lepton.ElTrackDxy_BS)<0.02 
-					)
+				if( relIso1 < 0.1 &&
+				    lepton.Et > IsoEleEt_ &&
+				    lepton.EgammaMVATrig > 0.5 && 
+				    lepton.NumberOfExpectedInnerHits <= 0 && 
+				    abs(lepton.Eta) < 2.1 && 
+				    abs(lepton.ElTrackDxy_PV)<0.02 
+				  )
 				{
 					selElCol.push_back(lepton);
 				}	
@@ -439,6 +442,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			// Muon selections
 			if( lepton.LeptonType == 13 )
 			{
+				float relIso1=( lepton.ChargedHadronIsoR04 + lepton.NeutralHadronIsoR04 + lepton.PhotonIsoR04)/fabs(lepton.Pt);
 				if( relIso1 > 0.2 ) continue;	
 				if( abs(lepton.Eta) > 2.5 ) continue;
 				if( lepton.Pt < 10) continue;
@@ -450,18 +454,19 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 				{
 					looseMuCol_isoMu.push_back(lepton);	
 				}
-				else if( relIso1 < 0.125 &&
+				else if( relIso1 < 0.12 &&
 					 lepton.Pt >= IsoMuonPt_ && 
 					 lepton.MuNMuonhits > 0  &&
-					 lepton.MuNPixelLayers > 0  &&
-					 lepton.MuNTrackerHits > 10  &&
-					 lepton.MuInnerTrackNHits > 10  &&
 					 lepton.MuNMatchedStations > 1  &&
-					 lepton.MuInnerTrackDxy_BS < 0.02 &&
 					 lepton.MuGlobalNormalizedChi2 < 10 &&
+					 lepton.MuNTrackLayersWMeasurement > 5  &&
 					 (lepton.MuType&0x02) != 0 && // Global muon 
-					 //(lepton.MuType&0x04) != 0 && // Tracker muon 
+					 abs(lepton.MuInnerTrackDxy_PV) < 0.2 &&
 					 abs(lepton.Eta) < 2.1  
+					 //lepton.MuNPixelLayers > 0  &&
+					 //lepton.MuNTrackerHits > 10  &&
+					 //lepton.MuInnerTrackNHits > 10  &&
+					 //abs(lepton.MuInnerTrackDxy_BS) < 0.02 &&
 					) // tight muon
 				{
 					selMuCol.push_back(lepton);

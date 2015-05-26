@@ -81,3 +81,12 @@ void caculateACPDetail( TFile* f, std::string histName, std::string Oname="O")
    printf("%-15s: ", histName.c_str());	
    std::cout<<caculateACPDetail(Oh, Oname)<<std::endl;;
 }
+
+////* Caculate Cutflow
+//template<class th1>
+//void getCutFlowNum( th1* h_cutflow )
+//{
+//	for( )
+//
+//
+//}

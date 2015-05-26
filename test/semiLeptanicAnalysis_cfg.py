@@ -25,7 +25,7 @@ options.register('ttreedir', 'bprimeKit',
 	VarParsing.varType.string,
 	"Name of ROOT TTree dir: Either 'ntuple' or 'skim' or 'bVeto'"
 	)
-options.register('NJets', 3,
+options.register('NJets', 4,
 	VarParsing.multiplicity.singleton,	
 	VarParsing.varType.int,
 	"Number of jets"
@@ -40,7 +40,7 @@ options.register('IsoEleEt', 30.,
 	VarParsing.varType.float,
 	"Pt of isolated electron"
 	)
-options.register('IsoMuonPt', 30,
+options.register('IsoMuonPt', 26,
 	VarParsing.multiplicity.singleton,	
 	VarParsing.varType.float,
 	"Pt of isolated muon"
