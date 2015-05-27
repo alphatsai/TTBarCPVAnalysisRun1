@@ -76,17 +76,28 @@ std::string caculateACPDetail( th1* h, std::string Oname="O" )
    return out; 
 }
 void caculateACPDetail( TFile* f, std::string histName, std::string Oname="O")
- {
+{
    TH1D* Oh = (TH1D*)f->Get(histName.c_str());
    printf("%-15s: ", histName.c_str());	
    std::cout<<caculateACPDetail(Oh, Oname)<<std::endl;;
 }
 
 ////* Caculate Cutflow
-//template<class th1>
-//void getCutFlowNum( th1* h_cutflow )
-//{
-//	for( )
-//
-//
-//}
+void getCutFlowNum( TH1D* h_cutflow, std::string name="" )
+{
+	int minBin = 1;
+	int maxBin = h_cutflow->GetNbinsX();
+	printf("%s\n", name.c_str());
+	printf("%15s %10s %10s\n", "Selection", "Events", "Eff(%)");
+	printf("-----------------------------------------\n");
+	double lastEvents=0;
+	for( int bin=minBin; bin<=maxBin; bin++)
+	{	
+		if( bin == minBin ) lastEvents = h_cutflow->GetBinContent(bin);
+		double eff = h_cutflow->GetBinContent(bin)/lastEvents*100;
+		char label[100];
+		sprintf( label, "%s", h_cutflow->GetXaxis()->GetBinLabel(bin));
+		printf("%15s %10.0f %10.1f\n", label, h_cutflow->GetBinContent(bin), eff);
+		lastEvents = h_cutflow->GetBinContent(bin);
+	}
+}
