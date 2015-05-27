@@ -78,4 +78,6 @@ void getResultsLepJet(TFile* f, string output="."){
 	drawStack( f, "Evt_CutFlow_Mu", "", "Events", output, 1, false );
 	drawStack( f, "Evt_CutFlow_El", "", "Events", output, 1, false );
 	
+	getCutFlowNum(f, "MC__Evt_CutFlow_Mu", true, output);
+	getCutFlowNum(f, "MC__Evt_CutFlow_El", true, output);
 }
