@@ -79,6 +79,7 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
 	InputTTree  = cms.string(options.ttreedir+'/root'),
 	InputFiles  = cms.vstring(FileNames), 
 	#InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLeptTest),
+	#InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkim),
 	#InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLept),
 	MuonHLT     = cms.vint32( 2868,3244,3542,4204,4205,4827,5106,5573  ), #HLT_IsoMu24_eta2p1_v*
 	ElectronHLT = cms.vint32( 3155,3496,4002,4003,4004,5043 ), #HLT_Ele27_WP80_v 

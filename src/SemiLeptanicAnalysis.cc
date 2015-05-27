@@ -57,8 +57,11 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
 	IsoMuonPt_(iConfig.getParameter<double>("IsoMuonPt")),
 	NonBjetCSVThr_(iConfig.getParameter<double>("NonBjetCSVThr")),
 	Owrt_(iConfig.getParameter<double>("Owrt")),
-	Debug_(iConfig.getParameter<bool>("Debug"))
-{}
+	Debug_(iConfig.getParameter<bool>("Debug")),
+	isSkim_(false)
+{
+	if( inputTTree_.compare("Skim/root") == 0 ){ isSkim_=true; }
+}
 
 SemiLeptanicAnalysis::~SemiLeptanicAnalysis()
 { 
@@ -73,18 +76,32 @@ std::string SemiLeptanicAnalysis::int2str( int i )
 	ss << i;
 	return ss.str();	
 }
-template<class TH1>
+	template<class TH1>
 void SemiLeptanicAnalysis::setCutFlow( TH1* h )
 {
-	h->GetXaxis()->SetBinLabel(1,"All");
-	h->GetXaxis()->SetBinLabel(2,"#geq1 goodVtx");
-	h->GetXaxis()->SetBinLabel(3,"HLT");
-	h->GetXaxis()->SetBinLabel(4,"#geq1 Lep");
-	h->GetXaxis()->SetBinLabel(5,"1 isoLep");
-	h->GetXaxis()->SetBinLabel(6,"veto(Loose #mu)");
-	h->GetXaxis()->SetBinLabel(7,"veto(Loose e)");
-	h->GetXaxis()->SetBinLabel(8,("#geq"+int2str(NJets_)+" Jets").c_str());
-	h->GetXaxis()->SetBinLabel(9,"=2 bjets");
+	if( isSkim_ )
+	{
+		h->GetXaxis()->SetBinLabel(1,"All");
+		h->GetXaxis()->SetBinLabel(2,"PreSelect");
+		h->GetXaxis()->SetBinLabel(3,"#geq1 goodVtx");
+		h->GetXaxis()->SetBinLabel(4,"HLT");
+		h->GetXaxis()->SetBinLabel(5,"#geq1 Lep");
+		h->GetXaxis()->SetBinLabel(6,"1 isoLep");
+		h->GetXaxis()->SetBinLabel(7,"veto(Loose #mu)");
+		h->GetXaxis()->SetBinLabel(8,"veto(Loose e)");
+		h->GetXaxis()->SetBinLabel(9,("#geq"+int2str(NJets_)+" Jets").c_str());
+		h->GetXaxis()->SetBinLabel(10,"=2 bjets");
+	}else{
+		h->GetXaxis()->SetBinLabel(1,"All");
+		h->GetXaxis()->SetBinLabel(2,"#geq1 goodVtx");
+		h->GetXaxis()->SetBinLabel(3,"HLT");
+		h->GetXaxis()->SetBinLabel(4,"#geq1 Lep");
+		h->GetXaxis()->SetBinLabel(5,"1 isoLep");
+		h->GetXaxis()->SetBinLabel(6,"veto(Loose #mu)");
+		h->GetXaxis()->SetBinLabel(7,"veto(Loose e)");
+		h->GetXaxis()->SetBinLabel(8,("#geq"+int2str(NJets_)+" Jets").c_str());
+		h->GetXaxis()->SetBinLabel(9,"=2 bjets");
+	}
 	return ;
 }
 
@@ -201,8 +218,8 @@ void SemiLeptanicAnalysis::beginJob()
 	h1.addNewTH1( "Evt_NSelElectrons", "Num. of selected electron",	"N(selected e)",  "Events", 	"", 	"",		10, 0,   10) ;
 	h1.addNewTH1( "Evt_NLooseMuIsoEl", "Num. of loose muon", 	"N(loose #mu)",	  "Events", 	"", 	"",		10, 0,   10) ;
 	h1.addNewTH1( "Evt_NLooseElIsoEl", "Num. of loose electron", 	"N(loose e)",	  "Events", 	"", 	"",		10, 0,   10) ;
-	h1.addNewTH1( "Evt_CutFlow_Mu",    "",         	 		"",     "Evetns", "", "",    9, 0, 9 );
-	h1.addNewTH1( "Evt_CutFlow_El",    "",         	  		"",     "Evetns", "", "",    9, 0, 9 );
+	h1.addNewTH1( "Evt_CutFlow_Mu",    "",         	 		"",     "Evetns", "", "",    10, 0, 10 );
+	h1.addNewTH1( "Evt_CutFlow_El",    "",         	  		"",     "Evetns", "", "",    10, 0, 10 );
 	h1.addNewTH1( "Evt_MuCut",     	   "isoMu:looseMu:looseEl",    	"",     "Evetns", "", "",    7, 0, 7 );
 	h1.addNewTH1( "Evt_ElCut",     	   "isoEl:looseMu:looseEl",     "",     "Evetns", "", "",    7, 0, 7 );
 	h1.addNewTH1( "Evt_SameChannel",   "",     "",     "Evetns", "", "",    1, 0, 1 );
@@ -226,10 +243,26 @@ void SemiLeptanicAnalysis::beginJob()
 	std::cout<<">> [INFO] Chaining "<<inputFiles_.size()<<" files..."<<endl;
 	chain_  = new TChain(inputTTree_.c_str());
 
+	double allEvents(0);
 	for(unsigned i=0; i<inputFiles_.size(); ++i){
 		chain_->Add(inputFiles_.at(i).c_str());
-		TFile *f = TFile::Open(inputFiles_.at(i).c_str(),"READ");
-		f->Close();
+		if( isSkim_ ) 
+		{	
+			TFile *f = TFile::Open(inputFiles_.at(i).c_str(),"READ");
+			TH1D* h = (TH1D*)f->Get("Skim/Evt_CutFlow");
+			allEvents += h->GetBinContent(1);
+			f->Close();
+		}
+	}
+	
+	if( isSkim_ )
+	{ 
+		h1.GetTH1("Evt_CutFlow")->Fill("All", allEvents);	
+		h1.GetTH1("Evt_CutFlow")->SetBinError(1, sqrt(allEvents));	
+		h1.GetTH1("Evt_CutFlow_Mu")->Fill("All", allEvents);	
+		h1.GetTH1("Evt_CutFlow_Mu")->SetBinError(1, sqrt(allEvents));	
+		h1.GetTH1("Evt_CutFlow_El")->Fill("All", allEvents);	
+		h1.GetTH1("Evt_CutFlow_El")->SetBinError(1, sqrt(allEvents));	
 	}
 
 	EvtInfo.Register(chain_);
@@ -429,10 +462,17 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		Jet hardJet, bjet1, bjet2;
 		Lepton isoMu, isoEl;
 		bool isGoodMuonEvt(false), isGoodElectronEvt(false);
-
-		h1.GetTH1("Evt_CutFlow")->Fill("All", 1);
-		h1.GetTH1("Evt_CutFlow_El")->Fill("All", 1);
-		h1.GetTH1("Evt_CutFlow_Mu")->Fill("All", 1);
+		
+		if( isSkim_ )
+		{
+			h1.GetTH1("Evt_CutFlow")->Fill("PreSelect", 1);
+			h1.GetTH1("Evt_CutFlow_El")->Fill("PreSelect", 1);
+			h1.GetTH1("Evt_CutFlow_Mu")->Fill("PreSelect", 1);
+		}else{
+			h1.GetTH1("Evt_CutFlow")->Fill("All", 1);
+			h1.GetTH1("Evt_CutFlow_El")->Fill("All", 1);
+			h1.GetTH1("Evt_CutFlow_Mu")->Fill("All", 1);
+		}
 
 		if( selVertex.size() )
 		{

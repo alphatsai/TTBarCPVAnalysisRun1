@@ -72,6 +72,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		const double NonBjetCSVThr_;
 		const double Owrt_;
 		bool   Debug_;
+		bool isSkim_;
 
 		edm::Service<TFileService> fs;
 		TChain*            chain_;
