@@ -101,3 +101,45 @@ void getCutFlowNum( TH1D* h_cutflow, std::string name="" )
 		lastEvents = h_cutflow->GetBinContent(bin);
 	}
 }
+void getCutFlowNum( TFile* f, std::string name="", bool printOut=false, std::string output="." )
+{
+	TH1D* h_cutflow = (TH1D*)f->Get(name.c_str());
+
+	FILE * out;
+	if( printOut )
+	{
+		printf("Writing to %s...", (output+"/Table_"+name+".txt").c_str());
+		out = fopen ((output+"/Table_"+name+".txt").c_str(),"w");
+	}
+
+	int minBin = 1;
+	int maxBin = h_cutflow->GetNbinsX();
+	printf("\nHistogram: %s\n", name.c_str());
+	printf("%15s %10s %10s\n", "Selection", "Events", "Eff(%)");
+	printf("-----------------------------------------\n");
+	if( printOut )
+	{
+		out = fopen ((output+"/Table_"+name+".txt").c_str(),"w");
+		fprintf(out, "\nHistogram: %s\n", name.c_str());
+		fprintf(out, "%15s %10s %10s\n", "Selection", "Events", "Eff(%)");
+		fprintf(out, "-----------------------------------------\n");
+	}
+	double lastEvents=0;
+	for( int bin=minBin; bin<=maxBin; bin++)
+	{	
+		if( bin == minBin ) lastEvents = h_cutflow->GetBinContent(bin);
+		double eff = h_cutflow->GetBinContent(bin)/lastEvents*100;
+		char label[100];
+		sprintf( label, "%s", h_cutflow->GetXaxis()->GetBinLabel(bin));
+		printf("%15s %10.0f %10.1f\n", label, h_cutflow->GetBinContent(bin), eff);
+		if( printOut ) fprintf(out, "%15s %10.0f %10.1f\n", label, h_cutflow->GetBinContent(bin), eff);
+		lastEvents = h_cutflow->GetBinContent(bin);
+	}
+	printf("-----------------------------------------\n");
+	if( printOut )
+	{ 
+		fprintf(out, "-----------------------------------------\n");
+		fclose(out);
+	}
+	
+}
