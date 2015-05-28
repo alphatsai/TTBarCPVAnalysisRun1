@@ -1,15 +1,24 @@
 # Dataset_name    Number_of_jobs    EOS_location    PyCfg_parameters (optional)
-TTJets_SemiLeptMGDecays 125 /eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1  outFilename=Skim.root
-TTJets_FullLeptMGDecays 75 /eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2  outFilename=Skim.root
-TTJets_HadronicMGDecays 75 /eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/TTJets_HadronicMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
+TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1 125 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1  outFilename=Skim.root
+TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2 75 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2  outFilename=Skim.root
+TTJets_HadronicMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v1 75 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/TTJets_HadronicMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
 
-T_t-channel 5 /eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/T_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v2  outFilename=Skim.root
-T_s-channel 5 /eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/T_s-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
-T_tW-channel 5 /eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
-##
-Tbar_s-channel 5 /eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
-Tbar_t-channel 10 /eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
-Tbar_tW-channel 5 /eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
-##
-DYJetsToLL 100 /eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
-WJetsToLNu 100 /eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v2  outFilename=Skim.root
+T_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v2 5 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/T_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v2  outFilename=Skim.root
+T_s-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 5 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/T_s-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
+T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 5 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
+
+Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 5 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
+Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 10 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
+Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 5 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
+
+DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1 100 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
+WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v2 100 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v2  outFilename=Skim.root
+#
+SingleElectron_Run2012A-22Jan2013-v1_190645-193621 100 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/data/SingleElectron_Run2012A-22Jan2013-v1_190645-193621 outFilename=Skim.root
+SingleElectron_Run2012B-22Jan2013-v1_193834-194833 100 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/data/SingleElectron_Run2012B-22Jan2013-v1_193834-194833 outFilename=Skim.root
+SingleElectron_Run2012B-22Jan2013-v1_194834-195833 100 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/data/SingleElectron_Run2012B-22Jan2013-v1_194834-195833 outFilename=Skim.root
+SingleElectron_Run2012B-22Jan2013-v1_195834-196531 100 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/data/SingleElectron_Run2012B-22Jan2013-v1_195834-196531 outFilename=Skim.root
+SingleElectron_Run2012C-22Jan2013-v1_198049-199649 100 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/data/SingleElectron_Run2012C-22Jan2013-v1_198049-199649 outFilename=Skim.root
+SingleElectron_Run2012C-22Jan2013-v1_199650-200649 100 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/data/SingleElectron_Run2012C-22Jan2013-v1_199650-200649 outFilename=Skim.root
+SingleElectron_Run2012C-22Jan2013-v1_200650-201949 100 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/data/SingleElectron_Run2012C-22Jan2013-v1_200650-201949 outFilename=Skim.root
+SingleElectron_Run2012C-22Jan2013-v1_201950-203002 100 /eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/data/SingleElectron_Run2012C-22Jan2013-v1_201950-203002 outFilename=Skim.root
