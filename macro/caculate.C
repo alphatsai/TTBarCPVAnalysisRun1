@@ -8,8 +8,7 @@ std::string double2str( double i )
 	return ss.str();	
 }
 ////* Caculate ACP
-template<class th1>
-double caculateACPerror( th1* Oh, bool murmur=false)
+double caculateACPerror( TH1* Oh, bool murmur=false)
 {
    int binOg0=2; 	
    int binOl0=1; 	
