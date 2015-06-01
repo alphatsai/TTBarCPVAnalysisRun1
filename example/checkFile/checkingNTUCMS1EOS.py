@@ -11,6 +11,8 @@ refRoots=[]
 eosRoots=[]
 for iref in files:
 	rfile = iref.strip()
+	if rfile.startswith('#') or not rfile:
+		continue
 	outfile = rfile+'.sh'
 	copy.write('cp '+outfile+' ~'+eosPath+'/'+rfile+'/\n')		
 	print '>> %s...'%(rfile)
