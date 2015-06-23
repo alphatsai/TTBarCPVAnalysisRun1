@@ -162,7 +162,13 @@ double SemiLeptanicAnalysis::Obs7( TVector3 beam, Jet bjet1, Jet bjet2 )
 }
 // ------------ method called once each job just before starting event loop  ------------
 void SemiLeptanicAnalysis::beginJob()
-{ 
+{
+	newtree_ = fs->make<TTree>("tree", "");
+	newtree_->Branch("EvtInfo.RunNo"	    , &RunNo_	       , "EvtInfo.RunNo/I"	    );
+	newtree_->Branch("EvtInfo.EvtNo"	    , &EvtNo_	       , "EvtInfo.EvtNo/L"	    );
+	newtree_->Branch("EvtInfo.BxNo"	    , &BxNo_	       , "EvtInfo.BxNo/I"	    );
+	newtree_->Branch("EvtInfo.LumiNo"    , &LumiNo_	       , "EvtInfo.LumiNo/I"	    );
+ 
 	h1 = TH1InfoClass<TH1D>(Debug_);
 	h1.addNewTH1( "Evt_O7_Mu",	 "O7",	  	"O_{7}", "Events", 	"", 	"", 40, -2,   2) ;
 	h1.addNewTH1( "Evt_O7_El",	 "O7",	  	"O_{7}", "Events", 	"", 	"", 40, -2,   2) ;
@@ -621,6 +627,12 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		if( isGoodMuonEvt && isGoodElectronEvt ) h1.GetTH1("Evt_SameChannel")->Fill(0);
 		if( isGoodMuonEvt || isGoodElectronEvt )
 		{
+			RunNo_ = EvtInfo.RunNo;
+			EvtNo_ = EvtInfo.EvtNo;
+			BxNo_  = EvtInfo.BxNo;
+			LumiNo_= EvtInfo.LumiNo;
+			newtree_->Fill();
+
 			h1.GetTH1("Evt_bJet1_Pt")->Fill(bjet1.Pt);
 			h1.GetTH1("Evt_bJet1_Eta")->Fill(bjet1.Eta);
 			h1.GetTH1("Evt_bJet1_Phi")->Fill(bjet1.Phi);
