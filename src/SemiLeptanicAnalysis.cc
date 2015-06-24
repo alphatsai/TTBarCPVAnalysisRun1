@@ -58,7 +58,8 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
 	NonBjetCSVThr_(iConfig.getParameter<double>("NonBjetCSVThr")),
 	Owrt_(iConfig.getParameter<double>("Owrt")),
 	Debug_(iConfig.getParameter<bool>("Debug")),
-	isSkim_(false)
+	isSkim_(iConfig.getParameter<bool>("IsSkim")),
+	doSaveTree_(iConfig.getParameter<bool>("DoSaveTree"))
 {
 	if( inputTTree_.compare("Skim/root") == 0 ){ isSkim_=true; }
 }
@@ -163,11 +164,11 @@ double SemiLeptanicAnalysis::Obs7( TVector3 beam, Jet bjet1, Jet bjet2 )
 // ------------ method called once each job just before starting event loop  ------------
 void SemiLeptanicAnalysis::beginJob()
 {
-	newtree_ = fs->make<TTree>("tree", "");
-	newtree_->Branch("EvtInfo.RunNo"	    , &RunNo_	       , "EvtInfo.RunNo/I"	    );
-	newtree_->Branch("EvtInfo.EvtNo"	    , &EvtNo_	       , "EvtInfo.EvtNo/L"	    );
-	newtree_->Branch("EvtInfo.BxNo"	    , &BxNo_	       , "EvtInfo.BxNo/I"	    );
-	newtree_->Branch("EvtInfo.LumiNo"    , &LumiNo_	       , "EvtInfo.LumiNo/I"	    );
+	//newtree_ = fs->make<TTree>("tree", "");
+	//newtree_->Branch("EvtInfo.RunNo"	    , &RunNo_	       , "EvtInfo.RunNo/I"	    );
+	//newtree_->Branch("EvtInfo.EvtNo"	    , &EvtNo_	       , "EvtInfo.EvtNo/L"	    );
+	//newtree_->Branch("EvtInfo.BxNo"	    , &BxNo_	       , "EvtInfo.BxNo/I"	    );
+	//newtree_->Branch("EvtInfo.LumiNo"    , &LumiNo_	       , "EvtInfo.LumiNo/I"	    );
  
 	h1 = TH1InfoClass<TH1D>(Debug_);
 	h1.addNewTH1( "Evt_O7_Mu",	 "O7",	  	"O_{7}", "Events", 	"", 	"", 40, -2,   2) ;
@@ -260,6 +261,19 @@ void SemiLeptanicAnalysis::beginJob()
 			f->Close();
 		}
 	}
+	if( doSaveTree_ )
+	{
+		fs->cd();
+		newtree_ = chain_->CloneTree(0);
+	}else{
+		newtree_ = fs->make<TTree>("tree", "");
+		newtree_->Branch("EvtInfo.RunNo"    ,&RunNo_	       , "EvtInfo.RunNo/I"	    );
+		newtree_->Branch("EvtInfo.EvtNo"    ,&EvtNo_	       , "EvtInfo.EvtNo/L"	    );
+		newtree_->Branch("EvtInfo.BxNo"	    ,&BxNo_	       , "EvtInfo.BxNo/I"	    );
+		newtree_->Branch("EvtInfo.LumiNo"   ,&LumiNo_	       , "EvtInfo.LumiNo/I"	    );
+	}
+	newtree_->Branch("EvtInfo.isMuonEvt"	    ,&isMuonEvt_	, "EvtInfo.isMuonEvt/I"	    );
+	newtree_->Branch("EvtInfo.isEleEvt"	    ,&isEleEvt_	, "EvtInfo.isEleEvt/I"	    );
 	
 	if( isSkim_ )
 	{ 
@@ -627,10 +641,21 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		if( isGoodMuonEvt && isGoodElectronEvt ) h1.GetTH1("Evt_SameChannel")->Fill(0);
 		if( isGoodMuonEvt || isGoodElectronEvt )
 		{
-			RunNo_ = EvtInfo.RunNo;
-			EvtNo_ = EvtInfo.EvtNo;
-			BxNo_  = EvtInfo.BxNo;
-			LumiNo_= EvtInfo.LumiNo;
+			if( !doSaveTree_ )
+			{
+				RunNo_ = EvtInfo.RunNo;
+				EvtNo_ = EvtInfo.EvtNo;
+				BxNo_  = EvtInfo.BxNo;
+				LumiNo_= EvtInfo.LumiNo;
+			}
+			if( isGoodMuonEvt )
+			{
+				isMuonEvt_ = 1;
+				isEleEvt_  = 0;
+			}else{
+				isMuonEvt_ = 0;
+				isEleEvt_  = 1;
+			}
 			newtree_->Fill();
 
 			h1.GetTH1("Evt_bJet1_Pt")->Fill(bjet1.Pt);

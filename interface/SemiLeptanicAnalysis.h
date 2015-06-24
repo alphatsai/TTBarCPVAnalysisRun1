@@ -73,11 +73,14 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		const double Owrt_;
 		bool   Debug_;
 		bool isSkim_;
+		bool doSaveTree_;
 
 		long long int EvtNo_;
 		int BxNo_;
 		int LumiNo_;
 		int RunNo_;
+		int isMuonEvt_;
+		int isEleEvt_;
 
 		edm::Service<TFileService> fs;
 		TChain*	chain_;
