@@ -103,6 +103,7 @@ def main():
   parser.add_option("-w", "--main_workdir", dest="main_workdir", action='store', help="Main working directory", metavar="MAIN_WORKDIR")
   parser.add_option("-d", "--dataset_list", dest="dataset_list", action='store', help="Text file containing a list of datasets to be processed", metavar="DATASET_LIST")
   parser.add_option("-o", "--output_filename", dest="output_filename", action='store', default='results', help="Output ROOT filename (Default set to results)", metavar="OUTPUT_FILENAME")
+  parser.add_option("-S", "--save_path", dest="save_path", action='store', help="Save files path to copy output files to (This parameter is optional)", metavar="SAVE_PATH")
   parser.add_option('-m', '--match', dest="match", action='store', help='Only files containing the MATCH string in their names will be considered (This parameter is optional)', metavar='MATCH')
   parser.add_option("-c", "--cmssw_cfg", dest="cmssw_cfg", action='store', help="CMSSW configuration file", metavar="CMSSW_CFG")
   parser.add_option('-f', '--fraction', dest='fraction', action='store', default='1.0', help='Fraction of files to be processed. Default value is 1 (This parameter is optional)', metavar='FRACTION')
@@ -171,6 +172,14 @@ def main():
     os.mkdir(dataset_workdir)
     os.mkdir(os.path.join(dataset_workdir,'input'))
     os.mkdir(os.path.join(dataset_workdir,'output'))
+
+    save_path = ' '
+    if ( options.save_path ):
+      save_path = ''.join([options.save_path,"/",dataset])
+      if not os.path.exists(save_path):
+       print "here"
+       commands.getoutput('mkdir -p '+save_path)
+      #proc = subprocess.Popen( [ 'mkdir', '-p', save_path ], stdout = subprocess.PIPE, stderr = subprocess.STDOUT )
 
     filelist = []
     process_input_dir(line_elements[2], options.match, filelist)
