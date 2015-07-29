@@ -52,16 +52,38 @@ Tbar_tW-channel 11.1
 Boson: L=19707
 DYJetsToLL 3503.7
 WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
+#ZZJetsTo2L2Q 1.28
+
+BosonJets: L=19707
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+
+DiBoson: L=19707
+WW 56.0
+WZ 33.6
+ZZ 8.2
 
 DYJetsToLL: L=19707
 DYJetsToLL 3503.7
 WJetsToLNu: L=19707
 WJetsToLNu 37509
+WW: L=19707
+WW 56.0
+WZ: L=19707
+WZ 33.6
+ZZ: L=19707
+ZZ 8.2
 
 ##### Dataset_name xs (in pb, for data set to -1)
 BkgMC: L=19707
 DYJetsToLL 3503.7
 WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
 T_t-channel 56.4
 T_s-channel 3.79
 T_tW-channel 11.1
@@ -82,6 +104,9 @@ Tbar_s-channel 1.76
 Tbar_tW-channel 11.1
 DYJetsToLL 3503.7
 WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
 
 #### Dataset_name xs (in pb, for data set to -1)
 #QCD: L=19707
