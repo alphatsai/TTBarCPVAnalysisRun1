@@ -41,6 +41,7 @@
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1InfoClass.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SemiLeptanicAnalysis.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorMuon.h" 
 
 //
 // constructors and destructor
