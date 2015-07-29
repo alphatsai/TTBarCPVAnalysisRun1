@@ -13,6 +13,7 @@ Tbar_tW-channel 1 /wk1/cmsdata/Production_CMSSW5311/CMSSW5_3_11_MC_AOD_v3/2012MC
 ###
 DYJetsToLL 20 /wk1/cmsdata/Production_CMSSW5311/CMSSW5_3_11_MC_AOD_v3/2012MC/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=SemiLeptanicAnalysis.root
 WJetsToLNu 20 /wk1/cmsdata/Production_CMSSW5311/CMSSW5_3_11_MC_AOD_v3/2012MC/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v2  outFilename=SemiLeptanicAnalysis.root
+WW 20 /wk1/cmsdata/Production_CMSSW5311/CMSSW5_3_11_MC_AOD_v3/2012MC/WW_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root
 
 QCD_EMEnriched_Pt20to30 20 /wk1/cmsdata/Production_CMSSW5311/CMSSW5_3_11_MC_AOD_v3/2012MC/QCD_Pt_20_30_EMEnriched_TuneZ2star_8TeV_pythia6_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=SemiLeptanicAnalysis.root
 QCD_EMEnriched_Pt30to80 20 /wk1/cmsdata/Production_CMSSW5311/CMSSW5_3_11_MC_AOD_v3/2012MC/QCD_Pt_30_80_EMEnriched_TuneZ2star_8TeV_pythia6_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=SemiLeptanicAnalysis.root

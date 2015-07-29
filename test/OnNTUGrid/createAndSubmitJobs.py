@@ -78,13 +78,22 @@ source /cvmfs/cms.cern.ch/cmsset_default.sh
 eval \`scramv1 runtime -sh\`
 cmsenv 
 
+SAVEPATH="SAVE_PATH"
+
 cp -v MAIN_WORKDIR/CMSSW_cfg.py CMSSW_cfg.py
 
 echo "Running CMSSW job"
 time cmsRun CMSSW_cfg.py CFG_PARAMETERS | tee -a job.log
 
-echo "Moving file  OUTPUT_FILENAME.root to DATASET_WORKDIR/output/OUTPUT_FILENAME_JOB_NUMBER.root"
-mv OUTPUT_FILENAME.root DATASET_WORKDIR/output/OUTPUT_FILENAME_JOB_NUMBER.root
+if [ ! -z $SAVEPATH -a $SAVEPATH!=" " ]
+then
+	echo "Copying file  OUTPUT_FILENAME.root to " ${SAVEPATH}"/OUTPUT_FILENAME_JOB_NUMBER.root"
+	mv OUTPUT_FILENAME.root ${SAVEPATH}/OUTPUT_FILENAME_JOB_NUMBER.root
+else
+	echo "Moving file  OUTPUT_FILENAME.root to DATASET_WORKDIR/output/OUTPUT_FILENAME_JOB_NUMBER.root"
+	mv OUTPUT_FILENAME.root DATASET_WORKDIR/output/OUTPUT_FILENAME_JOB_NUMBER.root
+fi
+
 mv job.log DATASET_WORKDIR/output/job_JOB_NUMBER.log
 
 """
@@ -177,7 +186,6 @@ def main():
     if ( options.save_path ):
       save_path = ''.join([options.save_path,"/",dataset])
       if not os.path.exists(save_path):
-       print "here"
        commands.getoutput('mkdir -p '+save_path)
       #proc = subprocess.Popen( [ 'mkdir', '-p', save_path ], stdout = subprocess.PIPE, stderr = subprocess.STDOUT )
 
@@ -227,6 +235,7 @@ def main():
        bash_script_content = re.sub('JOB_NUMBER',str(ijob),bash_script_content)
        bash_script_content = re.sub('CFG_PARAMETERS',cfg_parameters,bash_script_content)
        bash_script_content = re.sub('OUTPUT_FILENAME',output_filename,bash_script_content)
+       bash_script_content = re.sub('SAVE_PATH',save_path,bash_script_content)
        bash_script.write(bash_script_content)
        bash_script.close()
 
