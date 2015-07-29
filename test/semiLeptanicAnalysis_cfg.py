@@ -50,7 +50,7 @@ options.register('Owrt', 'MT:3',
 	VarParsing.varType.string,
 	"Weight the obseverble in top mass"
 	)
-options.register('DoSaveTree', True,
+options.register('DoSaveTree', False,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
 	"Store tree for selected events"
@@ -88,7 +88,6 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
 	InputTTree  = cms.string(options.ttreedir+'/root'),
 	InputFiles  = cms.vstring(FileNames), 
 	#InputFiles  = cms.vstring(FileNames_BprimtKits_NTUG3_SemiLeptTest), 
-	#InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLeptTest),
 	#InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkim),
 	#InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLept),
 	MuonHLT     = cms.vint32( 2868,3244,3542,4204,4205,4827,5106,5573  ), #HLT_IsoMu24_eta2p1_v*
