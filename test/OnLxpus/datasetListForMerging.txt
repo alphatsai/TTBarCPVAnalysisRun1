@@ -27,7 +27,7 @@ TTJets_FullLeptMGDecays: L=19707
 TTJets_FullLeptMGDecays 25.962625
 
 ##### Dataset_name xs (in pb, for data set to -1)
-SigleT: L=19707
+SingleT: L=19707
 T_t-channel 56.4
 T_s-channel 3.79
 T_tW-channel 11.1
