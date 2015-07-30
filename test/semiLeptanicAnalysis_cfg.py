@@ -82,13 +82,16 @@ isSkim = False
 if options.ttreedir.lower() == 'skim':
 	isSkim = True
 
+from TTBarCPV.TTBarCPVAnalysisRun1.LeptonSelector_cfi import*
+from TTBarCPV.TTBarCPVAnalysisRun1.MuonSelector_cfi import*
+
 process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
 	MaxEvents   = cms.int32(options.MaxEvents),
 	ReportEvery = cms.int32(options.reportEvery),  
 	InputTTree  = cms.string(options.ttreedir+'/root'),
-	InputFiles  = cms.vstring(FileNames), 
+	#InputFiles  = cms.vstring(FileNames), 
 	#InputFiles  = cms.vstring(FileNames_BprimtKits_NTUG3_SemiLeptTest), 
-	#InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkim),
+	InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkim),
 	#InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLept),
 	MuonHLT     = cms.vint32( 2868,3244,3542,4204,4205,4827,5106,5573  ), #HLT_IsoMu24_eta2p1_v*
 	ElectronHLT = cms.vint32( 3155,3496,4002,4003,4004,5043 ), #HLT_Ele27_WP80_v 
@@ -96,10 +99,12 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
 	IsoEleEt    = cms.double(options.IsoEleEt),
 	IsoMuonPt   = cms.double(options.IsoMuonPt),
 	NonBjetCSVThr = cms.double(options.NonBjetCSVThr), 
-	Owrt     = cms.double(Oweight), 
-	Debug    = cms.bool(options.Debug),
-        IsSkim  = cms.bool(isSkim),
-	DoSaveTree  = cms.bool(options.DoSaveTree) 
+	Owrt          = cms.double(Oweight), 
+	Debug         = cms.bool(options.Debug),
+        IsSkim        = cms.bool(isSkim),
+	DoSaveTree    = cms.bool(options.DoSaveTree), 
+	LooseLepSelPrams  = defaultLeptonSelectionParameters.clone(), 
+	TightMuonSelPrams = defaultMounSelectionParameters.clone(), 
 	) 
 
 process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )

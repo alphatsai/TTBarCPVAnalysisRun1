@@ -60,7 +60,9 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
 	Owrt_(iConfig.getParameter<double>("Owrt")),
 	Debug_(iConfig.getParameter<bool>("Debug")),
 	isSkim_(iConfig.getParameter<bool>("IsSkim")),
-	doSaveTree_(iConfig.getParameter<bool>("DoSaveTree"))
+	doSaveTree_(iConfig.getParameter<bool>("DoSaveTree")),
+	looseLepSelPrams_(iConfig.getParameter<edm::ParameterSet>("LooseLepSelPrams")),
+	tightMuonSelPrams_(iConfig.getParameter<edm::ParameterSet>("TightMuonSelPrams"))	
 {
 	if( inputTTree_.compare("Skim/root") == 0 ){ isSkim_=true; }
 }
@@ -165,12 +167,6 @@ double SemiLeptanicAnalysis::Obs7( TVector3 beam, Jet bjet1, Jet bjet2 )
 // ------------ method called once each job just before starting event loop  ------------
 void SemiLeptanicAnalysis::beginJob()
 {
-	//newtree_ = fs->make<TTree>("tree", "");
-	//newtree_->Branch("EvtInfo.RunNo"	    , &RunNo_	       , "EvtInfo.RunNo/I"	    );
-	//newtree_->Branch("EvtInfo.EvtNo"	    , &EvtNo_	       , "EvtInfo.EvtNo/L"	    );
-	//newtree_->Branch("EvtInfo.BxNo"	    , &BxNo_	       , "EvtInfo.BxNo/I"	    );
-	//newtree_->Branch("EvtInfo.LumiNo"    , &LumiNo_	       , "EvtInfo.LumiNo/I"	    );
- 
 	h1 = TH1InfoClass<TH1D>(Debug_);
 	h1.addNewTH1( "Evt_O7_Mu",	 "O7",	  	"O_{7}", "Events", 	"", 	"", 40, -2,   2) ;
 	h1.addNewTH1( "Evt_O7_El",	 "O7",	  	"O_{7}", "Events", 	"", 	"", 40, -2,   2) ;
@@ -311,6 +307,9 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 	ay.SetXYZ(0, 1, 0);
 	az.SetXYZ(0, 0, 1);
 
+	SelectorMuon LooseMuonSelection( looseLepSelPrams_,  Debug_ );
+	SelectorMuon tightMuonSelection( tightMuonSelPrams_, Debug_ );
+	
 	for(int entry=0; entry<maxEvents_; entry++)
 	{
 		chain_->GetEntry(entry);
@@ -447,35 +446,37 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			// Muon selections
 			if( lepton.LeptonType == 13 )
 			{
-				float relIso1=( lepton.ChargedHadronIsoR04 + lepton.NeutralHadronIsoR04 + lepton.PhotonIsoR04)/fabs(lepton.Pt);
-				if( relIso1 > 0.2 ) continue;	
-				if( abs(lepton.Eta) > 2.5 ) continue;
-				if( lepton.Pt < 10) continue;
-				if( (lepton.MuType&0x02) == 0 && (lepton.MuType&0x04) == 0 ) continue; 
+				//float relIso1=( lepton.ChargedHadronIsoR04 + lepton.NeutralHadronIsoR04 + lepton.PhotonIsoR04)/fabs(lepton.Pt);
+				//if( relIso1 > 0.2 ) continue;	
+				//if( abs(lepton.Eta) > 2.5 ) continue;
+				//if( lepton.Pt < 10) continue;
+				//if( (lepton.MuType&0x02) == 0 && (lepton.MuType&0x04) == 0 ) continue; 
 
-				looseMuCol_isoEl.push_back(lepton);	
+				//looseMuCol_isoEl.push_back(lepton);	
 
-				if( lepton.Pt < IsoMuonPt_ )
-				{
-					looseMuCol_isoMu.push_back(lepton);	
-				}
-				else if( relIso1 < 0.12 &&
-					 lepton.Pt >= IsoMuonPt_ && 
-					 lepton.MuNMuonhits > 0  &&
-					 lepton.MuNMatchedStations > 1  &&
-					 lepton.MuGlobalNormalizedChi2 < 10 &&
-					 lepton.MuNTrackLayersWMeasurement > 5  &&
-					 (lepton.MuType&0x02) != 0 && // Global muon 
-					 abs(lepton.MuInnerTrackDxy_PV) < 0.2 &&
-					 abs(lepton.Eta) < 2.1  
-					 //lepton.MuNPixelLayers > 0  &&
-					 //lepton.MuNTrackerHits > 10  &&
-					 //lepton.MuInnerTrackNHits > 10  &&
-					 //abs(lepton.MuInnerTrackDxy_BS) < 0.02 &&
-					) // tight muon
-				{
-					selMuCol.push_back(lepton);
-				}
+				//if( lepton.Pt < IsoMuonPt_ )
+				//{
+				//	looseMuCol_isoMu.push_back(lepton);	
+				//}
+				//else if( relIso1 < 0.12 &&
+				//	 lepton.Pt >= IsoMuonPt_ && 
+				//	 lepton.MuNMuonhits > 0  &&
+				//	 lepton.MuNMatchedStations > 1  &&
+				//	 lepton.MuGlobalNormalizedChi2 < 10 &&
+				//	 lepton.MuNTrackLayersWMeasurement > 5  &&
+				//	 (lepton.MuType&0x02) != 0 && // Global muon 
+				//	 abs(lepton.MuInnerTrackDxy_PV) < 0.2 &&
+				//	 abs(lepton.Eta) < 2.1  
+				//	 //lepton.MuNPixelLayers > 0  &&
+				//	 //lepton.MuNTrackerHits > 10  &&
+				//	 //lepton.MuInnerTrackNHits > 10  &&
+				//	 //abs(lepton.MuInnerTrackDxy_BS) < 0.02 &&
+				//	) // tight muon
+				//{
+				//	selMuCol.push_back(lepton);
+				//}
+				if( LooseMuonSelection.isPass(lepton) ) looseMuCol_isoEl.push_back(lepton);
+				if( LooseMuonSelection.isPass(lepton) ) looseMuCol_isoMu.push_back(lepton);
 			}
 		}
 
