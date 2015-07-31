@@ -1,19 +1,10 @@
-FileNames_BprimtKits_Hadronic = [
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/example/TTJets_HadronicMGDecays.root',
-]
-FileNames_BprimtKits_SemiLeptTest = [
-	'root://eoscms//eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/run1/Alpha/bprimekits/EightTeV/example/TTJets_SemiLeptMGDecays.root',
-]
 FileNames_BprimtKits_NTUG3_SemiLeptTest = [
 	'file:/wk1/cmsdata/Production_CMSSW5311/CMSSW5_3_11_MC_AOD_v3/2012MC/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/results_801_2_aVZ.root'
 ]
-#FileNames_BprimtKits_SemiLeptTest = [
-#	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/example/TTJets_SemiLeptMGDecays.root',
-#]
 FileNames_BprimtKits_SemiLeptTestSkim = [
-	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/Skim_102.root',
-	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/Skim_101.root',
-	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/Skim_100.root',
+	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/Skim_102.root',
+	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/Skim_101.root',
+	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/Skim_100.root',
 ]
 FileNames_BprimtKits_SemiLept = [
 	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/results_1000_2_AYs.root',
