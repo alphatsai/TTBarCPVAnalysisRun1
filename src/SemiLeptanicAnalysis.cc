@@ -41,6 +41,7 @@
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1InfoClass.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SemiLeptanicAnalysis.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorElectron.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorMuon.h" 
 
 //
@@ -62,7 +63,8 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
 	isSkim_(iConfig.getParameter<bool>("IsSkim")),
 	doSaveTree_(iConfig.getParameter<bool>("DoSaveTree")),
 	looseLepSelPrams_(iConfig.getParameter<edm::ParameterSet>("LooseLepSelPrams")),
-	tightMuonSelPrams_(iConfig.getParameter<edm::ParameterSet>("TightMuonSelPrams"))	
+	tightMuonSelPrams_(iConfig.getParameter<edm::ParameterSet>("TightMuonSelPrams")),	
+	tightElectronSelPrams_(iConfig.getParameter<edm::ParameterSet>("TightElectronSelPrams"))	
 {
 	if( inputTTree_.compare("Skim/root") == 0 ){ isSkim_=true; }
 }
@@ -309,6 +311,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 
 	SelectorMuon MuonSelectionLoose( looseLepSelPrams_,  Debug_ );
 	SelectorMuon MuonSelectionTight( tightMuonSelPrams_, Debug_ );
+	SelectorElectron ElectronSelectionLoose( looseLepSelPrams_,      Debug_ );
+	SelectorElectron ElectronSelectionTight( tightElectronSelPrams_, Debug_ );
 	
 	for(int entry=0; entry<maxEvents_; entry++)
 	{
@@ -348,7 +352,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( vtx.Type != 1 ) continue;
 			if( vtx.isFake ) continue;
 			if( vtx.Ndof < 4 ) continue;
-			if( abs(vtx.z) > 24 ) continue;
+			if( fabs(vtx.z) > 24 ) continue;
 			if( vtx.Rho > 2 ) continue;
 			selVertex.push_back(vtx);
 		}
@@ -375,7 +379,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( jet.CEF > 0.99 ) continue;
 			if( jet.NCH == 0 ) continue;
 			if( jet.NConstituents <= 1 ) continue;
-			if( abs( jet.Eta ) >= 2.4 ) continue;
+			if( fabs( jet.Eta ) >= 2.4 ) continue;
 			if( jet.Pt > 30. )
 			{ 
 				seljetCol.push_back(jet);
@@ -418,30 +422,37 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			// Electron selections
 			if( lepton.LeptonType == 11 )
 			{
-				float relIso1=( lepton.ChargedHadronIsoR03 + lepton.NeutralHadronIsoR03 + lepton.PhotonIsoR03)/fabs(lepton.Pt);
-				if( abs(lepton.Eta) > 2.5 ) continue;
-				if( abs(lepton.Eta) < 1.566 && abs(lepton.Eta) > 1.4442) continue;
-				if( lepton.Et < 20 ) continue;
-				if( relIso1 > 0.15 ) continue;
+			//	float relIso1=( lepton.ChargedHadronIsoR03 + lepton.NeutralHadronIsoR03 + lepton.PhotonIsoR03)/fabs(lepton.Pt);
+			//	if( fabs(lepton.Eta) > 2.5 ) continue;
+			//	if( fabs(lepton.Eta) < 1.566 && fabs(lepton.Eta) > 1.4442) continue;
+			//	if( lepton.Et < 20 ) continue;
+			//	if( relIso1 > 0.15 ) continue;
 	
-				if( lepton.EgammaMVATrig > 0 && lepton.EgammaMVATrig < 1. )
+			//	if( lepton.EgammaMVATrig > 0 && lepton.EgammaMVATrig < 1. )
+			//	{
+			//		looseElCol_isoMu.push_back(lepton);	
+			//		if( lepton.Et < IsoEleEt_ )
+			//		{
+			//			looseElCol_isoEl.push_back(lepton);
+			//		}
+			//	}
+			//	if( relIso1 < 0.1 &&
+			//	    lepton.Et > IsoEleEt_ &&
+			//	    lepton.EgammaMVATrig > 0.5 && 
+			//	    lepton.NumberOfExpectedInnerHits <= 0 && 
+			//	    fabs(lepton.Eta) < 2.1 && 
+			//	    fabs(lepton.ElTrackDxy_PV)<0.02 
+			//	  )
+			//	{
+			//		selElCol.push_back(lepton);
+			//	}
+				if( ElectronSelectionTight.isPass(lepton) ) selElCol.push_back(lepton);
+				if( ElectronSelectionLoose.isPass(lepton) ) looseElCol_isoMu.push_back(lepton);
+				if( ElectronSelectionLoose.isPass(lepton) &&
+				    lepton.Et < ElectronSelectionTight.getCut("lepEtMin")) 
 				{
-					looseElCol_isoMu.push_back(lepton);	
-					if( lepton.Et < IsoEleEt_ )
-					{
-						looseElCol_isoEl.push_back(lepton);
-					}
+					looseElCol_isoEl.push_back(lepton);
 				}
-				if( relIso1 < 0.1 &&
-				    lepton.Et > IsoEleEt_ &&
-				    lepton.EgammaMVATrig > 0.5 && 
-				    lepton.NumberOfExpectedInnerHits <= 0 && 
-				    abs(lepton.Eta) < 2.1 && 
-				    abs(lepton.ElTrackDxy_PV)<0.02 
-				  )
-				{
-					selElCol.push_back(lepton);
-				}	
 			}
 			// Muon selections
 			if( lepton.LeptonType == 13 )

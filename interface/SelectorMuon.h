@@ -24,7 +24,7 @@ class SelectorMuon{
 			hasCuts=false;
 			setCuts(iconfig, debug);
 		}
-		~SelectorMuon(){ return; }
+		~SelectorMuon(){};
  
 		// functions
 		void setCuts( const edm::ParameterSet& iconfig, bool debug=false )
@@ -39,7 +39,7 @@ class SelectorMuon{
 			checkTrackerMuon = iConfig.getParameter<bool>("CheckTrackerMuon");
 			setPars( "lepPt"                      );
 			setPars( "lepAbsEta"                  );
-			setPars( "lepRelIsoR40"               );
+			setPars( "lepRelIsoR04"               );
 			setPars( "MuAbsInnerTrackDxyPV"       );
 			setPars( "MuGlobalNormalizedChi2"     );
 			setPars( "MuNMuonhits"                );
@@ -54,7 +54,7 @@ class SelectorMuon{
 				printf("%30s %10d \n",     "checkTrackerMuon", checkTrackerMuon );
 				printCuts("pT",                         "lepPt"                         );
 				printCuts("|Eta|",                      "lepAbsEta"                     );
-				printCuts("relIsoR04",                  "lepRelIsoR40"                  );
+				printCuts("relIsoR04",                  "lepRelIsoR04"                  );
 				printCuts("|MuInnerTrackDxy_PV|",       "MuAbsInnerTrackDxyPV"          );
 				printCuts("MuGlobalNormalizedChi2",     "MuGlobalNormalizedChi2"        );
 				printCuts("MuNMuonhits",                "MuNMuonhits"                   );

@@ -76,6 +76,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		bool doSaveTree_;
 		edm::ParameterSet looseLepSelPrams_;
 		edm::ParameterSet tightMuonSelPrams_;
+		edm::ParameterSet tightElectronSelPrams_;
 
 		long long int EvtNo_;
 		int BxNo_;
