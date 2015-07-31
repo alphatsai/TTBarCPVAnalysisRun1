@@ -64,11 +64,9 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		const std::string               inputTTree_;
 		const std::vector<std::string>  inputFiles_;
 
-		vector<int> MuonHLT_;
-		vector<int> ElectronHLT_;
+		vector<int> HLT_MuChannel_;
+		vector<int> HLT_ElChannel_;
 		const unsigned int    NJets_;
-		const double IsoEleEt_;
-		const double IsoMuonPt_;
 		const double NonBjetCSVThr_;
 		const double Owrt_;
 		bool   Debug_;

@@ -52,11 +52,9 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
 	reportEvery_(iConfig.getParameter<int>("ReportEvery")),
 	inputTTree_(iConfig.getParameter<std::string>("InputTTree")),
 	inputFiles_(iConfig.getParameter<std::vector<std::string> >("InputFiles")),
-	MuonHLT_(iConfig.getParameter<std::vector<int>>("MuonHLT")),
-	ElectronHLT_(iConfig.getParameter<std::vector<int>>("ElectronHLT")),
+	HLT_MuChannel_(iConfig.getParameter<std::vector<int>>("HLT_MuChannel")),
+	HLT_ElChannel_(iConfig.getParameter<std::vector<int>>("HLT_ElChannel")),
 	NJets_(iConfig.getParameter<double>("NJets")),
-	IsoEleEt_(iConfig.getParameter<double>("IsoEleEt")),
-	IsoMuonPt_(iConfig.getParameter<double>("IsoMuonPt")),
 	NonBjetCSVThr_(iConfig.getParameter<double>("NonBjetCSVThr")),
 	Owrt_(iConfig.getParameter<double>("Owrt")),
 	Debug_(iConfig.getParameter<bool>("Debug")),
@@ -329,14 +327,14 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		}	
 		bool passMuonHLT=false;
 		bool passElectronHLT=false;
-		for( std::vector<int>::const_iterator ihlt = ElectronHLT_.begin(); ihlt != ElectronHLT_.end(); ++ihlt )
+		for( std::vector<int>::const_iterator ihlt = HLT_ElChannel_.begin(); ihlt != HLT_ElChannel_.end(); ++ihlt )
 		{	
 			if( int(EvtInfo.TrgBook[*ihlt]) == 1 ){
 				passElectronHLT=true;
 				break;
 			}
 		}	
-		for( std::vector<int>::const_iterator ihlt = MuonHLT_.begin(); ihlt != MuonHLT_.end(); ++ihlt )
+		for( std::vector<int>::const_iterator ihlt = HLT_MuChannel_.begin(); ihlt != HLT_MuChannel_.end(); ++ihlt )
 		{
 			if( int(EvtInfo.TrgBook[*ihlt]) == 1 ){
 				passMuonHLT=true;
@@ -414,55 +412,31 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		h1.GetTH1("Evt_NbJets")->Fill(bjetCol.size());
 
 		//* Lepton selection
-		vector<Lepton> selMuCol, looseMuCol_isoMu, looseElCol_isoMu;
-		vector<Lepton> selElCol, looseMuCol_isoEl, looseElCol_isoEl;
+		vector<Lepton> MuColTight, MuColLoose_MuChannel, ElColLoose_MuChannel;
+		vector<Lepton> ElColTight, MuColLoose_ElChannel, ElColLoose_ElChannel;
 		for( int idx=0; idx < LepInfo.Size; idx++)
 		{
 			Lepton lepton( LepInfo, idx );
 			// Electron selections
 			if( lepton.LeptonType == 11 )
 			{
-			//	float relIso1=( lepton.ChargedHadronIsoR03 + lepton.NeutralHadronIsoR03 + lepton.PhotonIsoR03)/fabs(lepton.Pt);
-			//	if( fabs(lepton.Eta) > 2.5 ) continue;
-			//	if( fabs(lepton.Eta) < 1.566 && fabs(lepton.Eta) > 1.4442) continue;
-			//	if( lepton.Et < 20 ) continue;
-			//	if( relIso1 > 0.15 ) continue;
-	
-			//	if( lepton.EgammaMVATrig > 0 && lepton.EgammaMVATrig < 1. )
-			//	{
-			//		looseElCol_isoMu.push_back(lepton);	
-			//		if( lepton.Et < IsoEleEt_ )
-			//		{
-			//			looseElCol_isoEl.push_back(lepton);
-			//		}
-			//	}
-			//	if( relIso1 < 0.1 &&
-			//	    lepton.Et > IsoEleEt_ &&
-			//	    lepton.EgammaMVATrig > 0.5 && 
-			//	    lepton.NumberOfExpectedInnerHits <= 0 && 
-			//	    fabs(lepton.Eta) < 2.1 && 
-			//	    fabs(lepton.ElTrackDxy_PV)<0.02 
-			//	  )
-			//	{
-			//		selElCol.push_back(lepton);
-			//	}
-				if( ElectronSelectionTight.isPass(lepton) ) selElCol.push_back(lepton);
-				if( ElectronSelectionLoose.isPass(lepton) ) looseElCol_isoMu.push_back(lepton);
+				if( ElectronSelectionTight.isPass(lepton) ) ElColTight.push_back(lepton);
+				if( ElectronSelectionLoose.isPass(lepton) ) ElColLoose_MuChannel.push_back(lepton);
 				if( ElectronSelectionLoose.isPass(lepton) &&
 				    lepton.Et < ElectronSelectionTight.getCut("lepEtMin")) 
 				{
-					looseElCol_isoEl.push_back(lepton);
+					ElColLoose_ElChannel.push_back(lepton);
 				}
 			}
 			// Muon selections
 			if( lepton.LeptonType == 13 )
 			{
-				if( MuonSelectionTight.isPass(lepton) ) selMuCol.push_back(lepton);
-				if( MuonSelectionLoose.isPass(lepton) ) looseMuCol_isoEl.push_back(lepton);
+				if( MuonSelectionTight.isPass(lepton) ) MuColTight.push_back(lepton);
+				if( MuonSelectionLoose.isPass(lepton) ) MuColLoose_ElChannel.push_back(lepton);
 				if( MuonSelectionLoose.isPass(lepton) && 
 				    lepton.Pt < MuonSelectionTight.getCut("lepPtMin") )
 				{
-					looseMuCol_isoMu.push_back(lepton);
+					MuColLoose_MuChannel.push_back(lepton);
 				}
 			}
 		}
@@ -494,19 +468,19 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( passMuonHLT )
 			{
 				h1.GetTH1("Evt_CutFlow_Mu")->Fill("HLT", 1);
-				if( selMuCol.size() > 0 )
+				if( MuColTight.size() > 0 )
 				{ 
 					h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq1 Lep", 1);
-					if( selMuCol.size() == 1 )
+					if( MuColTight.size() == 1 )
 					{
-						isoMu = selMuCol[0];
+						isoMu = MuColTight[0];
 						h1.GetTH1("Evt_CutFlow_Mu")->Fill("1 isoLep", 1);
 
-						if( looseMuCol_isoMu.size() == 0 )
+						if( MuColLoose_MuChannel.size() == 0 )
 						{
 							h1.GetTH1("Evt_CutFlow_Mu")->Fill("veto(Loose #mu)", 1);
 
-							if( looseElCol_isoMu.size() == 0 )
+							if( ElColLoose_MuChannel.size() == 0 )
 							{
 								h1.GetTH1("Evt_CutFlow_Mu")->Fill("veto(Loose e)", 1);
 								passMuonSel=true;
@@ -520,19 +494,19 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( passElectronHLT )
 			{
 				h1.GetTH1("Evt_CutFlow_El")->Fill("HLT", 1);
-				if( selElCol.size() > 0 )
+				if( ElColTight.size() > 0 )
 				{ 
 					h1.GetTH1("Evt_CutFlow_El")->Fill("#geq1 Lep", 1);
-					if( selElCol.size() == 1 ) 
+					if( ElColTight.size() == 1 ) 
 					{
-						isoEl=selElCol[0];
+						isoEl=ElColTight[0];
 						h1.GetTH1("Evt_CutFlow_El")->Fill("1 isoLep", 1);
 
-						if( looseMuCol_isoEl.size() == 0 )
+						if( MuColLoose_ElChannel.size() == 0 )
 						{
 							h1.GetTH1("Evt_CutFlow_El")->Fill("veto(Loose #mu)", 1);
 
-							if( looseElCol_isoEl.size() == 0 )
+							if( ElColLoose_ElChannel.size() == 0 )
 							{
 								h1.GetTH1("Evt_CutFlow_El")->Fill("veto(Loose e)", 1);
 								passElectronSel=true;
@@ -591,36 +565,36 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			// Check events
 			if( passElectronHLT || passMuonHLT ){ 
 				h1.GetTH1("Evt_CutFlow")->Fill("HLT", 1);
-				if( ( selMuCol.size() + selElCol.size()) > 0 ) h1.GetTH1("Evt_CutFlow")->Fill("#geq1 Lep", 1);
-				if( ( selMuCol.size() + selElCol.size()) == 1 ){ 
+				if( ( MuColTight.size() + ElColTight.size()) > 0 ) h1.GetTH1("Evt_CutFlow")->Fill("#geq1 Lep", 1);
+				if( ( MuColTight.size() + ElColTight.size()) == 1 ){ 
 					h1.GetTH1("Evt_CutFlow")->Fill("1 isoLep", 1);
-					if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 0 )
+					if( MuColTight.size() == 1 && MuColLoose_MuChannel.size() == 0 && ElColLoose_MuChannel.size() == 0 )
 						h1.GetTH1("Evt_MuCut")->Fill("1:0:0", 1);
-					if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 0 )
+					if( MuColTight.size() == 0 && MuColLoose_MuChannel.size() == 1 && ElColLoose_MuChannel.size() == 0 )
 						h1.GetTH1("Evt_MuCut")->Fill("0:1:0", 1);
-					if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 1 )
+					if( MuColTight.size() == 0 && MuColLoose_MuChannel.size() == 0 && ElColLoose_MuChannel.size() == 1 )
 						h1.GetTH1("Evt_MuCut")->Fill("0:0:1", 1);
-					if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 0 )
+					if( MuColTight.size() == 1 && MuColLoose_MuChannel.size() == 1 && ElColLoose_MuChannel.size() == 0 )
 						h1.GetTH1("Evt_MuCut")->Fill("1:1:0", 1);
-					if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 1 )
+					if( MuColTight.size() == 1 && MuColLoose_MuChannel.size() == 0 && ElColLoose_MuChannel.size() == 1 )
 						h1.GetTH1("Evt_MuCut")->Fill("1:0:1", 1);
-					if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 1 )
+					if( MuColTight.size() == 0 && MuColLoose_MuChannel.size() == 1 && ElColLoose_MuChannel.size() == 1 )
 						h1.GetTH1("Evt_MuCut")->Fill("0:1:1", 1);
-					if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 1 )
+					if( MuColTight.size() == 1 && MuColLoose_MuChannel.size() == 1 && ElColLoose_MuChannel.size() == 1 )
 						h1.GetTH1("Evt_MuCut")->Fill("1:1:1", 1);
-					if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 0 )
+					if( ElColTight.size() == 1 && MuColLoose_ElChannel.size() == 0 && ElColLoose_ElChannel.size() == 0 )
 						h1.GetTH1("Evt_ElCut")->Fill("1:0:0", 1);
-					if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 0 )
+					if( ElColTight.size() == 0 && MuColLoose_ElChannel.size() == 1 && ElColLoose_ElChannel.size() == 0 )
 						h1.GetTH1("Evt_ElCut")->Fill("0:1:0", 1);
-					if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 1 )
+					if( ElColTight.size() == 0 && MuColLoose_ElChannel.size() == 0 && ElColLoose_ElChannel.size() == 1 )
 						h1.GetTH1("Evt_ElCut")->Fill("0:0:1", 1);
-					if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 0 )
+					if( ElColTight.size() == 1 && MuColLoose_ElChannel.size() == 1 && ElColLoose_ElChannel.size() == 0 )
 						h1.GetTH1("Evt_ElCut")->Fill("1:1:0", 1);
-					if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 1 )
+					if( ElColTight.size() == 1 && MuColLoose_ElChannel.size() == 0 && ElColLoose_ElChannel.size() == 1 )
 						h1.GetTH1("Evt_ElCut")->Fill("1:0:1", 1);
-					if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 1 )
+					if( ElColTight.size() == 0 && MuColLoose_ElChannel.size() == 1 && ElColLoose_ElChannel.size() == 1 )
 						h1.GetTH1("Evt_ElCut")->Fill("0:1:1", 1);
-					if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 1 )
+					if( ElColTight.size() == 1 && MuColLoose_ElChannel.size() == 1 && ElColLoose_ElChannel.size() == 1 )
 						h1.GetTH1("Evt_ElCut")->Fill("1:1:1", 1);
 				}
 			}
