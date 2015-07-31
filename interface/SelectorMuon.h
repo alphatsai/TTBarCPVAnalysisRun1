@@ -105,8 +105,8 @@ class SelectorMuon{
 		template<typename parType>
 		bool pass( parType value, double min, double max )
 		{
-			if( value > max || value < min ) return false;
-			return true;
+			if( value > min && value < max ) return true;
+			return false;
 		}
 		template<typename parType>
 		bool pass( parType value, std::string parName )

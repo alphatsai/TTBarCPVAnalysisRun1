@@ -307,8 +307,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 	ay.SetXYZ(0, 1, 0);
 	az.SetXYZ(0, 0, 1);
 
-	SelectorMuon LooseMuonSelection( looseLepSelPrams_,  Debug_ );
-	SelectorMuon tightMuonSelection( tightMuonSelPrams_, Debug_ );
+	SelectorMuon MuonSelectionLoose( looseLepSelPrams_,  Debug_ );
+	SelectorMuon MuonSelectionTight( tightMuonSelPrams_, Debug_ );
 	
 	for(int entry=0; entry<maxEvents_; entry++)
 	{
@@ -446,37 +446,13 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			// Muon selections
 			if( lepton.LeptonType == 13 )
 			{
-				//float relIso1=( lepton.ChargedHadronIsoR04 + lepton.NeutralHadronIsoR04 + lepton.PhotonIsoR04)/fabs(lepton.Pt);
-				//if( relIso1 > 0.2 ) continue;	
-				//if( abs(lepton.Eta) > 2.5 ) continue;
-				//if( lepton.Pt < 10) continue;
-				//if( (lepton.MuType&0x02) == 0 && (lepton.MuType&0x04) == 0 ) continue; 
-
-				//looseMuCol_isoEl.push_back(lepton);	
-
-				//if( lepton.Pt < IsoMuonPt_ )
-				//{
-				//	looseMuCol_isoMu.push_back(lepton);	
-				//}
-				//else if( relIso1 < 0.12 &&
-				//	 lepton.Pt >= IsoMuonPt_ && 
-				//	 lepton.MuNMuonhits > 0  &&
-				//	 lepton.MuNMatchedStations > 1  &&
-				//	 lepton.MuGlobalNormalizedChi2 < 10 &&
-				//	 lepton.MuNTrackLayersWMeasurement > 5  &&
-				//	 (lepton.MuType&0x02) != 0 && // Global muon 
-				//	 abs(lepton.MuInnerTrackDxy_PV) < 0.2 &&
-				//	 abs(lepton.Eta) < 2.1  
-				//	 //lepton.MuNPixelLayers > 0  &&
-				//	 //lepton.MuNTrackerHits > 10  &&
-				//	 //lepton.MuInnerTrackNHits > 10  &&
-				//	 //abs(lepton.MuInnerTrackDxy_BS) < 0.02 &&
-				//	) // tight muon
-				//{
-				//	selMuCol.push_back(lepton);
-				//}
-				if( LooseMuonSelection.isPass(lepton) ) looseMuCol_isoEl.push_back(lepton);
-				if( LooseMuonSelection.isPass(lepton) ) looseMuCol_isoMu.push_back(lepton);
+				if( MuonSelectionTight.isPass(lepton) ) selMuCol.push_back(lepton);
+				if( MuonSelectionLoose.isPass(lepton) ) looseMuCol_isoEl.push_back(lepton);
+				if( MuonSelectionLoose.isPass(lepton) && 
+				    lepton.Pt < MuonSelectionTight.getCut("lepPtMin") )
+				{
+					looseMuCol_isoMu.push_back(lepton);
+				}
 			}
 		}
 
