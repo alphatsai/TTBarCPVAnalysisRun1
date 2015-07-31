@@ -75,15 +75,14 @@ class SelectorMuon{
 
 		bool isPass( Lepton lepton )
 		{
+			// std::cout<<">> isPass() "<<std::endl;
 			if( !hasCuts ){ 
 				std::cout<<">> [ERROR] Not cut set yet"<<std::endl;
 				std::cout<<">>         Please use SelectorMuon::setCuts(const edm::ParameterSet& iConfig)"<<std::endl;
 				return false;
 			}
-
-			// Muon selections
 			if( !pass( lepton.Pt,				"lepPt"                       )) return false;
-			if( !pass( getRelIsoR04(lepton),		"lepRelIsoR40"                )) return false;
+			if( !pass( getRelIsoR04(lepton),		"lepRelIsoR04"                )) return false;
 			if( !pass( fabs(lepton.Eta),			"lepAbsEta"                   )) return false;
 			if( !pass( fabs(lepton.MuInnerTrackDxy_PV), 	"MuAbsInnerTrackDxyPV"        )) return false;
 			if( !pass( lepton.MuNMuonhits,			"MuNMuonhits"                 )) return false;
@@ -111,10 +110,17 @@ class SelectorMuon{
 		template<typename parType>
 		bool pass( parType value, std::string parName )
 		{ 
+			//std::cout<<">>   Pass(): "<<parName<<std::endl;
 			return pass( value, getCut(parName+"Min"), getCut(parName+"Max")); 
 		}
 
-		double getCut( std::string parName ){ return mapPars.find(parName)->second; }
+		double getCut( std::string parName )
+		{ 
+			if( mapPars.find(parName) == mapPars.end() ){
+				printf(">> [ERROR] %s is not found in SelectorMuon::getCut(std::string)\n", parName.c_str());
+			}
+			return mapPars.find(parName)->second; 
+		}
 
 		float getRelIsoR04( Lepton lepton )
 		{

@@ -76,7 +76,7 @@ class SelectorElectron{
 
 			// Electron selections
 			bool exclude=true;
-			if( !pass( lepton.Pt,				"lepPt"                             )) return false;
+			if( !pass( lepton.Et,				"lepEt"                             )) return false;
 			if( !pass( getRelIsoR03(lepton),		"lepRelIsoR03"                      )) return false;
 			if( !pass( fabs(lepton.Eta),			"lepAbsEta"                         )) return false;
 			if( !pass( fabs(lepton.Eta),			"lepAbsEtaExclude",         exclude )) return false;
@@ -104,7 +104,13 @@ class SelectorElectron{
 			return pass( value, getCut(parName+"Min"), getCut(parName+"Max"), isExclude ); 
 		}
 
-		double getCut( std::string parName ){ return mapPars.find(parName)->second; }
+		double getCut( std::string parName )
+		{ 
+			if( mapPars.find(parName) == mapPars.end() ){
+				printf(">> [ERROR] %s is not found in SelectorMuon::getCut(std::string)\n", parName.c_str());
+			}
+			return mapPars.find(parName)->second; 
+		}
 
 		float getRelIsoR04( Lepton lepton )
 		{
