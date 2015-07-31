@@ -348,7 +348,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( vtx.Type != 1 ) continue;
 			if( vtx.isFake ) continue;
 			if( vtx.Ndof < 4 ) continue;
-			if( abs(vtx.z) > 24 ) continue;
+			if( fabs(vtx.z) > 24 ) continue;
 			if( vtx.Rho > 2 ) continue;
 			selVertex.push_back(vtx);
 		}
@@ -375,7 +375,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( jet.CEF > 0.99 ) continue;
 			if( jet.NCH == 0 ) continue;
 			if( jet.NConstituents <= 1 ) continue;
-			if( abs( jet.Eta ) >= 2.4 ) continue;
+			if( fabs( jet.Eta ) >= 2.4 ) continue;
 			if( jet.Pt > 30. )
 			{ 
 				seljetCol.push_back(jet);
@@ -419,8 +419,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( lepton.LeptonType == 11 )
 			{
 				float relIso1=( lepton.ChargedHadronIsoR03 + lepton.NeutralHadronIsoR03 + lepton.PhotonIsoR03)/fabs(lepton.Pt);
-				if( abs(lepton.Eta) > 2.5 ) continue;
-				if( abs(lepton.Eta) < 1.566 && abs(lepton.Eta) > 1.4442) continue;
+				if( fabs(lepton.Eta) > 2.5 ) continue;
+				if( fabs(lepton.Eta) < 1.566 && fabs(lepton.Eta) > 1.4442) continue;
 				if( lepton.Et < 20 ) continue;
 				if( relIso1 > 0.15 ) continue;
 	
@@ -436,8 +436,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 				    lepton.Et > IsoEleEt_ &&
 				    lepton.EgammaMVATrig > 0.5 && 
 				    lepton.NumberOfExpectedInnerHits <= 0 && 
-				    abs(lepton.Eta) < 2.1 && 
-				    abs(lepton.ElTrackDxy_PV)<0.02 
+				    fabs(lepton.Eta) < 2.1 && 
+				    fabs(lepton.ElTrackDxy_PV)<0.02 
 				  )
 				{
 					selElCol.push_back(lepton);
@@ -448,7 +448,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			{
 				float relIso1=( lepton.ChargedHadronIsoR04 + lepton.NeutralHadronIsoR04 + lepton.PhotonIsoR04)/fabs(lepton.Pt);
 				if( relIso1 > 0.2 ) continue;	
-				if( abs(lepton.Eta) > 2.5 ) continue;
+				if( fabs(lepton.Eta) > 2.5 ) continue;
 				if( lepton.Pt < 10) continue;
 				if( (lepton.MuType&0x02) == 0 && (lepton.MuType&0x04) == 0 ) continue; 
 
@@ -465,8 +465,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 					 lepton.MuGlobalNormalizedChi2 < 10 &&
 					 lepton.MuNTrackLayersWMeasurement > 5  &&
 					 (lepton.MuType&0x02) != 0 && // Global muon 
-					 abs(lepton.MuInnerTrackDxy_PV) < 0.2 &&
-					 abs(lepton.Eta) < 2.1  
+					 fabs(lepton.MuInnerTrackDxy_PV) < 0.2 &&
+					 fabs(lepton.Eta) < 2.1  
 					 //lepton.MuNPixelLayers > 0  &&
 					 //lepton.MuNTrackerHits > 10  &&
 					 //lepton.MuInnerTrackNHits > 10  &&
