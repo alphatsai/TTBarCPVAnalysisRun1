@@ -72,9 +72,12 @@ isSkim = False
 if options.ttreedir.lower() == 'skim':
 	isSkim = True
 
-from TTBarCPV.TTBarCPVAnalysisRun1.LeptonSelector_cfi import*
-from TTBarCPV.TTBarCPVAnalysisRun1.ElectronSelector_cfi import*
-from TTBarCPV.TTBarCPVAnalysisRun1.MuonSelector_cfi import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Lepton_cfi   import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Muon_cfi     import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Electron_cfi import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Jet_cfi      import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_BJet_cfi     import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_nonBJet_cfi  import*
 
 process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
 	MaxEvents             = cms.int32(options.MaxEvents),
@@ -95,6 +98,9 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
 	LooseLepSelPrams      = defaultLeptonSelectionParameters.clone(), 
 	TightMuonSelPrams     = defaultMounSelectionParameters.clone(), 
 	TightElectronSelPrams = defaultElectronSelectionParameters.clone(), 
+	JetSelPrams           = defaultJetSelectionParameters.clone(), 
+	BJetSelPrams          = defaultBJetSelectionParameters.clone(), 
+	NonBJetSelPrams       = defaultNonBJetSelectionParameters.clone(), 
 ) 
 
 process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )

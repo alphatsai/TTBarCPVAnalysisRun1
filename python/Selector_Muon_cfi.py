@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-from TTBarCPV.TTBarCPVAnalysisRun1.LeptonSelector_cfi import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Lepton_cfi import*
 
 defaultMounSelectionParameters = defaultLeptonSelectionParameters.clone(
 	# Lepton general selections
