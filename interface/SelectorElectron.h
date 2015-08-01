@@ -76,13 +76,13 @@ class SelectorElectron{
 
 			// Electron selections
 			bool exclude=true;
-			if( !pass( lepton.Et,				"lepEt"                             )) return false;
-			if( !pass( getRelIsoR03(lepton),		"lepRelIsoR03"                      )) return false;
-			if( !pass( fabs(lepton.Eta),			"lepAbsEta"                         )) return false;
-			if( !pass( fabs(lepton.Eta),			"lepAbsEtaExclude",         exclude )) return false;
-			if( !pass( fabs(lepton.ElTrackDxy_PV), 	        "ElAbsTrackDxyPV"                   )) return false;
-			if( !pass( lepton.EgammaMVATrig,		"EgammaMVATrig"                     )) return false;
-			if( !pass( lepton.NumberOfExpectedInnerHits,	"NumberOfExpectedInnerHits"         )) return false;
+			if( !pass( lepton.Et,                        "lepEt"                             )) return false;
+			if( !pass( getRelIsoR03(lepton),             "lepRelIsoR03"                      )) return false;
+			if( !pass( fabs(lepton.Eta),                 "lepAbsEta"                         )) return false;
+			if( !pass( fabs(lepton.Eta),                 "lepAbsEtaExclude",         exclude )) return false;
+			if( !pass( fabs(lepton.ElTrackDxy_PV),       "ElAbsTrackDxyPV"                   )) return false;
+			if( !pass( lepton.EgammaMVATrig,             "EgammaMVATrig"                     )) return false;
+			if( !pass( lepton.NumberOfExpectedInnerHits, "NumberOfExpectedInnerHits"         )) return false;
 			return true;
 		}
 
@@ -107,7 +107,7 @@ class SelectorElectron{
 		double getCut( std::string parName )
 		{ 
 			if( mapPars.find(parName) == mapPars.end() ){
-				printf(">> [ERROR] %s is not found in SelectorMuon::getCut(std::string)\n", parName.c_str());
+				printf(">> [ERROR] %s is not found in SelectorElectron::getCut(std::string)\n", parName.c_str());
 			}
 			return mapPars.find(parName)->second; 
 		}
