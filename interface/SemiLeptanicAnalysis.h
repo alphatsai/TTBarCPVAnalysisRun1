@@ -66,15 +66,18 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 
 		vector<int> HLT_MuChannel_;
 		vector<int> HLT_ElChannel_;
+		edm::ParameterSet selPars_Jet_;
+		edm::ParameterSet selPars_BJet_;
+		edm::ParameterSet selPars_NonBJet_;
+		edm::ParameterSet selPars_LooseLepton_;
+		edm::ParameterSet selPars_TightMuon_;
+		edm::ParameterSet selPars_TightElectron_;
 		const unsigned int    NJets_;
 		const double NonBjetCSVThr_;
 		const double Owrt_;
-		bool   Debug_;
-		bool isSkim_;
-		bool doSaveTree_;
-		edm::ParameterSet looseLepSelPrams_;
-		edm::ParameterSet tightMuonSelPrams_;
-		edm::ParameterSet tightElectronSelPrams_;
+		bool  Debug_;
+		bool  isSkim_;
+		bool  doSaveTree_;
 
 		long long int EvtNo_;
 		int BxNo_;

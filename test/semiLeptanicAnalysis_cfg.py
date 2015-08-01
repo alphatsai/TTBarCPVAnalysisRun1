@@ -95,12 +95,12 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
 	Debug                 = cms.bool(options.Debug),
         IsSkim                = cms.bool(isSkim),
 	DoSaveTree            = cms.bool(options.DoSaveTree), 
-	LooseLepSelPrams      = defaultLeptonSelectionParameters.clone(), 
-	TightMuonSelPrams     = defaultMounSelectionParameters.clone(), 
-	TightElectronSelPrams = defaultElectronSelectionParameters.clone(), 
-	JetSelPrams           = defaultJetSelectionParameters.clone(), 
-	BJetSelPrams          = defaultBJetSelectionParameters.clone(), 
-	NonBJetSelPrams       = defaultNonBJetSelectionParameters.clone(), 
+	SelPars_LooseLepton   = defaultLeptonSelectionParameters.clone(), 
+	SelPars_TightMuon     = defaultMounSelectionParameters.clone(), 
+	SelPars_TightElectron = defaultElectronSelectionParameters.clone(), 
+	SelPars_Jet           = defaultJetSelectionParameters.clone(), 
+	SelPars_BJet          = defaultBJetSelectionParameters.clone(), 
+	SelPars_NonBJet       = defaultNonBJetSelectionParameters.clone(), 
 ) 
 
 process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )

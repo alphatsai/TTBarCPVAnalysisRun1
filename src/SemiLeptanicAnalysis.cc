@@ -43,26 +43,30 @@
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SemiLeptanicAnalysis.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorElectron.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorMuon.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorJet.h" 
 
 //
 // constructors and destructor
 //
 SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) : 
-	maxEvents_(iConfig.getParameter<int>("MaxEvents")), 
-	reportEvery_(iConfig.getParameter<int>("ReportEvery")),
-	inputTTree_(iConfig.getParameter<std::string>("InputTTree")),
-	inputFiles_(iConfig.getParameter<std::vector<std::string> >("InputFiles")),
-	HLT_MuChannel_(iConfig.getParameter<std::vector<int>>("HLT_MuChannel")),
-	HLT_ElChannel_(iConfig.getParameter<std::vector<int>>("HLT_ElChannel")),
-	NJets_(iConfig.getParameter<double>("NJets")),
-	NonBjetCSVThr_(iConfig.getParameter<double>("NonBjetCSVThr")),
-	Owrt_(iConfig.getParameter<double>("Owrt")),
-	Debug_(iConfig.getParameter<bool>("Debug")),
-	isSkim_(iConfig.getParameter<bool>("IsSkim")),
-	doSaveTree_(iConfig.getParameter<bool>("DoSaveTree")),
-	looseLepSelPrams_(iConfig.getParameter<edm::ParameterSet>("LooseLepSelPrams")),
-	tightMuonSelPrams_(iConfig.getParameter<edm::ParameterSet>("TightMuonSelPrams")),	
-	tightElectronSelPrams_(iConfig.getParameter<edm::ParameterSet>("TightElectronSelPrams"))	
+	maxEvents_(             iConfig.getParameter<int>("MaxEvents")), 
+	reportEvery_(           iConfig.getParameter<int>("ReportEvery")),
+	inputTTree_(            iConfig.getParameter<std::string>("InputTTree")),
+	inputFiles_(            iConfig.getParameter<std::vector<std::string> >("InputFiles")),
+	HLT_MuChannel_(         iConfig.getParameter<std::vector<int>>("HLT_MuChannel")),
+	HLT_ElChannel_(         iConfig.getParameter<std::vector<int>>("HLT_ElChannel")),
+	selPars_Jet_(           iConfig.getParameter<edm::ParameterSet>("SelPars_Jet")),	
+	selPars_BJet_(          iConfig.getParameter<edm::ParameterSet>("SelPars_BJet")),	
+	selPars_NonBJet_(       iConfig.getParameter<edm::ParameterSet>("SelPars_NonBJet")),	
+	selPars_LooseLepton_(   iConfig.getParameter<edm::ParameterSet>("SelPars_LooseLepton")),
+	selPars_TightMuon_(     iConfig.getParameter<edm::ParameterSet>("SelPars_TightMuon")),	
+	selPars_TightElectron_( iConfig.getParameter<edm::ParameterSet>("SelPars_TightElectron")),	
+	NJets_(                 iConfig.getParameter<double>("NJets")),
+	NonBjetCSVThr_(         iConfig.getParameter<double>("NonBjetCSVThr")),
+	Owrt_(                  iConfig.getParameter<double>("Owrt")),
+	Debug_(                 iConfig.getParameter<bool>("Debug")),
+	isSkim_(                iConfig.getParameter<bool>("IsSkim")),
+	doSaveTree_(            iConfig.getParameter<bool>("DoSaveTree"))
 {
 	if( inputTTree_.compare("Skim/root") == 0 ){ isSkim_=true; }
 }
@@ -307,10 +311,15 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 	ay.SetXYZ(0, 1, 0);
 	az.SetXYZ(0, 0, 1);
 
-	SelectorMuon MuonSelectionLoose( looseLepSelPrams_,  Debug_ );
-	SelectorMuon MuonSelectionTight( tightMuonSelPrams_, Debug_ );
-	SelectorElectron ElectronSelectionLoose( looseLepSelPrams_,      Debug_ );
-	SelectorElectron ElectronSelectionTight( tightElectronSelPrams_, Debug_ );
+	SelectorJet     JetSelection(     selPars_Jet_, Debug_ );
+	SelectorJet    BJetSelection(    selPars_BJet_, Debug_ );
+	SelectorJet NonBJetSelection( selPars_NonBJet_, Debug_ );
+
+	SelectorMuon MuonSelectionTight(   selPars_TightMuon_, Debug_ );
+	SelectorMuon MuonSelectionLoose( selPars_LooseLepton_, Debug_ );
+
+	SelectorElectron ElectronSelectionLoose(   selPars_LooseLepton_, Debug_ );
+	SelectorElectron ElectronSelectionTight( selPars_TightElectron_, Debug_ );
 	
 	for(int entry=0; entry<maxEvents_; entry++)
 	{
