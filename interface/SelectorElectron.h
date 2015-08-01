@@ -131,9 +131,9 @@ class SelectorElectron{
 			std::string parMin=parName+"Min";
 			std::string parMax=parName+"Max";
 			if( getCut(parMin) <= -100000 && getCut(parMax) >= 100000 )      printf("%30s %10s %10s\n",   cutName.c_str(), "nan", "nan" );
-			else if( getCut(parMin) <= -100000 && getCut(parMax) <  100000 ) printf("%30s %10s %10.2f\n", cutName.c_str(), "nan", getCut(parMax) );
-			else if( getCut(parMin) >  -100000 && getCut(parMax) >= 100000 ) printf("%30s %10.2f %10s\n", cutName.c_str(),  getCut(parMin), "nan");
-			else printf("%30s %10.2f %10.2f\n", cutName.c_str(),  getCut(parMin), getCut(parMax) );
+			else if( getCut(parMin) <= -100000 && getCut(parMax) <  100000 ) printf("%30s %10s %10.3f\n", cutName.c_str(), "nan", getCut(parMax) );
+			else if( getCut(parMin) >  -100000 && getCut(parMax) >= 100000 ) printf("%30s %10.3f %10s\n", cutName.c_str(),  getCut(parMin), "nan");
+			else printf("%30s %10.3f %10.3f\n", cutName.c_str(),  getCut(parMin), getCut(parMax) );
 		}
 
 	private:	
