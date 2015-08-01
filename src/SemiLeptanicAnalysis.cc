@@ -365,7 +365,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		}
 
 		//* Jet selection
-		vector<Jet> seljetCol, bjetCol, nonbjetCol;
+		vector<Jet> JetColSelected, BJetCol, nonBJetCol;
 		for( int idx=0; idx < JetInfo.Size; idx++)
 		{
 			Jet jet( JetInfo, idx );
@@ -380,16 +380,44 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			h1.GetTH1("Jet_BTag")->Fill( jet.CombinedSVBJetTags );			
 			
 			// ID tight
-			if( jet.CHF == 0 ) continue;
-			if( jet.NEF > 0.99 ) continue;
-			if( jet.NHF > 0.99 ) continue;
-			if( jet.CEF > 0.99 ) continue;
-			if( jet.NCH == 0 ) continue;
-			if( jet.NConstituents <= 1 ) continue;
-			if( fabs( jet.Eta ) >= 2.4 ) continue;
-			if( jet.Pt > 30. )
+			//if( jet.CHF == 0 ) continue;
+			//if( jet.NEF > 0.99 ) continue;
+			//if( jet.NHF > 0.99 ) continue;
+			//if( jet.CEF > 0.99 ) continue;
+			//if( jet.NCH == 0 ) continue;
+			//if( jet.NConstituents <= 1 ) continue;
+			//if( fabs( jet.Eta ) >= 2.4 ) continue;
+			//if( jet.Pt > 30. )
+			//{ 
+			//	JetColSelected.push_back(jet);
+			//	h1.GetTH1("SelJet_Pt")->Fill( jet.Pt );			
+			//	h1.GetTH1("SelJet_Px")->Fill( jet.Px );			
+			//	h1.GetTH1("SelJet_Py")->Fill( jet.Py );			
+			//	h1.GetTH1("SelJet_Pz")->Fill( jet.Pz );			
+			//	h1.GetTH1("SelJet_M")->Fill(  jet.Mass );			
+			//	h1.GetTH1("SelJet_E")->Fill(  jet.Energy );			
+			//	h1.GetTH1("SelJet_Eta")->Fill(  jet.Eta );			
+			//	h1.GetTH1("SelJet_Phi")->Fill(  jet.Phi );			
+			//	h1.GetTH1("SelJet_BTag")->Fill( jet.CombinedSVBJetTags );	
+	
+			//	if( jet.CombinedSVBJetTags < NonBjetCSVThr_ ) nonBJetCol.push_back(jet);	
+			//	if( jet.CombinedSVBJetTags > 0.679 )
+			//	{ 
+			//		BJetCol.push_back(jet);
+			//		h1.GetTH1("bJet_Pt")->Fill( jet.Pt );			
+			//		h1.GetTH1("bJet_Px")->Fill( jet.Px );			
+			//		h1.GetTH1("bJet_Py")->Fill( jet.Py );			
+			//		h1.GetTH1("bJet_Pz")->Fill( jet.Pz );			
+			//		h1.GetTH1("bJet_M")->Fill(  jet.Mass );			
+			//		h1.GetTH1("bJet_E")->Fill(  jet.Energy );			
+			//		h1.GetTH1("bJet_Eta")->Fill(  jet.Eta );			
+			//		h1.GetTH1("bJet_Phi")->Fill(  jet.Phi );			
+			//		h1.GetTH1("bJet_BTag")->Fill( jet.CombinedSVBJetTags );			
+			//	}
+			//}
+			if( JetSelection.isPass(jet) )
 			{ 
-				seljetCol.push_back(jet);
+				JetColSelected.push_back(jet);
 				h1.GetTH1("SelJet_Pt")->Fill( jet.Pt );			
 				h1.GetTH1("SelJet_Px")->Fill( jet.Px );			
 				h1.GetTH1("SelJet_Py")->Fill( jet.Py );			
@@ -399,26 +427,25 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 				h1.GetTH1("SelJet_Eta")->Fill(  jet.Eta );			
 				h1.GetTH1("SelJet_Phi")->Fill(  jet.Phi );			
 				h1.GetTH1("SelJet_BTag")->Fill( jet.CombinedSVBJetTags );	
-	
-				if( jet.CombinedSVBJetTags < NonBjetCSVThr_ ) nonbjetCol.push_back(jet);	
-				if( jet.CombinedSVBJetTags > 0.679 )
-				{ 
-					bjetCol.push_back(jet);
-					h1.GetTH1("bJet_Pt")->Fill( jet.Pt );			
-					h1.GetTH1("bJet_Px")->Fill( jet.Px );			
-					h1.GetTH1("bJet_Py")->Fill( jet.Py );			
-					h1.GetTH1("bJet_Pz")->Fill( jet.Pz );			
-					h1.GetTH1("bJet_M")->Fill(  jet.Mass );			
-					h1.GetTH1("bJet_E")->Fill(  jet.Energy );			
-					h1.GetTH1("bJet_Eta")->Fill(  jet.Eta );			
-					h1.GetTH1("bJet_Phi")->Fill(  jet.Phi );			
-					h1.GetTH1("bJet_BTag")->Fill( jet.CombinedSVBJetTags );			
-				}
 			}
+			if( BJetSelection.isPass(jet) )
+			{ 
+				BJetCol.push_back(jet);
+				h1.GetTH1("bJet_Pt")->Fill( jet.Pt );			
+				h1.GetTH1("bJet_Px")->Fill( jet.Px );			
+				h1.GetTH1("bJet_Py")->Fill( jet.Py );			
+				h1.GetTH1("bJet_Pz")->Fill( jet.Pz );			
+				h1.GetTH1("bJet_M")->Fill(  jet.Mass );			
+				h1.GetTH1("bJet_E")->Fill(  jet.Energy );			
+				h1.GetTH1("bJet_Eta")->Fill(  jet.Eta );			
+				h1.GetTH1("bJet_Phi")->Fill(  jet.Phi );			
+				h1.GetTH1("bJet_BTag")->Fill( jet.CombinedSVBJetTags );			
+			}
+			if( NonBJetSelection.isPass(jet) ) nonBJetCol.push_back(jet);
 		}
 		h1.GetTH1("Evt_NJets")->Fill(JetInfo.Size);	
-		h1.GetTH1("Evt_NSelJets")->Fill(seljetCol.size());	
-		h1.GetTH1("Evt_NbJets")->Fill(bjetCol.size());
+		h1.GetTH1("Evt_NSelJets")->Fill(JetColSelected.size());	
+		h1.GetTH1("Evt_NbJets")->Fill(BJetCol.size());
 
 		//* Lepton selection
 		vector<Lepton> MuColTight, MuColLoose_MuChannel, ElColLoose_MuChannel;
@@ -527,29 +554,29 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 
 			if( passElectronSel || passMuonSel )
 			{
-				if( seljetCol.size() >= NJets_ )
+				if( JetColSelected.size() >= NJets_ )
 				{ 	
 					if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#geq"+int2str(NJets_)+" Jets").c_str(), 1);
 					if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#geq"+int2str(NJets_)+" Jets").c_str(), 1);
 
-					if( bjetCol.size() == 2 )
+					if( BJetCol.size() == 2 )
 					{
 						// Lable the hardest non_bjet 
 						int j1=-1;
 						double pt1=0;
-						const int size_seljetCol = nonbjetCol.size();	
-						for( int i=0; i < size_seljetCol; i++)
+						const int size_JetColSelected = nonBJetCol.size();	
+						for( int i=0; i < size_JetColSelected; i++)
 						{
-							if( pt1 < nonbjetCol[i].Pt ){
+							if( pt1 < nonBJetCol[i].Pt ){
 								j1=i;
-								pt1=nonbjetCol[i].Pt;
+								pt1=nonBJetCol[i].Pt;
 							}
 						}
-						hardJet = nonbjetCol[j1];
+						hardJet = nonBJetCol[j1];
 						if( j1 == -1 ){ std::cout<<">>[WARNING] "<<entry<<"Doesn't find hard jet!"<<endl; }
 
 						//Lable bjet by Pt
-						get2HighPtObject( bjetCol, bjet1, bjet2 );
+						get2HighPtObject( BJetCol, bjet1, bjet2 );
 						h1.GetTH1("bJet12_Px")->Fill(bjet1.Px);
 						h1.GetTH1("bJet12_Px")->Fill(bjet2.Px);
 						h1.GetTH1("bJet12_Py")->Fill(bjet1.Py);
