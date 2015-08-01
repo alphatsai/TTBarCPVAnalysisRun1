@@ -379,42 +379,6 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			h1.GetTH1("Jet_Phi")->Fill(  jet.Phi );			
 			h1.GetTH1("Jet_BTag")->Fill( jet.CombinedSVBJetTags );			
 			
-			// ID tight
-			//if( jet.CHF == 0 ) continue;
-			//if( jet.NEF > 0.99 ) continue;
-			//if( jet.NHF > 0.99 ) continue;
-			//if( jet.CEF > 0.99 ) continue;
-			//if( jet.NCH == 0 ) continue;
-			//if( jet.NConstituents <= 1 ) continue;
-			//if( fabs( jet.Eta ) >= 2.4 ) continue;
-			//if( jet.Pt > 30. )
-			//{ 
-			//	JetColSelected.push_back(jet);
-			//	h1.GetTH1("SelJet_Pt")->Fill( jet.Pt );			
-			//	h1.GetTH1("SelJet_Px")->Fill( jet.Px );			
-			//	h1.GetTH1("SelJet_Py")->Fill( jet.Py );			
-			//	h1.GetTH1("SelJet_Pz")->Fill( jet.Pz );			
-			//	h1.GetTH1("SelJet_M")->Fill(  jet.Mass );			
-			//	h1.GetTH1("SelJet_E")->Fill(  jet.Energy );			
-			//	h1.GetTH1("SelJet_Eta")->Fill(  jet.Eta );			
-			//	h1.GetTH1("SelJet_Phi")->Fill(  jet.Phi );			
-			//	h1.GetTH1("SelJet_BTag")->Fill( jet.CombinedSVBJetTags );	
-	
-			//	if( jet.CombinedSVBJetTags < NonBjetCSVThr_ ) nonBJetCol.push_back(jet);	
-			//	if( jet.CombinedSVBJetTags > 0.679 )
-			//	{ 
-			//		BJetCol.push_back(jet);
-			//		h1.GetTH1("bJet_Pt")->Fill( jet.Pt );			
-			//		h1.GetTH1("bJet_Px")->Fill( jet.Px );			
-			//		h1.GetTH1("bJet_Py")->Fill( jet.Py );			
-			//		h1.GetTH1("bJet_Pz")->Fill( jet.Pz );			
-			//		h1.GetTH1("bJet_M")->Fill(  jet.Mass );			
-			//		h1.GetTH1("bJet_E")->Fill(  jet.Energy );			
-			//		h1.GetTH1("bJet_Eta")->Fill(  jet.Eta );			
-			//		h1.GetTH1("bJet_Phi")->Fill(  jet.Phi );			
-			//		h1.GetTH1("bJet_BTag")->Fill( jet.CombinedSVBJetTags );			
-			//	}
-			//}
 			if( JetSelection.isPass(jet) )
 			{ 
 				JetColSelected.push_back(jet);
