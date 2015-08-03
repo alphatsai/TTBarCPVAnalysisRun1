@@ -1,5 +1,5 @@
-#ifndef SELECTORMUON_H 
-#define SELECTORMUON_H 
+#ifndef SELECTORVERTEX_H 
+#define SELECTORVERTEX_H 
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
