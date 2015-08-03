@@ -51,7 +51,9 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		void setLeptonSelHist( TH1* h );
 		template <class Object>
 		void get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 );
-
+		
+		bool isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCol, double dR=0.5 );
+	
 		double Obs2( Lepton isoLep, Jet hardJet, Jet bjet1, Jet bjet2 );
 		double Obs7( TVector3 beam, Jet bjet1, Jet bjet2 );
 
@@ -73,8 +75,9 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		edm::ParameterSet selPars_LooseLepton_;
 		edm::ParameterSet selPars_TightMuon_;
 		edm::ParameterSet selPars_TightElectron_;
-		const unsigned int    NJets_;
+		const double dR_IsoLeptonFromBJets_;
 		const double Owrt_;
+		const unsigned int NJets_;
 		bool  Debug_;
 		bool  isSkim_;
 		bool  doSaveTree_;

@@ -63,8 +63,9 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
 	selPars_LooseLepton_(   iConfig.getParameter<edm::ParameterSet>("SelPars_LooseLepton")),
 	selPars_TightMuon_(     iConfig.getParameter<edm::ParameterSet>("SelPars_TightMuon")),	
 	selPars_TightElectron_( iConfig.getParameter<edm::ParameterSet>("SelPars_TightElectron")),	
-	NJets_(                 iConfig.getParameter<double>("NJets")),
+	dR_IsoLeptonFromBJets_( iConfig.getParameter<double>("dR_IsoLeptonFromBJets")),	
 	Owrt_(                  iConfig.getParameter<double>("Owrt")),
+	NJets_(                 iConfig.getParameter<int>("NJets")),
 	Debug_(                 iConfig.getParameter<bool>("Debug")),
 	isSkim_(                iConfig.getParameter<bool>("IsSkim")),
 	doSaveTree_(            iConfig.getParameter<bool>("DoSaveTree"))
@@ -152,6 +153,22 @@ void SemiLeptanicAnalysis::get2HighPtObject( vector<Object> col, Object &obj1, O
 	}
 	obj1=col[o1];	
 	obj2=col[o2];
+}
+
+bool SemiLeptanicAnalysis::isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCol, double dR )
+{
+	bool isIsoLepFromJets = true;
+	int const jetcolSize = jetCol.size();
+	for( int i=0; i<jetcolSize; i++ )
+	{
+		double dr = lepton.P4.DeltaR( jetCol[i].P4 );
+		if( dr < dR )
+		{ 
+			isIsoLepFromJets = false;
+			break;
+		}
+	}
+	return isIsoLepFromJets;
 }
 
 double SemiLeptanicAnalysis::Obs2( Lepton isoLep, Jet hardJet, Jet bjet1, Jet bjet2 )
@@ -421,23 +438,31 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			// Electron selections
 			if( lepton.LeptonType == 11 )
 			{
-				if( ElectronSelectionTight.isPass(lepton) ) ElColTight.push_back(lepton);
 				if( ElectronSelectionLoose.isPass(lepton) ) ElColLoose_MuChannel.push_back(lepton);
 				if( ElectronSelectionLoose.isPass(lepton) &&
 				    lepton.Et < ElectronSelectionTight.getCut("lepEtMin")) 
 				{
 					ElColLoose_ElChannel.push_back(lepton);
 				}
+				if( ElectronSelectionTight.isPass(lepton) &&
+				    isIsoLeptonFromJets( lepton, BJetCol, dR_IsoLeptonFromBJets_ )) 
+				{
+					ElColTight.push_back(lepton);
+				}
 			}
 			// Muon selections
 			if( lepton.LeptonType == 13 )
 			{
-				if( MuonSelectionTight.isPass(lepton) ) MuColTight.push_back(lepton);
 				if( MuonSelectionLoose.isPass(lepton) ) MuColLoose_ElChannel.push_back(lepton);
 				if( MuonSelectionLoose.isPass(lepton) && 
 				    lepton.Pt < MuonSelectionTight.getCut("lepPtMin"))
 				{
 					MuColLoose_MuChannel.push_back(lepton);
+				}
+				if( MuonSelectionTight.isPass(lepton) && 
+				    isIsoLeptonFromJets( lepton, BJetCol, dR_IsoLeptonFromBJets_ )) 
+				{
+					MuColTight.push_back(lepton);
 				}
 			}
 		}
