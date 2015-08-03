@@ -359,16 +359,11 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		}
 
 		// Vertex selection
-		vector<Vertex> selVertex;
+		vector<Vertex> VxtColSelected;
 		for( int idx=0; idx < VtxInfo.Size; idx++)
 		{
 			Vertex vtx( VtxInfo, idx );
-			if( vtx.Type != 1 ) continue;
-			if( vtx.isFake ) continue;
-			if( vtx.Ndof < 4 ) continue;
-			if( fabs(vtx.z) > 24 ) continue;
-			if( vtx.Rho > 2 ) continue;
-			selVertex.push_back(vtx);
+			if( VtxSelection.isPass(vtx) ) VxtColSelected.push_back(vtx);
 		}
 
 		//* Jet selection
@@ -464,7 +459,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			h1.GetTH1("Evt_CutFlow_Mu")->Fill("All", 1);
 		}
 
-		if( selVertex.size() )
+		if( VxtColSelected.size() )
 		{
 			h1.GetTH1("Evt_CutFlow")->Fill("#geq1 goodVtx", 1);
 			h1.GetTH1("Evt_CutFlow_El")->Fill("#geq1 goodVtx", 1);
