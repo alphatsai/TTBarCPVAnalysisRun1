@@ -5,7 +5,7 @@ infiniteMin = -1000000
 
 defaultVertexSelectionParameters = cms.PSet(
 	# Vertex general selections
-	vtxType          = cms.string('GoodVertex'),
+	vtxType          = cms.string('GoodOfflinePV'),
 	vtxNdofMin       = cms.double(4),
 	vtxNdofMax       = cms.double(infiniteMax),
 	vtxAbsZMin       = cms.double(infiniteMin),
