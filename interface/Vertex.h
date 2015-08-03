@@ -12,7 +12,7 @@ class Vertex{
 		void Fill( VertexInfoBranches& VtxInfo, int idx ){
 			isValid = VtxInfo.isValid[idx];
 			isFake = VtxInfo.isFake[idx]; 
-			Type = VtxInfo.Type[idx];   
+			Type = VtxInfo.Type[idx];    //0 - Offline Primary Vertices, 1 - Offline Primary Vertices with beam spot constraint, 2 - Pixel Vertices
 			Ndof = VtxInfo.Ndof[idx];
 			NormalizedChi2 = VtxInfo.NormalizedChi2[idx];
 			Pt_Sum = VtxInfo.Pt_Sum[idx];
