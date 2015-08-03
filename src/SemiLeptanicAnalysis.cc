@@ -347,7 +347,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			Vertex vtx( VtxInfo, idx );
 			if( vtx.Type != 1 ) continue;
 			if( vtx.isFake ) continue;
-			if( vtx.Ndof < 4 ) continue;
+			if( vtx.Ndof < 5 ) continue;
 			if( fabs(vtx.z) > 24 ) continue;
 			if( vtx.Rho > 2 ) continue;
 			selVertex.push_back(vtx);
@@ -378,6 +378,9 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( fabs( jet.Eta ) >= 2.4 ) continue;
 			if( jet.Pt > 30. )
 			{ 
+				if( jet.CombinedSVBJetTags == 0 ) std::cout<<"jet.CombinedSVBJetTags == 0 "<<endl;	
+				if( jet.CombinedSVBJetTags > 1 ) std::cout<<"jet.CombinedSVBJetTags > 1 "<<endl;	
+				if( jet.CombinedSVBJetTags < 0 ) continue;
 				seljetCol.push_back(jet);
 				h1.GetTH1("SelJet_Pt")->Fill( jet.Pt );			
 				h1.GetTH1("SelJet_Px")->Fill( jet.Px );			
@@ -573,8 +576,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 								pt1=nonbjetCol[i].Pt;
 							}
 						}
-						hardJet = nonbjetCol[j1];
 						if( j1 == -1 ){ std::cout<<">>[WARNING] "<<entry<<"Doesn't find hard jet!"<<endl; }
+						hardJet = nonbjetCol[j1];
 
 						//Lable bjet by Pt
 						get2HighPtObject( bjetCol, bjet1, bjet2 );
