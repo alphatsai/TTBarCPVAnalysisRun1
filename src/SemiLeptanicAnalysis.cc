@@ -64,7 +64,6 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
 	selPars_TightMuon_(     iConfig.getParameter<edm::ParameterSet>("SelPars_TightMuon")),	
 	selPars_TightElectron_( iConfig.getParameter<edm::ParameterSet>("SelPars_TightElectron")),	
 	NJets_(                 iConfig.getParameter<double>("NJets")),
-	NonBjetCSVThr_(         iConfig.getParameter<double>("NonBjetCSVThr")),
 	Owrt_(                  iConfig.getParameter<double>("Owrt")),
 	Debug_(                 iConfig.getParameter<bool>("Debug")),
 	isSkim_(                iConfig.getParameter<bool>("IsSkim")),

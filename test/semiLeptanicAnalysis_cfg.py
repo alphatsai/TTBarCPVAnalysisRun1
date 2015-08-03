@@ -89,20 +89,19 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
 	#InputFiles            = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkim),
 	#InputFiles            = cms.vstring(FileNames_BprimtKits_SemiLept),
 	HLT_MuChannel         = cms.vint32( 2868,3244,3542,4204,4205,4827,5106,5573  ), # HLT_IsoMu24_eta2p1_v*
-	HLT_ElChannel         = cms.vint32( 3155,3496,4002,4003,4004,5043 ),            # HLT_Ele27_WP80_v 
-	NJets                 = cms.double(options.NJets),
-	NonBjetCSVThr         = cms.double(options.NonBjetCSVThr), 
-	Owrt                  = cms.double(Oweight), 
-	Debug                 = cms.bool(options.Debug),
-        IsSkim                = cms.bool(isSkim),
-	DoSaveTree            = cms.bool(options.DoSaveTree), 
+	HLT_ElChannel         = cms.vint32( 3155,3496,4002,4003,4004,5043 ),            # HLT_Ele27_WP80_v* 
 	SelPars_Vertex        = defaultVertexSelectionParameters.clone(), 
 	SelPars_Jet           = defaultJetSelectionParameters.clone(), 
 	SelPars_BJet          = defaultBJetSelectionParameters.clone(), 
 	SelPars_NonBJet       = defaultNonBJetSelectionParameters.clone(), 
 	SelPars_LooseLepton   = defaultLeptonSelectionParameters.clone(), 
 	SelPars_TightMuon     = defaultMounSelectionParameters.clone(), 
-	SelPars_TightElectron = defaultElectronSelectionParameters.clone(), 
+	SelPars_TightElectron = defaultElectronSelectionParameters.clone(),
+	NJets                 = cms.double(options.NJets),
+	Owrt                  = cms.double(Oweight), 
+	Debug                 = cms.bool(options.Debug),
+        IsSkim                = cms.bool(isSkim),
+	DoSaveTree            = cms.bool(options.DoSaveTree), 
 ) 
 
 process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )

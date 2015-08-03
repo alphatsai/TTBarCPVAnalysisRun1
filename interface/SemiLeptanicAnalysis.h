@@ -74,7 +74,6 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 		edm::ParameterSet selPars_TightMuon_;
 		edm::ParameterSet selPars_TightElectron_;
 		const unsigned int    NJets_;
-		const double NonBjetCSVThr_;
 		const double Owrt_;
 		bool  Debug_;
 		bool  isSkim_;
