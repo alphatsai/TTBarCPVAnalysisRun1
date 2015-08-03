@@ -72,12 +72,13 @@ isSkim = False
 if options.ttreedir.lower() == 'skim':
 	isSkim = True
 
-from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Lepton_cfi   import*
-from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Muon_cfi     import*
-from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Electron_cfi import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Vertex_cfi      import*
 from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Jet_cfi      import*
 from TTBarCPV.TTBarCPVAnalysisRun1.Selector_BJet_cfi     import*
 from TTBarCPV.TTBarCPVAnalysisRun1.Selector_nonBJet_cfi  import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Lepton_cfi   import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Muon_cfi     import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Electron_cfi import*
 
 process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
 	MaxEvents             = cms.int32(options.MaxEvents),
@@ -95,12 +96,13 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
 	Debug                 = cms.bool(options.Debug),
         IsSkim                = cms.bool(isSkim),
 	DoSaveTree            = cms.bool(options.DoSaveTree), 
-	SelPars_LooseLepton   = defaultLeptonSelectionParameters.clone(), 
-	SelPars_TightMuon     = defaultMounSelectionParameters.clone(), 
-	SelPars_TightElectron = defaultElectronSelectionParameters.clone(), 
+	SelPars_Vertex        = defaultVertexSelectionParameters.clone(), 
 	SelPars_Jet           = defaultJetSelectionParameters.clone(), 
 	SelPars_BJet          = defaultBJetSelectionParameters.clone(), 
 	SelPars_NonBJet       = defaultNonBJetSelectionParameters.clone(), 
+	SelPars_LooseLepton   = defaultLeptonSelectionParameters.clone(), 
+	SelPars_TightMuon     = defaultMounSelectionParameters.clone(), 
+	SelPars_TightElectron = defaultElectronSelectionParameters.clone(), 
 ) 
 
 process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )

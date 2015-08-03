@@ -66,6 +66,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 
 		vector<int> HLT_MuChannel_;
 		vector<int> HLT_ElChannel_;
+		edm::ParameterSet selPars_Vertex_;
 		edm::ParameterSet selPars_Jet_;
 		edm::ParameterSet selPars_BJet_;
 		edm::ParameterSet selPars_NonBJet_;

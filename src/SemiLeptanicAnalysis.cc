@@ -44,6 +44,7 @@
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorElectron.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorMuon.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorJet.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorVertex.h" 
 
 //
 // constructors and destructor
@@ -55,6 +56,7 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
 	inputFiles_(            iConfig.getParameter<std::vector<std::string> >("InputFiles")),
 	HLT_MuChannel_(         iConfig.getParameter<std::vector<int>>("HLT_MuChannel")),
 	HLT_ElChannel_(         iConfig.getParameter<std::vector<int>>("HLT_ElChannel")),
+	selPars_Vertex_(        iConfig.getParameter<edm::ParameterSet>("SelPars_Vertex")),	
 	selPars_Jet_(           iConfig.getParameter<edm::ParameterSet>("SelPars_Jet")),	
 	selPars_BJet_(          iConfig.getParameter<edm::ParameterSet>("SelPars_BJet")),	
 	selPars_NonBJet_(       iConfig.getParameter<edm::ParameterSet>("SelPars_NonBJet")),	
@@ -311,6 +313,10 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 	ay.SetXYZ(0, 1, 0);
 	az.SetXYZ(0, 0, 1);
 
+	// Create all selectors
+
+	SelectorVertex  VtxSelection( selPars_Vertex_, Debug_ );
+
 	SelectorJet     JetSelection(     selPars_Jet_, Debug_ );
 	SelectorJet    BJetSelection(    selPars_BJet_, Debug_ );
 	SelectorJet NonBJetSelection( selPars_NonBJet_, Debug_ );
@@ -320,7 +326,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 
 	SelectorElectron ElectronSelectionLoose(   selPars_LooseLepton_, Debug_ );
 	SelectorElectron ElectronSelectionTight( selPars_TightElectron_, Debug_ );
-	
+
+	// Loop evetns	
 	for(int entry=0; entry<maxEvents_; entry++)
 	{
 		chain_->GetEntry(entry);
@@ -434,7 +441,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 				if( MuonSelectionTight.isPass(lepton) ) MuColTight.push_back(lepton);
 				if( MuonSelectionLoose.isPass(lepton) ) MuColLoose_ElChannel.push_back(lepton);
 				if( MuonSelectionLoose.isPass(lepton) && 
-				    lepton.Pt < MuonSelectionTight.getCut("lepPtMin") )
+				    lepton.Pt < MuonSelectionTight.getCut("lepPtMin"))
 				{
 					MuColLoose_MuChannel.push_back(lepton);
 				}
