@@ -30,11 +30,6 @@ options.register('NJets', 4,
 	VarParsing.varType.int,
 	"Number of jets"
 	)
-options.register('NonBjetCSVThr', 0.679,
-	VarParsing.multiplicity.singleton,	
-	VarParsing.varType.float,
-	"Non B jet CSV threshold"
-	)
 options.register('Owrt', 'MT:3',
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.string,
@@ -72,7 +67,7 @@ isSkim = False
 if options.ttreedir.lower() == 'skim':
 	isSkim = True
 
-from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Vertex_cfi      import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Vertex_cfi   import*
 from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Jet_cfi      import*
 from TTBarCPV.TTBarCPVAnalysisRun1.Selector_BJet_cfi     import*
 from TTBarCPV.TTBarCPVAnalysisRun1.Selector_nonBJet_cfi  import*
