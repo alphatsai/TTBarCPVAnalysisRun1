@@ -35,22 +35,12 @@ options.register('NonBjetCSVThr', 0.679,
 	VarParsing.varType.float,
 	"Non B jet CSV threshold"
 	)
-options.register('IsoEleEt', 30.,
-	VarParsing.multiplicity.singleton,	
-	VarParsing.varType.float,
-	"Pt of isolated electron"
-	)
-options.register('IsoMuonPt', 26,
-	VarParsing.multiplicity.singleton,	
-	VarParsing.varType.float,
-	"Pt of isolated muon"
-	)
 options.register('Owrt', 'MT:3',
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.string,
 	"Weight the obseverble in top mass"
 	)
-options.register('DoSaveTree', True,
+options.register('DoSaveTree', False,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
 	"Store tree for selected events"
@@ -82,26 +72,38 @@ isSkim = False
 if options.ttreedir.lower() == 'skim':
 	isSkim = True
 
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Vertex_cfi      import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Jet_cfi      import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_BJet_cfi     import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_nonBJet_cfi  import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Lepton_cfi   import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Muon_cfi     import*
+from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Electron_cfi import*
+
 process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
-	MaxEvents   = cms.int32(options.MaxEvents),
-	ReportEvery = cms.int32(options.reportEvery),  
-	InputTTree  = cms.string(options.ttreedir+'/root'),
-	InputFiles  = cms.vstring(FileNames), 
-	#InputFiles  = cms.vstring(FileNames_BprimtKits_NTUG3_SemiLeptTest), 
-	#InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLeptTest),
-	#InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkim),
-	#InputFiles  = cms.vstring(FileNames_BprimtKits_SemiLept),
-	MuonHLT     = cms.vint32( 2868,3244,3542,4204,4205,4827,5106,5573  ), #HLT_IsoMu24_eta2p1_v*
-	ElectronHLT = cms.vint32( 3155,3496,4002,4003,4004,5043 ), #HLT_Ele27_WP80_v 
-	NJets       = cms.double(options.NJets),
-	IsoEleEt    = cms.double(options.IsoEleEt),
-	IsoMuonPt   = cms.double(options.IsoMuonPt),
-	NonBjetCSVThr = cms.double(options.NonBjetCSVThr), 
-	Owrt     = cms.double(Oweight), 
-	Debug    = cms.bool(options.Debug),
-        IsSkim  = cms.bool(isSkim),
-	DoSaveTree  = cms.bool(options.DoSaveTree) 
-	) 
+	MaxEvents             = cms.int32(options.MaxEvents),
+	ReportEvery           = cms.int32(options.reportEvery),  
+	InputTTree            = cms.string(options.ttreedir+'/root'),
+	InputFiles            = cms.vstring(FileNames), 
+	#InputFiles            = cms.vstring(FileNames_BprimtKits_NTUG3_SemiLeptTest), 
+	#InputFiles            = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkim),
+	#InputFiles            = cms.vstring(FileNames_BprimtKits_SemiLept),
+	HLT_MuChannel         = cms.vint32( 2868,3244,3542,4204,4205,4827,5106,5573  ), # HLT_IsoMu24_eta2p1_v*
+	HLT_ElChannel         = cms.vint32( 3155,3496,4002,4003,4004,5043 ),            # HLT_Ele27_WP80_v 
+	NJets                 = cms.double(options.NJets),
+	NonBjetCSVThr         = cms.double(options.NonBjetCSVThr), 
+	Owrt                  = cms.double(Oweight), 
+	Debug                 = cms.bool(options.Debug),
+        IsSkim                = cms.bool(isSkim),
+	DoSaveTree            = cms.bool(options.DoSaveTree), 
+	SelPars_Vertex        = defaultVertexSelectionParameters.clone(), 
+	SelPars_Jet           = defaultJetSelectionParameters.clone(), 
+	SelPars_BJet          = defaultBJetSelectionParameters.clone(), 
+	SelPars_NonBJet       = defaultNonBJetSelectionParameters.clone(), 
+	SelPars_LooseLepton   = defaultLeptonSelectionParameters.clone(), 
+	SelPars_TightMuon     = defaultMounSelectionParameters.clone(), 
+	SelPars_TightElectron = defaultElectronSelectionParameters.clone(), 
+) 
 
 process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
 process.p = cms.Path(process.SemiLeptanic)

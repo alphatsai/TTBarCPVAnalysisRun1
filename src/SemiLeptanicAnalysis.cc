@@ -41,25 +41,34 @@
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1InfoClass.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SemiLeptanicAnalysis.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorElectron.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorMuon.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorJet.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorVertex.h" 
 
 //
 // constructors and destructor
 //
 SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) : 
-	maxEvents_(iConfig.getParameter<int>("MaxEvents")), 
-	reportEvery_(iConfig.getParameter<int>("ReportEvery")),
-	inputTTree_(iConfig.getParameter<std::string>("InputTTree")),
-	inputFiles_(iConfig.getParameter<std::vector<std::string> >("InputFiles")),
-	MuonHLT_(iConfig.getParameter<std::vector<int>>("MuonHLT")),
-	ElectronHLT_(iConfig.getParameter<std::vector<int>>("ElectronHLT")),
-	NJets_(iConfig.getParameter<double>("NJets")),
-	IsoEleEt_(iConfig.getParameter<double>("IsoEleEt")),
-	IsoMuonPt_(iConfig.getParameter<double>("IsoMuonPt")),
-	NonBjetCSVThr_(iConfig.getParameter<double>("NonBjetCSVThr")),
-	Owrt_(iConfig.getParameter<double>("Owrt")),
-	Debug_(iConfig.getParameter<bool>("Debug")),
-	isSkim_(iConfig.getParameter<bool>("IsSkim")),
-	doSaveTree_(iConfig.getParameter<bool>("DoSaveTree"))
+	maxEvents_(             iConfig.getParameter<int>("MaxEvents")), 
+	reportEvery_(           iConfig.getParameter<int>("ReportEvery")),
+	inputTTree_(            iConfig.getParameter<std::string>("InputTTree")),
+	inputFiles_(            iConfig.getParameter<std::vector<std::string> >("InputFiles")),
+	HLT_MuChannel_(         iConfig.getParameter<std::vector<int>>("HLT_MuChannel")),
+	HLT_ElChannel_(         iConfig.getParameter<std::vector<int>>("HLT_ElChannel")),
+	selPars_Vertex_(        iConfig.getParameter<edm::ParameterSet>("SelPars_Vertex")),	
+	selPars_Jet_(           iConfig.getParameter<edm::ParameterSet>("SelPars_Jet")),	
+	selPars_BJet_(          iConfig.getParameter<edm::ParameterSet>("SelPars_BJet")),	
+	selPars_NonBJet_(       iConfig.getParameter<edm::ParameterSet>("SelPars_NonBJet")),	
+	selPars_LooseLepton_(   iConfig.getParameter<edm::ParameterSet>("SelPars_LooseLepton")),
+	selPars_TightMuon_(     iConfig.getParameter<edm::ParameterSet>("SelPars_TightMuon")),	
+	selPars_TightElectron_( iConfig.getParameter<edm::ParameterSet>("SelPars_TightElectron")),	
+	NJets_(                 iConfig.getParameter<double>("NJets")),
+	NonBjetCSVThr_(         iConfig.getParameter<double>("NonBjetCSVThr")),
+	Owrt_(                  iConfig.getParameter<double>("Owrt")),
+	Debug_(                 iConfig.getParameter<bool>("Debug")),
+	isSkim_(                iConfig.getParameter<bool>("IsSkim")),
+	doSaveTree_(            iConfig.getParameter<bool>("DoSaveTree"))
 {
 	if( inputTTree_.compare("Skim/root") == 0 ){ isSkim_=true; }
 }
@@ -164,12 +173,6 @@ double SemiLeptanicAnalysis::Obs7( TVector3 beam, Jet bjet1, Jet bjet2 )
 // ------------ method called once each job just before starting event loop  ------------
 void SemiLeptanicAnalysis::beginJob()
 {
-	//newtree_ = fs->make<TTree>("tree", "");
-	//newtree_->Branch("EvtInfo.RunNo"	    , &RunNo_	       , "EvtInfo.RunNo/I"	    );
-	//newtree_->Branch("EvtInfo.EvtNo"	    , &EvtNo_	       , "EvtInfo.EvtNo/L"	    );
-	//newtree_->Branch("EvtInfo.BxNo"	    , &BxNo_	       , "EvtInfo.BxNo/I"	    );
-	//newtree_->Branch("EvtInfo.LumiNo"    , &LumiNo_	       , "EvtInfo.LumiNo/I"	    );
- 
 	h1 = TH1InfoClass<TH1D>(Debug_);
 	h1.addNewTH1( "Evt_O7_Mu",	 "O7",	  	"O_{7}", "Events", 	"", 	"", 40, -2,   2) ;
 	h1.addNewTH1( "Evt_O7_El",	 "O7",	  	"O_{7}", "Events", 	"", 	"", 40, -2,   2) ;
@@ -310,6 +313,21 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 	ay.SetXYZ(0, 1, 0);
 	az.SetXYZ(0, 0, 1);
 
+	// Create all selectors
+
+	SelectorVertex  VtxSelection( selPars_Vertex_, Debug_ );
+
+	SelectorJet     JetSelection(     selPars_Jet_, Debug_ );
+	SelectorJet    BJetSelection(    selPars_BJet_, Debug_ );
+	SelectorJet NonBJetSelection( selPars_NonBJet_, Debug_ );
+
+	SelectorMuon MuonSelectionTight(   selPars_TightMuon_, Debug_ );
+	SelectorMuon MuonSelectionLoose( selPars_LooseLepton_, Debug_ );
+
+	SelectorElectron ElectronSelectionLoose(   selPars_LooseLepton_, Debug_ );
+	SelectorElectron ElectronSelectionTight( selPars_TightElectron_, Debug_ );
+
+	// Loop evetns	
 	for(int entry=0; entry<maxEvents_; entry++)
 	{
 		chain_->GetEntry(entry);
@@ -325,14 +343,14 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		}	
 		bool passMuonHLT=false;
 		bool passElectronHLT=false;
-		for( std::vector<int>::const_iterator ihlt = ElectronHLT_.begin(); ihlt != ElectronHLT_.end(); ++ihlt )
+		for( std::vector<int>::const_iterator ihlt = HLT_ElChannel_.begin(); ihlt != HLT_ElChannel_.end(); ++ihlt )
 		{	
 			if( int(EvtInfo.TrgBook[*ihlt]) == 1 ){
 				passElectronHLT=true;
 				break;
 			}
 		}	
-		for( std::vector<int>::const_iterator ihlt = MuonHLT_.begin(); ihlt != MuonHLT_.end(); ++ihlt )
+		for( std::vector<int>::const_iterator ihlt = HLT_MuChannel_.begin(); ihlt != HLT_MuChannel_.end(); ++ihlt )
 		{
 			if( int(EvtInfo.TrgBook[*ihlt]) == 1 ){
 				passMuonHLT=true;
@@ -341,20 +359,15 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 		}
 
 		// Vertex selection
-		vector<Vertex> selVertex;
+		vector<Vertex> VxtColSelected;
 		for( int idx=0; idx < VtxInfo.Size; idx++)
 		{
 			Vertex vtx( VtxInfo, idx );
-			if( vtx.Type != 1 ) continue;
-			if( vtx.isFake ) continue;
-			if( vtx.Ndof < 4 ) continue;
-			if( fabs(vtx.z) > 24 ) continue;
-			if( vtx.Rho > 2 ) continue;
-			selVertex.push_back(vtx);
+			if( VtxSelection.isPass(vtx) ) VxtColSelected.push_back(vtx);
 		}
 
 		//* Jet selection
-		vector<Jet> seljetCol, bjetCol, nonbjetCol;
+		vector<Jet> JetColSelected, BJetCol, nonBJetCol;
 		for( int idx=0; idx < JetInfo.Size; idx++)
 		{
 			Jet jet( JetInfo, idx );
@@ -368,17 +381,9 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			h1.GetTH1("Jet_Phi")->Fill(  jet.Phi );			
 			h1.GetTH1("Jet_BTag")->Fill( jet.CombinedSVBJetTags );			
 			
-			// ID tight
-			if( jet.CHF == 0 ) continue;
-			if( jet.NEF > 0.99 ) continue;
-			if( jet.NHF > 0.99 ) continue;
-			if( jet.CEF > 0.99 ) continue;
-			if( jet.NCH == 0 ) continue;
-			if( jet.NConstituents <= 1 ) continue;
-			if( fabs( jet.Eta ) >= 2.4 ) continue;
-			if( jet.Pt > 30. )
+			if( JetSelection.isPass(jet) )
 			{ 
-				seljetCol.push_back(jet);
+				JetColSelected.push_back(jet);
 				h1.GetTH1("SelJet_Pt")->Fill( jet.Pt );			
 				h1.GetTH1("SelJet_Px")->Fill( jet.Px );			
 				h1.GetTH1("SelJet_Py")->Fill( jet.Py );			
@@ -388,92 +393,52 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 				h1.GetTH1("SelJet_Eta")->Fill(  jet.Eta );			
 				h1.GetTH1("SelJet_Phi")->Fill(  jet.Phi );			
 				h1.GetTH1("SelJet_BTag")->Fill( jet.CombinedSVBJetTags );	
-	
-				if( jet.CombinedSVBJetTags < NonBjetCSVThr_ ) nonbjetCol.push_back(jet);	
-				if( jet.CombinedSVBJetTags > 0.679 )
-				{ 
-					bjetCol.push_back(jet);
-					h1.GetTH1("bJet_Pt")->Fill( jet.Pt );			
-					h1.GetTH1("bJet_Px")->Fill( jet.Px );			
-					h1.GetTH1("bJet_Py")->Fill( jet.Py );			
-					h1.GetTH1("bJet_Pz")->Fill( jet.Pz );			
-					h1.GetTH1("bJet_M")->Fill(  jet.Mass );			
-					h1.GetTH1("bJet_E")->Fill(  jet.Energy );			
-					h1.GetTH1("bJet_Eta")->Fill(  jet.Eta );			
-					h1.GetTH1("bJet_Phi")->Fill(  jet.Phi );			
-					h1.GetTH1("bJet_BTag")->Fill( jet.CombinedSVBJetTags );			
-				}
 			}
+			if( BJetSelection.isPass(jet) )
+			{ 
+				BJetCol.push_back(jet);
+				h1.GetTH1("bJet_Pt")->Fill( jet.Pt );			
+				h1.GetTH1("bJet_Px")->Fill( jet.Px );			
+				h1.GetTH1("bJet_Py")->Fill( jet.Py );			
+				h1.GetTH1("bJet_Pz")->Fill( jet.Pz );			
+				h1.GetTH1("bJet_M")->Fill(  jet.Mass );			
+				h1.GetTH1("bJet_E")->Fill(  jet.Energy );			
+				h1.GetTH1("bJet_Eta")->Fill(  jet.Eta );			
+				h1.GetTH1("bJet_Phi")->Fill(  jet.Phi );			
+				h1.GetTH1("bJet_BTag")->Fill( jet.CombinedSVBJetTags );			
+			}
+			if( NonBJetSelection.isPass(jet) ) nonBJetCol.push_back(jet);
 		}
 		h1.GetTH1("Evt_NJets")->Fill(JetInfo.Size);	
-		h1.GetTH1("Evt_NSelJets")->Fill(seljetCol.size());	
-		h1.GetTH1("Evt_NbJets")->Fill(bjetCol.size());
+		h1.GetTH1("Evt_NSelJets")->Fill(JetColSelected.size());	
+		h1.GetTH1("Evt_NbJets")->Fill(BJetCol.size());
 
 		//* Lepton selection
-		vector<Lepton> selMuCol, looseMuCol_isoMu, looseElCol_isoMu;
-		vector<Lepton> selElCol, looseMuCol_isoEl, looseElCol_isoEl;
+		vector<Lepton> MuColTight, MuColLoose_MuChannel, ElColLoose_MuChannel;
+		vector<Lepton> ElColTight, MuColLoose_ElChannel, ElColLoose_ElChannel;
 		for( int idx=0; idx < LepInfo.Size; idx++)
 		{
 			Lepton lepton( LepInfo, idx );
 			// Electron selections
 			if( lepton.LeptonType == 11 )
 			{
-				float relIso1=( lepton.ChargedHadronIsoR03 + lepton.NeutralHadronIsoR03 + lepton.PhotonIsoR03)/fabs(lepton.Pt);
-				if( fabs(lepton.Eta) > 2.5 ) continue;
-				if( fabs(lepton.Eta) < 1.566 && fabs(lepton.Eta) > 1.4442) continue;
-				if( lepton.Et < 20 ) continue;
-				if( relIso1 > 0.15 ) continue;
-	
-				if( lepton.EgammaMVATrig > 0 && lepton.EgammaMVATrig < 1. )
+				if( ElectronSelectionTight.isPass(lepton) ) ElColTight.push_back(lepton);
+				if( ElectronSelectionLoose.isPass(lepton) ) ElColLoose_MuChannel.push_back(lepton);
+				if( ElectronSelectionLoose.isPass(lepton) &&
+				    lepton.Et < ElectronSelectionTight.getCut("lepEtMin")) 
 				{
-					looseElCol_isoMu.push_back(lepton);	
-					if( lepton.Et < IsoEleEt_ )
-					{
-						looseElCol_isoEl.push_back(lepton);
-					}
+					ElColLoose_ElChannel.push_back(lepton);
 				}
-				if( relIso1 < 0.1 &&
-				    lepton.Et > IsoEleEt_ &&
-				    lepton.EgammaMVATrig > 0.5 && 
-				    lepton.NumberOfExpectedInnerHits <= 0 && 
-				    fabs(lepton.Eta) < 2.1 && 
-				    fabs(lepton.ElTrackDxy_PV)<0.02 
-				  )
-				{
-					selElCol.push_back(lepton);
-				}	
 			}
 			// Muon selections
 			if( lepton.LeptonType == 13 )
 			{
-				float relIso1=( lepton.ChargedHadronIsoR04 + lepton.NeutralHadronIsoR04 + lepton.PhotonIsoR04)/fabs(lepton.Pt);
-				if( relIso1 > 0.2 ) continue;	
-				if( fabs(lepton.Eta) > 2.5 ) continue;
-				if( lepton.Pt < 10) continue;
-				if( (lepton.MuType&0x02) == 0 && (lepton.MuType&0x04) == 0 ) continue; 
-
-				looseMuCol_isoEl.push_back(lepton);	
-
-				if( lepton.Pt < IsoMuonPt_ )
+				if( MuonSelectionTight.isPass(lepton) ) MuColTight.push_back(lepton);
+				if( MuonSelectionLoose.isPass(lepton) ) MuColLoose_ElChannel.push_back(lepton);
+				if( MuonSelectionLoose.isPass(lepton) && 
+				    lepton.Pt < MuonSelectionTight.getCut("lepPtMin"))
 				{
-					looseMuCol_isoMu.push_back(lepton);	
-				}
-				else if( relIso1 < 0.12 &&
-					 lepton.Pt >= IsoMuonPt_ && 
-					 lepton.MuNMuonhits > 0  &&
-					 lepton.MuNMatchedStations > 1  &&
-					 lepton.MuGlobalNormalizedChi2 < 10 &&
-					 lepton.MuNTrackLayersWMeasurement > 5  &&
-					 (lepton.MuType&0x02) != 0 && // Global muon 
-					 fabs(lepton.MuInnerTrackDxy_PV) < 0.2 &&
-					 fabs(lepton.Eta) < 2.1  
-					 //lepton.MuNPixelLayers > 0  &&
-					 //lepton.MuNTrackerHits > 10  &&
-					 //lepton.MuInnerTrackNHits > 10  &&
-					 //abs(lepton.MuInnerTrackDxy_BS) < 0.02 &&
-					) // tight muon
-				{
-					selMuCol.push_back(lepton);
+					MuColLoose_MuChannel.push_back(lepton);
 				}
 			}
 		}
@@ -494,7 +459,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			h1.GetTH1("Evt_CutFlow_Mu")->Fill("All", 1);
 		}
 
-		if( selVertex.size() )
+		if( VxtColSelected.size() )
 		{
 			h1.GetTH1("Evt_CutFlow")->Fill("#geq1 goodVtx", 1);
 			h1.GetTH1("Evt_CutFlow_El")->Fill("#geq1 goodVtx", 1);
@@ -505,19 +470,19 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( passMuonHLT )
 			{
 				h1.GetTH1("Evt_CutFlow_Mu")->Fill("HLT", 1);
-				if( selMuCol.size() > 0 )
+				if( MuColTight.size() > 0 )
 				{ 
 					h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq1 Lep", 1);
-					if( selMuCol.size() == 1 )
+					if( MuColTight.size() == 1 )
 					{
-						isoMu = selMuCol[0];
+						isoMu = MuColTight[0];
 						h1.GetTH1("Evt_CutFlow_Mu")->Fill("1 isoLep", 1);
 
-						if( looseMuCol_isoMu.size() == 0 )
+						if( MuColLoose_MuChannel.size() == 0 )
 						{
 							h1.GetTH1("Evt_CutFlow_Mu")->Fill("veto(Loose #mu)", 1);
 
-							if( looseElCol_isoMu.size() == 0 )
+							if( ElColLoose_MuChannel.size() == 0 )
 							{
 								h1.GetTH1("Evt_CutFlow_Mu")->Fill("veto(Loose e)", 1);
 								passMuonSel=true;
@@ -531,19 +496,19 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( passElectronHLT )
 			{
 				h1.GetTH1("Evt_CutFlow_El")->Fill("HLT", 1);
-				if( selElCol.size() > 0 )
+				if( ElColTight.size() > 0 )
 				{ 
 					h1.GetTH1("Evt_CutFlow_El")->Fill("#geq1 Lep", 1);
-					if( selElCol.size() == 1 ) 
+					if( ElColTight.size() == 1 ) 
 					{
-						isoEl=selElCol[0];
+						isoEl=ElColTight[0];
 						h1.GetTH1("Evt_CutFlow_El")->Fill("1 isoLep", 1);
 
-						if( looseMuCol_isoEl.size() == 0 )
+						if( MuColLoose_ElChannel.size() == 0 )
 						{
 							h1.GetTH1("Evt_CutFlow_El")->Fill("veto(Loose #mu)", 1);
 
-							if( looseElCol_isoEl.size() == 0 )
+							if( ElColLoose_ElChannel.size() == 0 )
 							{
 								h1.GetTH1("Evt_CutFlow_El")->Fill("veto(Loose e)", 1);
 								passElectronSel=true;
@@ -555,29 +520,29 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 
 			if( passElectronSel || passMuonSel )
 			{
-				if( seljetCol.size() >= NJets_ )
+				if( JetColSelected.size() >= NJets_ )
 				{ 	
 					if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#geq"+int2str(NJets_)+" Jets").c_str(), 1);
 					if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#geq"+int2str(NJets_)+" Jets").c_str(), 1);
 
-					if( bjetCol.size() == 2 )
+					if( BJetCol.size() == 2 )
 					{
 						// Lable the hardest non_bjet 
 						int j1=-1;
 						double pt1=0;
-						const int size_seljetCol = nonbjetCol.size();	
-						for( int i=0; i < size_seljetCol; i++)
+						const int size_JetColSelected = nonBJetCol.size();	
+						for( int i=0; i < size_JetColSelected; i++)
 						{
-							if( pt1 < nonbjetCol[i].Pt ){
+							if( pt1 < nonBJetCol[i].Pt ){
 								j1=i;
-								pt1=nonbjetCol[i].Pt;
+								pt1=nonBJetCol[i].Pt;
 							}
 						}
-						hardJet = nonbjetCol[j1];
+						hardJet = nonBJetCol[j1];
 						if( j1 == -1 ){ std::cout<<">>[WARNING] "<<entry<<"Doesn't find hard jet!"<<endl; }
 
 						//Lable bjet by Pt
-						get2HighPtObject( bjetCol, bjet1, bjet2 );
+						get2HighPtObject( BJetCol, bjet1, bjet2 );
 						h1.GetTH1("bJet12_Px")->Fill(bjet1.Px);
 						h1.GetTH1("bJet12_Px")->Fill(bjet2.Px);
 						h1.GetTH1("bJet12_Py")->Fill(bjet1.Py);
@@ -602,36 +567,36 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 			// Check events
 			if( passElectronHLT || passMuonHLT ){ 
 				h1.GetTH1("Evt_CutFlow")->Fill("HLT", 1);
-				if( ( selMuCol.size() + selElCol.size()) > 0 ) h1.GetTH1("Evt_CutFlow")->Fill("#geq1 Lep", 1);
-				if( ( selMuCol.size() + selElCol.size()) == 1 ){ 
+				if( ( MuColTight.size() + ElColTight.size()) > 0 ) h1.GetTH1("Evt_CutFlow")->Fill("#geq1 Lep", 1);
+				if( ( MuColTight.size() + ElColTight.size()) == 1 ){ 
 					h1.GetTH1("Evt_CutFlow")->Fill("1 isoLep", 1);
-					if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 0 )
+					if( MuColTight.size() == 1 && MuColLoose_MuChannel.size() == 0 && ElColLoose_MuChannel.size() == 0 )
 						h1.GetTH1("Evt_MuCut")->Fill("1:0:0", 1);
-					if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 0 )
+					if( MuColTight.size() == 0 && MuColLoose_MuChannel.size() == 1 && ElColLoose_MuChannel.size() == 0 )
 						h1.GetTH1("Evt_MuCut")->Fill("0:1:0", 1);
-					if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 1 )
+					if( MuColTight.size() == 0 && MuColLoose_MuChannel.size() == 0 && ElColLoose_MuChannel.size() == 1 )
 						h1.GetTH1("Evt_MuCut")->Fill("0:0:1", 1);
-					if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 0 )
+					if( MuColTight.size() == 1 && MuColLoose_MuChannel.size() == 1 && ElColLoose_MuChannel.size() == 0 )
 						h1.GetTH1("Evt_MuCut")->Fill("1:1:0", 1);
-					if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 0 && looseElCol_isoMu.size() == 1 )
+					if( MuColTight.size() == 1 && MuColLoose_MuChannel.size() == 0 && ElColLoose_MuChannel.size() == 1 )
 						h1.GetTH1("Evt_MuCut")->Fill("1:0:1", 1);
-					if( selMuCol.size() == 0 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 1 )
+					if( MuColTight.size() == 0 && MuColLoose_MuChannel.size() == 1 && ElColLoose_MuChannel.size() == 1 )
 						h1.GetTH1("Evt_MuCut")->Fill("0:1:1", 1);
-					if( selMuCol.size() == 1 && looseMuCol_isoMu.size() == 1 && looseElCol_isoMu.size() == 1 )
+					if( MuColTight.size() == 1 && MuColLoose_MuChannel.size() == 1 && ElColLoose_MuChannel.size() == 1 )
 						h1.GetTH1("Evt_MuCut")->Fill("1:1:1", 1);
-					if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 0 )
+					if( ElColTight.size() == 1 && MuColLoose_ElChannel.size() == 0 && ElColLoose_ElChannel.size() == 0 )
 						h1.GetTH1("Evt_ElCut")->Fill("1:0:0", 1);
-					if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 0 )
+					if( ElColTight.size() == 0 && MuColLoose_ElChannel.size() == 1 && ElColLoose_ElChannel.size() == 0 )
 						h1.GetTH1("Evt_ElCut")->Fill("0:1:0", 1);
-					if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 1 )
+					if( ElColTight.size() == 0 && MuColLoose_ElChannel.size() == 0 && ElColLoose_ElChannel.size() == 1 )
 						h1.GetTH1("Evt_ElCut")->Fill("0:0:1", 1);
-					if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 0 )
+					if( ElColTight.size() == 1 && MuColLoose_ElChannel.size() == 1 && ElColLoose_ElChannel.size() == 0 )
 						h1.GetTH1("Evt_ElCut")->Fill("1:1:0", 1);
-					if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 0 && looseElCol_isoEl.size() == 1 )
+					if( ElColTight.size() == 1 && MuColLoose_ElChannel.size() == 0 && ElColLoose_ElChannel.size() == 1 )
 						h1.GetTH1("Evt_ElCut")->Fill("1:0:1", 1);
-					if( selElCol.size() == 0 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 1 )
+					if( ElColTight.size() == 0 && MuColLoose_ElChannel.size() == 1 && ElColLoose_ElChannel.size() == 1 )
 						h1.GetTH1("Evt_ElCut")->Fill("0:1:1", 1);
-					if( selElCol.size() == 1 && looseMuCol_isoEl.size() == 1 && looseElCol_isoEl.size() == 1 )
+					if( ElColTight.size() == 1 && MuColLoose_ElChannel.size() == 1 && ElColLoose_ElChannel.size() == 1 )
 						h1.GetTH1("Evt_ElCut")->Fill("1:1:1", 1);
 				}
 			}

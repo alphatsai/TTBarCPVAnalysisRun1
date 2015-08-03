@@ -3,6 +3,7 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+#include <string>
 #include "TVector3.h"
 #include "TLorentzVector.h"
 #include "Lepton.h"
@@ -16,104 +17,143 @@ class SelectorMuon{
 			max=1;
 			hasCuts=false;
 		}
-		SelectorMuon( const edm::ParameterSet& iConfig )
+		SelectorMuon( const edm::ParameterSet& iconfig, bool debug=false )
 		{
 			min=0;
 			max=1;
-			setCuts(iConfig);
+			hasCuts=false;
+			setCuts(iconfig, debug);
 		}
+		~SelectorMuon(){};
  
 		// functions
-		void setCuts( const edm::ParameterSet& iConfig )
+		void setCuts( const edm::ParameterSet& iconfig, bool debug=false )
 		{
 			if( hasCuts ) std::cout<<">> [WARNING] Cuts has set before!"<<std::endl;
 			else hasCuts=true;
+
+			iConfig = iconfig;
 	
-			pt[min] = iConfig.getParameter<double>("pt_Min");
-			pt[max] = iConfig.getParameter<double>("pt_Max");	
-			absEta[min] = iConfig.getParameter<double>("absEta_Min");	
-			absEta[max] = iConfig.getParameter<double>("absEta_Max");	
-			relIsoR04[min] = iConfig.getParameter<double>("relIsoR04_Min");	
-			relIsoR04[max] = iConfig.getParameter<double>("relIsoR04_Max");	
-			absMuInnerTrackDxy_PV[min] = iConfig.getParameter<double>("absMuInnerTrackDxy_PV_Min");
-			absMuInnerTrackDxy_PV[max] = iConfig.getParameter<double>("absMuInnerTrackDxy_PV_Max");
-			MuGlobalNormalizedChi2[min] = iConfig.getParameter<double>("MuGlobalNormalizedChi2_Min");
-			MuGlobalNormalizedChi2[max] = iConfig.getParameter<double>("MuGlobalNormalizedChi2_Max");
+			leptype	         = iConfig.getParameter<std::string>("lepType");
+			checkGlobalMuon  = iConfig.getParameter<bool>("CheckGlobalMuon");
+			checkTrackerMuon = iConfig.getParameter<bool>("CheckTrackerMuon");
+			setPars( "lepPt"                      );
+			setPars( "lepAbsEta"                  );
+			setPars( "lepRelIsoR04"               );
+			setPars( "MuAbsInnerTrackDxyPV"       );
+			setPars( "MuGlobalNormalizedChi2"     );
+			setPars( "MuNMuonhits"                );
+			setPars( "MuNMatchedStations"         );
+			setPars( "MuNTrackLayersWMeasurement" );
 
-			MuNMuonhits[min] = iConfig.getParameter<int>("MuNMuonhits_Min");
-			MuNMuonhits[max] = iConfig.getParameter<int>("MuNMuonhits_Max");
-		        MuNMatchedStations[min] = iConfig.getParameter<int>("MuNMatchedStations_Min");
-		        MuNMatchedStations[max] = iConfig.getParameter<int>("MuNMatchedStations_Max");
-			MuNTrackLayersWMeasurement[min] = iConfig.getParameter<int>("MuNTrackLayersWMeasurement_Min");
-			MuNTrackLayersWMeasurement[max] = iConfig.getParameter<int>("MuNTrackLayersWMeasurement_Max");
-
-			checkGlobalMuon = iConfig.getParameter<bool>("CheckGlobalMuon");
+			if( debug )
+			{
+				printf(">> [DEBUG] List current cuts in selector: %s\n", leptype.c_str());
+				printf("%30s %10s %10s\n", "Selection", "Min", "Max");
+				printf("%30s %10d \n",     "checkGlobalMuon",  checkGlobalMuon );
+				printf("%30s %10d \n",     "checkTrackerMuon", checkTrackerMuon );
+				printCuts("pT",                         "lepPt"                         );
+				printCuts("|Eta|",                      "lepAbsEta"                     );
+				printCuts("relIsoR04",                  "lepRelIsoR04"                  );
+				printCuts("|MuInnerTrackDxy_PV|",       "MuAbsInnerTrackDxyPV"          );
+				printCuts("MuGlobalNormalizedChi2",     "MuGlobalNormalizedChi2"        );
+				printCuts("MuNMuonhits",                "MuNMuonhits"                   );
+				printCuts("MuNMatchedStations",         "MuNMatchedStations"            );
+				printCuts("MuNTrackLayersWMeasurement", "MuNTrackLayersWMeasurement"    );
+			}
 		}
+		void setPars( std::string parName )
+		{
+			setPars( parName+"Min", parName+"Max");
+		}
+		void setPars( std::string parMin, std::string parMax )
+		{
+			mapPars[parMin]= iConfig.getParameter<double>(parMin.c_str());
+			mapPars[parMax]= iConfig.getParameter<double>(parMax.c_str());
+		}
+
+
 		bool isPass( Lepton lepton )
 		{
+			// std::cout<<">> isPass() "<<std::endl;
 			if( !hasCuts ){ 
 				std::cout<<">> [ERROR] Not cut set yet"<<std::endl;
 				std::cout<<">>         Please use SelectorMuon::setCuts(const edm::ParameterSet& iConfig)"<<std::endl;
-				return
+				return false;
+			}
+			if( !pass( lepton.Pt,				"lepPt"                       )) return false;
+			if( !pass( getRelIsoR04(lepton),		"lepRelIsoR04"                )) return false;
+			if( !pass( fabs(lepton.Eta),			"lepAbsEta"                   )) return false;
+			if( !pass( fabs(lepton.MuInnerTrackDxy_PV), 	"MuAbsInnerTrackDxyPV"        )) return false;
+			if( !pass( lepton.MuNMuonhits,			"MuNMuonhits"                 )) return false;
+			if( !pass( lepton.MuNMatchedStations,		"MuNMatchedStations"          )) return false;
+			if( !pass( lepton.MuGlobalNormalizedChi2,	"MuGlobalNormalizedChi2"      )) return false;
+			if( !pass( lepton.MuNTrackLayersWMeasurement,	"MuNTrackLayersWMeasurement"  )) return false;
+			if( checkGlobalMuon && !checkTrackerMuon ){
+				 if( (lepton.MuType&0x02) == 0 ) return false; // Only it's global muon
+			}else if( !checkGlobalMuon && checkTrackerMuon ){
+				 if( (lepton.MuType&0x04) == 0 ) return false; // Only it's tracker muon
+			}else if( checkGlobalMuon && checkTrackerMuon ){
+				 if( (lepton.MuType&0x02) == 0 && (lepton.MuType&0x04) == 0 ) return false; // Either tracker or global muon
 			}
 
-			if( !pass( lepton.Pt,		pt[min],     	pt[max] ))	  return false;
-			if( !pass( relIsoR04(lepton),	relIsoR04[min],	relIsoR04[max] )) return false;
-			if( !pass( absf(lepton.Eta),	absEta[min], 	absEta[max] ))	  return false;
-			if( !pass( absf(lepton.MuInnerTrackDxy_PV), 	absMuInnerTrackDxy_PV[min], 	absMuInnerTrackDxy_PV[max] ))      return false;
-			if( !pass( lepton.MuNMuonhits,			MuNMuonhits[min],		MuNMuonhits[max] ))		   return false;
-			if( !pass( lepton.MuNMatchedStations,		MuNMatchedStations[min],	MuNMatchedStations[max] ))	   return false;
-			if( !pass( lepton.MuGlobalNormalizedChi2,	MuGlobalNormalizedChi2[min],	MuGlobalNormalizedChi2[max] ))	   return false;
-			if( !pass( lepton.MuNTrackLayersWMeasurement,	MuNTrackLayersWMeasurement[min],MuNTrackLayersWMeasurement[max] )) return false;
-			if( checkGlobalMuon ){
-				 if( (lepton.MuType&0x02) == 0 ) return false;
-			}
 			return true;
 		}
 
 		// Helper
-		bool pass( int value, int min, int max )
+		template<typename parType>
+		bool pass( parType value, double min, double max )
 		{
-			if( value > max || value < min ) return false;
-			return true;
+			if( value > min && value < max ) return true;
+			return false;
 		}
-		bool pass( float value, double min, double max )
-		{
-			if( value > max || value < min ) return false;
-			return true;
+		template<typename parType>
+		bool pass( parType value, std::string parName )
+		{ 
+			//std::cout<<">>   Pass(): "<<parName<<std::endl;
+			return pass( value, getCut(parName+"Min"), getCut(parName+"Max")); 
 		}
-		bool pass( bool value, double cut )
-		{
-			if( value != cut ) return false;
-			return true;
+
+		double getCut( std::string parName )
+		{ 
+			if( mapPars.find(parName) == mapPars.end() ){
+				printf(">> [ERROR] %s is not found in SelectorMuon::getCut(std::string)\n", parName.c_str());
+			}
+			return mapPars.find(parName)->second; 
 		}
-		float relIsoR04( Lepton lepton )
+
+		float getRelIsoR04( Lepton lepton )
 		{
 			float a = lepton.ChargedHadronIsoR04 + lepton.NeutralHadronIsoR04 + lepton.PhotonIsoR04;
 			float b = fabs(lepton.Pt);
 			float reliso = a/b;
 			return reliso;	
 		}
-		float relIsoR03( Lepton lepton )
+		float getRelIsoR03( Lepton lepton )
 		{
 			float a = lepton.ChargedHadronIsoR03 + lepton.NeutralHadronIsoR03 + lepton.PhotonIsoR03;
 			float b = fabs(lepton.Pt);
 			float reliso = a/b;
 			return reliso;	
 		}
+		void printCuts( string cutName, std::string parName )
+		{
+			std::string parMin=parName+"Min";
+			std::string parMax=parName+"Max";
+			if( getCut(parMin) <= -100000 && getCut(parMax) >= 100000 )      printf("%30s %10s %10s\n",   cutName.c_str(), "nan", "nan" );
+			else if( getCut(parMin) <= -100000 && getCut(parMax) <  100000 ) printf("%30s %10s %10.3f\n", cutName.c_str(), "nan", getCut(parMax) );
+			else if( getCut(parMin) >  -100000 && getCut(parMax) >= 100000 ) printf("%30s %10.3f %10s\n", cutName.c_str(),  getCut(parMin), "nan");
+			else printf("%30s %10.3f %10.3f\n", cutName.c_str(),  getCut(parMin), getCut(parMax) );
+		}
 
-	private:		
+	private:	
+		edm::ParameterSet iConfig;
 		bool hasCuts;
-		const int max;
-		const int min;
-		const double pt[2];
-		const double relIsoR04[2]
-		const double absEta[2];
-		const double absMuInnerTrackDxy_PV[2];
-		const int    MuNMuonhits[2];
-		const int    MuNMatchedStations[2];
-		const int    MuGlobalNormalizedChi2[2];
-		const int    MuNTrackLayersWMeasurement[2];
-		const bool   checkGlobalMuon;
+		int max;
+		int min;
+		std::string leptype;
+		bool   checkGlobalMuon;
+		bool   checkTrackerMuon;
+		map<std::string, double> mapPars;
 };
 #endif
