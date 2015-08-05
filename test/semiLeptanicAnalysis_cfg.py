@@ -25,6 +25,11 @@ options.register('ttreedir', 'bprimeKit',
 	VarParsing.varType.string,
 	"Name of ROOT TTree dir: Either 'ntuple' or 'skim' or 'bVeto'"
 	)
+options.register('dRIsoLeptonFromJets', 0.5,
+	VarParsing.multiplicity.singleton,	
+	VarParsing.varType.float,
+	"isolate lepton with deltaR( lepton, jet )"
+	)
 options.register('NJets', 4,
 	VarParsing.multiplicity.singleton,	
 	VarParsing.varType.int,
@@ -92,8 +97,9 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
 	SelPars_LooseLepton   = defaultLeptonSelectionParameters.clone(), 
 	SelPars_TightMuon     = defaultMounSelectionParameters.clone(), 
 	SelPars_TightElectron = defaultElectronSelectionParameters.clone(),
-	NJets                 = cms.double(options.NJets),
+	dR_IsoLeptonFromJets = cms.double(options.dRIsoLeptonFromJets),
 	Owrt                  = cms.double(Oweight), 
+	NJets                 = cms.int32(options.NJets),
 	Debug                 = cms.bool(options.Debug),
         IsSkim                = cms.bool(isSkim),
 	DoSaveTree            = cms.bool(options.DoSaveTree), 
