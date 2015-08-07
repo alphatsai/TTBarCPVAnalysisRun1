@@ -39,7 +39,7 @@ T_t-channel: L=19707
 T_t-channel 56.4
 T_s-channel: L=19707
 T_s-channel 3.79
-T_tw-channel: L=19707
+T_tW-channel: L=19707
 T_tW-channel 11.1
 Tbar_t-channel: L=19707
 Tbar_t-channel 30.7
