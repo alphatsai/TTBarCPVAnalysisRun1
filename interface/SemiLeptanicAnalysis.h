@@ -101,6 +101,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         LepInfoBranches    LepInfo;
 
         TH1InfoClass<TH1D> h1;
+        TH2InfoClass<TH2D> h2;
 
 };
 

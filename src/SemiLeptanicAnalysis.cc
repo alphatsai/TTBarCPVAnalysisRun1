@@ -40,6 +40,7 @@
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Vertex.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1InfoClass.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH2InfoClass.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SemiLeptanicAnalysis.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorElectron.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorMuon.h" 
@@ -265,6 +266,65 @@ void SemiLeptanicAnalysis::beginJob()
     setObservableHist(h1.GetTH1("Evt_O2Asym_El"), "O_{2}");
     setLeptonSelHist(h1.GetTH1("Evt_MuCut"));
     setLeptonSelHist(h1.GetTH1("Evt_ElCut"));
+
+    h2 = TH2InfoClass<TH2D>(Debug_);
+    h2.addNewTH2("TH2_O2_vs_LepCharge",     "", "", "O_{2}", "", "", 3,   -1,   2,   40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_LepCharge_Mu",  "", "", "O_{2}", "", "", 3,   -1,   2,   40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_LepCharge_El",  "", "", "O_{2}", "", "", 3,   -1,   2,   40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_LepPz",         "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_LepPz_Mu",      "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_LepPz_El",      "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_LepPt",         "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_LepPt_Mu",      "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_LepPt_El",      "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_LepEta",        "", "", "O_{2}", "", "", 100, -5,   5,   40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_LepEta_Mu",     "", "", "O_{2}", "", "", 100, -5,   5,   40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_LepEta_El",     "", "", "O_{2}", "", "", 100, -5,   5,   40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_LepPhi",        "", "", "O_{2}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_LepPhi_Mu",     "", "", "O_{2}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_LepPhi_El",     "", "", "O_{2}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_HardJetPz",     "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_HardJetPz_Mu",  "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_HardJetPz_El",  "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_HardJetPt",     "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_HardJetPt_Mu",  "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_HardJetPt_El",  "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_HardJetEta",    "", "", "O_{2}", "", "", 100, -5,   5,   40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_HardJetEta_Mu", "", "", "O_{2}", "", "", 100, -5,   5,   40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_HardJetEta_El", "", "", "O_{2}", "", "", 100, -5,   5,   40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_HardJetPhi",    "", "", "O_{2}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_HardJetPhi_Mu", "", "", "O_{2}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
+    h2.addNewTH2("TH2_O2_vs_HardJetPhi_El", "", "", "O_{2}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepCharge",     "", "", "O_{7}", "", "", 3,   -1,   2,   40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepCharge_Mu",  "", "", "O_{7}", "", "", 3,   -1,   2,   40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepCharge_El",  "", "", "O_{7}", "", "", 3,   -1,   2,   40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepPz",         "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepPz_Mu",      "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepPz_El",      "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepPt",         "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepPt_Mu",      "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepPt_El",      "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepEta",        "", "", "O_{7}", "", "", 100, -5,   5,   40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepEta_Mu",     "", "", "O_{7}", "", "", 100, -5,   5,   40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepEta_El",     "", "", "O_{7}", "", "", 100, -5,   5,   40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepPhi",        "", "", "O_{7}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepPhi_Mu",     "", "", "O_{7}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_LepPhi_El",     "", "", "O_{7}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_HardJetPz",     "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_HardJetPz_Mu",  "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_HardJetPz_El",  "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_HardJetPt",     "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_HardJetPt_Mu",  "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_HardJetPt_El",  "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_HardJetEta",    "", "", "O_{7}", "", "", 100, -5,   5,   40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_HardJetEta_Mu", "", "", "O_{7}", "", "", 100, -5,   5,   40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_HardJetEta_El", "", "", "O_{7}", "", "", 100, -5,   5,   40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_HardJetPhi",    "", "", "O_{7}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_HardJetPhi_Mu", "", "", "O_{7}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
+    h2.addNewTH2("TH2_O7_vs_HardJetPhi_El", "", "", "O_{7}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
+
+    h2.CreateTH2( fs );
+    h2.Sumw2();
 
     std::cout<<">> [INFO] Chaining "<<inputFiles_.size()<<" files..."<<endl;
     chain_  = new TChain(inputTTree_.c_str());
@@ -672,6 +732,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             h1.GetTH1("Evt_HardJet_BTag")->Fill(hardJet.CombinedSVBJetTags);
         }
         //* Fill observables O7 and O2
+        // -- Muon channel
         if( isGoodMuonEvt )
         {
             h1.GetTH1("Evt_isoMu_Pt")->Fill(isoMu.Pt);
@@ -701,7 +762,44 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 h1.GetTH1("Evt_O7Asym")->Fill("O_{7}<0",1);
                 h1.GetTH1("Evt_O7Asym_Mu")->Fill("O_{7}<0",1);
             }
+            h2.GetTH2("TH2_O2_vs_LepCharge")    ->Fill( isoMu.Charge, O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepCharge_Mu") ->Fill( isoMu.Charge, O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepPz")        ->Fill( isoMu.Pz,     O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepPz_Mu")     ->Fill( isoMu.Pz,     O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepPt")        ->Fill( isoMu.Pt,     O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepPt_Mu")     ->Fill( isoMu.Pt,     O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepEta")       ->Fill( isoMu.Eta,    O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepEta_Mu")    ->Fill( isoMu.Eta,    O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepPhi")       ->Fill( isoMu.Phi,    O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepPhi_Mu")    ->Fill( isoMu.Phi,    O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetPz")    ->Fill( hardJet.Pz,   O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetPz_Mu") ->Fill( hardJet.Pz,   O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetPt")    ->Fill( hardJet.Pt,   O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetPt_Mu") ->Fill( hardJet.Pt,   O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetEta")   ->Fill( hardJet.Eta,  O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetEta_Mu")->Fill( hardJet.Eta,  O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetPhi")   ->Fill( hardJet.Phi,  O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetPhi_Mu")->Fill( hardJet.Phi,  O2/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepCharge")    ->Fill( isoMu.Charge, O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepCharge_Mu") ->Fill( isoMu.Charge, O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepPz")        ->Fill( isoMu.Pz,     O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepPz_Mu")     ->Fill( isoMu.Pz,     O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepPt")        ->Fill( isoMu.Pt,     O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepPt_Mu")     ->Fill( isoMu.Pt,     O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepEta")       ->Fill( isoMu.Eta,    O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepEta_Mu")    ->Fill( isoMu.Eta,    O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepPhi")       ->Fill( isoMu.Phi,    O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepPhi_Mu")    ->Fill( isoMu.Phi,    O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetPz")    ->Fill( hardJet.Pz,   O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetPz_Mu") ->Fill( hardJet.Pz,   O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetPt")    ->Fill( hardJet.Pt,   O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetPt_Mu") ->Fill( hardJet.Pt,   O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetEta")   ->Fill( hardJet.Eta,  O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetEta_Mu")->Fill( hardJet.Eta,  O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetPhi")   ->Fill( hardJet.Phi,  O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetPhi_Mu")->Fill( hardJet.Phi,  O7/Owrt_ );
         }
+        // -- Electron channel
         if( isGoodElectronEvt )
         {
             h1.GetTH1("Evt_isoEl_Pt")->Fill(isoEl.Pt);
@@ -731,7 +829,42 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 h1.GetTH1("Evt_O7Asym")->Fill("O_{7}<0",1);
                 h1.GetTH1("Evt_O7Asym_El")->Fill("O_{7}<0",1);
             }
-
+            h2.GetTH2("TH2_O2_vs_LepCharge")    ->Fill( isoEl.Charge, O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepCharge_El") ->Fill( isoEl.Charge, O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepPz")        ->Fill( isoEl.Pz,     O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepPz_El")     ->Fill( isoEl.Pz,     O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepPt")        ->Fill( isoEl.Pt,     O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepPt_El")     ->Fill( isoEl.Pt,     O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepEta")       ->Fill( isoEl.Eta,    O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepEta_El")    ->Fill( isoEl.Eta,    O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepPhi")       ->Fill( isoEl.Phi,    O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_LepPhi_El")    ->Fill( isoEl.Phi,    O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetPz")    ->Fill( hardJet.Pz,   O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetPz_El") ->Fill( hardJet.Pz,   O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetPt")    ->Fill( hardJet.Pt,   O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetPt_El") ->Fill( hardJet.Pt,   O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetEta")   ->Fill( hardJet.Eta,  O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetEta_El")->Fill( hardJet.Eta,  O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetPhi")   ->Fill( hardJet.Phi,  O2/Owrt_ );
+            h2.GetTH2("TH2_O2_vs_HardJetPhi_El")->Fill( hardJet.Phi,  O2/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepCharge")    ->Fill( isoEl.Charge, O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepCharge_El") ->Fill( isoEl.Charge, O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepPz")        ->Fill( isoEl.Pz,     O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepPz_El")     ->Fill( isoEl.Pz,     O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepPt")        ->Fill( isoEl.Pt,     O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepPt_El")     ->Fill( isoEl.Pt,     O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepEta")       ->Fill( isoEl.Eta,    O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepEta_El")    ->Fill( isoEl.Eta,    O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepPhi")       ->Fill( isoEl.Phi,    O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_LepPhi_El")    ->Fill( isoEl.Phi,    O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetPz")    ->Fill( hardJet.Pz,   O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetPz_El") ->Fill( hardJet.Pz,   O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetPt")    ->Fill( hardJet.Pt,   O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetPt_El") ->Fill( hardJet.Pt,   O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetEta")   ->Fill( hardJet.Eta,  O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetEta_El")->Fill( hardJet.Eta,  O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetPhi")   ->Fill( hardJet.Phi,  O7/Owrt_ );
+            h2.GetTH2("TH2_O7_vs_HardJetPhi_El")->Fill( hardJet.Phi,  O7/Owrt_ );
         }
     }//// [END] entry loop 
 }
