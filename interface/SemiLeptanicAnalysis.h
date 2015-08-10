@@ -1,5 +1,5 @@
-#ifndef HADRONICANALYSIS_H 
-#define HADRONICANALYSIS_H 
+#ifndef SEMILEPTANICANALYSIS_H 
+#define SEMILEPTANICANALYSIS_H 
 
 #include <iostream>
 #include <sstream>
@@ -54,8 +54,10 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 
         bool isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCol, double dR=0.5 );
 
-        double Obs2( Lepton isoLep, Jet hardJet, Jet bjet1, Jet bjet2 );
-        double Obs7( TVector3 beam, Jet bjet1, Jet bjet2 );
+        double Obs2(   Lepton isoLep,      Jet hardJet,      Jet bjet1,      Jet bjet2 );
+        double Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 bjet1, TVector3 bjet2 );
+        double Obs7( TVector3 beam,      Jet bjet1,      Jet bjet2 );
+        double Obs7( TVector3 beam, TVector3 bjet1, TVector3 bjet2 );
 
         // ----------member data ---------------------------
 
