@@ -14,6 +14,7 @@ class TH2InfoClass
         TH2InfoClass( bool deBug=false );
         void addNewTH2( std::string name, std::string title, std::string xtitle, std::string ytitle, std::string xunit, std::string yunit, int binX, double minX, double maxX, int binY, double minY, double maxY);
         void defaultTH2Info(); 
+        void ClearTH2Info();
         void CreateTH2();
         void CreateTH2( TFile* f, std::string dir_name=""); 
         void CreateTH2( edm::Service<TFileService> f); 
@@ -39,7 +40,13 @@ TH2InfoClass<TH2>::TH2InfoClass( bool deBug )
     defaultTH2Info();
     size=Info.size();
 }
-
+    template<typename TH2>
+void TH2InfoClass<TH2>::ClearTH2Info()
+{
+    int presize=Info.size();
+    Info.clear();
+    if( debug ) printf(">> [DEBUG] Clear vector<TH2> Info, size:%d -> %d\n", presize, Info.size());
+}
     template<typename TH2>
 void TH2InfoClass<TH2>::addNewTH2(std::string name, std::string title, std::string xtitle, std::string ytitle, std::string xunit, std::string yunit, int binX, double minX, double maxX, int binY, double minY, double maxY)
 {
