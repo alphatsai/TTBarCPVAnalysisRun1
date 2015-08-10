@@ -14,6 +14,7 @@ class TH1InfoClass
         TH1InfoClass( bool deBug=false );
         void addNewTH1( std::string name, std::string title, std::string xtitle, std::string ytitle, std::string xunit, std::string yunit, int bin, double min, double max);
         void defaultTH1Info(); 
+        void ClearTH1Info();
         void CreateTH1();
         void CreateTH1( TFile* f, std::string dir_name=""); 
         void CreateTH1( edm::Service<TFileService> f); 
@@ -39,7 +40,13 @@ TH1InfoClass<TH1>::TH1InfoClass( bool deBug )
     defaultTH1Info();
     size=Info.size();
 }
-
+    template<typename TH1>
+void TH1InfoClass<TH1>::ClearTH1Info()
+{
+    int presize=Info.size();
+    Info.clear();
+    if( debug ) printf(">> [DEBUG] Clear vector<TH1> Info, size:%d -> %d\n", presize, Info.size());
+}
     template<typename TH1>
 void TH1InfoClass<TH1>::addNewTH1(std::string name, std::string title, std::string xtitle, std::string ytitle, std::string xunit, std::string yunit, int bin, double min, double max)
 {
