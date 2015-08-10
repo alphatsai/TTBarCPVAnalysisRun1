@@ -45,7 +45,7 @@ void TH2InfoClass<TH2>::ClearTH2Info()
 {
     int presize=Info.size();
     Info.clear();
-    if( debug ) printf(">> [DEBUG] Clear vector<TH2> Info, size:%d -> %d\n", presize, Info.size());
+    if( debug ) printf(">> [DEBUG] Clear vector<TH2> Info, size:%d -> %ld\n", presize, Info.size());
 }
     template<typename TH2>
 void TH2InfoClass<TH2>::addNewTH2(std::string name, std::string title, std::string xtitle, std::string ytitle, std::string xunit, std::string yunit, int binX, double minX, double maxX, int binY, double minY, double maxY)
