@@ -257,16 +257,19 @@ void SemiLeptanicResultsCheck::beginJob()
     h1.addNewTH1( "Gen_NlightQ",       "",                          "",                   "Evetns", "",    "", 10,   0,   10 );
     h1.addNewTH1( "Gen_NchargeLep",    "",                          "",                   "Evetns", "",    "", 10,   0,   10 );
     h1.addNewTH1( "Gen_Nneutrinos",    "",                          "",                   "Evetns", "",    "", 10,   0,   10 );
-    h1.addNewTH1( "Gen_HasO2ObjectsV1","No b bbar and mo select",   "",                   "Evetns", "",    "",  2,   0,   2 );
-    h1.addNewTH1( "Gen_O2_highPt",     "O2",                        "",                   "Events", "",    "", 40,  -2,   2   );
-    h1.addNewTH1( "Gen_O2Asym_highPt", "A_{O2}",                    "",                   "Events", "",    "",  2,   0,   2   );
+    h1.addNewTH1( "Gen_O2_highPt",     "O2",                        "",                   "Events", "",    "", 40,  -2,   2  );
+    h1.addNewTH1( "Gen_O2Asym_highPt", "A_{O2}",                    "",                   "Events", "",    "",  2,   0,   2  );
     h1.addNewTH1( "Gen_highPtLQ_PDG",  "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
     h1.addNewTH1( "Gen_highPtLQ_Mo1",  "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
     h1.addNewTH1( "Gen_highPtLQ_Mo2",  "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
     h1.addNewTH1( "Gen_highPtLep_PDG", "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
     h1.addNewTH1( "Gen_highPtLep_Mo1", "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
     h1.addNewTH1( "Gen_highPtLep_Mo2", "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_highPtBQ_Pair", "",                          "",                   "Events", "",    "",  2,   0,   2   );
+    h1.addNewTH1( "Gen_highPtBQ_Pair", "",                          "",                   "Events", "",    "",  2,   0,   2  );
+    h1.addNewTH1( "Gen_highPt_HasO2",  "No b bbar and mo select",   "",                   "Evetns", "",    "",  2,   0,   2  );
+    h1.addNewTH1( "Gen_O2_ideal",      "O2",                        "",                   "Events", "",    "", 40,  -2,   2  );
+    h1.addNewTH1( "Gen_O2Asym_ideal",  "A_{O2}",                    "",                   "Events", "",    "",  2,   0,   2  );
+    h1.addNewTH1( "Gen_ideal_HasO2",   "O2 in theory",              "",                   "Evetns", "",    "",  2,   0,   2  );
 
     h1.CreateTH1( fs );
     h1.Sumw2();
@@ -278,6 +281,7 @@ void SemiLeptanicResultsCheck::beginJob()
     setObservableHist( h1.GetTH1("Evt_O2Asym_Mu"), "O_{2}");
     setObservableHist( h1.GetTH1("Evt_O2Asym_El"), "O_{2}");
     setObservableHist( h1.GetTH1("Gen_O2Asym_highPt"), "O_{2}");
+    setObservableHist( h1.GetTH1("Gen_O2Asym_ideal"),  "O_{2}");
 
     // Create TH2D
     h2 = TH2InfoClass<TH2D>(Debug_);
@@ -382,12 +386,12 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
             { 
                 particles.push_back( particle );
                 h1.GetTH1("Gen_PID")->Fill( particle.PdgID );  
-                if( particle.PdgID == 24 )
+                if( particle.PdgID == -24 )
                 {
                     h1.GetTH1("Gen_PID_wpDa1")->Fill( particle.Da1PdgID );   
                     h1.GetTH1("Gen_PID_wpDa2")->Fill( particle.Da2PdgID );   
                 }
-                if( particle.PdgID == -24 )
+                if( particle.PdgID == 24 )
                 {
                     h1.GetTH1("Gen_PID_wmDa1")->Fill( particle.Da1PdgID );   
                     h1.GetTH1("Gen_PID_wmDa2")->Fill( particle.Da2PdgID );   
@@ -429,14 +433,12 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
         int lpsize = chargeLep.size(); 
         if( bqsize >= 2 && lqsize >= 1 && lpsize >=1 ) 
         {
-            vector<GenParticle> bjets, barjets;
+            vector<GenParticle> bjets, bbarjets;
             // blined: ignore b or bbar
             for( int bq1=0; bq1<bqsize; bq1++)
             {
-                if( bquarks[bq1].PdgID == 5 )  bjets.push_back( bquarks[bq1] ); 
-                if( bquarks[bq1].PdgID == -5 ) barjets.push_back( bquarks[bq1] ); 
-                //for( int bq2=0; bq2<bq1; bq2++)
-                //{}
+                if( bquarks[bq1].PdgID ==  5 )   bjets.push_back( bquarks[bq1] ); 
+                if( bquarks[bq1].PdgID == -5 ) bbarjets.push_back( bquarks[bq1] ); 
             }
 
             // Choose high pT
@@ -447,13 +449,13 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
             double O2 = Obs2( lep.P3, lq.P3, b1.P3, b2.P3 );
 
             fillObservableHist( h1.GetTH1("Gen_O2Asym_highPt"), O2, "O_{2}");
-            h1.GetTH1("Gen_O2_highPt")->Fill( O2/Owrt_ );
+            h1.GetTH1("Gen_O2_highPt")    ->Fill(  O2/Owrt_    );
+            h1.GetTH1("Gen_highPtLQ_PDG") ->Fill(  lq.PdgID    );
+            h1.GetTH1("Gen_highPtLQ_Mo1") ->Fill(  lq.Mo1PdgID );
+            h1.GetTH1("Gen_highPtLQ_Mo2") ->Fill(  lq.Mo2PdgID );
             h1.GetTH1("Gen_highPtLep_PDG")->Fill( lep.PdgID    );
             h1.GetTH1("Gen_highPtLep_Mo1")->Fill( lep.Mo1PdgID );
             h1.GetTH1("Gen_highPtLep_Mo2")->Fill( lep.Mo2PdgID );
-            h1.GetTH1("Gen_highPtLQ_PDG")->Fill(  lq.PdgID    );
-            h1.GetTH1("Gen_highPtLQ_Mo1")->Fill(  lq.Mo1PdgID );
-            h1.GetTH1("Gen_highPtLQ_Mo2")->Fill(  lq.Mo2PdgID );
             if( b1.PdgID/b2.PdgID == -1 )
             { 
                 h1.GetTH1("Gen_highPtBQ_Pair")->Fill(1);
@@ -462,21 +464,32 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
             {    
                 h1.GetTH1("Gen_highPtBQ_Pair")->Fill(0);
             }
-            h1.GetTH1("Gen_HasO2ObjectsV1")->Fill(1);
+            h1.GetTH1("Gen_highPt_HasO2")->Fill(1);
             
             // ideal
-            //if( bjets.size() >= 1 && bbarjets.size() >=1 )
-            //{
-            //    GenParticle hardjet;
-            //    if( getHighPtSelectMo( lquarks, hardjet, 24 ) )
-            //    {
-
-            //    }  
-            //}   
-        }
+            if( bjets.size() >= 1 && bbarjets.size() >=1 )
+            {
+                GenParticle bjet, bbarjet, isolep, hardjet;
+                if( getHighPtSelectMo(     bjets,    bjet, 6  ) && // b from top
+                    getHighPtSelectMo(  bbarjets, bbarjet, 6  ) && // b from top
+                    getHighPtSelectMo(   lquarks, hardjet, 24 ) && // non-b jet from W
+                    getHighPtSelectMo( chargeLep,  isolep, 24 ))   // lepton from W
+                {
+                    O2 = Obs2( isolep.P3, hardjet.P3, bbarjet.P3, bjet.P3 );
+                    h1.GetTH1("Gen_O2_ideal")->Fill( O2/Owrt_ );
+                    h1.GetTH1("Gen_ideal_HasO2")->Fill(1);
+                    fillObservableHist( h1.GetTH1("Gen_O2Asym_ideal"), O2, "O_{2}");
+                }
+            }  
+            else
+            {
+                h1.GetTH1("Gen_ideal_HasO2")->Fill(0);
+            }  
+        } 
         else
         {
-            h1.GetTH1("Gen_HasO2ObjectsV1")->Fill(0);
+            h1.GetTH1("Gen_ideal_HasO2") ->Fill(0);
+            h1.GetTH1("Gen_highPt_HasO2")->Fill(0);
         }   
 
         // ---- * Reconstruction info
