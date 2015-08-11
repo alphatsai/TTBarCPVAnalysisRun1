@@ -39,6 +39,7 @@
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Jet.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Vertex.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/GenParticle.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1InfoClass.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH2InfoClass.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SemiLeptanicResultsCheck.h" 
@@ -64,8 +65,9 @@ SemiLeptanicResultsCheck::SemiLeptanicResultsCheck(const edm::ParameterSet& iCon
     selPars_LooseLepton_(   iConfig.getParameter<edm::ParameterSet>("SelPars_LooseLepton")),
     selPars_TightMuon_(     iConfig.getParameter<edm::ParameterSet>("SelPars_TightMuon")),
     selPars_TightElectron_( iConfig.getParameter<edm::ParameterSet>("SelPars_TightElectron")),
-    dR_IsoLeptonFromJets_( iConfig.getParameter<double>("dR_IsoLeptonFromJets")),
+    dR_IsoLeptonFromJets_(  iConfig.getParameter<double>("dR_IsoLeptonFromJets")),
     Owrt_(                  iConfig.getParameter<double>("Owrt")),
+    //isSignal_(              iConfig.getParameter<bool>("isSingal"))
     Debug_(                 iConfig.getParameter<bool>("Debug"))
 {}
 
@@ -83,9 +85,54 @@ std::string SemiLeptanicResultsCheck::int2str( int i )
     return ss.str();
 }
 template<class TH1>
-void SemiLeptanicResultsCheck::setObservableHist(TH1* h, string ob ){
+void SemiLeptanicResultsCheck::setObservableHist( TH1* h, string ob ){
     h->GetXaxis()->SetBinLabel(1,(ob+"<0").c_str());
     h->GetXaxis()->SetBinLabel(2,(ob+">0").c_str());
+}
+template<class TH1>
+void SemiLeptanicResultsCheck::fillObservableHist( TH1* h, double ob, string obs, double wrt ){
+    if( ob > 0 ){
+        h->Fill((obs+">0").c_str(), wrt);
+    }else{
+        h->Fill((obs+"<0").c_str(), wrt);
+    }
+}
+template <class Object>
+bool SemiLeptanicResultsCheck::getHighPtSelectMo( vector<Object> col, Object &obj, int mo )
+{
+    bool matched=false;
+    int o1(-1);
+    double pt(0);
+    const int size=col.size();
+    for( int i=0; i<size; i++)
+    {
+        if( mo == 0 || abs(col[i].Mo1PdgID) == mo || abs(col[i].Mo2PdgID) == mo ){
+            if( pt < col[i].Pt )
+            {
+                pt=col[i].Pt;
+                o1=i;
+                matched=true;
+            }
+        }
+    }
+    obj=col[o1];
+    return matched;
+}
+    template <class Object>
+void SemiLeptanicResultsCheck::getHighPtObject( vector<Object> col, Object &obj )
+{
+    int o1(-1);
+    double pt(0);
+    const int size=col.size();
+    for( int i=0; i<size; i++)
+    {
+        if( pt < col[i].Pt )
+        {
+            pt=col[i].Pt;
+            o1=i;
+        }
+    }
+    obj=col[o1];
 }
 template <class Object>
 void SemiLeptanicResultsCheck::get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 )
@@ -191,7 +238,36 @@ void SemiLeptanicResultsCheck::beginJob()
     h1.addNewTH1( "Evt_NSelElectrons", "Num. of selected electron", "N(selected e)",      "Events", "",    "", 10,   0,   10  );
     h1.addNewTH1( "Evt_NLooseMuIsoEl", "Num. of loose muon",        "N(loose #mu)",       "Events", "",    "", 10,   0,   10  );
     h1.addNewTH1( "Evt_NLooseElIsoEl", "Num. of loose electron",    "N(loose e)",         "Events", "",    "", 10,   0,   10  );
-    h1.addNewTH1( "Evt_SameChannel",   "",                          "",                   "Evetns", "",    "", 1,    0,   1   );
+    h1.addNewTH1( "Evt_Channel",       "",                          "",                   "Evetns", "",    "", 1,    0,   1   );
+
+    h1.addNewTH1( "Gen_PID",           "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_bMo1",      "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_bMo2",      "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_lqMo1",     "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_lqMo2",     "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_nuMo1",     "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_nuMo2",     "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_lepMo1",    "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_lepMo2",    "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_wpDa1",     "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_wpDa2",     "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_wmDa1",     "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_wmDa2",     "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_NbQ",           "",                          "",                   "Evetns", "",    "", 10,   0,   10 );
+    h1.addNewTH1( "Gen_NlightQ",       "",                          "",                   "Evetns", "",    "", 10,   0,   10 );
+    h1.addNewTH1( "Gen_NchargeLep",    "",                          "",                   "Evetns", "",    "", 10,   0,   10 );
+    h1.addNewTH1( "Gen_Nneutrinos",    "",                          "",                   "Evetns", "",    "", 10,   0,   10 );
+    h1.addNewTH1( "Gen_HasO2ObjectsV1","No b bbar and mo select",   "",                   "Evetns", "",    "",  2,   0,   2 );
+    h1.addNewTH1( "Gen_O2_highPt",     "O2",                        "",                   "Events", "",    "", 40,  -2,   2   );
+    h1.addNewTH1( "Gen_O2Asym_highPt", "A_{O2}",                    "",                   "Events", "",    "",  2,   0,   2   );
+    h1.addNewTH1( "Gen_highPtLQ_PDG",  "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_highPtLQ_Mo1",  "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_highPtLQ_Mo2",  "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_highPtLep_PDG", "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_highPtLep_Mo1", "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_highPtLep_Mo2", "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_highPtBQ_Pair", "",                          "",                   "Events", "",    "",  2,   0,   2   );
+
     h1.CreateTH1( fs );
     h1.Sumw2();
 
@@ -201,6 +277,7 @@ void SemiLeptanicResultsCheck::beginJob()
     setObservableHist( h1.GetTH1("Evt_O2Asym"),    "O_{2}");
     setObservableHist( h1.GetTH1("Evt_O2Asym_Mu"), "O_{2}");
     setObservableHist( h1.GetTH1("Evt_O2Asym_El"), "O_{2}");
+    setObservableHist( h1.GetTH1("Gen_O2Asym_highPt"), "O_{2}");
 
     // Create TH2D
     h2 = TH2InfoClass<TH2D>(Debug_);
@@ -294,6 +371,115 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
 
         h1.GetTH1("Evt_Events")->Fill(1);
 
+        // ---- * Checking generator info
+        vector<GenParticle> particles; 
+        vector<GenParticle>   bquarks,   lquarks; 
+        vector<GenParticle> chargeLep, neutrinos; // Only keep electron and muon
+        for( int idx=0; idx < GenInfo.Size; idx++ )
+        {
+            GenParticle particle( GenInfo, idx );
+            if( particle.Status == 3 )
+            { 
+                particles.push_back( particle );
+                h1.GetTH1("Gen_PID")->Fill( particle.PdgID );  
+                if( particle.PdgID == 24 )
+                {
+                    h1.GetTH1("Gen_PID_wpDa1")->Fill( particle.Da1PdgID );   
+                    h1.GetTH1("Gen_PID_wpDa2")->Fill( particle.Da2PdgID );   
+                }
+                if( particle.PdgID == -24 )
+                {
+                    h1.GetTH1("Gen_PID_wmDa1")->Fill( particle.Da1PdgID );   
+                    h1.GetTH1("Gen_PID_wmDa2")->Fill( particle.Da2PdgID );   
+                }
+                if( abs(particle.PdgID) == 5 )
+                { 
+                    bquarks.push_back( particle ); 
+                    h1.GetTH1("Gen_PID_bMo1")->Fill( particle.Mo1PdgID );   
+                    h1.GetTH1("Gen_PID_bMo2")->Fill( particle.Mo2PdgID );   
+                }
+                if( abs(particle.PdgID)  < 5 )
+                { 
+                    lquarks.push_back( particle );
+                    h1.GetTH1("Gen_PID_lqMo1")->Fill( particle.Mo1PdgID );   
+                    h1.GetTH1("Gen_PID_lqMo2")->Fill( particle.Mo2PdgID );   
+                }
+                if( abs(particle.PdgID) == 11 || abs(particle.PdgID) == 13 )
+                {
+                    chargeLep.push_back( particle );
+                    h1.GetTH1("Gen_PID_lepMo1")->Fill( particle.Mo1PdgID );   
+                    h1.GetTH1("Gen_PID_lepMo2")->Fill( particle.Mo2PdgID );   
+                }
+                if( abs(particle.PdgID) == 12 || abs(particle.PdgID) == 14 )
+                { 
+                    neutrinos.push_back( particle );
+                    h1.GetTH1("Gen_PID_nuMo1")->Fill( particle.Mo1PdgID );   
+                    h1.GetTH1("Gen_PID_nuMo2")->Fill( particle.Mo2PdgID );   
+                }
+            }
+        }
+        h1.GetTH1("Gen_NbQ")       ->Fill( bquarks.size()   ); 
+        h1.GetTH1("Gen_NlightQ")   ->Fill( lquarks.size()   ); 
+        h1.GetTH1("Gen_NchargeLep")->Fill( chargeLep.size() ); 
+        h1.GetTH1("Gen_Nneutrinos")->Fill( neutrinos.size() );
+        
+        // Gen level O2
+        int bqsize = bquarks.size(); 
+        int lqsize = lquarks.size(); 
+        int lpsize = chargeLep.size(); 
+        if( bqsize >= 2 && lqsize >= 1 && lpsize >=1 ) 
+        {
+            vector<GenParticle> bjets, barjets;
+            // blined: ignore b or bbar
+            for( int bq1=0; bq1<bqsize; bq1++)
+            {
+                if( bquarks[bq1].PdgID == 5 )  bjets.push_back( bquarks[bq1] ); 
+                if( bquarks[bq1].PdgID == -5 ) barjets.push_back( bquarks[bq1] ); 
+                //for( int bq2=0; bq2<bq1; bq2++)
+                //{}
+            }
+
+            // Choose high pT
+            GenParticle b1, b2, lq, lep;
+            get2HighPtObject( bquarks, b1, b2 );
+            getHighPtObject( lquarks,   lq  );
+            getHighPtObject( chargeLep, lep );
+            double O2 = Obs2( lep.P3, lq.P3, b1.P3, b2.P3 );
+
+            fillObservableHist( h1.GetTH1("Gen_O2Asym_highPt"), O2, "O_{2}");
+            h1.GetTH1("Gen_O2_highPt")->Fill( O2/Owrt_ );
+            h1.GetTH1("Gen_highPtLep_PDG")->Fill( lep.PdgID    );
+            h1.GetTH1("Gen_highPtLep_Mo1")->Fill( lep.Mo1PdgID );
+            h1.GetTH1("Gen_highPtLep_Mo2")->Fill( lep.Mo2PdgID );
+            h1.GetTH1("Gen_highPtLQ_PDG")->Fill(  lq.PdgID    );
+            h1.GetTH1("Gen_highPtLQ_Mo1")->Fill(  lq.Mo1PdgID );
+            h1.GetTH1("Gen_highPtLQ_Mo2")->Fill(  lq.Mo2PdgID );
+            if( b1.PdgID/b2.PdgID == -1 )
+            { 
+                h1.GetTH1("Gen_highPtBQ_Pair")->Fill(1);
+            }
+            else 
+            {    
+                h1.GetTH1("Gen_highPtBQ_Pair")->Fill(0);
+            }
+            h1.GetTH1("Gen_HasO2ObjectsV1")->Fill(1);
+            
+            // ideal
+            //if( bjets.size() >= 1 && bbarjets.size() >=1 )
+            //{
+            //    GenParticle hardjet;
+            //    if( getHighPtSelectMo( lquarks, hardjet, 24 ) )
+            //    {
+
+            //    }  
+            //}   
+        }
+        else
+        {
+            h1.GetTH1("Gen_HasO2ObjectsV1")->Fill(0);
+        }   
+
+        // ---- * Reconstruction info
         //* Jet selection
         vector<Jet> JetColSelected, BJetCol, nonBJetCol;
         for( int idx=0; idx < JetInfo.Size; idx++)

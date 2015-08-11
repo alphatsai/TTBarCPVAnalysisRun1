@@ -45,6 +45,12 @@ class SemiLeptanicResultsCheck : public edm::EDAnalyzer{
         std::string int2str( int i=3 );
         template<class TH1>
             void setObservableHist( TH1* h, string ob );
+        template<class TH1>
+            void fillObservableHist( TH1* h, double ob, string obs, double wrt=1 );
+        template <class Object>
+            bool getHighPtSelectMo( vector<Object> col, Object &obj, int mo=0 );
+        template <class Object>
+            void getHighPtObject(  vector<Object> col, Object &obj );
         template <class Object>
             void get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 );
 
