@@ -48,6 +48,8 @@ class SemiLeptanicResultsCheck : public edm::EDAnalyzer{
         template<class TH1>
             void fillObservableHist( TH1* h, double ob, string obs, double wrt=1 );
         template <class Object, class matchingObject>
+            bool matchMultiObject( vector<Object> incol, vector<matchingObject> mcol, vector<matchingObject> &outcol );
+        template <class Object, class matchingObject>
             bool matchObject( Object &obj, matchingObject &mobj, vector<matchingObject> col, double dR=0.5 );
         template <class Object>
             bool getHighPtSelectMo( vector<Object> col, Object &obj, int mo=0 );
@@ -79,6 +81,7 @@ class SemiLeptanicResultsCheck : public edm::EDAnalyzer{
         edm::ParameterSet selPars_LooseLepton_;
         edm::ParameterSet selPars_TightMuon_;
         edm::ParameterSet selPars_TightElectron_;
+        const double dR_Matching_;
         const double dR_IsoLeptonFromJets_;
         const double Owrt_;
         bool  Debug_;

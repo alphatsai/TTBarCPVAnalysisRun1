@@ -25,6 +25,11 @@ options.register('ttreedir', 'SemiLeptanic',
     VarParsing.varType.string,
     "Name of ROOT TTree dir"
     )
+options.register('dRMatching', 1000,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.float,
+    "Matching object and gen particle with deltaR( lepton, jet )"
+    )
 options.register('dRIsoLeptonFromJets', 0.5,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.float,
@@ -85,6 +90,7 @@ process.CheckEventsOfLepJets = cms.EDAnalyzer('SemiLeptanicResultsCheck',
     SelPars_LooseLepton   = defaultLeptonSelectionParameters.clone(), 
     SelPars_TightMuon     = defaultMounSelectionParameters.clone(), 
     SelPars_TightElectron = defaultElectronSelectionParameters.clone(),
+    dR_Matching           = cms.double(options.dRMatching),
     dR_IsoLeptonFromJets  = cms.double(options.dRIsoLeptonFromJets),
     Owrt                  = cms.double(Oweight), 
     Debug                 = cms.bool(options.Debug),

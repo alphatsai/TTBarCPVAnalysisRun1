@@ -9,6 +9,8 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <typeinfo>
+#include <algorithm>
 
 // Root headers 
 #include <TVector3.h>
@@ -65,6 +67,7 @@ SemiLeptanicResultsCheck::SemiLeptanicResultsCheck(const edm::ParameterSet& iCon
     selPars_LooseLepton_(   iConfig.getParameter<edm::ParameterSet>("SelPars_LooseLepton")),
     selPars_TightMuon_(     iConfig.getParameter<edm::ParameterSet>("SelPars_TightMuon")),
     selPars_TightElectron_( iConfig.getParameter<edm::ParameterSet>("SelPars_TightElectron")),
+    dR_Matching_(           iConfig.getParameter<double>("dR_Matching")),
     dR_IsoLeptonFromJets_(  iConfig.getParameter<double>("dR_IsoLeptonFromJets")),
     Owrt_(                  iConfig.getParameter<double>("Owrt")),
     //isSignal_(              iConfig.getParameter<bool>("isSingal"))
@@ -98,12 +101,103 @@ void SemiLeptanicResultsCheck::fillObservableHist( TH1* h, double ob, string obs
     }
 }
 template <class Object, class matchingObject>
+bool SemiLeptanicResultsCheck::matchMultiObject( vector<Object> incol, vector<matchingObject> mcol, vector<matchingObject> &outcol )
+{
+    if( incol.size() > mcol.size() )
+    {
+        std::cout<<">> [ERROR] input size: "<<incol.size()<<" > matching size: "<<mcol.size()<<std::endl;
+        return false;
+    }
+    const int inSize = incol.size();
+    const int mSize  = mcol.size();
+    double   dR[inSize][mSize];
+    int    iObj[inSize][mSize];
+    for( int i=0; i<inSize; i++ ){
+        for( int j=0; j<mSize; j++){
+            dR[i][j]=incol[i].P4.DeltaR( mcol[j].P4 );
+            iObj[i][j]=j;
+        }
+        for( int j=0; j<mSize; j++){
+            for( int k=0; k<mSize; k++){
+                if( dR[i][j] < dR[i][k] ) // NOTE: j is after k ( sort number small -> big )
+                {
+                    double tmp1 =   dR[i][j];
+                    int    tmp2 = iObj[i][j];
+                    dR[i][j] = dR[i][k];
+                    dR[i][k] = tmp1;
+                    iObj[i][j] = iObj[i][k];
+                    iObj[i][k] = tmp2;
+                }
+            }
+        }
+        //std::cout<<">> [ALPHA] "<<i<<" dR ";
+        //for( int j=0; j<mSize; j++){
+        //    std::cout<<dR[i][j]<<", ";
+        //}
+        //std::cout<<std::endl;
+        //std::cout<<">> [ALPHA] "<<i<<" idx ";
+        //for( int j=0; j<mSize; j++){
+        //    std::cout<<iObj[i][j]<<", ";
+        //}
+        //std::cout<<std::endl;
+    }
+    bool matched=false;
+    int iMatchedObj[inSize];
+    int iMatchedIdx[inSize];
+    for( int i=0; i<inSize; i++ )
+    { 
+        iMatchedObj[i] = iObj[i][0];
+        iMatchedIdx[i] = 0; 
+    }
+    //std::cout<<">> [ALPHA] ";
+    //for( int i=0; i<inSize; i++ ){
+    //    std::cout<<"( "<<i<<", "<<iMatchedObj[i]<<") ";
+    //}
+    while( !matched ) // Matching
+    {
+        matched=true;
+        for( int i=0; i<inSize; i++ ){
+            for( int j=0; j<i; j++ ){
+                if( iMatchedObj[i] == iMatchedObj[j] )
+                { 
+                    double dRi = dR[i][iMatchedIdx[i]];
+                    double dRj = dR[j][iMatchedIdx[j]];
+                    if( dRi < dRj )
+                    {
+                        int originIdx = iMatchedIdx[j];
+                        iMatchedIdx[j] = originIdx+1;             // move to next
+                        iMatchedObj[j] = iObj[j][iMatchedIdx[j]]; // move to next
+                    }else{
+                        int originIdx = iMatchedIdx[i];
+                        iMatchedIdx[i] = originIdx+1;             // move to next
+                        iMatchedObj[i] = iObj[i][iMatchedIdx[i]]; // move to next
+                    }   
+                    matched=false;
+                    //std::cout<<">> [ALPHA] ";
+                    //for( int z=0; z<inSize; z++ ){
+                    //    std::cout<<"( "<<z<<", "<<iMatchedObj[z]<<") ";
+                    //}
+                    //std::cout<<std::endl;
+                }
+            }
+        }
+    }
+    //std::cout<<">> [ALPHA] ";
+    for( int i=0; i<inSize; i++ )
+    {
+        outcol.push_back( mcol[iMatchedObj[i]] );
+        //std::cout<<"( "<<i<<", "<<iMatchedObj[i]<<" ) ";
+    }    
+    //std::cout<<std::endl;
+    return true;
+}
+template <class Object, class matchingObject>
 bool SemiLeptanicResultsCheck::matchObject( Object &obj, matchingObject &mobj, vector<matchingObject> col, double dR )
 {
-    int       obsize = col.size();
-    int         midx = -1;
-    bool   isMatched = false;
-    double        dr = 10000000;
+    int     obsize = col.size();
+    int       midx = -1;
+    bool   matched = false;
+    double      dr = 10000000;
     for( int i=0; i<obsize; i++ )
     {
         double dr_ = col[i].P4.DeltaR(obj.P4); 
@@ -112,11 +206,12 @@ bool SemiLeptanicResultsCheck::matchObject( Object &obj, matchingObject &mobj, v
         {
               dr = dr_;
             midx = i; 
-            isMatched = true;
+            matched = true;
         }
     }
-    mobj = col[midx];
-    return isMatched;
+    if( matched ) mobj = col[midx];
+    else std::cout<<"[WARING] Can't find matched particle in SemiLeptanicResultsCheck::matchObject<"<<typeid(obj).name()<<"> within dR "<<dR<<std::endl;
+    return matched;
 }
 template <class Object>
 bool SemiLeptanicResultsCheck::getHighPtSelectMo( vector<Object> col, Object &obj, int mo )
@@ -136,7 +231,8 @@ bool SemiLeptanicResultsCheck::getHighPtSelectMo( vector<Object> col, Object &ob
             }
         }
     }
-    obj=col[o1];
+    if( matched ) obj=col[o1];
+    else std::cout<<"[WARING] Can't find matched particle in SemiLeptanicResultsCheck::getHighPtSelectMo"<<std::endl;
     return matched;
 }
     template <class Object>
@@ -239,6 +335,7 @@ void SemiLeptanicResultsCheck::beginJob()
     h1.addNewTH1( "Evt_NLooseElIsoMu",   "Num. of loose electron",    "N(loose e)",         "Events", "",    "", 10,   0,   10  );
     h1.addNewTH1( "Evt_NLooseElIsoEl",   "Num. of loose electron",    "N(loose e)",         "Events", "",    "", 10,   0,   10  );
 
+    h1.addNewTH1( "Evt_noMatched",       "",                          "",                   "Events", "",    "",  3,   0,   3  );
     h1.addNewTH1( "Evt_HardJet_PID",     "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
     h1.addNewTH1( "Evt_HardJet_PID_Mu",  "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
     h1.addNewTH1( "Evt_HardJet_PID_El",  "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
@@ -631,12 +728,33 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                 fillObservableHist( h1.GetTH1("Evt_O2Asym"),    O2, "O_{2}");
                 fillObservableHist( h1.GetTH1("Evt_O2Asym_El"), O2, "O_{2}");
                 // Check gen particle match to objects
-                GenParticle hardJetGen, bjet1Gen, bjet2Gen, isoLepGen; 
-                if( matchObject(   bjet1,   bjet1Gen,     quarks ) &&
-                    matchObject(   bjet2,   bjet2Gen,     quarks ) &&
-                    matchObject( hardJet, hardJetGen,     quarks ) &&
-                    matchObject(  isoLep,  isoLepGen, chargeLeps ))
+                GenParticle isoLepGen;
+                vector<Jet> selectedJet;
+                selectedJet.push_back(hardJet);
+                selectedJet.push_back(bjet1);
+                selectedJet.push_back(bjet2);
+                vector<GenParticle> matchedGenParticle;
+ 
+                if( chargeLeps.size()>0 &&
+                    quarks.size()  >= 3 &&
+                    //matchObject(   bjet1,   bjet1Gen,     quarks, dR_Matching_ ) &&
+                    //matchObject(   bjet2,   bjet2Gen,     quarks, dR_Matching_ ) &&
+                    //matchObject( hardJet, hardJetGen,     quarks, dR_Matching_ ) &&
+                    matchMultiObject( selectedJet, quarks, matchedGenParticle ) &&
+                    matchObject( isoLep, isoLepGen, chargeLeps, dR_Matching_ ))
                 {
+                    //std::cout<<"[ALPHA] ";
+                    //int sizeq = quarks.size();
+                    //for( int q=0; q<sizeq; q++){
+                    //    std::cout<<"( "<<quarks[q].index<<", "<<quarks[q].PdgID<<" ) ";
+                    //}
+                    //std::cout<<endl;
+                    GenParticle hardJetGen, bjet1Gen, bjet2Gen;
+                    hardJetGen = matchedGenParticle[0];
+                    bjet1Gen   = matchedGenParticle[1];
+                    bjet2Gen   = matchedGenParticle[2];
+                    matchedGenParticle.clear();
+                    
                     h1.GetTH1("Evt_HardJet_PID"   )->Fill( hardJetGen.PdgID );
                     h1.GetTH1("Evt_HardJet_PID_El")->Fill( hardJetGen.PdgID );
                     h1.GetTH1("Evt_bJet1_PID"     )->Fill( bjet1Gen.PdgID   );
@@ -645,9 +763,12 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                     h1.GetTH1("Evt_bJet2_PID_El"  )->Fill( bjet2Gen.PdgID   );
                     h1.GetTH1("Evt_isoLep_PID"    )->Fill( isoLepGen.PdgID  );
                     h1.GetTH1("Evt_isoLep_PID_El" )->Fill( isoLepGen.PdgID  );
-                    if( hardJetGen.index == bjet1Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet1Gen.index<<", PID "<<bjet1Gen.PdgID<<", between 'hardJet' and 'bjet1' "<<std::endl;
-                    if( hardJetGen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between 'hardJet' and 'bjet2' "<<std::endl;
-                    if(   bjet1Gen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between   'bjet1' and 'bjet2' "<<std::endl;
+                    if( hardJetGen.index == bjet1Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet1Gen.index<<", PID "<<bjet1Gen.PdgID<<", between 'hardJet' and 'bjet1' in Electron channel"<<std::endl;
+                    if( hardJetGen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between 'hardJet' and 'bjet2' in Electron channel"<<std::endl;
+                    if(   bjet1Gen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between   'bjet1' and 'bjet2' in Electron channel"<<std::endl;
+                }else{
+                    h1.GetTH1("Evt_noMatched")->Fill(0);
+                    h1.GetTH1("Evt_noMatched")->Fill(1);
                 }
             }
         }
@@ -669,12 +790,35 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                 fillObservableHist( h1.GetTH1("Evt_O2Asym"),    O2, "O_{2}");
                 fillObservableHist( h1.GetTH1("Evt_O2Asym_Mu"), O2, "O_{2}");
                 // Check gen particle match to objects
-                GenParticle hardJetGen, bjet1Gen, bjet2Gen, isoLepGen; 
-                if( matchObject(   bjet1,   bjet1Gen,     quarks ) &&
-                    matchObject(   bjet2,   bjet2Gen,     quarks ) &&
-                    matchObject( hardJet, hardJetGen,     quarks ) &&
-                    matchObject(  isoLep,  isoLepGen, chargeLeps ))
+                //GenParticle hardJetGen, bjet1Gen, bjet2Gen, isoLepGen;
+                // Check gen particle match to objects
+                GenParticle isoLepGen;
+                vector<Jet> selectedJet;
+                selectedJet.push_back(hardJet);
+                selectedJet.push_back(bjet1);
+                selectedJet.push_back(bjet2);
+                vector<GenParticle> matchedGenParticle;              
+ 
+                if( chargeLeps.size()>0 &&
+                    quarks.size()  >= 3 &&
+                    //matchObject(   bjet1,   bjet1Gen,     quarks, dR_Matching_ ) &&
+                    //matchObject(   bjet2,   bjet2Gen,     quarks, dR_Matching_ ) &&
+                    //matchObject( hardJet, hardJetGen,     quarks, dR_Matching_ ) &&
+                    matchMultiObject( selectedJet, quarks, matchedGenParticle ) &&
+                    matchObject( isoLep, isoLepGen, chargeLeps, dR_Matching_ ))
                 {
+                    //std::cout<<"[ALPHA] ";
+                    //int sizeq = quarks.size();
+                    //for( int q=0; q<sizeq; q++){
+                    //    std::cout<<"( "<<quarks[q].index<<", "<<quarks[q].PdgID<<" ) ";
+                    //}
+                    //std::cout<<endl;
+                    GenParticle hardJetGen, bjet1Gen, bjet2Gen;
+                    hardJetGen = matchedGenParticle[0];
+                    bjet1Gen   = matchedGenParticle[1];
+                    bjet2Gen   = matchedGenParticle[2];
+                    matchedGenParticle.clear();
+
                     h1.GetTH1("Evt_HardJet_PID"   )->Fill( hardJetGen.PdgID );
                     h1.GetTH1("Evt_HardJet_PID_Mu")->Fill( hardJetGen.PdgID );
                     h1.GetTH1("Evt_bJet1_PID"     )->Fill( bjet1Gen.PdgID   );
@@ -683,9 +827,12 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                     h1.GetTH1("Evt_bJet2_PID_Mu"  )->Fill( bjet2Gen.PdgID   );
                     h1.GetTH1("Evt_isoLep_PID"    )->Fill( isoLepGen.PdgID  );
                     h1.GetTH1("Evt_isoLep_PID_Mu" )->Fill( isoLepGen.PdgID  );
-                    if( hardJetGen.index == bjet1Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet1Gen.index<<", PID "<<bjet1Gen.PdgID<<", between 'hardJet' and 'bjet1' "<<std::endl;
-                    if( hardJetGen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between 'hardJet' and 'bjet2' "<<std::endl;
-                    if(   bjet1Gen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between   'bjet1' and 'bjet2' "<<std::endl;
+                    if( hardJetGen.index == bjet1Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet1Gen.index<<", PID "<<bjet1Gen.PdgID<<", between 'hardJet' and 'bjet1' in Muon channel"<<std::endl;
+                    if( hardJetGen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between 'hardJet' and 'bjet2' in Muon channel"<<std::endl;
+                    if(   bjet1Gen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between   'bjet1' and 'bjet2' in Muon channel"<<std::endl;
+                }else{
+                    h1.GetTH1("Evt_noMatched")->Fill(0);
+                    h1.GetTH1("Evt_noMatched")->Fill(2);
                 }
             }
         }       
