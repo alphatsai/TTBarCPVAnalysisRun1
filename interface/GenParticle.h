@@ -9,7 +9,10 @@ class GenParticle{
         GenParticle( GenInfoBranches& GenInfo, int idx ){
             Fill( GenInfo, idx );
         }
-        void Fill( GenInfoBranches& GenInfo, int idx ){
+        void Fill( GenInfoBranches& GenInfo, int idx )
+        {
+            index = idx;
+
             Pt   = GenInfo.Pt[idx];
             Eta  = GenInfo.Eta[idx];
             Phi  = GenInfo.Phi[idx];
@@ -39,6 +42,8 @@ class GenParticle{
             P3.SetPtEtaPhi(  Pt, Eta, Phi );
             P4.SetPtEtaPhiM( Pt, Eta, Phi, Mass );
         }
+        
+        int index;
 
         TVector3 P3;
         TLorentzVector P4;
