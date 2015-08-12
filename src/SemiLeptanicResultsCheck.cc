@@ -239,6 +239,19 @@ void SemiLeptanicResultsCheck::beginJob()
     h1.addNewTH1( "Evt_NLooseElIsoMu",   "Num. of loose electron",    "N(loose e)",         "Events", "",    "", 10,   0,   10  );
     h1.addNewTH1( "Evt_NLooseElIsoEl",   "Num. of loose electron",    "N(loose e)",         "Events", "",    "", 10,   0,   10  );
 
+    h1.addNewTH1( "Evt_HardJet_PID",     "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Evt_HardJet_PID_Mu",  "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Evt_HardJet_PID_El",  "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Evt_bJet1_PID",       "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Evt_bJet1_PID_Mu",    "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Evt_bJet1_PID_El",    "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Evt_bJet2_PID",       "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Evt_bJet2_PID_Mu",    "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Evt_bJet2_PID_El",    "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Evt_isoLep_PID",      "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Evt_isoLep_PID_Mu",   "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Evt_isoLep_PID_El",   "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+
     h1.addNewTH1( "Gen_PID",             "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
     h1.addNewTH1( "Gen_PID_bMo1",        "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
     h1.addNewTH1( "Gen_PID_bMo2",        "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
@@ -262,10 +275,10 @@ void SemiLeptanicResultsCheck::beginJob()
     h1.addNewTH1( "Gen_O2Asym_highPt",   "A_{O2}",                    "",                   "Events", "",    "",  2,   0,   2  );
     h1.addNewTH1( "Gen_O2Asym_highPt_Mu","A_{O2}",                    "",                   "Events", "",    "",  2,   0,   2  );
     h1.addNewTH1( "Gen_O2Asym_highPt_El","A_{O2}",                    "",                   "Events", "",    "",  2,   0,   2  );
-    h1.addNewTH1( "Gen_highPtLQ_PDG",    "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_highPtLQ_PID",    "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
     h1.addNewTH1( "Gen_highPtLQ_Mo1",    "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
     h1.addNewTH1( "Gen_highPtLQ_Mo2",    "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_highPtLep_PDG",   "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_highPtLep_PID",   "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
     h1.addNewTH1( "Gen_highPtLep_Mo1",   "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
     h1.addNewTH1( "Gen_highPtLep_Mo2",   "",                          "",                   "Evetns", "",    "", 60, -30,   30 );
     h1.addNewTH1( "Gen_highPtBQ_Pair",   "",                          "",                   "Events", "",    "",  2,   0,   2  );
@@ -470,10 +483,10 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
 
             fillObservableHist( h1.GetTH1("Gen_O2Asym_highPt"), O2, "O_{2}");
             h1.GetTH1("Gen_O2_highPt"    )->Fill(  O2/Owrt_    );
-            h1.GetTH1("Gen_highPtLQ_PDG" )->Fill(  lq.PdgID    );
+            h1.GetTH1("Gen_highPtLQ_PID" )->Fill(  lq.PdgID    );
             h1.GetTH1("Gen_highPtLQ_Mo1" )->Fill(  lq.Mo1PdgID );
             h1.GetTH1("Gen_highPtLQ_Mo2" )->Fill(  lq.Mo2PdgID );
-            h1.GetTH1("Gen_highPtLep_PDG")->Fill( lep.PdgID    );
+            h1.GetTH1("Gen_highPtLep_PID")->Fill( lep.PdgID    );
             h1.GetTH1("Gen_highPtLep_Mo1")->Fill( lep.Mo1PdgID );
             h1.GetTH1("Gen_highPtLep_Mo2")->Fill( lep.Mo2PdgID );
 
@@ -618,13 +631,23 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                 fillObservableHist( h1.GetTH1("Evt_O2Asym"),    O2, "O_{2}");
                 fillObservableHist( h1.GetTH1("Evt_O2Asym_El"), O2, "O_{2}");
                 // Check gen particle match to objects
-                GenParticle hardJetGen, bjet1Gen, bjet2Gen, lepGen; 
+                GenParticle hardJetGen, bjet1Gen, bjet2Gen, isoLepGen; 
                 if( matchObject(   bjet1,   bjet1Gen,     quarks ) &&
                     matchObject(   bjet2,   bjet2Gen,     quarks ) &&
                     matchObject( hardJet, hardJetGen,     quarks ) &&
-                    matchObject(  isoLep,     lepGen, chargeLeps ))
+                    matchObject(  isoLep,  isoLepGen, chargeLeps ))
                 {
-
+                    h1.GetTH1("Evt_HardJet_PID"   )->Fill( hardJetGen.PdgID );
+                    h1.GetTH1("Evt_HardJet_PID_El")->Fill( hardJetGen.PdgID );
+                    h1.GetTH1("Evt_bJet1_PID"     )->Fill( bjet1Gen.PdgID   );
+                    h1.GetTH1("Evt_bJet1_PID_El"  )->Fill( bjet1Gen.PdgID   );
+                    h1.GetTH1("Evt_bJet2_PID"     )->Fill( bjet2Gen.PdgID   );
+                    h1.GetTH1("Evt_bJet2_PID_El"  )->Fill( bjet2Gen.PdgID   );
+                    h1.GetTH1("Evt_isoLep_PID"    )->Fill( isoLepGen.PdgID  );
+                    h1.GetTH1("Evt_isoLep_PID_El" )->Fill( isoLepGen.PdgID  );
+                    if( hardJetGen.index == bjet1Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet1Gen.index<<", PID "<<bjet1Gen.PdgID<<", between 'hardJet' and 'bjet1' "<<std::endl;
+                    if( hardJetGen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between 'hardJet' and 'bjet2' "<<std::endl;
+                    if(   bjet1Gen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between   'bjet1' and 'bjet2' "<<std::endl;
                 }
             }
         }
@@ -634,8 +657,9 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
             if( MuColTight.size() != 1 ){ std::cout<<">> [WARNING] Tight muon size = "<<MuColTight.size()<<" in muon channel"<<std::endl; }
             else
             {
-                double O2 = Obs2( MuColTight[0].P3, hardJet.P3, bjet1.P3, bjet2.P3 );
-                double O7 = Obs7(               az,   bjet1.P3, bjet2.P3           );
+                Lepton isoLep = MuColTight[0];
+                double O2 = Obs2( isoLep.P3, hardJet.P3, bjet1.P3, bjet2.P3 );
+                double O7 = Obs7(        az,   bjet1.P3, bjet2.P3           );
                 h1.GetTH1("Evt_O2"   )->Fill(O2/Owrt_);
                 h1.GetTH1("Evt_O2_Mu")->Fill(O2/Owrt_);
                 h1.GetTH1("Evt_O7"   )->Fill(O7/Owrt_);
@@ -644,6 +668,25 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                 fillObservableHist( h1.GetTH1("Evt_O7Asym_Mu"), O7, "O_{7}");
                 fillObservableHist( h1.GetTH1("Evt_O2Asym"),    O2, "O_{2}");
                 fillObservableHist( h1.GetTH1("Evt_O2Asym_Mu"), O2, "O_{2}");
+                // Check gen particle match to objects
+                GenParticle hardJetGen, bjet1Gen, bjet2Gen, isoLepGen; 
+                if( matchObject(   bjet1,   bjet1Gen,     quarks ) &&
+                    matchObject(   bjet2,   bjet2Gen,     quarks ) &&
+                    matchObject( hardJet, hardJetGen,     quarks ) &&
+                    matchObject(  isoLep,  isoLepGen, chargeLeps ))
+                {
+                    h1.GetTH1("Evt_HardJet_PID"   )->Fill( hardJetGen.PdgID );
+                    h1.GetTH1("Evt_HardJet_PID_Mu")->Fill( hardJetGen.PdgID );
+                    h1.GetTH1("Evt_bJet1_PID"     )->Fill( bjet1Gen.PdgID   );
+                    h1.GetTH1("Evt_bJet1_PID_Mu"  )->Fill( bjet1Gen.PdgID   );
+                    h1.GetTH1("Evt_bJet2_PID"     )->Fill( bjet2Gen.PdgID   );
+                    h1.GetTH1("Evt_bJet2_PID_Mu"  )->Fill( bjet2Gen.PdgID   );
+                    h1.GetTH1("Evt_isoLep_PID"    )->Fill( isoLepGen.PdgID  );
+                    h1.GetTH1("Evt_isoLep_PID_Mu" )->Fill( isoLepGen.PdgID  );
+                    if( hardJetGen.index == bjet1Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet1Gen.index<<", PID "<<bjet1Gen.PdgID<<", between 'hardJet' and 'bjet1' "<<std::endl;
+                    if( hardJetGen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between 'hardJet' and 'bjet2' "<<std::endl;
+                    if(   bjet1Gen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between   'bjet1' and 'bjet2' "<<std::endl;
+                }
             }
         }       
 
