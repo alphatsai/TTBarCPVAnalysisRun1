@@ -97,6 +97,27 @@ void SemiLeptanicResultsCheck::fillObservableHist( TH1* h, double ob, string obs
         h->Fill((obs+"<0").c_str(), wrt);
     }
 }
+template <class Object, class matchingObject>
+bool SemiLeptanicResultsCheck::matchObject( Object &obj, matchingObject &mobj, vector<matchingObject> col, double dR )
+{
+    int       obsize = col.size();
+    int         midx = -1;
+    bool   isMatched = false;
+    double        dr = 10000000;
+    for( int i=0; i<obsize; i++ )
+    {
+        double dr_ = col[i].P4.DeltaR(obj.P4); 
+        if( dr_ > dR ) continue;
+        if( dr_ < dr )
+        {
+              dr = dr_;
+            midx = i; 
+            isMatched = true;
+        }
+    }
+    mobj = col[midx];
+    return isMatched;
+}
 template <class Object>
 bool SemiLeptanicResultsCheck::getHighPtSelectMo( vector<Object> col, Object &obj, int mo )
 {
@@ -376,7 +397,7 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
 
         // ---- * Checking generator info
         vector<GenParticle>  particles; 
-        vector<GenParticle>    bquarks,   lquarks; 
+        vector<GenParticle>    bquarks,   lquarks, quarks; 
         vector<GenParticle> chargeLeps, neutrinos; // Only keep electron and muon
         for( int idx=0; idx < GenInfo.Size; idx++ )
         {
@@ -397,12 +418,14 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                 }
                 if( abs(particle.PdgID) == 5 )
                 { 
+                     quarks.push_back( particle ); 
                     bquarks.push_back( particle ); 
                     h1.GetTH1("Gen_PID_bMo1")->Fill( particle.Mo1PdgID );   
                     h1.GetTH1("Gen_PID_bMo2")->Fill( particle.Mo2PdgID );   
                 }
                 if( abs(particle.PdgID)  < 5 )
                 { 
+                     quarks.push_back( particle );
                     lquarks.push_back( particle );
                     h1.GetTH1("Gen_PID_lqMo1")->Fill( particle.Mo1PdgID );   
                     h1.GetTH1("Gen_PID_lqMo2")->Fill( particle.Mo2PdgID );   
@@ -574,7 +597,7 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
         Jet hardJet, bjet1, bjet2;
         if( nonBJetCol.size() > 0 ) getHighPtObject( nonBJetCol, hardJet );
         else std::cout<<">> [WARNING] non-BJets not > 0, size = "<<nonBJetCol.size()<<std::endl;
-        if( BJetCol.size() == 2 ) get2HighPtObject( BJetCol, bjet1, bjet2 );
+        if( BJetCol.size() == 2 )  get2HighPtObject( BJetCol, bjet1, bjet2 );
         else std::cout<<">> [WARNING] BJets not == 2, size = "<<BJetCol.size()<<std::endl;
 
         // electron channel
@@ -583,8 +606,9 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
             if( ElColTight.size() != 1 ){ std::cout<<">> [WARNING] Tight electron size = "<<ElColTight.size()<<" in electron channel"<<std::endl; }
             else
             {
-                double O2 = Obs2( ElColTight[0].P3, hardJet.P3, bjet1.P3, bjet2.P3 );
-                double O7 = Obs7(               az,   bjet1.P3, bjet2.P3           );
+                Lepton isoLep = ElColTight[0];
+                double O2 = Obs2( isoLep.P3, hardJet.P3, bjet1.P3, bjet2.P3 );
+                double O7 = Obs7(        az,   bjet1.P3, bjet2.P3           );
                 h1.GetTH1("Evt_O2"   )->Fill(O2/Owrt_);
                 h1.GetTH1("Evt_O2_El")->Fill(O2/Owrt_);
                 h1.GetTH1("Evt_O7"   )->Fill(O7/Owrt_);
@@ -593,6 +617,15 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                 fillObservableHist( h1.GetTH1("Evt_O7Asym_El"), O7, "O_{7}");
                 fillObservableHist( h1.GetTH1("Evt_O2Asym"),    O2, "O_{2}");
                 fillObservableHist( h1.GetTH1("Evt_O2Asym_El"), O2, "O_{2}");
+                // Check gen particle match to objects
+                GenParticle hardJetGen, bjet1Gen, bjet2Gen, lepGen; 
+                if( matchObject(   bjet1,   bjet1Gen,     quarks ) &&
+                    matchObject(   bjet2,   bjet2Gen,     quarks ) &&
+                    matchObject( hardJet, hardJetGen,     quarks ) &&
+                    matchObject(  isoLep,     lepGen, chargeLeps ))
+                {
+
+                }
             }
         }
         // Muon channel
