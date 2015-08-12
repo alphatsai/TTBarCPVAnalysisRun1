@@ -66,9 +66,13 @@ void TH2InfoClass<TH2>::CreateTH2()
 {
     if( debug ) printf(">> [DEBUG] %d TH2s will be created...\n", size);
     for(int i=0; i<size; i++){
-        if( debug ) printf(">> [DEBUG] #%3d %-24s created. X:Bin/Min/Max:%d/%.2f/%.2f, Y:Bin/Min/Max:%d/%.2f/%.2f\n",i, Info[i].Name.c_str(), Info[i].BinX, Info[i].MinX, Info[i].MaxX, Info[i].BinY, Info[i].MinY, Info[i].MaxY );
-        indexTH2[Info[i].Name] = i;
-        mapTH2[Info[i].Name] = new TH2(Info[i].Name.c_str(),"", Info[i].BinX, Info[i].MinX, Info[i].MaxX, Info[i].BinY, Info[i].MinY, Info[i].MaxY );
+        if( mapTH2.find(Info[i].Name) == mapTH2.end() ){
+            if( debug ) printf(">> [DEBUG] #%3d %-24s created. X:Bin/Min/Max:%d/%.2f/%.2f, Y:Bin/Min/Max:%d/%.2f/%.2f\n",i, Info[i].Name.c_str(), Info[i].BinX, Info[i].MinX, Info[i].MaxX, Info[i].BinY, Info[i].MinY, Info[i].MaxY );
+            indexTH2[Info[i].Name] = i;
+            mapTH2[Info[i].Name] = new TH2(Info[i].Name.c_str(),"", Info[i].BinX, Info[i].MinX, Info[i].MaxX, Info[i].BinY, Info[i].MinY, Info[i].MaxY );
+        }else{
+            printf(">> [WARING] %s has been created before, discard adding this\n", Info[i].Name.c_str());
+        }
     }
 }
     template<typename TH2> 
@@ -76,9 +80,13 @@ void TH2InfoClass<TH2>::CreateTH2( edm::Service<TFileService> f )
 {
     if( debug ) printf(">> [DEBUG] %d TH2s will be created...\n", size);
     for(int i=0; i<size; i++){
-        if( debug ) printf(">> [DEBUG] #%3d %-24s created. X:Bin/Min/Max:%d/%.2f/%.2f, Y:Bin/Min/Max:%d/%.2f/%.2f\n",i, Info[i].Name.c_str(), Info[i].BinX, Info[i].MinX, Info[i].MaxX, Info[i].BinY, Info[i].MinY, Info[i].MaxY );
-        indexTH2[Info[i].Name] = i;
-        mapTH2[Info[i].Name] = f->make<TH2>(Info[i].Name.c_str(),"", Info[i].BinX, Info[i].MinX, Info[i].MaxX, Info[i].BinY, Info[i].MinY, Info[i].MaxY );
+        if( mapTH2.find(Info[i].Name) == mapTH2.end() ){
+            if( debug ) printf(">> [DEBUG] #%3d %-24s created. X:Bin/Min/Max:%d/%.2f/%.2f, Y:Bin/Min/Max:%d/%.2f/%.2f\n",i, Info[i].Name.c_str(), Info[i].BinX, Info[i].MinX, Info[i].MaxX, Info[i].BinY, Info[i].MinY, Info[i].MaxY );
+            indexTH2[Info[i].Name] = i;
+            mapTH2[Info[i].Name] = f->make<TH2>(Info[i].Name.c_str(),"", Info[i].BinX, Info[i].MinX, Info[i].MaxX, Info[i].BinY, Info[i].MinY, Info[i].MaxY );
+        }else{
+            printf(">> [WARING] %s has been created before, discard adding this\n", Info[i].Name.c_str());
+        }
     }
 }
     template<typename TH2> 
@@ -86,9 +94,13 @@ void TH2InfoClass<TH2>::CreateTH2( TFile* f, std::string dir_name)
 {
     printf(">> %d TH2s will be got...\n", size);
     for(int i=0; i<size; i++){ 
-        if( debug ) printf(">> [DEBUG] #%3d %-24s created. X:Bin/Min/Max:%d/%.2f/%.2f, Y:Bin/Min/Max:%d/%.2f/%.2f\n",i, Info[i].Name.c_str(), Info[i].BinX, Info[i].MinX, Info[i].MaxX, Info[i].BinY, Info[i].MinY, Info[i].MaxY);
-        indexTH2[Info[i].Name] = i;
-        mapTH2[Info[i].Name] =(TH2*)f->Get( (dir_name+Info[i].Name).c_str() );
+        if( mapTH2.find(Info[i].Name) == mapTH2.end() ){
+            if( debug ) printf(">> [DEBUG] #%3d %-24s created. X:Bin/Min/Max:%d/%.2f/%.2f, Y:Bin/Min/Max:%d/%.2f/%.2f\n",i, Info[i].Name.c_str(), Info[i].BinX, Info[i].MinX, Info[i].MaxX, Info[i].BinY, Info[i].MinY, Info[i].MaxY);
+            indexTH2[Info[i].Name] = i;
+            mapTH2[Info[i].Name] =(TH2*)f->Get( (dir_name+Info[i].Name).c_str() );
+        }else{
+            printf(">> [WARING] %s has been created before, discard adding this\n", Info[i].Name.c_str());
+        }
     }
 }
 
@@ -110,7 +122,7 @@ void TH2InfoClass<TH2>::SetTitles(){
 template<typename TH2> 
 void TH2InfoClass<TH2>::Sumw2(){
     for(int i=0; i<size; i++){ 
-        mapTH2.find(Info[i].Name)->second->Sumw2();
+        if( mapTH2.find(Info[i].Name)->second->GetSumw2N() == 0 ) mapTH2.find(Info[i].Name)->second->Sumw2();
     }
 }
 
