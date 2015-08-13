@@ -88,7 +88,7 @@ cmsRun CMSSW_cfg.py CFG_PARAMETERS | tee -a job.log
 
 echo "Moving file  OUTPUT_FILENAME.root to DATASET_WORKDIR/output/OUTPUT_FILENAME_JOB_NUMBER.root"
 mv OUTPUT_FILENAME.root DATASET_WORKDIR/output/OUTPUT_FILENAME_JOB_NUMBER.root
-mv job.log DATASET_WORKDIR/output/job_JOB.log
+mv job.log DATASET_WORKDIR/output/job_JOB_NUMBER.log
 
 """
 
