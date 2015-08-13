@@ -1,4 +1,4 @@
-#/bin/tcsh
+#/bin/csh
 echo "#############################################"
 echo "###                                       ###"
 echo "### ./checkJob.csh [name] <reSubmit> <q>  ###"
@@ -14,7 +14,8 @@ if ( ! ( -e $1 ) ) then
 	exit
 endif
 
-cmsenv
+#source /cvmfs/cms.cern.ch/cmsset_default.csh
+#cmsenv
 #set start=`/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select ls eos/cms/store/user/jtsai/bpTobH/backgroundEstimationSkim | grep $1`
 #if ( $start == "" ) then
 #	echo "Nothing output..."
@@ -33,11 +34,11 @@ cd $1
 	set doneS=0
 	foreach sample($sampleName)
 		touch tmp_.log tmp_check_.log
-		set i=0
+		set i=`echo "0"`
 		set notDone=0
 		echo "============================================================================================="
 		echo "$sample"
-		set jobNum=`ls -l $sample/input | grep '.sh' | wc -l`
+		set jobNum=`ls -l $sample/input | grep 'job' | wc -l`
 		set lognum=`ls -l $sample/output | grep '.log' | wc -l`
 		set killedJobs=`grep Killed $sample/output/*.log | grep -v 'cpu usage'| sed 's/.*job_\(.*\)\.sh.*/\1/g'`
 		set kRoot=`grep 'Fatal Root Error' $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
@@ -73,8 +74,9 @@ cd $1
 		set kCPUNum3=`echo $kCPUJobs3 | wc -w `
 		set killedNum=`echo $killedJobs | wc -w `
 		set abNum=`echo $abJobs | wc -w `
-		#set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed 's/bprimeTobH_\(.*\)\.root/\1/g'` 
-		set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed 's/SemiLeptanicAnalysis_\(.*\)\.root/\1/g'` 
+		#set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed 's/SemiLeptanicAnalysis_\(.*\)\.root/\1/g'` 
+		set doneJobs=`ls -l ../skimedNtuples/$sample | grep root | awk '{print $9}' | sed 's/Skim_\(.*\)\.root/\1/g'`
+		echo $doneJobs
 		set doneNum=`echo $doneJobs | wc -w`	
 		set realdoneNum=`echo $doneNum'-'$killedNum'-'$abNum'-'$kCPUNum2'-'$kCPUNum3'-'$ksegNum'-'$kbadallocNum'-'$kRootNum | bc`
 		echo "Num Log Files $lognum/$jobNum"	
@@ -91,8 +93,13 @@ cd $1
 		else
 			while ( $i < $jobNum )
 				set done=0
-				foreach job($doneJobs)	
-					if ( $i == $job ) then
+				foreach job($doneJobs)
+					#echo $i" "$job
+					#set j=`echo $i`
+					#echo $job >! .jobtmp
+					#set j=`cat .jobtmp`
+					#rm -f .jobtmp
+					if ( $job == $i ) then
 						set done=1
 						#echo "error $i $done"	
 					endif	
@@ -140,7 +147,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $killedNum != 0 ) then
 			foreach kn($killedJobs)
 				mv $nowPath/$sample/output/job_$kn.log $nowPath/$sample
-				rm -f $sample/output/SemiLeptanicAnalysis_$kn.root
+				rm -f $sample/output/Skim_$kn.root
 				echo resubmit job_$kn.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kn.log source $nowPath/$sample/input/job_$kn.sh
 			end	
@@ -148,7 +155,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $kCPUNum2 != 0 ) then
 			foreach kcn($kCPUJobs2)
 				mv $nowPath/$sample/output/job_$kcn.log $nowPath/$sample
-				rm -f $sample/output/SemiLeptanicAnalysis_$kcn.root
+				rm -f $sample/output/Skim_$kcn.root
 				echo resubmit job_$kcn.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kcn.log source $nowPath/$sample/input/job_$kcn.sh
 			end	
@@ -156,7 +163,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $kCPUNum3 != 0 ) then
 			foreach kcn3($kCPUJobs3)
 				mv $nowPath/$sample/output/job_$kcn3.log $nowPath/$sample
-				rm -f $sample/output/SemiLeptanicAnalysis_$kcn3.root
+				rm -f $sample/output/Skim_$kcn3.root
 				echo resubmit job_$kcn3.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kcn3.log source $nowPath/$sample/input/job_$kcn3.sh
 			end	
@@ -164,7 +171,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $abNum != 0 ) then
 			foreach an($abJobs)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
-				rm -f $sample/output/SemiLeptanicAnalysis_$an.root
+				rm -f $sample/output/Skim_$an.root
 				echo resubmit job_$an.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$an.log source $nowPath/$sample/input/job_$an.sh
 			end	
@@ -172,7 +179,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $kbadallocNum != 0 ) then
 			foreach an($kbadallocJobs)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
-				rm -f $sample/output/SemiLeptanicAnalysis_$an.root
+				rm -f $sample/output/Skim_$an.root
 				echo resubmit job_$an.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$an.log source $nowPath/$sample/input/job_$an.sh
 			end	
