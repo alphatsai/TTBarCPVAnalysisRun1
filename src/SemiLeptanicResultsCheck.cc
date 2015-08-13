@@ -533,7 +533,7 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                     h1.GetTH1("Gen_PID_bMo1")->Fill( particle.Mo1PdgID );   
                     h1.GetTH1("Gen_PID_bMo2")->Fill( particle.Mo2PdgID );   
                 }
-                if( abs(particle.PdgID)  < 5 )
+                if( abs(particle.PdgID)  < 5 || particle.PdgID == 21 )
                 { 
                      quarks.push_back( particle );
                     lquarks.push_back( particle );
