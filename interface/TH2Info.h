@@ -1,5 +1,5 @@
-#ifndef TH1INFO_H
-#define TH1INFO_H
+#ifndef TH2INFO_H
+#define TH2INFO_H
 
 #include <map>
 #include <string>
@@ -7,19 +7,22 @@
 
 using namespace std;
 
-class TH1Info{
+class TH2Info{
     public:
-        TH1Info();
-        TH1Info(
+        TH2Info();
+        TH2Info(
                 std::string name, 
                 std::string title, 
                 std::string xtitle, 
                 std::string ytitle, 
                 std::string xunit, 
                 std::string yunit, 
-                int     bin, 
-                double  min, 
-                double  max  
+                int     binX, 
+                double  minX, 
+                double  maxX,  
+                int     binY, 
+                double  minY, 
+                double  maxY  
                ) : 
             Name  (name), 
             Title (title), 
@@ -27,9 +30,12 @@ class TH1Info{
             yTitle(ytitle), 
             xUnit (xunit), 
             yUnit (yunit), 
-            Bin   (bin), 
-            Min   (min), 
-            Max   (max){} 
+            BinX   (binX), 
+            MinX   (minX), 
+            MaxX   (maxX), 
+            BinY   (binY), 
+            MinY   (minY), 
+            MaxY   (maxY){} 
 
         std::string Name;
         std::string Title;
@@ -37,9 +43,12 @@ class TH1Info{
         std::string yTitle;
         std::string xUnit;
         std::string yUnit;
-        int     Bin;
-        double  Min;
-        double  Max;
+        int     BinX;
+        double  MinX;
+        double  MaxX;
+        int     BinY;
+        double  MinY;
+        double  MaxY;
 };
 #endif 
 

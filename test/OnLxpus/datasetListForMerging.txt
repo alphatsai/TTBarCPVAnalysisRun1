@@ -8,43 +8,44 @@
 #/JetHT/Run2012D-22Jan2013-v1/AOD -1
 #/JetHT/Run2012D_missingPart-22Jan2013-v1/AOD -1
 
+# https://hypernews.cern.ch/HyperNews/CMS/get/top/2069.html
 ##### Dataset_name xs (in pb, for data set to -1)
-# HadronicMGDecays : 245.8*67.6%*67.6% 
-# SemiLeptMGDecays : 245.8*2*(10.75+10.57+11.25)%*67.6% 
-# FullLeptMGDecays : 245.8*(10.75+10.57+11.25)%^2
+# HadronicMGDecays : 252.89*67.6%*67.6% 
+# SemiLeptMGDecays : 252.89*2*(10.75+10.57+11.25)%*67.6% 
+# FullLeptMGDecays : 252.89*(10.75+10.57+11.25)%^2
 TTJets: L=19707
-TTJets_HadronicMGDecays 112.3247008
-TTJets_SemiLeptMGDecays 108.237
-TTJets_FullLeptMGDecays 25.962625
+TTJets_HadronicMGDecays 115.56466064
+TTJets_SemiLeptMGDecays 111.3592011
+TTJets_FullLeptMGDecays 26.826695116
 
 TTJets_SemiLeptMGDecays: L=19707
-TTJets_SemiLeptMGDecays 108.237
+TTJets_SemiLeptMGDecays 111.3592011
 
 TTJets_HadronicMGDecays: L=19707
-TTJets_HadronicMGDecays 112.3247008
+TTJets_HadronicMGDecays 115.56466064
 
 TTJets_FullLeptMGDecays: L=19707
-TTJets_FullLeptMGDecays 25.962625
+TTJets_FullLeptMGDecays 26.826695116
 
 ##### Dataset_name xs (in pb, for data set to -1)
 SingleT: L=19707
-T_t-channel 56.4
-T_s-channel 3.79
+T_t-channel 54.87
+T_s-channel 3.34
 T_tW-channel 11.1
-Tbar_t-channel 30.7
-Tbar_s-channel 1.76
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
 Tbar_tW-channel 11.1
 
 T_t-channel: L=19707
-T_t-channel 56.4
+T_t-channel 54.87
 T_s-channel: L=19707
-T_s-channel 3.79
-T_tw-channel: L=19707
+T_s-channel 3.34
+T_tW-channel: L=19707
 T_tW-channel 11.1
 Tbar_t-channel: L=19707
-Tbar_t-channel 30.7
+Tbar_t-channel 29.74
 Tbar_s-channel: L=19707
-Tbar_s-channel 1.76
+Tbar_s-channel 1.9
 Tbar_tW-channel: L=19707
 Tbar_tW-channel 11.1
 
@@ -84,23 +85,23 @@ WJetsToLNu 37509
 WW 56.0
 WZ 33.6
 ZZ 8.2
-T_t-channel 56.4
-T_s-channel 3.79
+T_t-channel 54.87
+T_s-channel 3.34
 T_tW-channel 11.1
-Tbar_t-channel 30.7
-Tbar_s-channel 1.76
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
 Tbar_tW-channel 11.1
 
 ##### Dataset_name xs (in pb, for data set to -1)
 MC: L=19707
-TTJets_HadronicMGDecays 112.3247008
-TTJets_SemiLeptMGDecays 108.237
-TTJets_FullLeptMGDecays 25.962625
-T_t-channel 56.4
-T_s-channel 3.79
+TTJets_HadronicMGDecays 115.56466064
+TTJets_SemiLeptMGDecays 111.3592011
+TTJets_FullLeptMGDecays 26.826695116
+T_t-channel 54.87
+T_s-channel 3.34
 T_tW-channel 11.1
-Tbar_t-channel 30.7
-Tbar_s-channel 1.76
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
 Tbar_tW-channel 11.1
 DYJetsToLL 3503.7
 WJetsToLNu 37509
@@ -121,14 +122,14 @@ ZZ 8.2
 #
 
 #TTJets_TopPtReWrtUp: L=19707
-#/TTJets_TopPtReWrtUp_HadronicMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 112.3247008
+#/TTJets_TopPtReWrtUp_HadronicMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 115.56466064
 #TTJets_TopPtReWrtDown: L=19707
-#/TTJets_TopPtReWrtDown_HadronicMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 112.3247008
+#/TTJets_TopPtReWrtDown_HadronicMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 115.56466064
 #TTJets_ScaleUp: L=19707
-#/TTJets_scaleup_TuneZ2star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 245.8 
+#/TTJets_scaleup_TuneZ2star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 252.89 
 #TTJets_ScaleDown: L=19707
-#/TTJets_scaledown_TuneZ2star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 245.8 
+#/TTJets_scaledown_TuneZ2star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 252.89 
 #TTJets_MatchingUp: L=19707
-#/TTJets_matchingup_TuneZ2star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 245.8 
+#/TTJets_matchingup_TuneZ2star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 252.89 
 #TTJets_MatchingDown: L=19707
-#/TTJets_matchingdown_TuneZ2star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 245.8 
+#/TTJets_matchingdown_TuneZ2star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 252.89 

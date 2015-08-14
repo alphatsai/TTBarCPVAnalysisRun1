@@ -1,5 +1,5 @@
-#ifndef SEMILEPTANICANALYSIS_H 
-#define SEMILEPTANICANALYSIS_H 
+#ifndef SEMILEPTANICRESULTSCHECK_H 
+#define SEMILEPTANICRESULTSCHECK_H 
 
 #include <iostream>
 #include <sstream>
@@ -30,10 +30,10 @@
 // class declaration
 //
 
-class SemiLeptanicAnalysis : public edm::EDAnalyzer{
+class SemiLeptanicResultsCheck : public edm::EDAnalyzer{
     public:
-        explicit SemiLeptanicAnalysis(const edm::ParameterSet&);
-        ~SemiLeptanicAnalysis();
+        explicit SemiLeptanicResultsCheck(const edm::ParameterSet&);
+        ~SemiLeptanicResultsCheck();
 
         static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
@@ -44,20 +44,24 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 
         std::string int2str( int i=3 );
         template<class TH1>
-            void setCutFlow( TH1* h );	
+            void setObservableHist( TH1* h, string ob );
         template<class TH1>
-            void setObservableHist(TH1* h, string ob="O" );
-        template<class TH1>
-            void setLeptonSelHist( TH1* h );
+            void fillObservableHist( TH1* h, double ob, string obs, double wrt=1 );
+        template <class Object, class matchingObject>
+            bool matchMultiObject( vector<Object> incol, vector<matchingObject> mcol, vector<matchingObject> &outcol );
+        template <class Object, class matchingObject>
+            bool matchObject( Object &obj, matchingObject &mobj, vector<matchingObject> col, double dR=0.5 );
+        template <class Object>
+            bool getHighPtSelectMo( vector<Object> col, Object &obj, int mo=0 );
+        template <class Object>
+            void getHighPtObject(  vector<Object> col, Object &obj );
         template <class Object>
             void get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 );
 
         bool isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCol, double dR=0.5 );
 
-        double Obs2(   Lepton isoLep,      Jet hardJet,      Jet bjet1,      Jet bjet2 );
         double Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 bjet1, TVector3 bjet2 );
-        double Obs7( TVector3 beam,      Jet bjet1,      Jet bjet2 );
-        double Obs7( TVector3 beam, TVector3 bjet1, TVector3 bjet2 );
+        double Obs7( TVector3   beam, TVector3   bjet1, TVector3 bjet2);
 
         // ----------member data ---------------------------
 
@@ -77,12 +81,10 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         edm::ParameterSet selPars_LooseLepton_;
         edm::ParameterSet selPars_TightMuon_;
         edm::ParameterSet selPars_TightElectron_;
+        const double dR_Matching_;
         const double dR_IsoLeptonFromJets_;
         const double Owrt_;
-        const unsigned int NJets_;
         bool  Debug_;
-        bool  isSkim_;
-        bool  doSaveTree_;
 
         long long int EvtNo_;
         int BxNo_;
@@ -98,6 +100,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         //const double jetPtMin_;
 
         EvtInfoBranches    EvtInfo;
+        GenInfoBranches    GenInfo;
         VertexInfoBranches VtxInfo;
         JetInfoBranches    JetInfo;
         LepInfoBranches    LepInfo;

@@ -27,51 +27,51 @@
 //
 
 class HadronicAnalysis : public edm::EDAnalyzer{
-	public:
-		explicit HadronicAnalysis(const edm::ParameterSet&);
-		~HadronicAnalysis();
+    public:
+        explicit HadronicAnalysis(const edm::ParameterSet&);
+        ~HadronicAnalysis();
 
-		static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+        static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
-	private:
-		virtual void beginJob();
-		virtual void analyze(const edm::Event&, const edm::EventSetup&);
-		virtual void endJob();
+    private:
+        virtual void beginJob();
+        virtual void analyze(const edm::Event&, const edm::EventSetup&);
+        virtual void endJob();
 
-		// ----------member data ---------------------------
+        // ----------member data ---------------------------
 
-		//// Configurables 
+        //// Configurables 
 
-		int                             maxEvents_; 
-		const int                       reportEvery_; 
-		const std::string               inputTTree_;
-		const std::vector<std::string>  inputFiles_;
-		bool debugTH1InfoClass_;
+        int                             maxEvents_; 
+        const int                       reportEvery_; 
+        const std::string               inputTTree_;
+        const std::vector<std::string>  inputFiles_;
+        bool debugTH1InfoClass_;
 
-		edm::Service<TFileService> fs;
-		TChain*            chain_;
- 
-		//const double jetPtMin_;
-		//const double bJetPtMin_;
-		//const double bJetCSVDiscMin_;
-		//const double bJetCSVDiscMax_;
+        edm::Service<TFileService> fs;
+        TChain*            chain_;
 
-		//const edm::ParameterSet jetSelParams_ ; 
-		//const edm::ParameterSet evtSelParams_ ; 
+        //const double jetPtMin_;
+        //const double bJetPtMin_;
+        //const double bJetCSVDiscMin_;
+        //const double bJetCSVDiscMax_;
 
-		//EvtInfoBranches    EvtInfo;
-		//VertexInfoBranches VtxInfo;
-		//GenInfoBranches    GenInfo;
-		//JetInfoBranches    GenJetInfo;
-		//JetInfoBranches    JetInfo;
-		//LepInfoBranches    LepInfo;
+        //const edm::ParameterSet jetSelParams_ ; 
+        //const edm::ParameterSet evtSelParams_ ; 
 
-		TH1InfoClass<TH1D> h1;
+        //EvtInfoBranches    EvtInfo;
+        //VertexInfoBranches VtxInfo;
+        //GenInfoBranches    GenInfo;
+        //JetInfoBranches    GenJetInfo;
+        //JetInfoBranches    JetInfo;
+        //LepInfoBranches    LepInfo;
 
-		//bool   McFlagana;
-		//int RunNo;
-		//long int EvtNo;
-		//int LumiNo;
+        TH1InfoClass<TH1D> h1;
+
+        //bool   McFlagana;
+        //int RunNo;
+        //long int EvtNo;
+        //int LumiNo;
 
 };
 
