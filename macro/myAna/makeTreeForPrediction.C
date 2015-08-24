@@ -42,9 +42,9 @@ float getACPUncs( float Op, float Om, float Ope, float Ome );
 
 void makeTreeForPrediction()
 {
-    float    nonZeroACP[NENTRY]={ 5, -5, 10, -10, 15, -15, 20, -20, 25, -25, 30, -30};
+    float nonZeroACP[NENTRY]={ -30, -25, -20, -15, -10, -5, 5, 10, 15, 20, 25, 30};
 
-    TFile* fin = new TFile("Final_histograms_SemiLeptanic.root");
+    TFile* fin = new TFile("Final_histograms_SemiLeptanic.root");  
 
     TH1D *h_sig[2], *h_bkg[NOBS][NCH];
     h_sig[CH_Muon]             = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_CutFlow_Mu");
@@ -163,17 +163,17 @@ void makeTreeForPrediction()
 
         tout->Fill();
     }//Entry End
-    fout->Write();
-    fout->Close();
+    fout->Write(); 
+    fout->Close(); 
 }
 
 float getValue( float per, float evnts, bool isPos)
 {
     float x = (1-per)*evnts/2;
-    float out;
+    float out; 
     if( isPos ) out=evnts-x; 
     else out=x;
-    return out;
+    return out; 
 }
 float getACPMean( float Op, float Om )
 {
