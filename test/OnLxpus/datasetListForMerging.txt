@@ -18,6 +18,10 @@ TTJets_HadronicMGDecays 115.56466064
 TTJets_SemiLeptMGDecays 111.3592011
 TTJets_FullLeptMGDecays 26.826695116
 
+TTJets_NonSemiLeptMGDecays: L=19707
+TTJets_FullLeptMGDecays 26.826695116
+TTJets_HadronicMGDecays 115.56466064
+
 TTJets_SemiLeptMGDecays: L=19707
 TTJets_SemiLeptMGDecays 111.3592011
 
@@ -80,6 +84,21 @@ ZZ 8.2
 
 ##### Dataset_name xs (in pb, for data set to -1)
 BkgMC: L=19707
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
+T_t-channel 54.87
+T_s-channel 3.34
+T_tW-channel 11.1
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
+Tbar_tW-channel 11.1
+
+BkgMC_TTJetsNonSemiLeptMGDecaysIncluded: L=19707
+TTJets_FullLeptMGDecays 26.826695116
+TTJets_HadronicMGDecays 115.56466064
 DYJetsToLL 3503.7
 WJetsToLNu 37509
 WW 56.0
