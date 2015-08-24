@@ -44,7 +44,7 @@ float getACPMean( float Op, float Om );
 float getACPUncs( float Op, float Om );
 float getACPUncs( float Op, float Om, float Ope, float Ome );
 
-void makeTreeForPrediction()
+void mkPredictedNonZeroACPScan()
 {
     float nonZeroACP[NENTRY]={ -30, -25, -20, -15, -10, -5, 5, 10, 15, 20, 25, 30};
 

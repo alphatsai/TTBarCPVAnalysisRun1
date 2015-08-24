@@ -1,4 +1,4 @@
-void makePredictionPlot( TFile* fin, std::string outpath=".", int iobs=0, int ich=0, bool printTitle=true, const int NPOINTS=12 )
+void mkPlotForPredictionViaSudoData( TFile* fin, std::string outpath=".", int iobs=0, int ich=0, bool printTitle=true, const int NPOINTS=12 )
 {
     std::string title1, title2; 
 
