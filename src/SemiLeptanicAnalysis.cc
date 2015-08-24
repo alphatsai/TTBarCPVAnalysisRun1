@@ -657,7 +657,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         // Distinguish hadronic-top and leptonic-top's b-jet by chi^2
                         TopCandidate top_hadronic, top_leptonic;         
                         float chi2 = +1E10;
-                        int topjet1(-1), topjet2(-1), topbjet(-1); 
+                        int topjet1(-1), topjet2(-1), topbjet1(-1), topbjet2(-1); 
                         for( int ij1=1; ij1<sizeNonBJetCol; ij1++){
                             for( int ij2=ij1-1; ij2<ij1; ij2++){
                                 for( int bj=0; bj<2; bj++)
@@ -665,28 +665,29 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                                     float chi2_ = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], BJetCol[bj] );
                                     if( chi2_ < chi2 )
                                     { 
-                                        topjet1 = ij1;
-                                        topjet2 = ij2;
-                                        topbjet = bj;
+                                        topjet1  = ij1;
+                                        topjet2  = ij2;
+                                        topbjet1 = bj;
                                         chi2 = chi2_;
                                     }
                                 }
                             }
                         }
-                        //Jet* jet
-                        top_hadronic.Fill( BJetCol[topbjet], nonBJetCol[topjet1], nonBJetCol[topjet2] );
+                        topbjet2 = (topbjet1==0)? 1:0;
+                        top_hadronic.Fill( BJetCol[topbjet1], nonBJetCol[topjet1], nonBJetCol[topjet2] );
+                        
                         
                         // Fill cutflow hist to each channel
                         if( passMuonSel )
                         {     
                             isGoodMuonEvt=true;
-                            top_leptonic.Fill( BJetCol[topbjet], isoMu, EvtInfo.PFMET, EvtInfo.PFMETPhi );
+                            top_leptonic.Fill( BJetCol[topbjet2], isoMu, EvtInfo.PFMET, EvtInfo.PFMETPhi );
                             h1.GetTH1("Evt_CutFlow_Mu")->Fill("=2 bjets", 1);
                         }
                         if( passElectronSel )
                         { 
                             isGoodElectronEvt=true;
-                            top_leptonic.Fill( BJetCol[topbjet], isoEl, EvtInfo.PFMET, EvtInfo.PFMETPhi );
+                            top_leptonic.Fill( BJetCol[topbjet2], isoEl, EvtInfo.PFMET, EvtInfo.PFMETPhi );
                             h1.GetTH1("Evt_CutFlow_El")->Fill("=2 bjets", 1);
                         }
                         h1.GetTH1("Evt_Top_Hadronic_Chi2")->Fill( chi2               );
