@@ -38,7 +38,8 @@
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/format.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Jet.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Vertex.h" 
-#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h"
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TopCandidate.h"
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1InfoClass.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH2InfoClass.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SemiLeptanicAnalysis.h" 
@@ -172,6 +173,15 @@ bool SemiLeptanicAnalysis::isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCo
     return isIsoLepFromJets;
 }
 
+float SemiLeptanicAnalysis::getChi2( Jet jet1, Jet jet2, Jet bjet, float M_top, float Wth_top, float M_W, float Wth_W )
+{
+    TLorentzVector qq_v  = jet1.P4 + jet2.P4;
+    TLorentzVector bqq_v = bjet.P4 + qq_v;
+    float iTop = ( bqq_v.M() - M_top )/Wth_top;
+    float iW   = (  qq_v.M() - M_W   )/Wth_W;
+    return iTop*iTop + iW*iW;
+}
+
 double SemiLeptanicAnalysis::Obs2( Lepton isoLep, Jet hardJet, Jet bjet1, Jet bjet2 )
 {
     TVector3 O2_1v =  bjet1.P3 + bjet2.P3;
@@ -224,7 +234,7 @@ void SemiLeptanicAnalysis::beginJob()
     h1.addNewTH1( "Evt_bJet1_Pt",      "pT of b-Jet",               "p_{T}(B-tagged j)",  "Yields", "GeV", "", 500,  0,   500 );
     h1.addNewTH1( "Evt_bJet1_M",       "Mass of b-Jet",             "Mass(B-tagged j)",   "Yields", "GeV", "", 500,  0,   500 );
     h1.addNewTH1( "Evt_bJet1_E",       "Energy of b-Jet",           "Energy(B-tagged j)", "Yields", "GeV", "", 500,  0,   500 );
-    h1.addNewTH1( "Evt_bJet1_Eta",     "Eta of b-Jet",              "#eta(B-tagged j)",   "Yields", "",    "", 100,  5,   5   );
+    h1.addNewTH1( "Evt_bJet1_Eta",     "Eta of b-Jet",              "#eta(B-tagged j)",   "Yields", "",    "", 100, -5,   5   );
     h1.addNewTH1( "Evt_bJet1_Phi",     "Phi of b-Jet",              "#phi(B-tagged j)",   "Yields", "",    "", 64,  -3.2, 3.2 );
     h1.addNewTH1( "Evt_bJet1_BTag",    "b-Jet b-tagged",            "bTag",               "Yields", "",    "", 100,  0,   1   );
 
@@ -234,6 +244,14 @@ void SemiLeptanicAnalysis::beginJob()
     h1.addNewTH1( "Evt_bJet2_Eta",     "Eta of b-Jet",              "#eta(B-tagged j)",   "Yields", "",    "", 100, -5,   5   );
     h1.addNewTH1( "Evt_bJet2_Phi",     "Phi of b-Jet",              "#phi(B-tagged j)",   "Yields", "",    "", 64,  -3.2, 3.2 );
     h1.addNewTH1( "Evt_bJet2_BTag",    "b-Jet b-tagged",            "bTag",               "Yields", "",    "", 100,  0,   1   );
+
+    h1.addNewTH1( "Evt_Top_Hadronic_Chi2", "",                      "#Chi^{2}",           "Yields", "",    "", 200,  0,   200 );
+    h1.addNewTH1( "Evt_Top_Hadronic_Mass", "",                      "Mass",               "Yields", "",    "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_Top_Hadronic_Pt",   "",                      "Pt",                 "Yields", "",    "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_Top_Hadronic_Eta",  "",                      "Eta",                "Yields", "",    "", 100, -5,   5   );
+    h1.addNewTH1( "Evt_Top_Hadronic_Phi",  "",                      "Phi",                "Yields", "",    "", 65,  -3.2, 3.2   );
+    h1.addNewTH1( "Evt_Top_Leptonic_Mt",   "",                      "Mass",               "Yields", "",    "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_Top_Leptonic_Phi",  "",                      "Phi",                "Yields", "",    "", 65,  -3.2, 3.2 );
 
     h1.addNewTH1( "Evt_NLeptons",      "Num. of leptons",           "N(lep)",             "Events", "",    "", 10,   0,   10  );
     h1.addNewTH1( "Evt_NSelLeptons",   "Num. of selected leptons",  "N(selected lep)",    "Events", "",    "", 10,   0,   10  );
@@ -605,7 +623,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 }
             } // [END] Electron channel
 
-            if( passElectronSel || passMuonSel )
+            // jets and b-jet cut flow
+            if( passElectronSel || passMuonSel ) 
             {
                 //if( JetColSelected.size() >= NJets_ )
                 int unsigned selectedJetsSize = BJetCol.size() + nonBJetCol.size();
@@ -630,25 +649,53 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         if( j1 == -1 ){ std::cout<<">>[WARNING] "<<entry<<"Doesn't find hard jet!"<<endl; }
                         hardJet = nonBJetCol[j1];
 
-                        //Lable bjet by Pt
+                        // Lable bjet by Pt
                         get2HighPtObject( BJetCol, bjet1, bjet2 );
-                        h1.GetTH1("bJet12_Px")->Fill(bjet1.Px);
-                        h1.GetTH1("bJet12_Px")->Fill(bjet2.Px);
-                        h1.GetTH1("bJet12_Py")->Fill(bjet1.Py);
-                        h1.GetTH1("bJet12_Py")->Fill(bjet2.Py);
-                        h1.GetTH1("bJet12_Pz")->Fill(bjet1.Pz);
-                        h1.GetTH1("bJet12_Pz")->Fill(bjet2.Pz);
+                        h1.GetTH1("bJet1_Pt")->Fill(bjet1.Pt);
+                        h1.GetTH1("bJet2_Pt")->Fill(bjet2.Pt);
 
+                        // Distinguish hadronic-top and leptonic-top's b-jet by chi^2
+                        TopCandidate top_hadronic, top_leptonic;         
+                        float chi2 = +1E10;
+                        int topjet1(-1), topjet2(-1), topbjet(-1); 
+                        for( int ij1=1; ij1<sizeNonBJetCol; ij1++){
+                            for( int ij2=ij1-1; ij2<ij1; ij2++){
+                                for( int bj=0; bj<2; bj++)
+                                {
+                                    float chi2_ = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], BJetCol[bj] );
+                                    if( chi2_ < chi2 )
+                                    { 
+                                        topjet1 = ij1;
+                                        topjet2 = ij2;
+                                        topbjet = bj;
+                                        chi2 = chi2_;
+                                    }
+                                }
+                            }
+                        }
+                        //Jet* jet
+                        top_hadronic.Fill( BJetCol[topbjet], nonBJetCol[topjet1], nonBJetCol[topjet2] );
+                        
+                        // Fill cutflow hist to each channel
                         if( passMuonSel )
                         {     
                             isGoodMuonEvt=true;
+                            top_leptonic.Fill( BJetCol[topbjet], isoMu, EvtInfo.PFMET, EvtInfo.PFMETPhi );
                             h1.GetTH1("Evt_CutFlow_Mu")->Fill("=2 bjets", 1);
                         }
                         if( passElectronSel )
                         { 
                             isGoodElectronEvt=true;
+                            top_leptonic.Fill( BJetCol[topbjet], isoEl, EvtInfo.PFMET, EvtInfo.PFMETPhi );
                             h1.GetTH1("Evt_CutFlow_El")->Fill("=2 bjets", 1);
                         }
+                        h1.GetTH1("Evt_Top_Hadronic_Chi2")->Fill( chi2               );
+                        h1.GetTH1("Evt_Top_Hadronic_Mass")->Fill( top_hadronic.Mass  );
+                        h1.GetTH1("Evt_Top_Hadronic_Pt"  )->Fill( top_hadronic.Pt    );
+                        h1.GetTH1("Evt_Top_Hadronic_Eta" )->Fill( top_hadronic.Eta   );
+                        h1.GetTH1("Evt_Top_Hadronic_Phi" )->Fill( top_hadronic.Phi   );
+                        h1.GetTH1("Evt_Top_Leptonic_Mt"  )->Fill( top_leptonic.MassT );
+                        h1.GetTH1("Evt_Top_Leptonic_Phi" )->Fill( top_leptonic.Phi   );
                     }
                 }
             }//[END] Jet and bjet cutflow
