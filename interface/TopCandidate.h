@@ -13,7 +13,7 @@ class TopCandidate{
         TopCandidate( Jet& bjet, Jet& jet1, Jet& jet2 ){
             Fill( bjet, jet1, jet2 );
         }
-        TopCandidate( Jet& bjet, Lepton& lep, float met, float metPhi ){
+        TopCandidate( Jet& bjet, Lepton& lep, float& met, float& metPhi ){
             Fill( bjet, lep, met, metPhi );
         }
 
@@ -31,11 +31,18 @@ class TopCandidate{
             Phi    = P4.Phi(); 
             Mass   = P4.M(); 
             MassT  = P4.Mt(); 
-            Energy = P4.Energy(); 
+            Energy = P4.Energy();
+
+            bJet = &bjet; 
+            Jet1 = &jet1; 
+            Jet2 = &jet2;
+
+            MET    = -100000;
+            METPhi = -100000;
         }
 
         // Leptonic top: t->bW( W->ln ) : met is missing Et from nuetrino NOTE: ONLY result to transverse phase
-        void Fill( Jet& bjet, Lepton& lep, float met, float metPhi )
+        void Fill( Jet& bjet, Lepton& lep, float& met, float& metPhi )
         {
             isHadronicTop = false;
             isLeptonicTop = true;
@@ -53,6 +60,10 @@ class TopCandidate{
             //MassT  = P4.Mt(); 
             MassT  = TMath::Sqrt( lep.Et*lep.Et + met*met - 2*lep.Et*met*TMath::Cos(lep.Phi-metPhi));
             Energy = P4.Energy();
+
+            Lept = &lep;
+            MET    = met;
+            METPhi = metPhi;
         }
  
         TVector3 P3;
@@ -68,8 +79,15 @@ class TopCandidate{
 
         float Mass;
         float MassT;
-        float Energy; 
+        float Energy;
 
+        float MET;
+        float METPhi;
+
+        Jet* bJet;
+        Jet* Jet1; 
+        Jet* Jet2;
+        Lepton* Lept; 
 };
 
 #endif
