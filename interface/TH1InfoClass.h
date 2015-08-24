@@ -85,9 +85,8 @@ void TH1InfoClass<TH1>::defaultTH1Info()
     Info.push_back( TH1Info( "bJet_Eta",     "Eta of b-Jet",           "#eta(B-tagged j)",   "Yields", "",    "", 100,  -5,   5   ));
     Info.push_back( TH1Info( "bJet_Phi",     "Phi of b-Jet",           "#phi(B-tagged j)",   "Yields", "",    "", 64,   -3.2, 3.2 ));
     Info.push_back( TH1Info( "bJet_BTag",    "b-Jet b-tagged",         "bTag",               "Yields", "",    "", 100,   0,   1   ));
-    Info.push_back( TH1Info( "bJet12_Px",    "px of b-Jet",            "p_{x}(B-tagged j)",  "Yields", "GeV", "", 1000, -500, 500 ));
-    Info.push_back( TH1Info( "bJet12_Py",    "py of b-Jet",            "p_{y}(B-tagged j)",  "Yields", "GeV", "", 1000, -500, 500 ));
-    Info.push_back( TH1Info( "bJet12_Pz",    "pz of b-Jet",            "p_{z}(B-tagged j)",  "Yields", "GeV", "", 1000, -500, 500 ));
+    Info.push_back( TH1Info( "bJet1_Pt",     "pt of b-Jet",            "p_{t}(B-tagged j)",  "Yields", "GeV", "", 1000, -500, 500 ));
+    Info.push_back( TH1Info( "bJet2_Pt",     "pt of b-Jet",            "p_{t}(B-tagged j)",  "Yields", "GeV", "", 1000, -500, 500 ));
     Info.push_back( TH1Info( "Evt_Events",   "",                       "",                   "Events", "",    "", 1,     1,   2   ));
     Info.push_back( TH1Info( "Evt_Channel",  "",                       "",                   "",       "",    "", 2,     0,   2   ));
     Info.push_back( TH1Info( "Evt_CutFlow",  "",                       "",                   "Evetns", "",    "", 10,    0,   10  ));
