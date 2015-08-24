@@ -1,51 +1,39 @@
-#include <TROOT.h>
-#include <TFile.h>
-#include <TTree.h>
-#include <TH1D.h>
-#include <TH2.h>
-#include <THStack.h>
-#include <TGraph.h>
-#include <TMultiGraph.h>
-#include <TCanvas.h>
-#include <TMath.h>
-#include <TF1.h>
-#include <TLine.h>
-#include <TLegend.h>
-#include <TProfile.h>
-#include <TLatex.h>
-#include <TAxis.h>
-#include <TString.h>
-#include <TStyle.h>
-#include <TPolyLine.h>
-
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <stdlib.h>
-#include <string>
-#include <vector>
-#include <cmath>
-
-using namespace std;
-void makePredictionPlot()
+void makePredictionPlot( TFile* fin, std::string outpath=".", int iobs=0, int ich=0, bool printTitle=true, const int NPOINTS=12 )
 {
+    std::string title1, title2; 
+
     const int NOBS=2; // O2=0, O7=1
+    const int OBS_O2=0;
+    const int OBS_O7=1;
+    int iOBS;
+         if( iobs == OBS_O2 ){ iOBS=OBS_O2; title1="O2"; }
+    else if( iobs == OBS_O7 ){ iOBS=OBS_O7; title1="O7"; }  
+    else{
+        printf(">> [ERROR] Please give right observable index:\n");
+        printf("           O2:%d, O7:%d\n", OBS_O2, OBS_O7);
+        return;
+    }
+
     const int NCH=3;  // Combined=2, Electron=0, Muon=1
     const int CH_Electron=0;
     const int CH_Muon=1;
     const int CH_Combined=2;
-    const int OBS_O2=0;
-    const int OBS_O7=1;
+    int iCH;
+         if( ich == CH_Electron ){ iCH=CH_Electron; title2="Electron_channel"; }
+    else if( ich == CH_Muon     ){ iCH=CH_Muon;     title2="Muon_channel";     }  
+    else if( ich == CH_Combined ){ iCH=CH_Combined; title2="Combined_channel"; }  
+    else{
+        printf(">> [ERROR] Please give right channel index:\n");
+        printf("           Electron:%d, Muon:%d, Combined:%d\n", CH_Electron, CH_Muon, CH_Combined);
+        return;
+    }
+
     const int UP=0;
     const int LOW=1;
 
-    const int OBS=OBS_O7;
-    const int CH=CH_Combined;
-
-    TFile* fin = new TFile("Final_PredictionTree.root");
     TTree* tin =(TTree*)fin->Get("tree");
+    if( NPOINTS != tin->GetEntries() ){ printf(">> [ERROR] NPOINTS should be %d, insted of %d\n", tin->GetEntries(), NPOINTS); return; }
 
-    int NPOINTS = tin->GetEntries();
     float predictNonZeroACPMean;
     float predictNonZeroACPUncs[NCH];
     float acpMean[NOBS][NCH]; 
@@ -65,31 +53,29 @@ void makePredictionPlot()
         tin->GetEntry(idx);
 
         nonZeroACP[idx]    = predictNonZeroACPMean*100;
-        nonZeroACPUnc[idx][UP]  = nonZeroACP[idx] + predictNonZeroACPUncs[CH]*100;
-        nonZeroACPUnc[idx][LOW] = nonZeroACP[idx] - predictNonZeroACPUncs[CH]*100;
+        nonZeroACPUnc[idx][UP]  = nonZeroACP[idx] + predictNonZeroACPUncs[iCH]*100;
+        nonZeroACPUnc[idx][LOW] = nonZeroACP[idx] - predictNonZeroACPUncs[iCH]*100;
 
-        acp[idx] = acpMean[OBS][CH]*100;
+        acp[idx] = acpMean[iOBS][iCH]*100;
 
-        unc_1s[idx][UP]  = acp[idx] + acpUncs[OBS][CH]*100;
-        unc_2s[idx][UP]  = acp[idx] + acpUncs[OBS][CH]*100*2;
-        unc_1s[idx][LOW] = acp[idx] - acpUncs[OBS][CH]*100;
-        unc_2s[idx][LOW] = acp[idx] - acpUncs[OBS][CH]*100*2;
-        printf("%d\n", idx);
-        printf("+ 1s %.2f, 2s %.2f\n", unc_1s[idx][UP], unc_2s[idx][UP]);
-        printf("- 1s %.2f, 2s %.2f\n", unc_1s[idx][LOW], unc_2s[idx][LOW]);
+        unc_1s[idx][UP]  = acp[idx] + acpUncs[iOBS][iCH]*100;
+        unc_2s[idx][UP]  = acp[idx] + acpUncs[iOBS][iCH]*100*2;
+        unc_1s[idx][LOW] = acp[idx] - acpUncs[iOBS][iCH]*100;
+        unc_2s[idx][LOW] = acp[idx] - acpUncs[iOBS][iCH]*100*2;
+        //printf("%d\n", idx);
+        //printf("+ 1s %.2f, 2s %.2f\n", unc_1s[idx][UP], unc_2s[idx][UP]);
+        //printf("- 1s %.2f, 2s %.2f\n", unc_1s[idx][LOW], unc_2s[idx][LOW]);
     }
 
     TCanvas *c1 = new TCanvas("c1","c1",800,600);
-    TH2F *frame = new TH2F("frame","frame", NPOINTS, nonZeroACP[0], nonZeroACP[NPOINTS-1], NPOINTS, nonZeroACP[0], nonZeroACP[NPOINTS-1]);
+    TH2F *frame = new TH2F( ("frame"+title1+title2).c_str(), "frame", NPOINTS, nonZeroACP[0], nonZeroACP[NPOINTS-1], NPOINTS, nonZeroACP[0], nonZeroACP[NPOINTS-1]);
 
     frame->SetStats(kFALSE);
-    frame->SetTitle("O_{2} Electron+Muon channel");
-    //frame->SetTitle("O_{7} Electron+Muon channel");
     frame->SetXTitle("Ideal non-Zero ACP [%]");
     frame->SetYTitle("Predicted non-Zero ACP [%]");
+    if( printTitle ) frame->SetTitle((title1+"_"+title2).c_str());
     frame->Draw();
 
-    //c1->SetLogy();
     c1->SetGridx();
     c1->SetGridy();
 
@@ -103,7 +89,7 @@ void makePredictionPlot()
     for(int i=0; i<NPOINTS; i++) {
         pl_2s->SetNextPoint( nonZeroACP[i], unc_2s[i][UP] );
         pl_1s->SetNextPoint( nonZeroACP[i], unc_1s[i][UP] );
-        o_1s->SetNextPoint(  nonZeroACP[i], nonZeroACPUnc[i][UP]);
+        o_1s ->SetNextPoint( nonZeroACP[i], nonZeroACPUnc[i][UP]);
 
         pl_med->SetPoint( i, nonZeroACP[i], nonZeroACP[i]);
         pl_obs->SetPoint( i, nonZeroACP[i], acp[i]       );
@@ -112,7 +98,7 @@ void makePredictionPlot()
     for(int i=NPOINTS-1; i>=0; i--) {
         pl_2s->SetNextPoint(  nonZeroACP[i], unc_2s[i][LOW] );
         pl_1s->SetNextPoint(  nonZeroACP[i], unc_1s[i][LOW] );
-        o_1s->SetNextPoint(   nonZeroACP[i], nonZeroACPUnc[i][LOW]);
+        o_1s ->SetNextPoint(  nonZeroACP[i], nonZeroACPUnc[i][LOW]);
     }
 
     pl_2s->SetFillColor(46);
@@ -127,4 +113,5 @@ void makePredictionPlot()
     pl_med->Draw("l");
     pl_obs->Draw("*lsame");
 
+    c1->SaveAs((outpath+"/PredictedACPScan_"+title1+"_"+title2+".pdf").c_str());
 }

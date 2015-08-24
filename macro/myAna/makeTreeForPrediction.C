@@ -26,6 +26,10 @@
 #include <cmath>
 
 using namespace std;
+const std::string fin_s  ="Final_histograms_SemiLeptanic.root";
+const std::string fout_s ="Final_PredictionTree.root";
+const std::string tout_s ="tree";
+
 const int NENTRY=12;
 const int NOBS=2; // O2=0, O7=1
 const int NCH=3;  // Combined=2, Electron=0, Muon=1
@@ -44,7 +48,7 @@ void makeTreeForPrediction()
 {
     float nonZeroACP[NENTRY]={ -30, -25, -20, -15, -10, -5, 5, 10, 15, 20, 25, 30};
 
-    TFile* fin = new TFile("Final_histograms_SemiLeptanic.root");  
+    TFile* fin = new TFile(fin_s.c_str());  
 
     TH1D *h_sig[2], *h_bkg[NOBS][NCH];
     h_sig[CH_Muon]             = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_CutFlow_Mu");
@@ -65,8 +69,8 @@ void makeTreeForPrediction()
     eSig[CH_Electron] = h_sig[CH_Electron]->GetBinError(lastBin);
     eSig[CH_Combined] = sqrt( eSig[CH_Muon]*eSig[CH_Muon] + eSig[CH_Electron]*eSig[CH_Electron] );
 
-    TFile* fout = new TFile("Final_PredictionTree.root", "RECREATE");
-    TTree* tout = new TTree("tree", "");
+    TFile* fout = new TFile(fout_s.c_str(), "RECREATE");
+    TTree* tout = new TTree(tout_s.c_str(), "");
 
     float predictNonZeroACPMean;
     float predictNonZeroACPUncs[NCH];
