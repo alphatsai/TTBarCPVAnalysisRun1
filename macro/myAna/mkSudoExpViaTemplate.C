@@ -27,7 +27,7 @@
 
 using namespace std;
 const std::string fin_s  ="Final_histograms_SemiLeptanic.root";
-const std::string fout_s ="Final_PredictionTreeViaSudoExpV0.root";
+const std::string fout_s ="Final_SudoExpViaTemplate.root";
 const std::string tout_s ="tree";
 
 const int NENTRY=12;
@@ -44,7 +44,7 @@ float getACPMean( float Op, float Om );
 float getACPUncs( float Op, float Om );
 float getACPUncs( float Op, float Om, float Ope, float Ome );
 
-void mkTreeForPredictedNonZeroACPScanViaSudoExpV0()
+void mkSudoExpViaTemplate()
 {
     float nonZeroACP[NENTRY]={ -30, -25, -20, -15, -10, -5, 5, 10, 15, 20, 25, 30};
 
