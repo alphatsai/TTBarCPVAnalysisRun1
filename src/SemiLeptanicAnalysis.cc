@@ -201,13 +201,13 @@ double SemiLeptanicAnalysis::Obs7( TVector3 beam, Jet bjet1, Jet bjet2 )
 void SemiLeptanicAnalysis::beginJob()
 {
     h1 = TH1InfoClass<TH1D>(Debug_);
-    h1.addNewTH1( "Evt_O7_Mu",         "O7",                        "O_{7}",              "Events", "",    "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O7_El",         "O7",                        "O_{7}",              "Events", "",    "", 40,  -2,   2   );
+    h1.addNewTH1( "Evt_O7_Mu",         "O7",                        "O_{7}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_O7_El",         "O7",                        "O_{7}",              "Events", "",    "",100,  -5,   5   );
     h1.addNewTH1( "Evt_O7Asym_Mu",     "A_{O7}",                    "",                   "Events", "",    "",  2,   0,   2   );
     h1.addNewTH1( "Evt_O7Asym_El",     "A_{O7}",                    "",                   "Events", "",    "",  2,   0,   2   );
-    h1.addNewTH1( "Evt_O2",            "O2",                        "O_{2}",              "Events", "",    "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O2_Mu",         "O2",                        "O_{2}",              "Events", "",    "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O2_El",         "O2",                        "O_{2}",              "Events", "",    "", 40,  -2,   2   );
+    h1.addNewTH1( "Evt_O2",            "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_O2_Mu",         "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_O2_El",         "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
     h1.addNewTH1( "Evt_O2Asym",        "A_{O2}",                    "",                   "Events", "",    "",  2,   0,   2   );
     h1.addNewTH1( "Evt_O2Asym_Mu",     "A_{O2}",                    "",                   "Events", "",    "",  2,   0,   2   );
     h1.addNewTH1( "Evt_O2Asym_El",     "A_{O2}",                    "",                   "Events", "",    "",  2,   0,   2   );
