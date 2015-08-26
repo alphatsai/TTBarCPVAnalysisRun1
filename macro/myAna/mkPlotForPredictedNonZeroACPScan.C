@@ -1,5 +1,5 @@
 // TFile should be from the results of mkTreeForPredictedNonZeroACPScan.C or mkTreeForPredictedNonZeroACPScanViaSudoExp.C
-void mkPlotForPredictionViaSudoData( TFile* fin, std::string outpath=".", int iobs=0, int ich=0, bool printTitle=true, const int NPOINTS=12 )
+void mkPlotForPredictionViaSudoData( TFile* fin, std::string outpath=".", int iobs=0, int ich=0, bool printTitle=true, const int NPOINTS=13 )
 {
     std::string title1, title2; 
 
@@ -36,11 +36,11 @@ void mkPlotForPredictionViaSudoData( TFile* fin, std::string outpath=".", int io
     if( NPOINTS != tin->GetEntries() ){ printf(">> [ERROR] NPOINTS should be %d, insted of %d\n", tin->GetEntries(), NPOINTS); return; }
 
     float predictNonZeroACPMean;
-    float predictNonZeroACPUncs[NCH];
+    float predictNonZeroACPUncs[NOBS][NCH];
     float acpMean[NOBS][NCH]; 
     float acpUncs[NOBS][NCH];
-    tin->SetBranchAddress("predictNonZeroACPMean", &predictNonZeroACPMean  );
-    tin->SetBranchAddress("predictNonZeroACPUncs", &predictNonZeroACPUncs[0]);
+    tin->SetBranchAddress("predictNonZeroACPMean", &predictNonZeroACPMean      );
+    tin->SetBranchAddress("predictNonZeroACPUncs", &predictNonZeroACPUncs[0][0]);
     tin->SetBranchAddress("acpMean", &acpMean[0][0]);
     tin->SetBranchAddress("acpUncs", &acpUncs[0][0]);
 
@@ -54,8 +54,8 @@ void mkPlotForPredictionViaSudoData( TFile* fin, std::string outpath=".", int io
         tin->GetEntry(idx);
 
         nonZeroACP[idx]    = predictNonZeroACPMean*100;
-        nonZeroACPUnc[idx][UP]  = nonZeroACP[idx] + predictNonZeroACPUncs[iCH]*100;
-        nonZeroACPUnc[idx][LOW] = nonZeroACP[idx] - predictNonZeroACPUncs[iCH]*100;
+        nonZeroACPUnc[idx][UP]  = nonZeroACP[idx] + predictNonZeroACPUncs[iOBS][iCH]*100;
+        nonZeroACPUnc[idx][LOW] = nonZeroACP[idx] - predictNonZeroACPUncs[iOBS][iCH]*100;
 
         acp[idx] = acpMean[iOBS][iCH]*100;
 
