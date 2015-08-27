@@ -49,7 +49,7 @@ float getACPMean( float Op, float Om );
 float getACPUncs( float Op, float Om );
 float getACPUncs( float Op, float Om, float Ope, float Ome );
 
-void mkTreeForPredictedNonZeroACPScanViaSudoExp()
+void mkTreeForPredictedNonZeroACPScan()
 {
     float  assumedACP[NENTRY]  ={  -30,   -25,   -20,   -15,   -10,   -5,   0,    5,    10,    15,    20,    25,    30 };
     string assumedACP_s[NENTRY]={ "m30", "m25", "m20", "m15", "m10", "m5", "0", "p5", "p10", "p15", "p20", "p25", "p30"};
