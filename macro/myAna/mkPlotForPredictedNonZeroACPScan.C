@@ -179,7 +179,7 @@ void mkPull( TFile* fin, std::string outpath=".", std::string cat="SudoExp", int
         h[i]->GetYaxis()->SetTitleSize(0.05);
         h[i]->GetYaxis()->SetTitleOffset(0.94);
         h[i]->SetXTitle(("ACP("+title1+")"+title2+" [%]").c_str());
-        h[i]->SetYTitle("# of expiriment");
+        h[i]->SetYTitle("# of Experiment");
         h[i]->Draw("HISTE"); 
 
         TF1* gaus = new TF1("gaus", "gaus", min, max);
