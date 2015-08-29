@@ -133,30 +133,6 @@ void SemiLeptanicAnalysis::setLeptonSelHist( TH1* h )
     h->GetXaxis()->SetBinLabel(5,"0:1:1");
     h->GetXaxis()->SetBinLabel(6,"1:0:1");
 }
-
-    template <class Object>
-void SemiLeptanicAnalysis::get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 )
-{
-    int o1, o2;
-    double pt1, pt2;
-    o1=o2=-1;
-    pt1=pt2=0;
-    const int size=col.size();
-    for( int i=0; i<size; i++){
-        if( pt1 < col[i].Pt ){
-            pt2=pt1;
-            pt1=col[i].Pt;
-            o2=o1;
-            o1=i;
-        }else if( pt2 < col[i].Pt ){
-            pt2=col[i].Pt;
-            o2=i;
-        }
-    }
-    obj1=col[o1];
-    obj2=col[o2];
-}
-
 bool SemiLeptanicAnalysis::isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCol, double dR )
 {
     bool isIsoLepFromJets = true;
@@ -172,7 +148,6 @@ bool SemiLeptanicAnalysis::isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCo
     }
     return isIsoLepFromJets;
 }
-
 float SemiLeptanicAnalysis::getChi2( Jet jet1, Jet jet2, Jet bjet, float M_top, float Wth_top, float M_W, float Wth_W )
 {
     TLorentzVector qq_v  = jet1.P4 + jet2.P4;
@@ -181,7 +156,6 @@ float SemiLeptanicAnalysis::getChi2( Jet jet1, Jet jet2, Jet bjet, float M_top, 
     float iW   = (  qq_v.M() - M_W   )/Wth_W;
     return iTop*iTop + iW*iW;
 }
-
 double SemiLeptanicAnalysis::Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 b, TVector3 bbar )
 {
     TVector3 O2_1v = b + bbar;
@@ -189,7 +163,6 @@ double SemiLeptanicAnalysis::Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 b
     double O2 = O2_1v.Dot( O2_2v );
     return O2;
 }
-
 double SemiLeptanicAnalysis::Obs7( TVector3 beam, TVector3 b, TVector3 bbar )
 {
     double O7_1z = beam.Dot( b - bbar );
@@ -197,6 +170,7 @@ double SemiLeptanicAnalysis::Obs7( TVector3 beam, TVector3 b, TVector3 bbar )
     double O7 = O7_1z * O7_2z;
     return O7;
 }
+
 // ------------ method called once each job just before starting event loop  ------------
 void SemiLeptanicAnalysis::beginJob()
 {
@@ -591,11 +565,6 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         }
                         if( j1 == -1 ){ std::cout<<">>[WARNING] "<<entry<<"Doesn't find hard jet!"<<endl; }
                         hardJet = nonBJetCol[j1];
-
-                        // Lable bjet by Pt
-                        //get2HighPtObject( BJetCol, b_jet, bbar_jet );
-                        //h1.GetTH1("bJet_Pt")->Fill(b_jet.Pt);
-                        //h1.GetTH1("bbarJet_Pt")->Fill(bbar_jet.Pt);
 
                         // Distinguish hadronic-top and leptonic-top's b-jet by chi^2
                         TopCandidate top_hadronic, top_leptonic;         
