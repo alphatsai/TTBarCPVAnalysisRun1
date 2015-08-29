@@ -49,8 +49,6 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
             void fillAsym( TH1* h, double value );
         template<class TH1>
             void setLeptonSelHist( TH1* h );
-        template <class Object>
-            void get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 );
 
         bool isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCol, double dR=0.5 );
  
