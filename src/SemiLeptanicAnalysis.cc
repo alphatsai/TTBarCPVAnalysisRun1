@@ -117,12 +117,12 @@ void SemiLeptanicAnalysis::setCutFlow( TH1* h )
     return ;
 }
 
-template<class TH1>
-void SemiLeptanicAnalysis::setObservableHist(TH1* h, string ob ){
-    h->GetXaxis()->SetBinLabel(1,(ob+"<0").c_str());
-    h->GetXaxis()->SetBinLabel(2,(ob+">0").c_str());
+    template<class TH1>
+void SemiLeptanicAnalysis::fillAsym( TH1* h, double value )
+{
+    if( value < 0. ) h->Fill(-1);
+    else h->Fill(0);
 }
-
     template<class TH1>
 void SemiLeptanicAnalysis::setLeptonSelHist( TH1* h )
 {
@@ -182,18 +182,18 @@ float SemiLeptanicAnalysis::getChi2( Jet jet1, Jet jet2, Jet bjet, float M_top, 
     return iTop*iTop + iW*iW;
 }
 
-double SemiLeptanicAnalysis::Obs2( Lepton isoLep, Jet hardJet, Jet bjet1, Jet bjet2 )
+double SemiLeptanicAnalysis::Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 b, TVector3 bbar )
 {
-    TVector3 O2_1v =  bjet1.P3 + bjet2.P3;
-    TVector3 O2_2v = isoLep.P3.Cross( hardJet.P3 );
+    TVector3 O2_1v = b + bbar;
+    TVector3 O2_2v = isoLep.Cross( hardJet );
     double O2 = O2_1v.Dot( O2_2v );
     return O2;
 }
 
-double SemiLeptanicAnalysis::Obs7( TVector3 beam, Jet bjet1, Jet bjet2 )
+double SemiLeptanicAnalysis::Obs7( TVector3 beam, TVector3 b, TVector3 bbar )
 {
-    double O7_1z = beam.Dot( bjet1.P3 - bjet2.P3 );
-    double O7_2z = beam.Dot( bjet1.P3.Cross( bjet2.P3 ));
+    double O7_1z = beam.Dot( b - bbar );
+    double O7_2z = beam.Dot( b.Cross( bbar ));
     double O7 = O7_1z * O7_2z;
     return O7;
 }
@@ -231,19 +231,19 @@ void SemiLeptanicAnalysis::beginJob()
     h1.addNewTH1( "Evt_HardJet_Phi",   "Phi of HardJet",            "#phi(HardJet)",      "Yields", "",    "", 64,  -3.2, 3.2 );
     h1.addNewTH1( "Evt_HardJet_BTag",  "HardJet b-tagged",          "bTag",               "Yields", "",    "", 100,  0,   1   );
 
-    h1.addNewTH1( "Evt_bJet1_Pt",      "pT of b-Jet",               "p_{T}(B-tagged j)",  "Yields", "GeV", "", 500,  0,   500 );
-    h1.addNewTH1( "Evt_bJet1_M",       "Mass of b-Jet",             "Mass(B-tagged j)",   "Yields", "GeV", "", 500,  0,   500 );
-    h1.addNewTH1( "Evt_bJet1_E",       "Energy of b-Jet",           "Energy(B-tagged j)", "Yields", "GeV", "", 500,  0,   500 );
-    h1.addNewTH1( "Evt_bJet1_Eta",     "Eta of b-Jet",              "#eta(B-tagged j)",   "Yields", "",    "", 100, -5,   5   );
-    h1.addNewTH1( "Evt_bJet1_Phi",     "Phi of b-Jet",              "#phi(B-tagged j)",   "Yields", "",    "", 64,  -3.2, 3.2 );
-    h1.addNewTH1( "Evt_bJet1_BTag",    "b-Jet b-tagged",            "bTag",               "Yields", "",    "", 100,  0,   1   );
+    h1.addNewTH1( "Evt_bJet_Pt",       "pT of b-Jet",               "p_{T}(B-tagged j)",  "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_bJet_M",        "Mass of b-Jet",             "Mass(B-tagged j)",   "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_bJet_E",        "Energy of b-Jet",           "Energy(B-tagged j)", "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_bJet_Eta",      "Eta of b-Jet",              "#eta(B-tagged j)",   "Yields", "",    "", 100, -5,   5   );
+    h1.addNewTH1( "Evt_bJet_Phi",      "Phi of b-Jet",              "#phi(B-tagged j)",   "Yields", "",    "", 64,  -3.2, 3.2 );
+    h1.addNewTH1( "Evt_bJet_BTag",     "b-Jet b-tagged",            "bTag",               "Yields", "",    "", 100,  0,   1   );
 
-    h1.addNewTH1( "Evt_bJet2_Pt",      "pT of b-Jet",               "p_{T}(B-tagged j)",  "Yields", "GeV", "", 500,  0,   500 );
-    h1.addNewTH1( "Evt_bJet2_M",       "Mass of b-Jet",             "Mass(B-tagged j)",   "Yields", "GeV", "", 500,  0,   500 );
-    h1.addNewTH1( "Evt_bJet2_E",       "Energy of b-Jet",           "Energy(B-tagged j)", "Yields", "GeV", "", 500,  0,   500 );
-    h1.addNewTH1( "Evt_bJet2_Eta",     "Eta of b-Jet",              "#eta(B-tagged j)",   "Yields", "",    "", 100, -5,   5   );
-    h1.addNewTH1( "Evt_bJet2_Phi",     "Phi of b-Jet",              "#phi(B-tagged j)",   "Yields", "",    "", 64,  -3.2, 3.2 );
-    h1.addNewTH1( "Evt_bJet2_BTag",    "b-Jet b-tagged",            "bTag",               "Yields", "",    "", 100,  0,   1   );
+    h1.addNewTH1( "Evt_bbarJet_Pt",    "pT of b-Jet",               "p_{T}(B-tagged j)",  "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_bbarJet_M",     "Mass of b-Jet",             "Mass(B-tagged j)",   "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_bbarJet_E",     "Energy of b-Jet",           "Energy(B-tagged j)", "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_bbarJet_Eta",   "Eta of b-Jet",              "#eta(B-tagged j)",   "Yields", "",    "", 100, -5,   5   );
+    h1.addNewTH1( "Evt_bbarJet_Phi",   "Phi of b-Jet",              "#phi(B-tagged j)",   "Yields", "",    "", 64,  -3.2, 3.2 );
+    h1.addNewTH1( "Evt_bbarJet_BTag",  "b-Jet b-tagged",            "bTag",               "Yields", "",    "", 100,  0,   1   );
 
     h1.addNewTH1( "Evt_Top_Hadronic_Chi2", "",                      "#Chi^{2}",           "Yields", "",    "", 200,  0,   200 );
     h1.addNewTH1( "Evt_Top_Hadronic_Mass", "",                      "Mass",               "Yields", "",    "", 500,  0,   500 );
@@ -273,74 +273,14 @@ void SemiLeptanicAnalysis::beginJob()
     h1.CreateTH1( fs );
     h1.Sumw2();
 
-    setCutFlow( h1.GetTH1("Evt_CutFlow") );
-    setCutFlow( h1.GetTH1("Evt_CutFlow_Mu") );
-    setCutFlow( h1.GetTH1("Evt_CutFlow_El") );
+    setCutFlow( h1.GetTH1("Evt_CutFlow"   ));
+    setCutFlow( h1.GetTH1("Evt_CutFlow_Mu"));
+    setCutFlow( h1.GetTH1("Evt_CutFlow_El"));
     setLeptonSelHist(h1.GetTH1("Evt_MuCut"));
     setLeptonSelHist(h1.GetTH1("Evt_ElCut"));
-    //setObservableHist(h1.GetTH1("Evt_O7Asym"),    "O_{7}");
-    //setObservableHist(h1.GetTH1("Evt_O7Asym_Mu"), "O_{7}");
-    //setObservableHist(h1.GetTH1("Evt_O7Asym_El"), "O_{7}");
-    //setObservableHist(h1.GetTH1("Evt_O2Asym"),    "O_{2}");
-    //setObservableHist(h1.GetTH1("Evt_O2Asym_Mu"), "O_{2}");
-    //setObservableHist(h1.GetTH1("Evt_O2Asym_El"), "O_{2}");
 
     h2 = TH2InfoClass<TH2D>(Debug_);
-    h2.addNewTH2("TH2_O2_vs_LepCharge",     "", "", "O_{2}", "", "", 3,   -1,   2,   40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_LepCharge_Mu",  "", "", "O_{2}", "", "", 3,   -1,   2,   40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_LepCharge_El",  "", "", "O_{2}", "", "", 3,   -1,   2,   40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_LepPz",         "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_LepPz_Mu",      "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_LepPz_El",      "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_LepPt",         "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_LepPt_Mu",      "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_LepPt_El",      "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_LepEta",        "", "", "O_{2}", "", "", 100, -5,   5,   40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_LepEta_Mu",     "", "", "O_{2}", "", "", 100, -5,   5,   40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_LepEta_El",     "", "", "O_{2}", "", "", 100, -5,   5,   40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_LepPhi",        "", "", "O_{2}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_LepPhi_Mu",     "", "", "O_{2}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_LepPhi_El",     "", "", "O_{2}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_HardJetPz",     "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_HardJetPz_Mu",  "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_HardJetPz_El",  "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_HardJetPt",     "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_HardJetPt_Mu",  "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_HardJetPt_El",  "", "", "O_{2}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_HardJetEta",    "", "", "O_{2}", "", "", 100, -5,   5,   40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_HardJetEta_Mu", "", "", "O_{2}", "", "", 100, -5,   5,   40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_HardJetEta_El", "", "", "O_{2}", "", "", 100, -5,   5,   40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_HardJetPhi",    "", "", "O_{2}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_HardJetPhi_Mu", "", "", "O_{2}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
-    h2.addNewTH2("TH2_O2_vs_HardJetPhi_El", "", "", "O_{2}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepCharge",     "", "", "O_{7}", "", "", 3,   -1,   2,   40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepCharge_Mu",  "", "", "O_{7}", "", "", 3,   -1,   2,   40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepCharge_El",  "", "", "O_{7}", "", "", 3,   -1,   2,   40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepPz",         "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepPz_Mu",      "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepPz_El",      "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepPt",         "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepPt_Mu",      "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepPt_El",      "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepEta",        "", "", "O_{7}", "", "", 100, -5,   5,   40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepEta_Mu",     "", "", "O_{7}", "", "", 100, -5,   5,   40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepEta_El",     "", "", "O_{7}", "", "", 100, -5,   5,   40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepPhi",        "", "", "O_{7}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepPhi_Mu",     "", "", "O_{7}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_LepPhi_El",     "", "", "O_{7}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_HardJetPz",     "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_HardJetPz_Mu",  "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_HardJetPz_El",  "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_HardJetPt",     "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_HardJetPt_Mu",  "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_HardJetPt_El",  "", "", "O_{7}", "", "", 500,  0,   500, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_HardJetEta",    "", "", "O_{7}", "", "", 100, -5,   5,   40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_HardJetEta_Mu", "", "", "O_{7}", "", "", 100, -5,   5,   40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_HardJetEta_El", "", "", "O_{7}", "", "", 100, -5,   5,   40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_HardJetPhi",    "", "", "O_{7}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_HardJetPhi_Mu", "", "", "O_{7}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
-    h2.addNewTH2("TH2_O7_vs_HardJetPhi_El", "", "", "O_{7}", "", "", 64,  -3.2, 3.2, 40, -2, 2);
-
+    //h2.addNewTH2("TH2_O2_vs_LepCharge",     "", "", "O_{2}", "", "", 3,   -1,   2,   40, -2, 2);
     h2.CreateTH2( fs );
     h2.Sumw2();
 
@@ -364,21 +304,21 @@ void SemiLeptanicAnalysis::beginJob()
         newtree_ = chain_->CloneTree(0);
     }else{
         newtree_ = fs->make<TTree>("tree", "");
-        newtree_->Branch("EvtInfo.RunNo",   &RunNo_,    "EvtInfo.RunNo/I"  );
-        newtree_->Branch("EvtInfo.EvtNo",   &EvtNo_,    "EvtInfo.EvtNo/L"  );
-        newtree_->Branch("EvtInfo.BxNo",    &BxNo_,     "EvtInfo.BxNo/I"   );
-        newtree_->Branch("EvtInfo.LumiNo",  &LumiNo_,   "EvtInfo.LumiNo/I" );
+        newtree_->Branch("EvtInfo.RunNo",  &RunNo_,  "EvtInfo.RunNo/I"  );
+        newtree_->Branch("EvtInfo.EvtNo",  &EvtNo_,  "EvtInfo.EvtNo/L"  );
+        newtree_->Branch("EvtInfo.BxNo",   &BxNo_,   "EvtInfo.BxNo/I"   );
+        newtree_->Branch("EvtInfo.LumiNo", &LumiNo_, "EvtInfo.LumiNo/I" );
     }
-    newtree_->Branch("EvtInfo.isMuonEvt",   &isMuonEvt_, "EvtInfo.isMuonEvt/I" );
-    newtree_->Branch("EvtInfo.isEleEvt",    &isEleEvt_,  "EvtInfo.isEleEvt/I"  );
+    newtree_->Branch("EvtInfo.isMuonEvt", &isMuonEvt_, "EvtInfo.isMuonEvt/I" );
+    newtree_->Branch("EvtInfo.isEleEvt",  &isEleEvt_,  "EvtInfo.isEleEvt/I"  );
 
     if( isSkim_ )
     { 
-        h1.GetTH1("Evt_CutFlow")->Fill("All", allEvents);
-        h1.GetTH1("Evt_CutFlow")->SetBinError(1, sqrt(allEvents));
+        h1.GetTH1("Evt_CutFlow"   )->Fill("All", allEvents);
         h1.GetTH1("Evt_CutFlow_Mu")->Fill("All", allEvents);
-        h1.GetTH1("Evt_CutFlow_Mu")->SetBinError(1, sqrt(allEvents));
         h1.GetTH1("Evt_CutFlow_El")->Fill("All", allEvents);
+        h1.GetTH1("Evt_CutFlow"   )->SetBinError(1, sqrt(allEvents));
+        h1.GetTH1("Evt_CutFlow_Mu")->SetBinError(1, sqrt(allEvents));
         h1.GetTH1("Evt_CutFlow_El")->SetBinError(1, sqrt(allEvents));
     }
 
@@ -465,47 +405,47 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         for( int idx=0; idx < JetInfo.Size; idx++)
         {
             Jet jet( JetInfo, idx );
-            h1.GetTH1("Jet_Pt")->Fill( jet.Pt );
-            h1.GetTH1("Jet_Px")->Fill( jet.Px );
-            h1.GetTH1("Jet_Py")->Fill( jet.Py );
-            h1.GetTH1("Jet_Pz")->Fill( jet.Pz );
-            h1.GetTH1("Jet_M")->Fill(  jet.Mass );
-            h1.GetTH1("Jet_E")->Fill(  jet.Energy );
-            h1.GetTH1("Jet_Eta")->Fill(  jet.Eta );
-            h1.GetTH1("Jet_Phi")->Fill(  jet.Phi );
+            h1.GetTH1("Jet_Pt"  )->Fill( jet.Pt                 );
+            h1.GetTH1("Jet_Px"  )->Fill( jet.Px                 );
+            h1.GetTH1("Jet_Py"  )->Fill( jet.Py                 );
+            h1.GetTH1("Jet_Pz"  )->Fill( jet.Pz                 );
+            h1.GetTH1("Jet_M"   )->Fill( jet.Mass               );
+            h1.GetTH1("Jet_E"   )->Fill( jet.Energy             );
+            h1.GetTH1("Jet_Eta" )->Fill( jet.Eta                );
+            h1.GetTH1("Jet_Phi" )->Fill( jet.Phi                );
             h1.GetTH1("Jet_BTag")->Fill( jet.CombinedSVBJetTags );
 
             if( JetSelection.isPass(jet) )
             { 
                 JetColSelected.push_back(jet);
-                h1.GetTH1("SelJet_Pt")->Fill( jet.Pt );
-                h1.GetTH1("SelJet_Px")->Fill( jet.Px );
-                h1.GetTH1("SelJet_Py")->Fill( jet.Py );
-                h1.GetTH1("SelJet_Pz")->Fill( jet.Pz );
-                h1.GetTH1("SelJet_M")->Fill(  jet.Mass );
-                h1.GetTH1("SelJet_E")->Fill(  jet.Energy );
-                h1.GetTH1("SelJet_Eta")->Fill(  jet.Eta );
-                h1.GetTH1("SelJet_Phi")->Fill(  jet.Phi );
+                h1.GetTH1("SelJet_Pt"  )->Fill( jet.Pt                 );
+                h1.GetTH1("SelJet_Px"  )->Fill( jet.Px                 );
+                h1.GetTH1("SelJet_Py"  )->Fill( jet.Py                 );
+                h1.GetTH1("SelJet_Pz"  )->Fill( jet.Pz                 );
+                h1.GetTH1("SelJet_M"   )->Fill( jet.Mass               );
+                h1.GetTH1("SelJet_E"   )->Fill( jet.Energy             );
+                h1.GetTH1("SelJet_Eta" )->Fill( jet.Eta                );
+                h1.GetTH1("SelJet_Phi" )->Fill( jet.Phi                );
                 h1.GetTH1("SelJet_BTag")->Fill( jet.CombinedSVBJetTags );
             }
             if( BJetSelection.isPass(jet) )
             { 
                 BJetCol.push_back(jet);
-                h1.GetTH1("bJet_Pt")->Fill( jet.Pt );
-                h1.GetTH1("bJet_Px")->Fill( jet.Px );
-                h1.GetTH1("bJet_Py")->Fill( jet.Py );
-                h1.GetTH1("bJet_Pz")->Fill( jet.Pz );
-                h1.GetTH1("bJet_M")->Fill(  jet.Mass );
-                h1.GetTH1("bJet_E")->Fill(  jet.Energy );
-                h1.GetTH1("bJet_Eta")->Fill(  jet.Eta );
-                h1.GetTH1("bJet_Phi")->Fill(  jet.Phi );
+                h1.GetTH1("bJet_Pt"  )->Fill( jet.Pt                 );
+                h1.GetTH1("bJet_Px"  )->Fill( jet.Px                 );
+                h1.GetTH1("bJet_Py"  )->Fill( jet.Py                 );
+                h1.GetTH1("bJet_Pz"  )->Fill( jet.Pz                 );
+                h1.GetTH1("bJet_M"   )->Fill( jet.Mass               );
+                h1.GetTH1("bJet_E"   )->Fill( jet.Energy             );
+                h1.GetTH1("bJet_Eta" )->Fill( jet.Eta                );
+                h1.GetTH1("bJet_Phi" )->Fill( jet.Phi                );
                 h1.GetTH1("bJet_BTag")->Fill( jet.CombinedSVBJetTags );
             }
             if( NonBJetSelection.isPass(jet) ) nonBJetCol.push_back(jet);
         }
-        h1.GetTH1("Evt_NJets")->Fill(JetInfo.Size);
-        h1.GetTH1("Evt_NSelJets")->Fill(JetColSelected.size());
-        h1.GetTH1("Evt_NbJets")->Fill(BJetCol.size());
+        h1.GetTH1("Evt_NJets"   )->Fill( JetInfo.Size          );
+        h1.GetTH1("Evt_NSelJets")->Fill( JetColSelected.size() );
+        h1.GetTH1("Evt_NbJets"  )->Fill( BJetCol.size()        );
         if( JetColSelected.size() != ( nonBJetCol.size()+BJetCol.size()) ) std::cout<<">> [WARNING] JetColSelected.size() "<<JetColSelected.size()<<" != ( nonBJetCol.size() "<<nonBJetCol.size()<<" + BJetCol.size() "<<BJetCol.size()<<" )"<<std::endl;
 
         //* Lepton selection
@@ -549,24 +489,25 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         }
 
         //* Event selection
-        Jet hardJet, bjet1, bjet2;
+        Jet hardJet, b_jet, bbar_jet;
         Lepton isoMu, isoEl;
+        int isoLepCharge=0;
         bool isGoodMuonEvt(false), isGoodElectronEvt(false);
 
         if( isSkim_ )
         {
-            h1.GetTH1("Evt_CutFlow")->Fill("PreSelect", 1);
+            h1.GetTH1("Evt_CutFlow"   )->Fill("PreSelect", 1);
             h1.GetTH1("Evt_CutFlow_El")->Fill("PreSelect", 1);
             h1.GetTH1("Evt_CutFlow_Mu")->Fill("PreSelect", 1);
         }else{
-            h1.GetTH1("Evt_CutFlow")->Fill("All", 1);
+            h1.GetTH1("Evt_CutFlow"   )->Fill("All", 1);
             h1.GetTH1("Evt_CutFlow_El")->Fill("All", 1);
             h1.GetTH1("Evt_CutFlow_Mu")->Fill("All", 1);
         }
 
         if( VxtColSelected.size() )
         {
-            h1.GetTH1("Evt_CutFlow")->Fill("#geq1 goodVtx", 1);
+            h1.GetTH1("Evt_CutFlow"   )->Fill("#geq1 goodVtx", 1);
             h1.GetTH1("Evt_CutFlow_El")->Fill("#geq1 goodVtx", 1);
             h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq1 goodVtx", 1);
 
@@ -590,7 +531,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                             if( ElColLoose_MuChannel.size() == 0 )
                             {
                                 h1.GetTH1("Evt_CutFlow_Mu")->Fill("veto(Loose e)", 1);
-                                passMuonSel=true;
+                                isoLepCharge=isoMu.Charge;
+                                passMuonSel =true;
                             }
                         }
                     }
@@ -616,6 +558,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                             if( ElColLoose_ElChannel.size() == 0 )
                             {
                                 h1.GetTH1("Evt_CutFlow_El")->Fill("veto(Loose e)", 1);
+                                isoLepCharge=isoEl.Charge;
                                 passElectronSel=true;
                             }
                         }
@@ -650,14 +593,14 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         hardJet = nonBJetCol[j1];
 
                         // Lable bjet by Pt
-                        get2HighPtObject( BJetCol, bjet1, bjet2 );
-                        h1.GetTH1("bJet1_Pt")->Fill(bjet1.Pt);
-                        h1.GetTH1("bJet2_Pt")->Fill(bjet2.Pt);
+                        //get2HighPtObject( BJetCol, b_jet, bbar_jet );
+                        //h1.GetTH1("bJet_Pt")->Fill(b_jet.Pt);
+                        //h1.GetTH1("bbarJet_Pt")->Fill(bbar_jet.Pt);
 
                         // Distinguish hadronic-top and leptonic-top's b-jet by chi^2
                         TopCandidate top_hadronic, top_leptonic;         
                         float chi2 = +1E10;
-                        int topjet1(-1), topjet2(-1), topbjet1(-1), topbjet2(-1); 
+                        int topjet1(-1), topjet2(-1), hadronicTopbjet(-1), leptonicTopbjet(-1); 
                         for( int ij1=1; ij1<sizeNonBJetCol; ij1++){
                             for( int ij2=ij1-1; ij2<ij1; ij2++){
                                 for( int bj=0; bj<2; bj++)
@@ -667,27 +610,40 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                                     { 
                                         topjet1  = ij1;
                                         topjet2  = ij2;
-                                        topbjet1 = bj;
+                                        hadronicTopbjet = bj;
                                         chi2 = chi2_;
                                     }
                                 }
                             }
                         }
-                        topbjet2 = (topbjet1==0)? 1:0;
-                        top_hadronic.Fill( BJetCol[topbjet1], nonBJetCol[topjet1], nonBJetCol[topjet2] );
-                        
-                        
+                        leptonicTopbjet = ( hadronicTopbjet==0 )? 1:0;
+                        top_hadronic.Fill( BJetCol[hadronicTopbjet], nonBJetCol[topjet1], nonBJetCol[topjet2] );
+
+                        if( isoLepCharge < 0 ) // tbar->bbar+w-, w- -> l- v
+                        {
+                           b_jet    = BJetCol[hadronicTopbjet];
+                           bbar_jet = BJetCol[leptonicTopbjet];
+                        }
+                        else if( isoLepCharge > 0 ) //t->b+w+, w+ -> l+ v
+                        {
+                           b_jet    = BJetCol[leptonicTopbjet];
+                           bbar_jet = BJetCol[hadronicTopbjet];
+                        }
+                        else
+                        { std::cout<<">> [ERROR] There an nuetral lepton!? "<<std::endl; }
+
+            
                         // Fill cutflow hist to each channel
                         if( passMuonSel )
                         {     
                             isGoodMuonEvt=true;
-                            top_leptonic.Fill( BJetCol[topbjet2], isoMu, EvtInfo.PFMET, EvtInfo.PFMETPhi );
+                            top_leptonic.Fill( BJetCol[leptonicTopbjet], isoMu, EvtInfo.PFMET, EvtInfo.PFMETPhi );
                             h1.GetTH1("Evt_CutFlow_Mu")->Fill("=2 bjets", 1);
                         }
                         if( passElectronSel )
                         { 
                             isGoodElectronEvt=true;
-                            top_leptonic.Fill( BJetCol[topbjet2], isoEl, EvtInfo.PFMET, EvtInfo.PFMETPhi );
+                            top_leptonic.Fill( BJetCol[leptonicTopbjet], isoEl, EvtInfo.PFMET, EvtInfo.PFMETPhi );
                             h1.GetTH1("Evt_CutFlow_El")->Fill("=2 bjets", 1);
                         }
                         h1.GetTH1("Evt_Top_Hadronic_Chi2")->Fill( chi2               );
@@ -760,159 +716,65 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             }
             newtree_->Fill();
 
-            h1.GetTH1("Evt_bJet1_Pt")->Fill(bjet1.Pt);
-            h1.GetTH1("Evt_bJet1_Eta")->Fill(bjet1.Eta);
-            h1.GetTH1("Evt_bJet1_Phi")->Fill(bjet1.Phi);
-            h1.GetTH1("Evt_bJet1_E")->Fill(bjet1.Energy);
-            h1.GetTH1("Evt_bJet1_M")->Fill(bjet1.Mass);
-            h1.GetTH1("Evt_bJet1_BTag")->Fill(bjet1.CombinedSVBJetTags);
-            h1.GetTH1("Evt_bJet2_Pt")->Fill(bjet2.Pt);
-            h1.GetTH1("Evt_bJet2_Eta")->Fill(bjet2.Eta);
-            h1.GetTH1("Evt_bJet2_Phi")->Fill(bjet2.Phi);
-            h1.GetTH1("Evt_bJet2_E")->Fill(bjet2.Energy);
-            h1.GetTH1("Evt_bJet2_M")->Fill(bjet2.Mass);
-            h1.GetTH1("Evt_bJet2_BTag")->Fill(bjet2.CombinedSVBJetTags);
-            h1.GetTH1("Evt_HardJet_Pt")->Fill(hardJet.Pt);
-            h1.GetTH1("Evt_HardJet_Eta")->Fill(hardJet.Eta);
-            h1.GetTH1("Evt_HardJet_Phi")->Fill(hardJet.Phi);
-            h1.GetTH1("Evt_HardJet_E")->Fill(hardJet.Energy);
-            h1.GetTH1("Evt_HardJet_M")->Fill(hardJet.Mass);
-            h1.GetTH1("Evt_HardJet_BTag")->Fill(hardJet.CombinedSVBJetTags);
+            h1.GetTH1("Evt_bJet_Pt"     )->Fill( b_jet.Pt                    );
+            h1.GetTH1("Evt_bJet_Eta"    )->Fill( b_jet.Eta                   );
+            h1.GetTH1("Evt_bJet_Phi"    )->Fill( b_jet.Phi                   );
+            h1.GetTH1("Evt_bJet_E"      )->Fill( b_jet.Energy                );
+            h1.GetTH1("Evt_bJet_M"      )->Fill( b_jet.Mass                  );
+            h1.GetTH1("Evt_bJet_BTag"   )->Fill( b_jet.CombinedSVBJetTags    );
+            h1.GetTH1("Evt_bbarJet_Pt"  )->Fill( bbar_jet.Pt                 );
+            h1.GetTH1("Evt_bbarJet_Eta" )->Fill( bbar_jet.Eta                );
+            h1.GetTH1("Evt_bbarJet_Phi" )->Fill( bbar_jet.Phi                );
+            h1.GetTH1("Evt_bbarJet_E"   )->Fill( bbar_jet.Energy             );
+            h1.GetTH1("Evt_bbarJet_M"   )->Fill( bbar_jet.Mass               );
+            h1.GetTH1("Evt_bbarJet_BTag")->Fill( bbar_jet.CombinedSVBJetTags );
+            h1.GetTH1("Evt_HardJet_Pt"  )->Fill( hardJet.Pt                  );
+            h1.GetTH1("Evt_HardJet_Eta" )->Fill( hardJet.Eta                 );
+            h1.GetTH1("Evt_HardJet_Phi" )->Fill( hardJet.Phi                 );
+            h1.GetTH1("Evt_HardJet_E"   )->Fill( hardJet.Energy              );
+            h1.GetTH1("Evt_HardJet_M"   )->Fill( hardJet.Mass                );
+            h1.GetTH1("Evt_HardJet_BTag")->Fill( hardJet.CombinedSVBJetTags  );
         }
         //* Fill observables O7 and O2
         // -- Muon channel
         if( isGoodMuonEvt )
         {
-            h1.GetTH1("Evt_isoMu_Pt")->Fill(isoMu.Pt);
-            h1.GetTH1("Evt_isoMu_Et")->Fill(isoMu.Et);
-            h1.GetTH1("Evt_isoMu_Eta")->Fill(isoMu.Eta);
-            h1.GetTH1("Evt_isoMu_Phi")->Fill(isoMu.Phi);
-            h1.GetTH1("Evt_isoMu_E")->Fill(isoMu.Energy);
+            double O2 = Obs2( isoMu.P3, hardJet.P3, b_jet.P3, bbar_jet.P3 );
+            double O7 = Obs7( az, b_jet.P3, bbar_jet.P3 );
 
-            double O2 = Obs2( isoMu, hardJet, bjet1, bjet2 );
-            h1.GetTH1("Evt_O2")->Fill( O2/Owrt_ );
-            h1.GetTH1("Evt_O2_Mu")->Fill( O2/Owrt_ );
-            if( O2 > 0 ){
-                h1.GetTH1("Evt_O2Asym")->Fill(0);
-                h1.GetTH1("Evt_O2Asym_Mu")->Fill(0);
-            }else{
-                h1.GetTH1("Evt_O2Asym")->Fill(-1);
-                h1.GetTH1("Evt_O2Asym_Mu")->Fill(-1);
-            }
-
-            double O7 = Obs7( az, bjet1, bjet2 );
-            h1.GetTH1("Evt_O7")->Fill( O7/Owrt_ );
-            h1.GetTH1("Evt_O7_Mu")->Fill( O7/Owrt_ );
-            if( O7 > 0 ){
-                h1.GetTH1("Evt_O7Asym")->Fill(0);
-                h1.GetTH1("Evt_O7Asym_Mu")->Fill(0);
-            }else{
-                h1.GetTH1("Evt_O7Asym")->Fill(-1);
-                h1.GetTH1("Evt_O7Asym_Mu")->Fill(-1);
-            }
-            h2.GetTH2("TH2_O2_vs_LepCharge")    ->Fill( isoMu.Charge, O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepCharge_Mu") ->Fill( isoMu.Charge, O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepPz")        ->Fill( isoMu.Pz,     O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepPz_Mu")     ->Fill( isoMu.Pz,     O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepPt")        ->Fill( isoMu.Pt,     O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepPt_Mu")     ->Fill( isoMu.Pt,     O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepEta")       ->Fill( isoMu.Eta,    O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepEta_Mu")    ->Fill( isoMu.Eta,    O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepPhi")       ->Fill( isoMu.Phi,    O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepPhi_Mu")    ->Fill( isoMu.Phi,    O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetPz")    ->Fill( hardJet.Pz,   O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetPz_Mu") ->Fill( hardJet.Pz,   O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetPt")    ->Fill( hardJet.Pt,   O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetPt_Mu") ->Fill( hardJet.Pt,   O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetEta")   ->Fill( hardJet.Eta,  O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetEta_Mu")->Fill( hardJet.Eta,  O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetPhi")   ->Fill( hardJet.Phi,  O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetPhi_Mu")->Fill( hardJet.Phi,  O2/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepCharge")    ->Fill( isoMu.Charge, O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepCharge_Mu") ->Fill( isoMu.Charge, O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepPz")        ->Fill( isoMu.Pz,     O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepPz_Mu")     ->Fill( isoMu.Pz,     O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepPt")        ->Fill( isoMu.Pt,     O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepPt_Mu")     ->Fill( isoMu.Pt,     O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepEta")       ->Fill( isoMu.Eta,    O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepEta_Mu")    ->Fill( isoMu.Eta,    O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepPhi")       ->Fill( isoMu.Phi,    O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepPhi_Mu")    ->Fill( isoMu.Phi,    O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetPz")    ->Fill( hardJet.Pz,   O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetPz_Mu") ->Fill( hardJet.Pz,   O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetPt")    ->Fill( hardJet.Pt,   O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetPt_Mu") ->Fill( hardJet.Pt,   O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetEta")   ->Fill( hardJet.Eta,  O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetEta_Mu")->Fill( hardJet.Eta,  O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetPhi")   ->Fill( hardJet.Phi,  O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetPhi_Mu")->Fill( hardJet.Phi,  O7/Owrt_ );
+            h1.GetTH1("Evt_isoMu_Pt" )->Fill( isoMu.Pt     );
+            h1.GetTH1("Evt_isoMu_Et" )->Fill( isoMu.Et     );
+            h1.GetTH1("Evt_isoMu_Eta")->Fill( isoMu.Eta    );
+            h1.GetTH1("Evt_isoMu_Phi")->Fill( isoMu.Phi    );
+            h1.GetTH1("Evt_isoMu_E"  )->Fill( isoMu.Energy );
+            h1.GetTH1("Evt_O2"       )->Fill( O2/Owrt_     );
+            h1.GetTH1("Evt_O2_Mu"    )->Fill( O2/Owrt_     );
+            h1.GetTH1("Evt_O7"       )->Fill( O7/Owrt_     );
+            h1.GetTH1("Evt_O7_Mu"    )->Fill( O7/Owrt_     );
+            fillAsym( h1.GetTH1("Evt_O2Asym"   ), O2 );
+            fillAsym( h1.GetTH1("Evt_O2Asym_Mu"), O2 );
+            fillAsym( h1.GetTH1("Evt_O7Asym"   ), O7 );
+            fillAsym( h1.GetTH1("Evt_O7Asym_Mu"), O7 );
         }
         // -- Electron channel
         if( isGoodElectronEvt )
         {
-            h1.GetTH1("Evt_isoEl_Pt")->Fill(isoEl.Pt);
-            h1.GetTH1("Evt_isoEl_Et")->Fill(isoEl.Et);
-            h1.GetTH1("Evt_isoEl_Eta")->Fill(isoEl.Eta);
-            h1.GetTH1("Evt_isoEl_Phi")->Fill(isoEl.Phi);
-            h1.GetTH1("Evt_isoEl_E")->Fill(isoEl.Energy);
+            double O2 = Obs2( isoEl.P3, hardJet.P3, b_jet.P3, bbar_jet.P3 );
+            double O7 = Obs7( az, b_jet.P3, bbar_jet.P3 );
 
-            double O2 = Obs2( isoEl, hardJet, bjet1, bjet2 );
-            h1.GetTH1("Evt_O2")->Fill(O2/Owrt_);
-            h1.GetTH1("Evt_O2_El")->Fill(O2/Owrt_);
-            if( O2 > 0 ){
-                h1.GetTH1("Evt_O2Asym")->Fill(0);
-                h1.GetTH1("Evt_O2Asym_El")->Fill(0);
-            }else{
-                h1.GetTH1("Evt_O2Asym")->Fill(-1);
-                h1.GetTH1("Evt_O2Asym_El")->Fill(-1);
-            }
-
-            double O7 = Obs7( az, bjet1, bjet2 );
-            h1.GetTH1("Evt_O7")->Fill(O7/Owrt_);
-            h1.GetTH1("Evt_O7_El")->Fill(O7/Owrt_);
-            if( O7 > 0 ){
-                h1.GetTH1("Evt_O7Asym")->Fill(0);
-                h1.GetTH1("Evt_O7Asym_El")->Fill(0);
-            }else{
-                h1.GetTH1("Evt_O7Asym")->Fill(-1);
-                h1.GetTH1("Evt_O7Asym_El")->Fill(-1);
-            }
-            h2.GetTH2("TH2_O2_vs_LepCharge")    ->Fill( isoEl.Charge, O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepCharge_El") ->Fill( isoEl.Charge, O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepPz")        ->Fill( isoEl.Pz,     O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepPz_El")     ->Fill( isoEl.Pz,     O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepPt")        ->Fill( isoEl.Pt,     O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepPt_El")     ->Fill( isoEl.Pt,     O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepEta")       ->Fill( isoEl.Eta,    O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepEta_El")    ->Fill( isoEl.Eta,    O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepPhi")       ->Fill( isoEl.Phi,    O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_LepPhi_El")    ->Fill( isoEl.Phi,    O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetPz")    ->Fill( hardJet.Pz,   O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetPz_El") ->Fill( hardJet.Pz,   O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetPt")    ->Fill( hardJet.Pt,   O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetPt_El") ->Fill( hardJet.Pt,   O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetEta")   ->Fill( hardJet.Eta,  O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetEta_El")->Fill( hardJet.Eta,  O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetPhi")   ->Fill( hardJet.Phi,  O2/Owrt_ );
-            h2.GetTH2("TH2_O2_vs_HardJetPhi_El")->Fill( hardJet.Phi,  O2/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepCharge")    ->Fill( isoEl.Charge, O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepCharge_El") ->Fill( isoEl.Charge, O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepPz")        ->Fill( isoEl.Pz,     O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepPz_El")     ->Fill( isoEl.Pz,     O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepPt")        ->Fill( isoEl.Pt,     O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepPt_El")     ->Fill( isoEl.Pt,     O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepEta")       ->Fill( isoEl.Eta,    O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepEta_El")    ->Fill( isoEl.Eta,    O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepPhi")       ->Fill( isoEl.Phi,    O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_LepPhi_El")    ->Fill( isoEl.Phi,    O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetPz")    ->Fill( hardJet.Pz,   O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetPz_El") ->Fill( hardJet.Pz,   O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetPt")    ->Fill( hardJet.Pt,   O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetPt_El") ->Fill( hardJet.Pt,   O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetEta")   ->Fill( hardJet.Eta,  O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetEta_El")->Fill( hardJet.Eta,  O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetPhi")   ->Fill( hardJet.Phi,  O7/Owrt_ );
-            h2.GetTH2("TH2_O7_vs_HardJetPhi_El")->Fill( hardJet.Phi,  O7/Owrt_ );
+            h1.GetTH1("Evt_isoEl_Pt" )->Fill( isoEl.Pt     );
+            h1.GetTH1("Evt_isoEl_Et" )->Fill( isoEl.Et     );
+            h1.GetTH1("Evt_isoEl_Eta")->Fill( isoEl.Eta    );
+            h1.GetTH1("Evt_isoEl_Phi")->Fill( isoEl.Phi    );
+            h1.GetTH1("Evt_isoEl_E"  )->Fill( isoEl.Energy );
+            h1.GetTH1("Evt_O2"       )->Fill( O2/Owrt_     );
+            h1.GetTH1("Evt_O2_El"    )->Fill( O2/Owrt_     );
+            h1.GetTH1("Evt_O7"       )->Fill( O7/Owrt_     );
+            h1.GetTH1("Evt_O7_El"    )->Fill( O7/Owrt_     );
+            fillAsym( h1.GetTH1("Evt_O2Asym"   ), O2 );
+            fillAsym( h1.GetTH1("Evt_O2Asym_El"), O2 );
+            fillAsym( h1.GetTH1("Evt_O7Asym"   ), O7 );
+            fillAsym( h1.GetTH1("Evt_O7Asym_El"), O7 );
         }
     }//// [END] entry loop 
 }
