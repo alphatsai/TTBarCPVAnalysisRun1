@@ -163,6 +163,29 @@ double SemiLeptanicAnalysis::Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 b
     double O2 = O2_1v.Dot( O2_2v );
     return O2;
 }
+double SemiLeptanicAnalysis::Obs3( TLorentzVector isoLep, TLorentzVector hardJet, TLorentzVector b, TLorentzVector bbar, int charge )
+{
+    if( abs(charge) != 1 ){ std::cout<<">> [ERROR] SemiLeptanicAnalysis::Obs3 input strange charge: "<<charge<<", it shall be 1 or -1"<<std::endl; return 0.; }
+
+    // In CM(b,b~), b and b~ will back-to-back, i.e vector(b)=-vector(b~)
+    TVector3 bbCM = -( b + bbar ).BoostVector();
+    b.Boost(bbCM); isoLep.Boost(bbCM); hardJet.Boost(bbCM);
+
+    TVector3 bV       = b.Vect(); 
+    TVector3 isoLepV  = isoLep.Vect();
+    TVector3 hardJetV = hardJet.Vect(); 
+
+    double O3 = double(charge)*(bV.Dot(isoLepV.Cross(hardJetV)));
+    return O3;
+}
+double SemiLeptanicAnalysis::Obs4( TVector3 isoLep, TVector3 hardJet, TVector3 b, TVector3 bbar, int charge )
+{
+    if( abs(charge) != 1 ){ std::cout<<">> [ERROR] SemiLeptanicAnalysis::Obs4 input strange charge: "<<charge<<", it shall be 1 or -1"<<std::endl; return 0.; }
+    TVector3 O4_1v = b - bbar;
+    TVector3 O4_2v = isoLep.Cross( hardJet );
+    double O4 = double(charge)*(O4_1v.Dot( O4_2v ));
+    return O4;
+}
 double SemiLeptanicAnalysis::Obs7( TVector3 beam, TVector3 b, TVector3 bbar )
 {
     double O7_1z = beam.Dot( b - bbar );
@@ -185,6 +208,18 @@ void SemiLeptanicAnalysis::beginJob()
     h1.addNewTH1( "Evt_O2Asym",        "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O2Asym_Mu",     "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O2Asym_El",     "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_O3",            "O3",                        "O_{3}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_O3_Mu",         "O3",                        "O_{3}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_O3_El",         "O3",                        "O_{3}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_O3Asym",        "A_{O3}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_O3Asym_Mu",     "A_{O3}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_O3Asym_El",     "A_{O3}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_O4",            "O4",                        "O_{4}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_O4_Mu",         "O4",                        "O_{4}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_O4_El",         "O4",                        "O_{4}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_O4Asym",        "A_{O4}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_O4Asym_Mu",     "A_{O4}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_O4Asym_El",     "A_{O4}",                    "",                   "Events", "",    "",  2,  -1,   1   );
 
     h1.addNewTH1( "Evt_isoMu_Pt",      "pT of isoMuon",             "p_{T}(#mu)",         "Yields", "GeV", "", 500,  0,   500 );
     h1.addNewTH1( "Evt_isoMu_Et",      "ET of isoMuon",             "E_{T}(#mu)",         "Yields", "GeV", "", 500,  0,   500 );
@@ -709,6 +744,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         if( isGoodMuonEvt )
         {
             double O2 = Obs2( isoMu.P3, hardJet.P3, b_jet.P3, bbar_jet.P3 );
+            double O3 = Obs3( isoMu.P4, hardJet.P4, b_jet.P4, bbar_jet.P4, isoMu.Charge );
+            double O4 = Obs4( isoMu.P3, hardJet.P3, b_jet.P3, bbar_jet.P3, isoMu.Charge );
             double O7 = Obs7( az, b_jet.P3, bbar_jet.P3 );
 
             h1.GetTH1("Evt_isoMu_Pt" )->Fill( isoMu.Pt     );
@@ -718,10 +755,18 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             h1.GetTH1("Evt_isoMu_E"  )->Fill( isoMu.Energy );
             h1.GetTH1("Evt_O2"       )->Fill( O2/Owrt_     );
             h1.GetTH1("Evt_O2_Mu"    )->Fill( O2/Owrt_     );
+            h1.GetTH1("Evt_O3"       )->Fill( O3/Owrt_     );
+            h1.GetTH1("Evt_O3_Mu"    )->Fill( O3/Owrt_     );
+            h1.GetTH1("Evt_O4"       )->Fill( O4/Owrt_     );
+            h1.GetTH1("Evt_O4_Mu"    )->Fill( O4/Owrt_     );
             h1.GetTH1("Evt_O7"       )->Fill( O7/Owrt_     );
             h1.GetTH1("Evt_O7_Mu"    )->Fill( O7/Owrt_     );
             fillAsym( h1.GetTH1("Evt_O2Asym"   ), O2 );
             fillAsym( h1.GetTH1("Evt_O2Asym_Mu"), O2 );
+            fillAsym( h1.GetTH1("Evt_O3Asym"   ), O3 );
+            fillAsym( h1.GetTH1("Evt_O3Asym_Mu"), O3 );
+            fillAsym( h1.GetTH1("Evt_O4Asym"   ), O4 );
+            fillAsym( h1.GetTH1("Evt_O4Asym_Mu"), O4 );
             fillAsym( h1.GetTH1("Evt_O7Asym"   ), O7 );
             fillAsym( h1.GetTH1("Evt_O7Asym_Mu"), O7 );
         }
@@ -729,6 +774,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         if( isGoodElectronEvt )
         {
             double O2 = Obs2( isoEl.P3, hardJet.P3, b_jet.P3, bbar_jet.P3 );
+            double O3 = Obs3( isoEl.P4, hardJet.P4, b_jet.P4, bbar_jet.P4, isoEl.Charge );
+            double O4 = Obs4( isoEl.P3, hardJet.P3, b_jet.P3, bbar_jet.P3, isoEl.Charge );
             double O7 = Obs7( az, b_jet.P3, bbar_jet.P3 );
 
             h1.GetTH1("Evt_isoEl_Pt" )->Fill( isoEl.Pt     );
@@ -738,10 +785,18 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             h1.GetTH1("Evt_isoEl_E"  )->Fill( isoEl.Energy );
             h1.GetTH1("Evt_O2"       )->Fill( O2/Owrt_     );
             h1.GetTH1("Evt_O2_El"    )->Fill( O2/Owrt_     );
+            h1.GetTH1("Evt_O3"       )->Fill( O3/Owrt_     );
+            h1.GetTH1("Evt_O3_El"    )->Fill( O3/Owrt_     );
+            h1.GetTH1("Evt_O4"       )->Fill( O4/Owrt_     );
+            h1.GetTH1("Evt_O4_El"    )->Fill( O4/Owrt_     );
             h1.GetTH1("Evt_O7"       )->Fill( O7/Owrt_     );
             h1.GetTH1("Evt_O7_El"    )->Fill( O7/Owrt_     );
             fillAsym( h1.GetTH1("Evt_O2Asym"   ), O2 );
             fillAsym( h1.GetTH1("Evt_O2Asym_El"), O2 );
+            fillAsym( h1.GetTH1("Evt_O3Asym"   ), O3 );
+            fillAsym( h1.GetTH1("Evt_O3Asym_El"), O3 );
+            fillAsym( h1.GetTH1("Evt_O4Asym"   ), O4 );
+            fillAsym( h1.GetTH1("Evt_O4Asym_El"), O4 );
             fillAsym( h1.GetTH1("Evt_O7Asym"   ), O7 );
             fillAsym( h1.GetTH1("Evt_O7Asym_El"), O7 );
         }

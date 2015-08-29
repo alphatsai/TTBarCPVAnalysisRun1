@@ -55,7 +55,9 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         float getChi2( Jet jet1, Jet jet2, Jet bjet, float M_top=172.5, float Wth_top=16.3, float M_W=82.9, float Wth_W=9.5 );
 
         double Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 b,   TVector3 bbar );
+        double Obs4( TVector3 isoLep, TVector3 hardJet, TVector3 b,   TVector3 bbar, int charge );
         double Obs7( TVector3 beam,   TVector3 b,       TVector3 bbar               );
+        double Obs3( TLorentzVector isoLep, TLorentzVector hardJet, TLorentzVector b, TLorentzVector bbar, int charge ); // need boost to bb~ CM
 
         // ----------member data ---------------------------
 
