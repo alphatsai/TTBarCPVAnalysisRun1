@@ -63,7 +63,8 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
     hs->GetXaxis()->SetLabelFont(42);
     hs->GetXaxis()->SetLabelSize(0.05);
     hs->GetXaxis()->SetTitleSize(0.06);
-    hs->GetXaxis()->SetTitleOffset(1.04);
+    //hs->GetXaxis()->SetTitleOffset(1.04);
+    hs->GetXaxis()->SetTitleOffset(0.98);
     hs->GetXaxis()->SetTitleFont(42);
     hs->GetYaxis()->SetLabelFont(42);
     hs->GetYaxis()->SetTitleSize(0.06);

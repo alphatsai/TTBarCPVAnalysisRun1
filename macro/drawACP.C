@@ -39,28 +39,33 @@ void drawACP( TFile* f,
     out<<caculateACPDetail( hObs_el, wrtError)<<endl;
     out.close();
 
-    TH1D* h = new TH1D(("all"+evtcat+"_"+obs).c_str(), "", allh, 0, allh);
+    TH1D* h1s = new TH1D(("all"+evtcat+"_"+obs).c_str(), "", allh, 0, allh);
 
-    h->GetXaxis()->SetBinLabel(1, (xtitle+"^{e+#mu}").c_str());
-    h->GetXaxis()->SetBinLabel(2, (xtitle+"^{#mu}").c_str()  );
-    h->GetXaxis()->SetBinLabel(3, (xtitle+"^{e}").c_str()    );
+    h1s->GetXaxis()->SetBinLabel(1, (xtitle+"^{e+#mu}").c_str());
+    h1s->GetXaxis()->SetBinLabel(2, (xtitle+"^{#mu}").c_str()  );
+    h1s->GetXaxis()->SetBinLabel(3, (xtitle+"^{e}").c_str()    );
 
-    printf("%s Combined channel:\n", obs.c_str());
-    h->Fill(0., caculateACP( hObs, murmur ));
-    if( wrtError ) h->SetBinError(1, caculateACPerrorWrt( hObs ));
-    else h->SetBinError(1, caculateACPerror( hObs ));
+    double eObs(0), eObsMu(0), eObsEl(0); 
+    printf("%s Mean Combined, Muon, Electron channel:\n", obs.c_str());
+        h1s->Fill( 0., caculateACP( hObs,    murmur ));
+        h1s->Fill( 1., caculateACP( hObs_mu, murmur ));
+        h1s->Fill( 2., caculateACP( hObs_el, murmur ));
 
-    printf("%s Muon channel:\n", obs.c_str());
-    h->Fill(1.,     caculateACP( hObs_mu, murmur ));
-    if( wrtError ) h->SetBinError(2, caculateACPerrorWrt( hObs_mu ));
-    else h->SetBinError(2, caculateACPerror( hObs_mu ));
+    printf("%s Error Combined, Muon, Electron channel:\n", obs.c_str());
+        eObs   = (wrtError)? caculateACPerrorWrt( hObs    ):caculateACPerror( hObs    );
+        eObsMu = (wrtError)? caculateACPerrorWrt( hObs_mu ):caculateACPerror( hObs_mu );
+        eObsEl = (wrtError)? caculateACPerrorWrt( hObs_el ):caculateACPerror( hObs_el );
 
-    printf("%s Electron channel:\n", obs.c_str());
-    h->Fill(2.,   caculateACP( hObs_el, murmur ));
-    if( wrtError ) h->SetBinError(3, caculateACPerrorWrt( hObs_el ));
-    else h->SetBinError(3, caculateACPerror( hObs_el ));
+    h1s->SetBinError( 1, eObs   );
+    h1s->SetBinError( 2, eObsMu );
+    h1s->SetBinError( 3, eObsEl );
 
-    TCanvas *c1 = new TCanvas(("CAcp_"+obs).c_str(), "c1", 41,111,859,637);
+    TH1D* h2s = (TH1D*)h1s->Clone("h_2sigma");
+    h2s->SetBinError( 1, 2*eObs   );
+    h2s->SetBinError( 2, 2*eObsMu );
+    h2s->SetBinError( 3, 2*eObsEl );
+
+    TCanvas *c1 = new TCanvas(("CAcp_"+evtcat+obs).c_str(), "c1", 41,111,859,637); c1->Clear();
     gStyle->SetOptStat(0);
     c1->Range(-0.4717744,-0.1330709,3.184476,0.1169291);
     c1->SetFillColor(0);
@@ -73,24 +78,28 @@ void drawACP( TFile* f,
     c1->SetFrameBorderMode(0);
     c1->SetFrameBorderMode(0);
 
-    TH1D* h0 = (TH1D*)h->Clone("Original");
-    h->SetMaximum(0.1*wrt);
-    h->SetMinimum(-0.1*wrt);
-    h->SetFillColor(kBlue-9);
-    h->GetXaxis()->SetLabelOffset(0.01);
-    h->GetXaxis()->SetLabelSize(0.07);
-    h->GetXaxis()->SetLabelFont(62);
-    h->GetXaxis()->SetTitleSize(0.035);
-    h->GetYaxis()->SetTitle(ytitle.c_str());
-    h->GetYaxis()->SetLabelOffset(0.01);
-    h->GetYaxis()->SetLabelSize(0.05);
-    h->GetYaxis()->SetTitleSize(0.06);
-    h->GetYaxis()->SetTitleOffset(1.05);
-    h->GetYaxis()->SetTitleFont(42);
-    h->GetZaxis()->SetLabelSize(0.035);
-    h->GetZaxis()->SetTitleSize(0.035);
-    h->Draw("E2");
+    h2s->SetMaximum(0.1*wrt);
+    h2s->SetMinimum(-0.1*wrt);
+    //h->SetFillColor(kBlue-9);
+    h2s->SetFillColor(kYellow);
+    h2s->GetXaxis()->SetLabelOffset(0.01);
+    h2s->GetXaxis()->SetLabelSize(0.07);
+    h2s->GetXaxis()->SetLabelFont(62);
+    h2s->GetXaxis()->SetTitleSize(0.035);
+    h2s->GetYaxis()->SetTitle(ytitle.c_str());
+    h2s->GetYaxis()->SetLabelOffset(0.01);
+    h2s->GetYaxis()->SetLabelSize(0.05);
+    h2s->GetYaxis()->SetTitleSize(0.06);
+    h2s->GetYaxis()->SetTitleOffset(1.05);
+    h2s->GetYaxis()->SetTitleFont(42);
+    h2s->GetZaxis()->SetLabelSize(0.035);
+    h2s->GetZaxis()->SetTitleSize(0.035);
+    h2s->Draw("E2");
 
+    h1s->SetFillColor(kGreen);
+    h1s->Draw("E2SAME");
+
+    TH1D* h0 = (TH1D*)h1s->Clone("Original");
     h0->SetMarkerStyle(21);
     h0->SetMarkerSize(2);
     h0->Draw("psame");
@@ -109,7 +118,8 @@ void drawACP( TFile* f,
     leg->SetLineWidth(0);
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
-    leg->AddEntry(h,"1#sigma stat. error","f");
+    leg->AddEntry(h1s,"1#sigma stat. error","f");
+    leg->AddEntry(h2s,"2#sigma stat. error","f");
     leg->Draw();
 
     TPaveText* t_title;
