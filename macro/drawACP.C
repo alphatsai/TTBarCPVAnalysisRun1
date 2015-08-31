@@ -1,5 +1,130 @@
 #include "caculate.C"
 #include <fstream>
+void drawACP( TFile* f,
+            bool wrtError=true,
+            std::string analysis="SemiLeptanic",
+            std::string evtcat="Evt",
+            std::string obs = "O2",
+            std::string output=".",
+            std::string ytitle="ACP",
+            std::string xtitle="O_{2}",
+            double wrt=1,
+            int legX=1
+            )
+{
+    bool murmur=true;
+    TH1D *hObs, *hObs_mu, *hObs_el;
+    if( analysis.compare("") != 0 )
+    { 
+        printf((analysis+"/"+evtcat+"_"+obs+"Asym").c_str());
+        hObs    = (TH1D*)f->Get((analysis+"/"+evtcat+"_"+obs+"Asym").c_str()); 
+        hObs_mu = (TH1D*)f->Get((analysis+"/"+evtcat+"_"+obs+"Asym_Mu").c_str()); 
+        hObs_el = (TH1D*)f->Get((analysis+"/"+evtcat+"_"+obs+"Asym_El").c_str()); 
+    }else{
+        printf((analysis+"/"+evtcat+"_"+obs+"Asym").c_str());
+        hObs    = (TH1D*)f->Get((evtcat+"_"+obs+"Asym").c_str()); 
+        hObs_mu = (TH1D*)f->Get((evtcat+"_"+obs+"Asym_Mu").c_str()); 
+        hObs_el = (TH1D*)f->Get((evtcat+"_"+obs+"Asym_El").c_str()); 
+    }
+
+    const int allh=3;
+
+    fstream out;
+    out.open((output+"/ACPCounting_"+evtcat+"_"+obs+".txt").c_str(),ios_base::out);
+    out<<obs<<": "<<endl;
+    out<<caculateACPDetail( hObs, wrtError )<<endl;
+    out<<obs<<" muon: "<<endl;
+    out<<caculateACPDetail( hObs_mu, wrtError )<<endl;
+    out<<obs<<" electron: "<<endl;
+    out<<caculateACPDetail( hObs_el, wrtError)<<endl;
+    out.close();
+
+    TH1D* h = new TH1D(("all"+evtcat+"_"+obs).c_str(), "", allh, 0, allh);
+
+    h->GetXaxis()->SetBinLabel(1, (xtitle+"^{e+#mu}").c_str());
+    h->GetXaxis()->SetBinLabel(2, (xtitle+"^{#mu}").c_str()  );
+    h->GetXaxis()->SetBinLabel(3, (xtitle+"^{e}").c_str()    );
+
+    printf("%s Combined channel:\n", obs.c_str());
+    h->Fill(0., caculateACP( hObs, murmur ));
+    if( wrtError ) h->SetBinError(1, caculateACPerrorWrt( hObs ));
+    else h->SetBinError(1, caculateACPerror( hObs ));
+
+    printf("%s Muon channel:\n", obs.c_str());
+    h->Fill(1.,     caculateACP( hObs_mu, murmur ));
+    if( wrtError ) h->SetBinError(2, caculateACPerrorWrt( hObs_mu ));
+    else h->SetBinError(2, caculateACPerror( hObs_mu ));
+
+    printf("%s Electron channel:\n", obs.c_str());
+    h->Fill(2.,   caculateACP( hObs_el, murmur ));
+    if( wrtError ) h->SetBinError(3, caculateACPerrorWrt( hObs_el ));
+    else h->SetBinError(3, caculateACPerror( hObs_el ));
+
+    TCanvas *c1 = new TCanvas(("CAcp_"+obs).c_str(), "c1", 41,111,859,637);
+    gStyle->SetOptStat(0);
+    c1->Range(-0.4717744,-0.1330709,3.184476,0.1169291);
+    c1->SetFillColor(0);
+    c1->SetBorderMode(0);
+    c1->SetBorderSize(2);
+    c1->SetLeftMargin(0.1290323);
+    c1->SetRightMargin(0.05045492);
+    c1->SetTopMargin(0.06771654);
+    c1->SetBottomMargin(0.1322835);
+    c1->SetFrameBorderMode(0);
+    c1->SetFrameBorderMode(0);
+
+    TH1D* h0 = (TH1D*)h->Clone("Original");
+    h->SetMaximum(0.1*wrt);
+    h->SetMinimum(-0.1*wrt);
+    h->SetFillColor(kBlue-9);
+    h->GetXaxis()->SetLabelOffset(0.01);
+    h->GetXaxis()->SetLabelSize(0.07);
+    h->GetXaxis()->SetLabelFont(62);
+    h->GetXaxis()->SetTitleSize(0.035);
+    h->GetYaxis()->SetTitle(ytitle.c_str());
+    h->GetYaxis()->SetLabelOffset(0.01);
+    h->GetYaxis()->SetLabelSize(0.05);
+    h->GetYaxis()->SetTitleSize(0.06);
+    h->GetYaxis()->SetTitleOffset(1.05);
+    h->GetYaxis()->SetTitleFont(42);
+    h->GetZaxis()->SetLabelSize(0.035);
+    h->GetZaxis()->SetTitleSize(0.035);
+    h->Draw("E2");
+
+    h0->SetMarkerStyle(21);
+    h0->SetMarkerSize(2);
+    h0->Draw("psame");
+    TLine* line = new TLine(0,0,allh,0);
+    line->SetLineColor(2);
+    line->SetLineWidth(3);
+    line->Draw();
+
+    TLegend *leg;
+    if( legX == 0 ) //Left 
+        leg = new TLegend(0.173516,0.6726768,0.4310502,0.8363384,NULL,"brNDC");
+    else //right
+        leg = new TLegend(0.7237386,0.7739403,0.9652605,0.8854003,NULL,"brNDC");
+    leg->SetBorderSize(0);
+    leg->SetLineStyle(0);
+    leg->SetLineWidth(0);
+    leg->SetFillColor(0);
+    leg->SetFillStyle(0);
+    leg->AddEntry(h,"1#sigma stat. error","f");
+    leg->Draw();
+
+    TPaveText* t_title;
+    t_title = new TPaveText(0.09842845,0.9387755,0.7278743,0.9843014,"brNDC");
+    t_title->AddText("CMS Simulation, L = 19.7/fb, #sqrt{s} = 8TeV");
+    t_title->SetTextColor(kBlack);
+    t_title->SetFillColor(kWhite);
+    t_title->SetFillStyle(0);
+    t_title->SetBorderSize(0);
+    t_title->SetTextAlign(12);
+    t_title->SetTextSize(0.04);
+    t_title->Draw();
+
+    c1->SaveAs((output+"/ACP_"+evtcat+"_"+obs+".pdf").c_str());
+}
 void drawACPLepJet( TFile* f, 
         bool wrtError=true,
         std::string evtcat="Evt",
