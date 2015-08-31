@@ -1,17 +1,22 @@
+#include "TPolyLine.h"
 // TFile should be from the results of mkTreeForPredictedNonZeroACPScan.C or mkTreeForPredictedNonZeroACPScanViaSudoExp.C
 void mkPlotForPrediction( TFile* fin, std::string outpath=".", std::string cat="MC", int iobs=0, int ich=0, bool printTitle=true, const int NPOINTS=13 )
 {
     std::string title1, title2; 
 
-    const int NOBS=2; // O2=0, O7=1
+    const int NOBS=4; // O2=0, O7=1
     const int OBS_O2=0;
-    const int OBS_O7=1;
+    const int OBS_O3=1;
+    const int OBS_O4=2;
+    const int OBS_O7=3;
     int iOBS;
          if( iobs == OBS_O2 ){ iOBS=OBS_O2; title1="O2"; }
+    else if( iobs == OBS_O3 ){ iOBS=OBS_O3; title1="O3"; }  
+    else if( iobs == OBS_O4 ){ iOBS=OBS_O4; title1="O4"; }  
     else if( iobs == OBS_O7 ){ iOBS=OBS_O7; title1="O7"; }  
     else{
         printf(">> [ERROR] Please give right observable index:\n");
-        printf("           O2:%d, O7:%d\n", OBS_O2, OBS_O7);
+        printf("           O2:%d, O3:%d, O4:%d, O7:%d\n", OBS_O2, OBS_O3, OBS_O4, OBS_O7);
         return;
     }
 
@@ -33,7 +38,7 @@ void mkPlotForPrediction( TFile* fin, std::string outpath=".", std::string cat="
     const int LOW=1;
 
     TTree* tin =(TTree*)fin->Get("tree");
-    if( NPOINTS != tin->GetEntries() ){ printf(">> [ERROR] NPOINTS should be %d, insted of %d\n", tin->GetEntries(), NPOINTS); return; }
+    if( NPOINTS != tin->GetEntries() ){ printf(">> [ERROR] NPOINTS should be %lld, insted of %d\n", tin->GetEntries(), NPOINTS); return; }
 
     float assumedACPMean;
     float assumedACPUncs[NOBS][NCH];
@@ -68,7 +73,7 @@ void mkPlotForPrediction( TFile* fin, std::string outpath=".", std::string cat="
         printf("- 1s %.2f, 2s %.2f\n", unc_1s[idx][LOW], unc_2s[idx][LOW]);
     }
 
-    TCanvas *c1 = new TCanvas("c1","c1",800,600);
+    TCanvas *c1 = new TCanvas(("c1"+cat+title2+title1).c_str(),"",800,600); c1->Clear();
     TH2F *frame = new TH2F( ("frame"+cat+title1+title2).c_str(), "frame", NPOINTS, assumedACP[0], assumedACP[NPOINTS-1], NPOINTS, assumedACP[0], assumedACP[NPOINTS-1]);
 
     frame->SetStats(kFALSE);
@@ -115,9 +120,10 @@ void mkPlotForPrediction( TFile* fin, std::string outpath=".", std::string cat="
     pl_obs->Draw("*lsame");
 
     c1->SaveAs((outpath+"/PredictedACPScan_"+cat+"_"+title1+"_"+title2+".pdf").c_str());
+    delete tin;
 }
 
-void mkPull( TFile* fin, std::string outpath=".", std::string cat="SudoExp", int iobs=0, int ich=0, bool printTitle=true )
+void mkPull( TFile* fin, std::string outpath=".", std::string cat="SudoExp", int iobs=0, int ich=0 )
 {
     std::string title1, title2; 
 
@@ -125,11 +131,15 @@ void mkPull( TFile* fin, std::string outpath=".", std::string cat="SudoExp", int
     float  assumedACP[NENTRY]  ={  -30,   -25,   -20,   -15,   -10,   -5,   0,    5,    10,    15,    20,    25,    30 };
     string assumedACP_s[NENTRY]={ "m30", "m25", "m20", "m15", "m10", "m5", "0", "p5", "p10", "p15", "p20", "p25", "p30"};
  
-    const int NOBS=2; // O2=0, O7=1
+    const int NOBS=4; // O2=0, O7=1
     const int OBS_O2=0;
-    const int OBS_O7=1;
+    const int OBS_O3=1;
+    const int OBS_O4=2;
+    const int OBS_O7=3;
     int iOBS;
          if( iobs == OBS_O2 ){ iOBS=OBS_O2; title1="O2"; }
+    else if( iobs == OBS_O3 ){ iOBS=OBS_O3; title1="O3"; }  
+    else if( iobs == OBS_O4 ){ iOBS=OBS_O4; title1="O4"; }  
     else if( iobs == OBS_O7 ){ iOBS=OBS_O7; title1="O7"; }  
     else{
         printf(">> [ERROR] Please give right observable index:\n");
@@ -147,15 +157,15 @@ void mkPull( TFile* fin, std::string outpath=".", std::string cat="SudoExp", int
     else if( ich == CH_Combined ){ iCH=CH_Combined; title2=""; }  
     else{
         printf(">> [ERROR] Please give right channel index:\n");
-        printf("           Electron:%d, Muon:%d, Combined:%d\n", CH_Electron, CH_Muon, CH_Combined);
+        printf("           O2:%d, O3:%d, O4:%d, O7:%d\n", OBS_O2, OBS_O3, OBS_O4, OBS_O7);
         return;
     }
     
     gStyle->SetOptStat(0);
     gStyle->SetOptFit(101);
     gStyle->SetFitFormat("3.3g");
-    TCanvas *c1 = new TCanvas("c1pull","c1",800,600);
-    TCanvas *c2 = new TCanvas("c1all","c1", 1100,800);
+    TCanvas *c1 = new TCanvas(("c1pull"+cat+title2+title1).c_str(),"c1",800,600);  c1->Clear();
+    TCanvas *c2 = new TCanvas(("c1all"+cat+title2+title1).c_str(),"c1", 1100,800); c2->Clear();
     c2->Divide(5,3);
     TH1D* h[NENTRY];
     for( int i=0; i<NENTRY; i++)

@@ -26,22 +26,24 @@
 #include <cmath>
 
 using namespace std;
-const std::string fin_s  ="Final_histograms_SemiLeptanic.root";
-const std::string  out_s ="./";
+const std::string fin_s  ="../results/31Aug_LepJet_Chi2Cut/Final_histograms_SemiLeptanic.root";
+const std::string  out_s ="../results/31Aug_LepJet_Chi2Cut/";
 const std::string fout_s = out_s + "Final_PredictionTree.root";
 const std::string tout_s ="tree";
 
 const int NEXP=1000;
 const int NENTRY=13;
-const int NOBS=2; // O2=0, O7=1
+const int NOBS=4; // O2=0, O7=1
 const int NCH=3;  // Combined=2, Electron=0, Muon=1
 const int CH_Electron=0;
 const int CH_Muon=1;
 const int CH_Combined=2;
 const int OBS_O2=0;
-const int OBS_O7=1;
+const int OBS_O3=1;
+const int OBS_O4=2;
+const int OBS_O7=3;
 
-const std::string obs_s[NOBS] = {"O2", "O7"};
+const std::string obs_s[NOBS] = {"O2", "O3", "O4", "O7"};
 const std::string  ch_s[NCH]  = {"_El", "_Mu", "" };
 
 float getValue( float per, float evnts, bool isPos);
@@ -70,6 +72,12 @@ void mkTreeForPredictedNonZeroACPScan()
     h_SigAsym[OBS_O2][CH_Electron] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O2Asym_El");
     h_SigAsym[OBS_O2][CH_Muon]     = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O2Asym_Mu");
     h_SigAsym[OBS_O2][CH_Combined] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O2Asym"   );
+    h_SigAsym[OBS_O3][CH_Electron] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O3Asym_El");
+    h_SigAsym[OBS_O3][CH_Muon]     = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O3Asym_Mu");
+    h_SigAsym[OBS_O3][CH_Combined] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O3Asym"   );
+    h_SigAsym[OBS_O4][CH_Electron] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O4Asym_El");
+    h_SigAsym[OBS_O4][CH_Muon]     = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O4Asym_Mu");
+    h_SigAsym[OBS_O4][CH_Combined] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O4Asym"   );
     h_SigAsym[OBS_O7][CH_Electron] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O7Asym_El");
     h_SigAsym[OBS_O7][CH_Muon]     = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O7Asym_Mu");
     h_SigAsym[OBS_O7][CH_Combined] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O7Asym"   );
@@ -77,6 +85,12 @@ void mkTreeForPredictedNonZeroACPScan()
     h_bkgAsym[OBS_O2][CH_Electron] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O2Asym_El");
     h_bkgAsym[OBS_O2][CH_Muon]     = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O2Asym_Mu");
     h_bkgAsym[OBS_O2][CH_Combined] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O2Asym"   );
+    h_bkgAsym[OBS_O3][CH_Electron] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O3Asym_El");
+    h_bkgAsym[OBS_O3][CH_Muon]     = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O3Asym_Mu");
+    h_bkgAsym[OBS_O3][CH_Combined] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O3Asym"   );
+    h_bkgAsym[OBS_O4][CH_Electron] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O4Asym_El");
+    h_bkgAsym[OBS_O4][CH_Muon]     = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O4Asym_Mu");
+    h_bkgAsym[OBS_O4][CH_Combined] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O4Asym"   );
     h_bkgAsym[OBS_O7][CH_Electron] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O7Asym_El");
     h_bkgAsym[OBS_O7][CH_Muon]     = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O7Asym_Mu");
     h_bkgAsym[OBS_O7][CH_Combined] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O7Asym"   );
@@ -125,25 +139,25 @@ void mkTreeForPredictedNonZeroACPScan()
     float SudoSig_acpUncs[NOBS][NCH]; 
 
     tout->Branch("assumedACPMean",               &assumedACPMean,                     "assumedACPMean/F"                    );
-    tout->Branch("assumedACPUncs",               &assumedACPUncs[0][0],               "assumedACPUncs[2][3]/F"              );
-    tout->Branch("nSigP",                        &nSigP[0][0],                        "nSigP[2][3]/F"                       );
-    tout->Branch("eSigP",                        &eSigP[0][0],                        "eSigP[2][3]/F"                       );
-    tout->Branch("nSigM",                        &nSigM[0][0],                        "nSigM[2][3]/F"                       );
-    tout->Branch("eSigM",                        &eSigM[0][0],                        "eSigM[2][3]/F"                       );
-    tout->Branch("nBkgP",                        &nBkgP[0][0],                        "nBkgP[2][3]/F"                       );
-    tout->Branch("eBkgP",                        &eBkgP[0][0],                        "eBkgP[2][3]/F"                       );
-    tout->Branch("nBkgM",                        &nBkgM[0][0],                        "nBkgM[2][3]/F"                       );
-    tout->Branch("eBkgM",                        &eBkgM[0][0],                        "eBkgM[2][3]/F"                       );
-    tout->Branch("MC_nEventsPredictedObsP",      &MC_nEventsPredictedObsP[0][0],      "MC_nEventsPredictedObsP[2][3]/F"     );
-    tout->Branch("MC_nEventsPredictedObsM",      &MC_nEventsPredictedObsM[0][0],      "MC_nEventsPredictedObsM[2][3]/F"     );
-    tout->Branch("MC_eEventsPredictedObsP",      &MC_eEventsPredictedObsP[0][0],      "MC_eEventsPredictedObsP[2][3]/F"     );
-    tout->Branch("MC_eEventsPredictedObsM",      &MC_eEventsPredictedObsM[0][0],      "MC_eEventsPredictedObsM[2][3]/F"     );
-    tout->Branch("MC_acpMean",                   &MC_acpMean[0][0],                   "MC_acpMean[2][3]/F"                  );
-    tout->Branch("MC_acpUncs",                   &MC_acpUncs[0][0],                   "MC_acpUncs[2][3]/F"                  );
-    tout->Branch("SudoExp_acpMean",              &SudoExp_acpMean[0][0],              "SudoExp_acpMean[2][3]/F"             );
-    tout->Branch("SudoExp_acpUncs",              &SudoExp_acpUncs[0][0],              "SudoExp_acpUncs[2][3]/F"             );
-    tout->Branch("SudoSig_acpMean",              &SudoSig_acpMean[0][0],              "SudoSig_acpMean[2][3]/F"             );
-    tout->Branch("SudoSig_acpUncs",              &SudoSig_acpUncs[0][0],              "SudoSig_acpUncs[2][3]/F"             );
+    tout->Branch("assumedACPUncs",               &assumedACPUncs[0][0],               "assumedACPUncs[4][3]/F"              );
+    tout->Branch("nSigP",                        &nSigP[0][0],                        "nSigP[4][3]/F"                       );
+    tout->Branch("eSigP",                        &eSigP[0][0],                        "eSigP[4][3]/F"                       );
+    tout->Branch("nSigM",                        &nSigM[0][0],                        "nSigM[4][3]/F"                       );
+    tout->Branch("eSigM",                        &eSigM[0][0],                        "eSigM[4][3]/F"                       );
+    tout->Branch("nBkgP",                        &nBkgP[0][0],                        "nBkgP[4][3]/F"                       );
+    tout->Branch("eBkgP",                        &eBkgP[0][0],                        "eBkgP[4][3]/F"                       );
+    tout->Branch("nBkgM",                        &nBkgM[0][0],                        "nBkgM[4][3]/F"                       );
+    tout->Branch("eBkgM",                        &eBkgM[0][0],                        "eBkgM[4][3]/F"                       );
+    tout->Branch("MC_nEventsPredictedObsP",      &MC_nEventsPredictedObsP[0][0],      "MC_nEventsPredictedObsP[4][3]/F"     );
+    tout->Branch("MC_nEventsPredictedObsM",      &MC_nEventsPredictedObsM[0][0],      "MC_nEventsPredictedObsM[4][3]/F"     );
+    tout->Branch("MC_eEventsPredictedObsP",      &MC_eEventsPredictedObsP[0][0],      "MC_eEventsPredictedObsP[4][3]/F"     );
+    tout->Branch("MC_eEventsPredictedObsM",      &MC_eEventsPredictedObsM[0][0],      "MC_eEventsPredictedObsM[4][3]/F"     );
+    tout->Branch("MC_acpMean",                   &MC_acpMean[0][0],                   "MC_acpMean[4][3]/F"                  );
+    tout->Branch("MC_acpUncs",                   &MC_acpUncs[0][0],                   "MC_acpUncs[4][3]/F"                  );
+    tout->Branch("SudoExp_acpMean",              &SudoExp_acpMean[0][0],              "SudoExp_acpMean[4][3]/F"             );
+    tout->Branch("SudoExp_acpUncs",              &SudoExp_acpUncs[0][0],              "SudoExp_acpUncs[4][3]/F"             );
+    tout->Branch("SudoSig_acpMean",              &SudoSig_acpMean[0][0],              "SudoSig_acpMean[4][3]/F"             );
+    tout->Branch("SudoSig_acpUncs",              &SudoSig_acpUncs[0][0],              "SudoSig_acpUncs[4][3]/F"             );
 
     printf("=============================================================\n");
     printf("Total MC Combined %6.2f, Electron %6.2f, Muon %6.2f\n", nMC[CH_Combined], nMC[CH_Electron], nMC[CH_Muon]);
@@ -164,7 +178,7 @@ void mkTreeForPredictedNonZeroACPScan()
                 h_sudoSigACPmean[entry][iobs][ich]->Sumw2();
                 h_sudoSigACPuncs[entry][iobs][ich]->Sumw2();
 
-                h_template[entry][iobs][ich] = new TH1D(("MC_"+assumedACP_s[entry]+"ACP_"+obs_s[iobs]+"Asym"+ch_s[ich]).c_str(), "", 2, 0, 2);
+                h_template[entry][iobs][ich] = new TH1D(("MC_"+assumedACP_s[entry]+"ACP_"+obs_s[iobs]+"Asym"+ch_s[ich]).c_str(), "", 2, -1, 1);
                 h_template[entry][iobs][ich] ->Sumw2();
 
                 // Get signal MC or give assumed signal MC (non-0 acp)
@@ -215,7 +229,7 @@ void mkTreeForPredictedNonZeroACPScan()
                     float eEvtsSudoExp_P, eEvtsSudoSig_P;
 
                     // Do toy MC
-                    TH1D *h_sudoExp = new TH1D("sudoExp_Asym", "", 2, 0, 2); 
+                    TH1D *h_sudoExp = new TH1D("sudoExp_Asym", "", 2, -1, 1); 
                     h_sudoExp->Sumw2();
                     h_sudoExp->FillRandom( h_template[entry][iobs][ich], int(nMC[ich]));
                     nEvtsSudoExp_M = h_sudoExp->GetBinContent(1);
@@ -264,9 +278,15 @@ void mkTreeForPredictedNonZeroACPScan()
         printf("=============================================================\n");
         printf("Assumed ACP %.0f%s\n", assumedACPMean*100, "%");
         printf("O2 Uncs Combined %6.2f, Electron %6.2f, Muon %6.2f\n", assumedACPUncs[OBS_O2][CH_Combined]*100, assumedACPUncs[OBS_O2][CH_Electron]*100, assumedACPUncs[OBS_O2][CH_Muon]*100);
+        printf("O3 Uncs Combined %6.2f, Electron %6.2f, Muon %6.2f\n", assumedACPUncs[OBS_O3][CH_Combined]*100, assumedACPUncs[OBS_O3][CH_Electron]*100, assumedACPUncs[OBS_O3][CH_Muon]*100);
+        printf("O4 Uncs Combined %6.2f, Electron %6.2f, Muon %6.2f\n", assumedACPUncs[OBS_O4][CH_Combined]*100, assumedACPUncs[OBS_O4][CH_Electron]*100, assumedACPUncs[OBS_O4][CH_Muon]*100);
         printf("O7 Uncs Combined %6.2f, Electron %6.2f, Muon %6.2f\n", assumedACPUncs[OBS_O7][CH_Combined]*100, assumedACPUncs[OBS_O7][CH_Electron]*100, assumedACPUncs[OBS_O7][CH_Muon]*100);
         printf("O2+ Evt Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nSigP[OBS_O2][CH_Combined], nSigP[OBS_O2][CH_Electron], nSigP[OBS_O2][CH_Muon]);
         printf("O2- Evt Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nSigM[OBS_O2][CH_Combined], nSigM[OBS_O2][CH_Electron], nSigM[OBS_O2][CH_Muon]);
+        printf("O3+ Evt Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nSigP[OBS_O3][CH_Combined], nSigP[OBS_O3][CH_Electron], nSigP[OBS_O3][CH_Muon]);
+        printf("O3- Evt Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nSigM[OBS_O3][CH_Combined], nSigM[OBS_O3][CH_Electron], nSigM[OBS_O3][CH_Muon]);
+        printf("O4+ Evt Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nSigP[OBS_O4][CH_Combined], nSigP[OBS_O4][CH_Electron], nSigP[OBS_O4][CH_Muon]);
+        printf("O4- Evt Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nSigM[OBS_O4][CH_Combined], nSigM[OBS_O4][CH_Electron], nSigM[OBS_O4][CH_Muon]);
         printf("O7+ Evt Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nSigP[OBS_O7][CH_Combined], nSigP[OBS_O7][CH_Electron], nSigP[OBS_O7][CH_Muon]);
         printf("O7- Evt Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nSigM[OBS_O7][CH_Combined], nSigM[OBS_O7][CH_Electron], nSigM[OBS_O7][CH_Muon]);
         printf("-------------------------------------------------------------\n");
@@ -274,6 +294,14 @@ void mkTreeForPredictedNonZeroACPScan()
         printf("O2+ Unc Combined %6.0f, Electron %6.0f, Muon %6.0f\n", eBkgP[OBS_O2][CH_Combined], eBkgP[OBS_O2][CH_Electron], eBkgP[OBS_O2][CH_Muon]);
         printf("O2- Bkg Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nBkgM[OBS_O2][CH_Combined], nBkgM[OBS_O2][CH_Electron], nBkgM[OBS_O2][CH_Muon]);
         printf("O2- Unc Combined %6.0f, Electron %6.0f, Muon %6.0f\n", eBkgM[OBS_O2][CH_Combined], eBkgM[OBS_O2][CH_Electron], eBkgM[OBS_O2][CH_Muon]);
+        printf("O3+ Bkg Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nBkgP[OBS_O3][CH_Combined], nBkgP[OBS_O3][CH_Electron], nBkgP[OBS_O3][CH_Muon]);
+        printf("O3+ Unc Combined %6.0f, Electron %6.0f, Muon %6.0f\n", eBkgP[OBS_O3][CH_Combined], eBkgP[OBS_O3][CH_Electron], eBkgP[OBS_O3][CH_Muon]);
+        printf("O3- Bkg Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nBkgM[OBS_O3][CH_Combined], nBkgM[OBS_O3][CH_Electron], nBkgM[OBS_O3][CH_Muon]);
+        printf("O3- Unc Combined %6.0f, Electron %6.0f, Muon %6.0f\n", eBkgM[OBS_O3][CH_Combined], eBkgM[OBS_O3][CH_Electron], eBkgM[OBS_O3][CH_Muon]);
+        printf("O4+ Bkg Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nBkgP[OBS_O4][CH_Combined], nBkgP[OBS_O4][CH_Electron], nBkgP[OBS_O4][CH_Muon]);
+        printf("O4+ Unc Combined %6.0f, Electron %6.0f, Muon %6.0f\n", eBkgP[OBS_O4][CH_Combined], eBkgP[OBS_O4][CH_Electron], eBkgP[OBS_O4][CH_Muon]);
+        printf("O4- Bkg Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nBkgM[OBS_O4][CH_Combined], nBkgM[OBS_O4][CH_Electron], nBkgM[OBS_O4][CH_Muon]);
+        printf("O4- Unc Combined %6.0f, Electron %6.0f, Muon %6.0f\n", eBkgM[OBS_O4][CH_Combined], eBkgM[OBS_O4][CH_Electron], eBkgM[OBS_O4][CH_Muon]);
         printf("O7+ Bkg Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nBkgP[OBS_O7][CH_Combined], nBkgP[OBS_O7][CH_Electron], nBkgP[OBS_O7][CH_Muon]);
         printf("O7+ Unc Combined %6.0f, Electron %6.0f, Muon %6.0f\n", eBkgP[OBS_O7][CH_Combined], eBkgP[OBS_O7][CH_Electron], eBkgP[OBS_O7][CH_Muon]);
         printf("O7- Bkg Combined %6.0f, Electron %6.0f, Muon %6.0f\n", nBkgM[OBS_O7][CH_Combined], nBkgM[OBS_O7][CH_Electron], nBkgM[OBS_O7][CH_Muon]);
@@ -283,6 +311,14 @@ void mkTreeForPredictedNonZeroACPScan()
         printf("O2+ Unc Combined %6.0f, Electron %6.0f, Muon %6.0f\n", MC_eEventsPredictedObsP[OBS_O2][CH_Combined], MC_eEventsPredictedObsP[OBS_O2][CH_Electron], MC_eEventsPredictedObsP[OBS_O2][CH_Muon]);
         printf("O2- All Combined %6.0f, Electron %6.0f, Muon %6.0f\n", MC_nEventsPredictedObsM[OBS_O2][CH_Combined], MC_nEventsPredictedObsM[OBS_O2][CH_Electron], MC_nEventsPredictedObsM[OBS_O2][CH_Muon]);
         printf("O2- Unc Combined %6.0f, Electron %6.0f, Muon %6.0f\n", MC_eEventsPredictedObsM[OBS_O2][CH_Combined], MC_eEventsPredictedObsM[OBS_O2][CH_Electron], MC_eEventsPredictedObsM[OBS_O2][CH_Muon]);
+        printf("O3+ All Combined %6.0f, Electron %6.0f, Muon %6.0f\n", MC_nEventsPredictedObsP[OBS_O3][CH_Combined], MC_nEventsPredictedObsP[OBS_O3][CH_Electron], MC_nEventsPredictedObsP[OBS_O3][CH_Muon]);
+        printf("O3+ Unc Combined %6.0f, Electron %6.0f, Muon %6.0f\n", MC_eEventsPredictedObsP[OBS_O3][CH_Combined], MC_eEventsPredictedObsP[OBS_O3][CH_Electron], MC_eEventsPredictedObsP[OBS_O3][CH_Muon]);
+        printf("O3- All Combined %6.0f, Electron %6.0f, Muon %6.0f\n", MC_nEventsPredictedObsM[OBS_O3][CH_Combined], MC_nEventsPredictedObsM[OBS_O3][CH_Electron], MC_nEventsPredictedObsM[OBS_O3][CH_Muon]);
+        printf("O3- Unc Combined %6.0f, Electron %6.0f, Muon %6.0f\n", MC_eEventsPredictedObsM[OBS_O3][CH_Combined], MC_eEventsPredictedObsM[OBS_O3][CH_Electron], MC_eEventsPredictedObsM[OBS_O3][CH_Muon]);
+        printf("O4+ All Combined %6.0f, Electron %6.0f, Muon %6.0f\n", MC_nEventsPredictedObsP[OBS_O4][CH_Combined], MC_nEventsPredictedObsP[OBS_O4][CH_Electron], MC_nEventsPredictedObsP[OBS_O4][CH_Muon]);
+        printf("O4+ Unc Combined %6.0f, Electron %6.0f, Muon %6.0f\n", MC_eEventsPredictedObsP[OBS_O4][CH_Combined], MC_eEventsPredictedObsP[OBS_O4][CH_Electron], MC_eEventsPredictedObsP[OBS_O4][CH_Muon]);
+        printf("O4- All Combined %6.0f, Electron %6.0f, Muon %6.0f\n", MC_nEventsPredictedObsM[OBS_O4][CH_Combined], MC_nEventsPredictedObsM[OBS_O4][CH_Electron], MC_nEventsPredictedObsM[OBS_O4][CH_Muon]);
+        printf("O4- Unc Combined %6.0f, Electron %6.0f, Muon %6.0f\n", MC_eEventsPredictedObsM[OBS_O4][CH_Combined], MC_eEventsPredictedObsM[OBS_O4][CH_Electron], MC_eEventsPredictedObsM[OBS_O4][CH_Muon]);
         printf("O7+ All Combined %6.0f, Electron %6.0f, Muon %6.0f\n", MC_nEventsPredictedObsP[OBS_O7][CH_Combined], MC_nEventsPredictedObsP[OBS_O7][CH_Electron], MC_nEventsPredictedObsP[OBS_O7][CH_Muon]);
         printf("O7+ Unc Combined %6.0f, Electron %6.0f, Muon %6.0f\n", MC_eEventsPredictedObsP[OBS_O7][CH_Combined], MC_eEventsPredictedObsP[OBS_O7][CH_Electron], MC_eEventsPredictedObsP[OBS_O7][CH_Muon]);
         printf("O7- All Combined %6.0f, Electron %6.0f, Muon %6.0f\n", MC_nEventsPredictedObsM[OBS_O7][CH_Combined], MC_nEventsPredictedObsM[OBS_O7][CH_Electron], MC_nEventsPredictedObsM[OBS_O7][CH_Muon]);
@@ -290,6 +326,10 @@ void mkTreeForPredictedNonZeroACPScan()
         printf("-------------------------------------------------------------\n");
         printf("O2 Mean Combined %6.2f, Electron %6.2f, Muon %6.2f\n", MC_acpMean[OBS_O2][CH_Combined]*100, MC_acpMean[OBS_O2][CH_Electron]*100, MC_acpMean[OBS_O2][CH_Muon]*100);
         printf("O2 Uncs Combined %6.2f, Electron %6.2f, Muon %6.2f\n", MC_acpUncs[OBS_O2][CH_Combined]*100, MC_acpUncs[OBS_O2][CH_Electron]*100, MC_acpUncs[OBS_O2][CH_Muon]*100);
+        printf("O3 Mean Combined %6.2f, Electron %6.2f, Muon %6.2f\n", MC_acpMean[OBS_O3][CH_Combined]*100, MC_acpMean[OBS_O3][CH_Electron]*100, MC_acpMean[OBS_O3][CH_Muon]*100);
+        printf("O3 Uncs Combined %6.2f, Electron %6.2f, Muon %6.2f\n", MC_acpUncs[OBS_O3][CH_Combined]*100, MC_acpUncs[OBS_O3][CH_Electron]*100, MC_acpUncs[OBS_O3][CH_Muon]*100);
+        printf("O4 Mean Combined %6.2f, Electron %6.2f, Muon %6.2f\n", MC_acpMean[OBS_O4][CH_Combined]*100, MC_acpMean[OBS_O4][CH_Electron]*100, MC_acpMean[OBS_O4][CH_Muon]*100);
+        printf("O4 Uncs Combined %6.2f, Electron %6.2f, Muon %6.2f\n", MC_acpUncs[OBS_O4][CH_Combined]*100, MC_acpUncs[OBS_O4][CH_Electron]*100, MC_acpUncs[OBS_O4][CH_Muon]*100);
         printf("O7 Mean Combined %6.2f, Electron %6.2f, Muon %6.2f\n", MC_acpMean[OBS_O7][CH_Combined]*100, MC_acpMean[OBS_O7][CH_Electron]*100, MC_acpMean[OBS_O7][CH_Muon]*100);
         printf("O7 Uncs Combined %6.2f, Electron %6.2f, Muon %6.2f\n", MC_acpUncs[OBS_O7][CH_Combined]*100, MC_acpUncs[OBS_O7][CH_Electron]*100, MC_acpUncs[OBS_O7][CH_Muon]*100);
         printf("\n");
