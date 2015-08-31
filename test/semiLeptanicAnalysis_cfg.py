@@ -30,6 +30,11 @@ options.register('dRIsoLeptonFromJets', 0.5,
     VarParsing.varType.float,
     "isolate lepton with deltaR( lepton, jet )"
     )
+options.register('MaxChi2', 90,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.float,
+    "Event selection for hadronic top chi2"
+    )
 options.register('NJets', 4,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.int,
@@ -98,6 +103,7 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
     SelPars_TightMuon     = defaultMounSelectionParameters.clone(), 
     SelPars_TightElectron = defaultElectronSelectionParameters.clone(),
     dR_IsoLeptonFromJets  = cms.double(options.dRIsoLeptonFromJets),
+    MaxChi2               = cms.double(options.MaxChi2),
     Owrt                  = cms.double(Oweight), 
     NJets                 = cms.int32(options.NJets),
     Debug                 = cms.bool(options.Debug),

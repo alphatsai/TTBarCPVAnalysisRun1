@@ -42,9 +42,10 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         virtual void analyze(const edm::Event&, const edm::EventSetup&);
         virtual void endJob();
 
-        std::string int2str( int i=3 );
+        template<class valuetype>
+        std::string num2str( valuetype i );
         template<class TH1>
-            void setCutFlow( TH1* h );	
+            void setCutFlow( TH1* h );
         template<class TH1>
             void fillAsym( TH1* h, double value );
         template<class TH1>
@@ -78,6 +79,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         edm::ParameterSet selPars_TightMuon_;
         edm::ParameterSet selPars_TightElectron_;
         const double dR_IsoLeptonFromJets_;
+        const double maxChi2_;
         const double Owrt_;
         const unsigned int NJets_;
         bool  Debug_;
