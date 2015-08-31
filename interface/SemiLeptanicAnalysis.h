@@ -90,6 +90,11 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         int RunNo_;
         int isMuonEvt_;
         int isEleEvt_;
+        double O2_;
+        double O3_;
+        double O4_;
+        double O7_;
+        double WrtObs_;
 
         edm::Service<TFileService> fs;
         TChain* chain_;

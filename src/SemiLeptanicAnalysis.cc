@@ -65,7 +65,7 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
     selPars_LooseLepton_(   iConfig.getParameter<edm::ParameterSet>("SelPars_LooseLepton")),
     selPars_TightMuon_(     iConfig.getParameter<edm::ParameterSet>("SelPars_TightMuon")),
     selPars_TightElectron_( iConfig.getParameter<edm::ParameterSet>("SelPars_TightElectron")),
-    dR_IsoLeptonFromJets_( iConfig.getParameter<double>("dR_IsoLeptonFromJets")),
+    dR_IsoLeptonFromJets_(  iConfig.getParameter<double>("dR_IsoLeptonFromJets")),
     Owrt_(                  iConfig.getParameter<double>("Owrt")),
     NJets_(                 iConfig.getParameter<int>("NJets")),
     Debug_(                 iConfig.getParameter<bool>("Debug")),
@@ -318,6 +318,11 @@ void SemiLeptanicAnalysis::beginJob()
         newtree_->Branch("EvtInfo.BxNo",   &BxNo_,   "EvtInfo.BxNo/I"   );
         newtree_->Branch("EvtInfo.LumiNo", &LumiNo_, "EvtInfo.LumiNo/I" );
     }
+    newtree_->Branch("EvtInfo.O2",        &O2_,        "EvtInfo.O2/D"        );
+    newtree_->Branch("EvtInfo.O3",        &O3_,        "EvtInfo.O3/D"        );
+    newtree_->Branch("EvtInfo.O4",        &O4_,        "EvtInfo.O4/D"        );
+    newtree_->Branch("EvtInfo.O7",        &O7_,        "EvtInfo.O7/D"        );
+    newtree_->Branch("EvtInfo.WrtObs",    &WrtObs_,    "EvtInfo.WrtObs/D"    );
     newtree_->Branch("EvtInfo.isMuonEvt", &isMuonEvt_, "EvtInfo.isMuonEvt/I" );
     newtree_->Branch("EvtInfo.isEleEvt",  &isEleEvt_,  "EvtInfo.isEleEvt/I"  );
 
@@ -769,6 +774,12 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             fillAsym( h1.GetTH1("Evt_O4Asym_Mu"), O4 );
             fillAsym( h1.GetTH1("Evt_O7Asym"   ), O7 );
             fillAsym( h1.GetTH1("Evt_O7Asym_Mu"), O7 );
+            
+            O2_ = O2;
+            O3_ = O3;
+            O4_ = O4;
+            O7_ = O7;
+            WrtObs_ = Owrt_;
         }
         // -- Electron channel
         if( isGoodElectronEvt )
@@ -799,6 +810,12 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             fillAsym( h1.GetTH1("Evt_O4Asym_El"), O4 );
             fillAsym( h1.GetTH1("Evt_O7Asym"   ), O7 );
             fillAsym( h1.GetTH1("Evt_O7Asym_El"), O7 );
+
+            O2_ = O2;
+            O3_ = O3;
+            O4_ = O4;
+            O7_ = O7;
+            WrtObs_ = Owrt_;
         }
     }//// [END] entry loop 
 }
