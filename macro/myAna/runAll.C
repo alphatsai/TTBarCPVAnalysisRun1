@@ -29,11 +29,12 @@
 
 using namespace std;
 
+bool printTitle=false;
 const int NOBS=4; 
 const int NCH=3;
 
-std::string fin="../results/31Aug_LepJet_Chi2Cut/Final_PredictionTree.root";
-std::string outpath="../results/31Aug_LepJet_Chi2Cut";
+std::string fin="../results/30Aug_LepJet_AddO3O4/Final_PredictionTree.root";
+std::string outpath="../results/30Aug_LepJet_AddO3O4";
 
 void runAll()
 {
@@ -41,9 +42,9 @@ void runAll()
     for( int iobs=0; iobs<NOBS; iobs++ ){
         for( int ich=0; ich<NCH; ich++)
         {
-            mkPlotForPrediction(f, outpath, "MC",      iobs, ich);
-            mkPlotForPrediction(f, outpath, "SudoExp", iobs, ich);
-            mkPlotForPrediction(f, outpath, "SudoSig", iobs, ich);
+            mkPlotForPrediction(f, outpath, "MC",      iobs, ich, printTitle);
+            mkPlotForPrediction(f, outpath, "SudoExp", iobs, ich, printTitle);
+            mkPlotForPrediction(f, outpath, "SudoSig", iobs, ich, printTitle);
             mkPull(f, (outpath+"/pull").c_str(), "SudoExp", iobs, ich);
             mkPull(f, (outpath+"/pull").c_str(), "SudoSig", iobs, ich);
         }

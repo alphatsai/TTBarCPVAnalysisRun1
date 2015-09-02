@@ -73,12 +73,34 @@ void mkPlotForPrediction( TFile* fin, std::string outpath=".", std::string cat="
         printf("- 1s %.2f, 2s %.2f\n", unc_1s[idx][LOW], unc_2s[idx][LOW]);
     }
 
-    TCanvas *c1 = new TCanvas(("c1"+cat+title2+title1).c_str(),"",800,600); c1->Clear();
-    TH2F *frame = new TH2F( ("frame"+cat+title1+title2).c_str(), "frame", NPOINTS, assumedACP[0], assumedACP[NPOINTS-1], NPOINTS, assumedACP[0], assumedACP[NPOINTS-1]);
+    TCanvas *c1 = new TCanvas(("c1"+cat+title2+title1).c_str(),"",1612,152,800,602); 
+    c1->Clear();
+    c1->Range(-37.8806,-39.19037,33.40299,36.30197);
+    c1->SetFillColor(0);
+    c1->SetBorderMode(0);
+    c1->SetBorderSize(2);
+    c1->SetLeftMargin(0.1105528);
+    c1->SetRightMargin(0.04773869);
+    c1->SetTopMargin(0.08347826);
+    c1->SetBottomMargin(0.1217391);
+    c1->SetFrameBorderMode(0);
+    c1->SetFrameBorderMode(0);
+
+    TH2F *frame = new TH2F( ("frame"+cat+title1+title2).c_str(), "", NPOINTS, assumedACP[0], assumedACP[NPOINTS-1], NPOINTS, assumedACP[0], assumedACP[NPOINTS-1]);
+    frame->GetXaxis()->SetLabelFont(42);
+    frame->GetXaxis()->SetLabelSize(0.05);
+    frame->GetXaxis()->SetTitleSize(0.05);
+    frame->GetXaxis()->SetTitleOffset(0.99);
+    frame->GetXaxis()->SetTitleFont(42);
+    frame->GetYaxis()->SetLabelFont(42);
+    frame->GetYaxis()->SetLabelSize(0.05);
+    frame->GetYaxis()->SetTitleSize(0.05);
+    frame->GetYaxis()->SetTitleOffset(0.85);
+    frame->GetYaxis()->SetTitleFont(42);
 
     frame->SetStats(kFALSE);
-    frame->SetXTitle("Ideal non-Zero ACP [%]");
-    frame->SetYTitle("Predicted non-Zero ACP [%]");
+    frame->SetXTitle("Assumed ACP [%]");
+    frame->SetYTitle("Predicted ACP [%]");
     if( printTitle ) frame->SetTitle((cat+" "+title1+"_"+title2).c_str());
     frame->Draw();
 
@@ -118,6 +140,33 @@ void mkPlotForPrediction( TFile* fin, std::string outpath=".", std::string cat="
     pl_med->SetLineWidth(2);
     pl_med->Draw("l");
     pl_obs->Draw("*lsame");
+
+    TLegend *leg = new TLegend(0.1595477,0.6782609,0.5389447,0.8817391,NULL,"brNDC");
+    leg->SetBorderSize(0);
+    leg->SetLineStyle(0);
+    leg->SetLineWidth(0);
+    leg->SetFillColor(0);
+    leg->SetFillStyle(0);
+    leg->AddEntry( pl_med,"t#bar{t}+jet(signal)","l");
+    if( cat.find("MC") != std::string::npos )
+    {
+        leg->AddEntry( pl_obs,"t#bar{t}+jet(signal) + Bkg.","lp");
+        leg->AddEntry( pl_1s, "1#sigma, t#bar{t}+jet(signal) + Bkg.","f");
+        leg->AddEntry( pl_2s, "2#sigma, t#bar{t}+jet(signal) + Bkg.","f");
+    }
+    else if( cat.find("SudoExp") != std::string::npos)
+    {
+        leg->AddEntry( pl_obs,"Pseudo exp.","lp");
+        leg->AddEntry( pl_1s, "1#sigma, pseudo exp.","f");
+        leg->AddEntry( pl_2s, "2#sigma. pseudo exp.","f");
+    }
+    else if( cat.find("SudoSig") != std::string::npos)
+    {
+        leg->AddEntry( pl_obs,"Pseudo exp. - Bkg.","lp");
+        leg->AddEntry( pl_1s, "1#sigma, pseudo exp. - Bkg.","f");
+        leg->AddEntry( pl_2s, "2#sigma, pseudo exp. - Bkg.","f");
+    }
+    leg->Draw();
 
     c1->SaveAs((outpath+"/PredictedACPScan_"+cat+"_"+title1+"_"+title2+".pdf").c_str());
     delete tin;
