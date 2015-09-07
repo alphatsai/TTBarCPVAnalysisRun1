@@ -14,7 +14,8 @@ class checkEvtTool
         ~checkEvtTool(){}
 
         void addJson( std::string myJson );
-        void makeJsonMap();
+        void makeJsonMap( bool savejson=false, std::string saveAs="myJSON.txt");
+        void saveJson( std::string saveAs="myJSON.txt" );
         void listMyJsons();
         void listGoodLumis();
 
@@ -22,6 +23,7 @@ class checkEvtTool
 
     private:
         bool hasJson;
+        bool hasJsonMap;
         bool deBug;
         std::vector<std::string> myJsons;
         std::multimap< int, std::pair<int, int> > JsonMap;    // <runNumber, pair<startLumiSec, endLumiSec> >, multimap for same runNumber
@@ -32,24 +34,26 @@ class checkEvtTool
 // Constructors 
 checkEvtTool::checkEvtTool( bool debug )
 {
-    deBug = debug; 
-    hasJson=false; 
+    deBug      = debug; 
+    hasJson    = false;
+    hasJsonMap = false; 
 }
 
 checkEvtTool::checkEvtTool( std::string myJson, bool debug )
 {
-    deBug = debug;
+    deBug      = debug;
+    hasJsonMap = false; 
     addJson(myJson); 
 }
 
 // Public functions
 void checkEvtTool::addJson( std::string myJson )
 {
-    hasJson=true; 
+    hasJson = true; 
     myJsons.push_back(myJson);
 }
 
-void checkEvtTool::makeJsonMap()
+void checkEvtTool::makeJsonMap( bool savejson, std::string saveAs )
 {
     if( !hasJson ){
         printf(">> [ERROR] No any JSON input.\n"); 
@@ -61,7 +65,7 @@ void checkEvtTool::makeJsonMap()
     for( std::vector<std::string>::iterator ijson = myJsons.begin(); ijson != myJsons.end(); ++ijson )
     {
         ifstream JSON(ijson->c_str());
-        if(!JSON) {
+        if( !JSON ){
             printf(">> [ERROR] Can not found JSON file, %s. Please check if the JSON file exists.\n", ijson->c_str());
             exit(0);
         }   
@@ -86,13 +90,54 @@ void checkEvtTool::makeJsonMap()
                 JsonMap.insert( std::make_pair( runNumber, std::make_pair(startLumiSec,endLumiSec) ));
             }
         }
+        hasJsonMap = true;
         JSON.close();
     }
-    if( deBug ) listGoodLumis(); 
+    if( deBug ) listGoodLumis();
+    if( savejson ) saveJson(saveAs);
+}
+
+void checkEvtTool::saveJson( std::string saveAs )
+{
+    if( !hasJsonMap ){
+        printf(">> [ERROR] Can not save JSON file. Please do checkEvtTool::makeJsonMap() first.\n");
+        exit(0);
+    }
+    if( deBug ){ 
+        printf(">> [DEBUG] Call checkEvtTool::saveJson( std::string saveAs ) to save JSON:\n");
+        printf("           %s\n", saveAs.c_str());
+    }
+
+    int runNumTmp=0;
+    fstream out;
+    out.open( saveAs.c_str(), std::ios_base::out );
+    out<<"{";
+    for( std::map< int, std::pair<int, int> >::iterator imap = JsonMap.begin(); imap != JsonMap.end(); ++imap )
+    {
+        int runNum       = imap->first;
+        int startLumiSec = imap->second.first;
+        int endLumiSec   = imap->second.second;
+        if( runNumTmp != runNum )
+        {
+            if( runNumTmp != 0 ) out<<"], ";
+            runNumTmp = runNum;
+            out<<"\""<<runNum<<"\": [["<<startLumiSec<<", "<<endLumiSec<<"]"; 
+        }
+        else
+        {   out<<", ["<<startLumiSec<<", "<<endLumiSec<<"]";}
+    }
+    out<<"]}";
+    out.close();
 }
 
 void checkEvtTool::listMyJsons()
 {
+    if( !hasJson ){
+        printf(">> [ERROR] No any JSON input.\n"); 
+        printf("           Please use checkEvt::addJson( std::string &myJson ) to add your JSON file.\n");
+        exit(0);
+    }
+
     printf(">> [DEBUG] Input Json files:\n");
     for( std::vector<std::string>::iterator ijson = myJsons.begin(); ijson != myJsons.end(); ++ijson )
     {
@@ -102,6 +147,11 @@ void checkEvtTool::listMyJsons()
 
 void checkEvtTool::listGoodLumis()
 {
+    if( !hasJsonMap ){
+        printf("[ERROR] Can not list good lumis. Please do checkEvtTool::makeJsonMap() first. \n");
+        exit(0);
+    }
+
     printf(">> [DEBUG] Total Good Run:[LumiStart, lumiEnd]:\n");
     for( std::map< int, std::pair<int, int> >::iterator imap = JsonMap.begin(); imap != JsonMap.end(); ++imap )
     {
@@ -109,7 +159,7 @@ void checkEvtTool::listGoodLumis()
     }
 }
 
-bool checkEvtTool::isGoodEvt( int runNumber,int LumiSec )
+bool checkEvtTool::isGoodEvt( int runNumber, int LumiSec )
 {
     bool isGoodEvt_ = false;
     std::multimap< int, std::pair<int, int> >::iterator JsonMapItr_;
