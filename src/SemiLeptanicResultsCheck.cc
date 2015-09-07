@@ -38,6 +38,7 @@
 #include "PhysicsTools/Utilities/interface/LumiReweightingStandAlone.h" 
 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/format.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/checkEvtTool.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Jet.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Vertex.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h" 
@@ -58,7 +59,7 @@ SemiLeptanicResultsCheck::SemiLeptanicResultsCheck(const edm::ParameterSet& iCon
     reportEvery_(           iConfig.getParameter<int>("ReportEvery")),
     inputTTree_(            iConfig.getParameter<std::string>("InputTTree")),
     inputFiles_(            iConfig.getParameter<std::vector<std::string> >("InputFiles")),
-    HLT_MuChannel_(         iConfig.getParameter<std::vector<int>>("HLT_MuChannel")),
+    inputJsons_(            iConfig.getParameter<std::vector<std::string> >("InputJsons")),
     HLT_ElChannel_(         iConfig.getParameter<std::vector<int>>("HLT_ElChannel")),
     selPars_Vertex_(        iConfig.getParameter<edm::ParameterSet>("SelPars_Vertex")),
     selPars_Jet_(           iConfig.getParameter<edm::ParameterSet>("SelPars_Jet")),
@@ -210,7 +211,7 @@ bool SemiLeptanicResultsCheck::matchObject( Object &obj, matchingObject &mobj, v
         }
     }
     if( matched ) mobj = col[midx];
-    else std::cout<<"[WARING] Can't find matched particle in SemiLeptanicResultsCheck::matchObject<"<<typeid(obj).name()<<"> within dR "<<dR<<std::endl;
+    //else std::cout<<"[WARING] Can't find matched particle in SemiLeptanicResultsCheck::matchObject<"<<typeid(obj).name()<<"> within dR "<<dR<<std::endl;
     return matched;
 }
 template <class Object>
@@ -232,7 +233,7 @@ bool SemiLeptanicResultsCheck::getHighPtSelectMo( vector<Object> col, Object &ob
         }
     }
     if( matched ) obj=col[o1];
-    else std::cout<<"[WARING] Can't find matched particle in SemiLeptanicResultsCheck::getHighPtSelectMo"<<std::endl;
+    //else std::cout<<"[WARING] Can't find matched particle in SemiLeptanicResultsCheck::getHighPtSelectMo"<<std::endl;
     return matched;
 }
     template <class Object>
@@ -509,6 +510,13 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
 { 
     using namespace edm;
     using namespace std;
+
+    checkEvtTool checkEvt(true);
+    for( unsigned i=0; i<inputJsons_.size(); ++i)
+    {
+        checkEvt.addJson( inputJsons_.at(i) );
+    }
+    checkEvt.makeJsonMap();
 
     if(  chain_ == 0 ) return;
 

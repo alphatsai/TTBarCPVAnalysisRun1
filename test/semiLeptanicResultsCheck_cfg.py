@@ -2,6 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 from FWCore.ParameterSet.VarParsing import VarParsing
 from inputFiles_cfi import * 
+from inputJsons_cfi import * 
 
 options = VarParsing('python')
 
@@ -79,14 +80,16 @@ process.CheckEventsOfLepJets = cms.EDAnalyzer('SemiLeptanicResultsCheck',
     MaxEvents             = cms.int32(options.MaxEvents),
     ReportEvery           = cms.int32(options.reportEvery),  
     InputTTree            = cms.string(options.ttreedir+'/root'),
-    InputFiles            = cms.vstring(FileNames), 
+    #InputFiles            = cms.vstring(FileNames), 
     #InputFiles            = cms.vstring('file:OnLxpus/03Aug_MC_IsoLeptonFromJets_Tree/TTJets_SemiLeptMGDecays.root'), 
+    InputFiles            = cms.vstring('file:OnLxpus/03Aug_MC_IsoLeptonFromJets_Tree/TTJets_FullLeptMGDecays.root'), 
     #InputFiles            = cms.vstring('file:OnLxpus/03Aug_MC_IsoLeptonFromJets_Tree/T_t-channel.root'), 
     #InputFiles            = cms.vstring('file:OnLxpus/03Aug_MC_IsoLeptonFromJets_Tree/Tbar_t-channel.root'), 
     #InputFiles            = cms.vstring('file:OnLxpus/03Aug_MC_IsoLeptonFromJets_Tree/Tbar_t-channel.root'), 
     #InputFiles            = cms.vstring('file:OnLxpus/03Aug_MC_IsoLeptonFromJets_Tree/WJetsToLNu.root'), 
     #InputFiles            = cms.vstring('file:OnLxpus/03Aug_MC_IsoLeptonFromJets_Tree/WZ.root'), 
     #InputFiles            = cms.vstring('file:OnLxpus/03Aug_MC_IsoLeptonFromJets_Tree/WW.root'), 
+    InputJsons            = cms.vstring(JsonNames), 
     HLT_MuChannel         = cms.vint32( 2868,3244,3542,4204,4205,4827,5106,5573  ), # HLT_IsoMu24_eta2p1_v*
     HLT_ElChannel         = cms.vint32( 3155,3496,4002,4003,4004,5043 ),            # HLT_Ele27_WP80_v* 
     SelPars_Vertex        = defaultVertexSelectionParameters.clone(), 

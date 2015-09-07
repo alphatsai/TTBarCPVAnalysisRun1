@@ -71,6 +71,7 @@ class SemiLeptanicResultsCheck : public edm::EDAnalyzer{
         const int                       reportEvery_; 
         const std::string               inputTTree_;
         const std::vector<std::string>  inputFiles_;
+        const std::vector<std::string>  inputJsons_;
 
         vector<int> HLT_MuChannel_;
         vector<int> HLT_ElChannel_;
