@@ -18,7 +18,7 @@ class checkEvtTool
         void listMyJsons();
         void listGoodLumis();
 
-        bool isGoodEvt( int runNumber,int LumiSec );
+        bool isGoodEvt( int runNumber, int LumiSec );
 
     private:
         bool hasJson;
@@ -62,7 +62,7 @@ void checkEvtTool::makeJsonMap()
     {
         ifstream JSON(ijson->c_str());
         if(!JSON) {
-            printf("[ERROR] Can not found JSON file, %s. Please check if the JSON file exists.\n", ijson->c_str());
+            printf(">> [ERROR] Can not found JSON file, %s. Please check if the JSON file exists.\n", ijson->c_str());
             exit(0);
         }   
 
@@ -122,7 +122,7 @@ bool checkEvtTool::isGoodEvt( int runNumber,int LumiSec )
         {
             if( JsonMapItr_->first != runNumber ) break;
             if( LumiSec >= JsonMapItr_->second.first && 
-                    LumiSec <= JsonMapItr_->second.second )
+                LumiSec <= JsonMapItr_->second.second )
             {
                 isGoodEvt_ = true;
             }
