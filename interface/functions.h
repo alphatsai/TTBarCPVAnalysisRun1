@@ -81,7 +81,7 @@ void getHighPtObject( vector<Object> col, Object &obj )
 }
 
 //* Matching object with dR 
-template <class Object, class matchingObject>
+    template <class Object, class matchingObject>
 bool matchObject( Object &obj, matchingObject &mobj, vector<matchingObject> col, double dR )
 {
     int     obsize = col.size();
@@ -94,7 +94,7 @@ bool matchObject( Object &obj, matchingObject &mobj, vector<matchingObject> col,
         if( dr_ > dR ) continue;
         if( dr_ < dr )
         {
-              dr = dr_;
+            dr = dr_;
             midx = i; 
             matched = true;
         }
