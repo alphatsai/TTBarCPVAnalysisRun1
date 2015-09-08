@@ -42,6 +42,7 @@
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Jet.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Vertex.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TopCandidate.h"
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/GenParticle.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1InfoClass.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH2InfoClass.h" 
@@ -110,43 +111,51 @@ void bbarTagEff::beginJob()
     // Create TH1D
     h1 = TH1InfoClass<TH1D>(Debug_);
     h1.ClearTH1Info();
-    h1.addNewTH1( "Evt_O3",                  "O3",                      "O_{3}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O3_Mu",               "O3",                      "O_{3}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O3_El",               "O3",                      "O_{3}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O3Asym",              "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
-    h1.addNewTH1( "Evt_O3Asym_Mu",           "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
-    h1.addNewTH1( "Evt_O3Asym_El",           "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_O3",                "O3",                      "O_{3}",             "Events", "", "", 40,  -2,   2   );
+    h1.addNewTH1( "Evt_O3_Mu",             "O3",                      "O_{3}",             "Events", "", "", 40,  -2,   2   );
+    h1.addNewTH1( "Evt_O3_El",             "O3",                      "O_{3}",             "Events", "", "", 40,  -2,   2   );
+    h1.addNewTH1( "Evt_O3Asym",            "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_O3Asym_Mu",         "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_O3Asym_El",         "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
 
-    h1.addNewTH1( "Evt_Events",              "",                        "",                  "Events", "", "",  1,   1,   2   );
-    h1.addNewTH1( "Evt_Channel",             "",                        "",                  "Events", "", "",  4,   0,   4   );
-    h1.addNewTH1( "Evt_NJets",               "Num. of jets",            "N(j)",              "Events", "", "", 20,   0,   20  );
-    h1.addNewTH1( "Evt_NSelJets",            "Num. of selected jets",   "N(selected j)",     "Events", "", "", 20,   0,   20  );
-    h1.addNewTH1( "Evt_NbJets",              "Num. of b-jets",          "N(B-tagged j)",     "Events", "", "", 20,   0,   20  );
-    h1.addNewTH1( "Evt_NnonbJets",           "Num. of non b-jets",      "N(non B-tagged j)", "Events", "", "", 20,   0,   20  );
-    h1.addNewTH1( "Evt_NTightMuons",         "Num. of tight muon",      "N(tight #mu)",      "Events", "", "", 10,   0,   10  );
-    h1.addNewTH1( "Evt_NLooseMuIsoMu",       "Num. of loose muon",      "N(loose #mu)",      "Events", "", "", 10,   0,   10  );
-    h1.addNewTH1( "Evt_NLooseMuIsoEl",       "Num. of loose muon",      "N(loose #mu)",      "Events", "", "", 10,   0,   10  );
-    h1.addNewTH1( "Evt_NTightElectrons",     "Num. of tight electron",  "N(tight e)",        "Events", "", "", 10,   0,   10  );
-    h1.addNewTH1( "Evt_NLooseElIsoMu",       "Num. of loose electron",  "N(loose e)",        "Events", "", "", 10,   0,   10  );
-    h1.addNewTH1( "Evt_NLooseElIsoEl",       "Num. of loose electron",  "N(loose e)",        "Events", "", "", 10,   0,   10  );
+    h1.addNewTH1( "Evt_Events",            "",                        "",                  "Events", "", "",  1,   1,   2   );
+    h1.addNewTH1( "Evt_Channel",           "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "Evt_NJets",             "Num. of jets",            "N(j)",              "Events", "", "", 20,   0,   20  );
+    h1.addNewTH1( "Evt_NSelJets",          "Num. of selected jets",   "N(selected j)",     "Events", "", "", 20,   0,   20  );
+    h1.addNewTH1( "Evt_NbJets",            "Num. of b-jets",          "N(B-tagged j)",     "Events", "", "", 20,   0,   20  );
+    h1.addNewTH1( "Evt_NnonbJets",         "Num. of non b-jets",      "N(non B-tagged j)", "Events", "", "", 20,   0,   20  );
+    h1.addNewTH1( "Evt_NTightMuons",       "Num. of tight muon",      "N(tight #mu)",      "Events", "", "", 10,   0,   10  );
+    h1.addNewTH1( "Evt_NLooseMuIsoMu",     "Num. of loose muon",      "N(loose #mu)",      "Events", "", "", 10,   0,   10  );
+    h1.addNewTH1( "Evt_NLooseMuIsoEl",     "Num. of loose muon",      "N(loose #mu)",      "Events", "", "", 10,   0,   10  );
+    h1.addNewTH1( "Evt_NTightElectrons",   "Num. of tight electron",  "N(tight e)",        "Events", "", "", 10,   0,   10  );
+    h1.addNewTH1( "Evt_NLooseElIsoMu",     "Num. of loose electron",  "N(loose e)",        "Events", "", "", 10,   0,   10  );
+    h1.addNewTH1( "Evt_NLooseElIsoEl",     "Num. of loose electron",  "N(loose e)",        "Events", "", "", 10,   0,   10  );
 
-    h1.addNewTH1( "Gen_PID",                 "",                        "",                  "Evetns", "", "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_PID_bMo1",            "",                        "",                  "Evetns", "", "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_PID_bMo2",            "",                        "",                  "Evetns", "", "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_PID_lqMo1",           "",                        "",                  "Evetns", "", "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_PID_lqMo2",           "",                        "",                  "Evetns", "", "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_PID_nuMo1",           "",                        "",                  "Evetns", "", "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_PID_nuMo2",           "",                        "",                  "Evetns", "", "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_PID_lepMo1",          "",                        "",                  "Evetns", "", "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_PID_lepMo2",          "",                        "",                  "Evetns", "", "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_PID_wpDa1",           "",                        "",                  "Evetns", "", "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_PID_wpDa2",           "",                        "",                  "Evetns", "", "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_PID_wmDa1",           "",                        "",                  "Evetns", "", "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_PID_wmDa2",           "",                        "",                  "Evetns", "", "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_NbQ",                 "",                        "",                  "Evetns", "", "", 10,   0,   10 );
-    h1.addNewTH1( "Gen_NlightQ",             "",                        "",                  "Evetns", "", "", 10,   0,   10 );
-    h1.addNewTH1( "Gen_NchargeLeps",         "",                        "",                  "Evetns", "", "", 10,   0,   10 );
-    h1.addNewTH1( "Gen_Nneutrinos",          "",                        "",                  "Evetns", "", "", 10,   0,   10 );
+    h1.addNewTH1( "Evt_Top_Hadronic_Chi2", "",                        "#chi^{2}",          "Yields", "", "", 200,  0,   200 );
+    h1.addNewTH1( "Evt_Top_Hadronic_Mass", "",                        "Mass",              "Yields", "", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_Top_Hadronic_Pt",   "",                        "Pt",                "Yields", "", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_Top_Hadronic_Eta",  "",                        "Eta",               "Yields", "", "", 100, -5,   5   );
+    h1.addNewTH1( "Evt_Top_Hadronic_Phi",  "",                        "Phi",               "Yields", "", "", 65,  -3.2, 3.2   );
+    h1.addNewTH1( "Evt_Top_Leptonic_Mt",   "",                        "Mass",              "Yields", "", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_Top_Leptonic_Phi",  "",                        "Phi",               "Yields", "", "", 65,  -3.2, 3.2 );
+
+    h1.addNewTH1( "Gen_PID",               "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_bMo1",          "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_bMo2",          "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_lqMo1",         "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_lqMo2",         "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_nuMo1",         "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_nuMo2",         "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_lepMo1",        "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_lepMo2",        "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_wpDa1",         "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_wpDa2",         "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_wmDa1",         "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_PID_wmDa2",         "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Gen_NbQ",               "",                        "",                  "Evetns", "", "", 10,   0,   10 );
+    h1.addNewTH1( "Gen_NlightQ",           "",                        "",                  "Evetns", "", "", 10,   0,   10 );
+    h1.addNewTH1( "Gen_NchargeLeps",       "",                        "",                  "Evetns", "", "", 10,   0,   10 );
+    h1.addNewTH1( "Gen_Nneutrinos",        "",                        "",                  "Evetns", "", "", 10,   0,   10 );
     h1.CreateTH1( fs );
     h1.Sumw2();
 
@@ -169,12 +178,12 @@ void bbarTagEff::beginJob()
     JetInfo.Register(chain_,"PFJetInfo");
     LepInfo.Register(chain_,"PFLepInfo");
 
-    chain_->SetBranchAddress("EvtInfo.RunNo",     &RunNo_     );
-    chain_->SetBranchAddress("EvtInfo.EvtNo",     &EvtNo_     );
-    chain_->SetBranchAddress("EvtInfo.BxNo",      &BxNo_      );
-    chain_->SetBranchAddress("EvtInfo.LumiNo",    &LumiNo_    );
-    chain_->SetBranchAddress("EvtInfo.isMuonEvt", &isMuonEvt_ );    
-    chain_->SetBranchAddress("EvtInfo.isEleEvt",  &isEleEvt_  );    
+    chain_->SetBranchAddress("EvtInfo.RunNo",     &RunNo_         );
+    chain_->SetBranchAddress("EvtInfo.EvtNo",     &EvtNo_         );
+    chain_->SetBranchAddress("EvtInfo.BxNo",      &BxNo_          );
+    chain_->SetBranchAddress("EvtInfo.LumiNo",    &LumiNo_        );
+    chain_->SetBranchAddress("EvtInfo.isMuonEvt", &isMuonEvt_     );    
+    chain_->SetBranchAddress("EvtInfo.isEleEvt",  &isElectronEvt_ );    
 
     if( maxEvents_<0 || maxEvents_>chain_->GetEntries() ) maxEvents_ = chain_->GetEntries();
 
@@ -216,10 +225,10 @@ void bbarTagEff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
         h1.GetTH1("Evt_Events")->Fill(1);
 
-             if(  isMuonEvt_ &&  isEleEvt_ ) h1.GetTH1("Evt_Channel")->Fill(3);
-        else if(  isMuonEvt_ && !isEleEvt_ ) h1.GetTH1("Evt_Channel")->Fill(2);
-        else if( !isMuonEvt_ &&  isEleEvt_ ) h1.GetTH1("Evt_Channel")->Fill(1);
-        else if( !isMuonEvt_ && !isEleEvt_ ) h1.GetTH1("Evt_Channel")->Fill(0);
+             if(  isMuonEvt_ &&  isElectronEvt_ ) h1.GetTH1("Evt_Channel")->Fill(3);
+        else if(  isMuonEvt_ && !isElectronEvt_ ) h1.GetTH1("Evt_Channel")->Fill(2);
+        else if( !isMuonEvt_ &&  isElectronEvt_ ) h1.GetTH1("Evt_Channel")->Fill(1);
+        else if( !isMuonEvt_ && !isElectronEvt_ ) h1.GetTH1("Evt_Channel")->Fill(0);
 
         // ---- * Checking generator info
         vector<GenParticle>  particles; 
@@ -338,7 +347,69 @@ void bbarTagEff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
         h1.GetTH1("Evt_NLooseElIsoEl"  )->Fill( ElColLoose_ElChannel.size());
         h1.GetTH1("Evt_NLooseElIsoMu"  )->Fill( ElColLoose_MuChannel.size());
 
-        
+        if( isMuonEvt_     && MuColTight.size() != 1 ) printf(">> [WARNING] Size of tight Mu is not 1 in Muon channle: %ld\n", MuColTight.size());
+        if( isElectronEvt_ && ElColTight.size() != 1 ) printf(">> [WARNING] Size of tight El is not 1 in Electron channle: %ld\n", ElColTight.size());
+        if( BJetCol.size() != 2                      ) printf(">> [WARNING] Size of b-jets are not 2: %ld\n",BJetCol.size());
+        if( BJetCol.size() + nonBJetCol.size() < 4   ) printf(">> [WARNING] Size of all selected jets are above 3: %ld\n",BJetCol.size()+nonBJetCol.size());
+
+        Jet hardJet;
+        Jet b_jet;
+        Jet bbar_jet;
+        Lepton isoLep; 
+        // Lable isolated lepton
+             if(  isMuonEvt_ && !isElectronEvt_ ) isoLep = MuColTight[0];
+        else if( !isMuonEvt_ &&  isElectronEvt_ ) isoLep = ElColTight[0];
+        else printf(">> [WARNING] Ambiguous isolated lepton, either eletron or muon\n");
+
+        // Lable the hardest non_bjet
+        getHighPtObject( nonBJetCol, hardJet );
+
+        // Distinguish hadronic-top and leptonic-top's b-jet by chi^2
+        TopCandidate top_hadronic, top_leptonic;         
+        const int sizeNonBJetCol = nonBJetCol.size();
+        float chi2 = +1E10;
+        int topjet1(-1), topjet2(-1), hadronicTopbjet(-1), leptonicTopbjet(-1); 
+        for( int ij1=1; ij1<sizeNonBJetCol; ij1++){
+            for( int ij2=ij1-1; ij2<ij1; ij2++){
+                for( int bj=0; bj<2; bj++)
+                {
+                    float chi2_ = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], BJetCol[bj] );
+                    if( chi2_ < chi2 )
+                    { 
+                        topjet1  = ij1;
+                        topjet2  = ij2;
+                        hadronicTopbjet = bj;
+                        chi2 = chi2_;
+                    }
+                }
+            }
+        }       
+
+        leptonicTopbjet = ( hadronicTopbjet==0 )? 1:0;
+        top_hadronic.Fill( BJetCol[hadronicTopbjet], nonBJetCol[topjet1], nonBJetCol[topjet2] );
+        top_leptonic.Fill( BJetCol[leptonicTopbjet], isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi  );
+
+        if( isoLep.Charge < 0 ) // tbar->bbar+w-, w- -> l- v
+        {
+            b_jet    = BJetCol[hadronicTopbjet];
+            bbar_jet = BJetCol[leptonicTopbjet];
+        }
+        else if( isoLep.Charge > 0 ) //t->b+w+, w+ -> l+ v
+        {
+            b_jet    = BJetCol[leptonicTopbjet];
+            bbar_jet = BJetCol[hadronicTopbjet];
+        }
+        else
+        { std::cout<<">> [ERROR] There an nuetral lepton!? "<<std::endl; }
+
+        h1.GetTH1("Evt_Top_Hadronic_Chi2")->Fill( chi2               );
+        h1.GetTH1("Evt_Top_Hadronic_Mass")->Fill( top_hadronic.Mass  );
+        h1.GetTH1("Evt_Top_Hadronic_Pt"  )->Fill( top_hadronic.Pt    );
+        h1.GetTH1("Evt_Top_Hadronic_Eta" )->Fill( top_hadronic.Eta   );
+        h1.GetTH1("Evt_Top_Hadronic_Phi" )->Fill( top_hadronic.Phi   );
+        h1.GetTH1("Evt_Top_Leptonic_Mt"  )->Fill( top_leptonic.MassT );
+        h1.GetTH1("Evt_Top_Leptonic_Phi" )->Fill( top_leptonic.Phi   );
+
     }//// [END] entry loop 
 }
 
