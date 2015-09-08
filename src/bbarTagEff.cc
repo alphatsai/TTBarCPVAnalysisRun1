@@ -141,6 +141,7 @@ void bbarTagEff::beginJob()
 
     h1.addNewTH1( "Evt_tMatched_Chi2",      "",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
     h1.addNewTH1( "Evt_bMatched_Chi2",      "",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
+    h1.addNewTH1( "Evt_bMatched_Chi2_bbarb","",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
     h1.addNewTH1( "Evt_bMatched_Chi2_qbbar","",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
     h1.addNewTH1( "Evt_bMatched_Chi2_bq",   "",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
     h1.addNewTH1( "Evt_bMatched_Chi2_qq",   "",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
@@ -463,6 +464,8 @@ void bbarTagEff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
  
         if( GenParticle_matchedBJet[0].PdgID == 5 && GenParticle_matchedBJet[1].PdgID == -5 )
             h1.GetTH1("Evt_bMatched_Chi2")->Fill( chi2 );
+        else if( GenParticle_matchedBJet[0].PdgID == -5 && GenParticle_matchedBJet[1].PdgID == 5 )
+            h1.GetTH1("Evt_bMatched_Chi2_bbarb")->Fill( chi2 );
         else if( GenParticle_matchedBJet[0].PdgID == 21 && GenParticle_matchedBJet[1].PdgID == -5 )
             h1.GetTH1("Evt_bMatched_Chi2_qbbar")->Fill( chi2 );
         else if( GenParticle_matchedBJet[0].PdgID ==  5 && GenParticle_matchedBJet[1].PdgID == 21 )
