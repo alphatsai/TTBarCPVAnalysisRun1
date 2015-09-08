@@ -587,18 +587,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                             h1.GetTH1("Evt_Top_Leptonic_Phi" )->Fill( top_leptonic.Phi   );
 
                             // Lable the hardest non_bjet
-                            getHighPtObject( nonBJetCol, hardJet); 
-                            //int j1=-1;
-                            //double pt1=0;
-                            //for( int i=0; i < sizeNonBJetCol; i++)
-                            //{
-                            //    if( pt1 < nonBJetCol[i].Pt ){
-                            //        j1=i;
-                            //        pt1=nonBJetCol[i].Pt;
-                            //    }
-                            //}
-                            //if( j1 == -1 ){ std::cout<<">>[WARNING] "<<entry<<"Doesn't find hard jet!"<<endl; }
-                            //hardJet = nonBJetCol[j1];
+                            getHighPtObject( nonBJetCol, hardJet ); 
                         }
                     }
                 }
