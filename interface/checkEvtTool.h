@@ -82,11 +82,11 @@ void checkEvtTool::makeJsonMap( bool savejson, std::string saveAs )
             checkChars( name, nameOutput, status );
 
             if(status==1){
-                runNumber = atoi(nameOutput.c_str());
+                runNumber    = atoi(nameOutput.c_str());
             }else if(status==2){
                 startLumiSec = atoi(nameOutput.c_str());
             }else if(status==3){
-                endLumiSec = atoi(nameOutput.c_str());
+                endLumiSec   = atoi(nameOutput.c_str());
                 JsonMap.insert( std::make_pair( runNumber, std::make_pair(startLumiSec,endLumiSec) ));
             }
         }
