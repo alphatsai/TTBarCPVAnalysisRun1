@@ -8,8 +8,10 @@
 #include "TVector3.h"
 #include "TLorentzVector.h"
 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/format.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Jet.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h"
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/GenParticle.h" 
 
 const float mass_t  = 172.5;
 const float mass_W  = 82.9;
@@ -38,6 +40,11 @@ namespace{
 
     template <class Object, class matchingObject> 
         bool matchMultiObject( vector<Object> incol, vector<matchingObject> mcol, vector<matchingObject> &outcol );
+
+    bool checkMo( GenParticle     GenInfo, int moPdgID );
+    bool checkDa( GenParticle     GenInfo, int daPdgID );
+    bool checkMo( GenInfoBranches GenInfo, int idx, int moPdgID );
+    bool checkDa( GenInfoBranches GenInfo, int idx, int daPdgID );
     bool isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCol, double dR=0.5 );
 
     float getChi2( Jet jet1, Jet jet2, Jet bjet, float M_top=mass_t, float Wth_top=width_t, float M_W=mass_W, float Wth_W=width_W );
@@ -208,6 +215,34 @@ namespace{
             }    
             return true;
         }
+
+    //* check if the mo1 or mo2 = moPdgID
+    bool checkMo( GenParticle GenInfo, int moPdgID )
+    {
+        bool isMyMo=false;
+        if( GenInfo.Mo1PdgID == moPdgID || GenInfo.Mo2PdgID == moPdgID ) isMyMo = true;
+        return isMyMo;
+    }
+    bool checkMo( GenInfoBranches GenInfo, int idx, int moPdgID )
+    {
+        bool isMyMo=false;
+        if( GenInfo.Mo1PdgID[idx] == moPdgID || GenInfo.Mo2PdgID[idx] == moPdgID ) isMyMo = true;
+        return isMyMo;
+    }
+
+    //* check if the da1 or da2 = daPdgID
+    bool checkDa( GenParticle GenInfo, int daPdgID )
+    {
+        bool isMyDa=false;
+        if( GenInfo.Da1PdgID == daPdgID || GenInfo.Da2PdgID == daPdgID ) isMyDa = true;
+        return isMyDa;
+    }
+    bool checkDa( GenInfoBranches GenInfo, int idx, int daPdgID )
+    {
+        bool isMyDa=false;
+        if( GenInfo.Da1PdgID[idx] == daPdgID || GenInfo.Da2PdgID[idx] == daPdgID ) isMyDa = true;
+        return isMyDa;
+    }
 
     //* check if the lepton is isolated from jets
     bool isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCol, double dR )

@@ -6,7 +6,7 @@ from inputJsons_cfi import *
 
 options = VarParsing('python')
 
-options.register('outFilename', 'bbarTagEff2.root',
+options.register('outFilename', 'bbarTagEff.root',
     VarParsing.multiplicity.singleton,
     VarParsing.varType.string,
     "Output file name"

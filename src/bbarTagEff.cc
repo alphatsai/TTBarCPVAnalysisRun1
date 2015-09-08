@@ -141,10 +141,12 @@ void bbarTagEff::beginJob()
 
     h1.addNewTH1( "Evt_tMatched_Chi2",      "",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
     h1.addNewTH1( "Evt_bMatched_Chi2",      "",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
+    h1.addNewTH1( "Evt_bMatched_Chi2_lbbar","",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
+    h1.addNewTH1( "Evt_bMatched_Chi2_bl",   "",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
+    h1.addNewTH1( "Evt_bMatched_Chi2_ll",   "",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
     h1.addNewTH1( "Evt_bMatched_Chi2_bbarb","",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
-    h1.addNewTH1( "Evt_bMatched_Chi2_qbbar","",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
-    h1.addNewTH1( "Evt_bMatched_Chi2_bq",   "",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
-    h1.addNewTH1( "Evt_bMatched_Chi2_qq",   "",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
+    h1.addNewTH1( "Evt_bMatched_Chi2_bbarl","",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
+    h1.addNewTH1( "Evt_bMatched_Chi2_lb","",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
     h1.addNewTH1( "Evt_bMatched_Chi2_other","",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
 
     h1.addNewTH1( "Evt_bJet_PdgID",        "",                        "",                  "Evetns", "", "", 60, -30,   30  );
@@ -244,7 +246,7 @@ void bbarTagEff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
         // ---- * Checking generator info
         vector<GenParticle>  particles; 
-        vector<GenParticle>    bquarks,   lquarks, quarks, tops; 
+        vector<GenParticle>    bquarks,   lquarks, quarks1, quarks2, tops; 
         vector<GenParticle> chargeLeps, neutrinos; // Only keep electron and muon
         for( int idx=0; idx < GenInfo.Size; idx++ )
         {
@@ -269,14 +271,16 @@ void bbarTagEff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                 }
                 if( abs(particle.PdgID) == 5 )
                 { 
-                     quarks.push_back( particle ); 
+                    quarks1.push_back( particle ); 
+                    quarks2.push_back( particle ); 
                     bquarks.push_back( particle ); 
                     h1.GetTH1("Gen_PID_bMo1")->Fill( particle.Mo1PdgID );   
                     h1.GetTH1("Gen_PID_bMo2")->Fill( particle.Mo2PdgID );   
                 }
-                if( abs(particle.PdgID)  < 5 || particle.PdgID == 21 )
-                { 
-                     quarks.push_back( particle );
+                if( abs(particle.PdgID) <= 4 || particle.PdgID == 21 )
+                {
+                    if( !checkMo( particle, 5 ) && !checkMo( particle, -5 )) quarks2.push_back( particle ); 
+                    quarks1.push_back( particle );
                     lquarks.push_back( particle );
                     h1.GetTH1("Gen_PID_lqMo1")->Fill( particle.Mo1PdgID );   
                     h1.GetTH1("Gen_PID_lqMo2")->Fill( particle.Mo2PdgID );   
@@ -457,21 +461,25 @@ void bbarTagEff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
         // 2* Gen matching to b and bbar jets 
         vector<GenParticle> GenParticle_matchedBJet;
-        matchMultiObject( jetCandidates, quarks, GenParticle_matchedBJet );
+        matchMultiObject( jetCandidates, quarks2, GenParticle_matchedBJet );
 
         h1.GetTH1("Evt_bJet_PdgID"   )->Fill( GenParticle_matchedBJet[0].PdgID ); 
         h1.GetTH1("Evt_bbarJet_PdgID")->Fill( GenParticle_matchedBJet[1].PdgID );
  
         if( GenParticle_matchedBJet[0].PdgID == 5 && GenParticle_matchedBJet[1].PdgID == -5 )
             h1.GetTH1("Evt_bMatched_Chi2")->Fill( chi2 );
+        else if( GenParticle_matchedBJet[0].PdgID !=  5 && GenParticle_matchedBJet[1].PdgID == -5 )
+            h1.GetTH1("Evt_bMatched_Chi2_lbbar")->Fill( chi2 );
+        else if( GenParticle_matchedBJet[0].PdgID ==  5 && GenParticle_matchedBJet[1].PdgID != -5 )
+            h1.GetTH1("Evt_bMatched_Chi2_bl")->Fill( chi2 );
         else if( GenParticle_matchedBJet[0].PdgID == -5 && GenParticle_matchedBJet[1].PdgID == 5 )
             h1.GetTH1("Evt_bMatched_Chi2_bbarb")->Fill( chi2 );
-        else if( GenParticle_matchedBJet[0].PdgID == 21 && GenParticle_matchedBJet[1].PdgID == -5 )
-            h1.GetTH1("Evt_bMatched_Chi2_qbbar")->Fill( chi2 );
-        else if( GenParticle_matchedBJet[0].PdgID ==  5 && GenParticle_matchedBJet[1].PdgID == 21 )
-            h1.GetTH1("Evt_bMatched_Chi2_bq")->Fill( chi2 );
-        else if( GenParticle_matchedBJet[0].PdgID == 21  && GenParticle_matchedBJet[1].PdgID == 21 )
-            h1.GetTH1("Evt_bMatched_Chi2_qq")->Fill( chi2 );
+        else if( GenParticle_matchedBJet[0].PdgID == -5 && GenParticle_matchedBJet[1].PdgID != 5 )
+            h1.GetTH1("Evt_bMatched_Chi2_bbarl")->Fill( chi2 );
+        else if( GenParticle_matchedBJet[0].PdgID != -5 && GenParticle_matchedBJet[1].PdgID == 5 )
+            h1.GetTH1("Evt_bMatched_Chi2_lb")->Fill( chi2 );
+        else if( GenParticle_matchedBJet[0].PdgID !=  5 && GenParticle_matchedBJet[1].PdgID != -5 )
+            h1.GetTH1("Evt_bMatched_Chi2_ll")->Fill( chi2 );
         else
             h1.GetTH1("Evt_bMatched_Chi2_other")->Fill( chi2 );
        
