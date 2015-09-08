@@ -28,7 +28,10 @@ namespace{
         void fillAsym( TH1* h, double value );
 
     template<class Object>    
-        void getHighPtObject( vector<Object> col, Object &obj );
+        void getHighPtObject(  vector<Object> col, Object &obj );
+
+    template<class Object>    
+        void get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 );
 
     template <class Object, class matchingObject>
         bool matchObject( Object &obj, matchingObject &mobj, vector<matchingObject> col, double dR=0.5 );
@@ -80,6 +83,31 @@ namespace{
                 }
             }
             obj=col[o1];
+        }
+
+    //* get 2 high pT object from collection
+    template <class Object>
+        void get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 )
+        {
+            int o1(-1); 
+            int o2(-1);
+            double pt1(0); 
+            double pt2(0);
+            const int size=col.size();
+            for( int i=0; i<size; i++)
+            {
+                if( pt1 < col[i].Pt ){
+                    pt2 = pt1;
+                    pt1 = col[i].Pt;
+                    o2  = o1;
+                    o1  = i;
+                }else if( pt2 < col[i].Pt ){
+                    pt2 = col[i].Pt;
+                    o2  = i;
+                }
+            }
+            obj1=col[o1];
+            obj2=col[o2];
         }
 
     //* Matching object with dR 
