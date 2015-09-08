@@ -384,7 +384,7 @@ void bbarTagEff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
         vector<TopCandidate> topPair;         
         const int sizeNonBJetCol = nonBJetCol.size();
         float chi2 = +1E10;
-        int topjet1(-1), topjet2(-1), hadronicTopbjet(-1), leptonicTopbjet(-1), ibjet(-1), ibbarjet(-1); 
+        int topjet1(-1), topjet2(-1), hadronicTopbjet(-1), leptonicTopbjet(-1); 
         for( int ij1=1; ij1<sizeNonBJetCol; ij1++){
             for( int ij2=ij1-1; ij2<ij1; ij2++){
                 for( int bj=0; bj<2; bj++)
@@ -419,27 +419,24 @@ void bbarTagEff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
         if( isoLep.Charge < 0 ) // tbar->bbar+w-, w- -> l- v
         {
-            ibjet    = hadronicTopbjet;
-            ibbarjet = leptonicTopbjet;
+            b_jet    = BJetCol[hadronicTopbjet];
+            bbar_jet = BJetCol[leptonicTopbjet];
         }
         else if( isoLep.Charge > 0 ) //t->b+w+, w+ -> l+ v
         {
-            ibjet    = leptonicTopbjet;
-            ibbarjet = hadronicTopbjet;
+            b_jet    = BJetCol[leptonicTopbjet];
+            bbar_jet = BJetCol[hadronicTopbjet];
         }
         else
         { std::cout<<">> [ERROR] There an nuetral lepton!? "<<std::endl; }
 
-        b_jet    = BJetCol[ibjet];
-        bbar_jet = BJetCol[ibbarjet];
-
         vector<Jet> jetCandidates;
-        jetCandidates.push_back(    b_jet );
-        jetCandidates.push_back( bbar_jet );
-        jetCandidates.push_back( hardJet1 );
-        jetCandidates.push_back( hardJet2 );
+        jetCandidates.push_back(    b_jet ); //0
+        jetCandidates.push_back( bbar_jet ); //1
+        jetCandidates.push_back( hardJet1 ); //2
+        jetCandidates.push_back( hardJet2 ); //3
 
-        // Gen matching
+        // 1* Gen matching to top
         GenParticle GenParticle_matchedHadronicTop;
         matchObject( topPair[iHadronic], GenParticle_matchedHadronicTop, tops, 1E+8);
 
@@ -457,11 +454,12 @@ void bbarTagEff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             }
         }
 
+        // 2* Gen matching to b and bbar jets 
         vector<GenParticle> GenParticle_matchedBJet;
         matchMultiObject( jetCandidates, quarks, GenParticle_matchedBJet );
 
-        h1.GetTH1("Evt_bJet_PdgID"   )->Fill( GenParticle_matchedBJet[ibjet].PdgID    ); 
-        h1.GetTH1("Evt_bbarJet_PdgID")->Fill( GenParticle_matchedBJet[ibbarjet].PdgID );
+        h1.GetTH1("Evt_bJet_PdgID"   )->Fill( GenParticle_matchedBJet[0].PdgID ); 
+        h1.GetTH1("Evt_bbarJet_PdgID")->Fill( GenParticle_matchedBJet[1].PdgID );
  
         if( GenParticle_matchedBJet[0].PdgID == 5 && GenParticle_matchedBJet[1].PdgID == -5 )
             h1.GetTH1("Evt_bMatched_Chi2")->Fill( chi2 );
