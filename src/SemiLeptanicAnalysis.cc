@@ -36,6 +36,7 @@
 #include "PhysicsTools/Utilities/interface/LumiReweightingStandAlone.h" 
 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/format.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/functions.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Jet.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Vertex.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h"
@@ -82,14 +83,6 @@ SemiLeptanicAnalysis::~SemiLeptanicAnalysis()
 }
 
 // ------------ Other function -------------
-    template<class valuetype>
-std::string SemiLeptanicAnalysis::num2str( valuetype i )
-{
-    std::string s;
-    stringstream ss(s);
-    ss << i;
-    return ss.str();
-}
     template<class TH1>
 void SemiLeptanicAnalysis::setCutFlow( TH1* h )
 {
@@ -122,12 +115,6 @@ void SemiLeptanicAnalysis::setCutFlow( TH1* h )
 }
 
     template<class TH1>
-void SemiLeptanicAnalysis::fillAsym( TH1* h, double value )
-{
-    if( value < 0. ) h->Fill(-1);
-    else h->Fill(0);
-}
-    template<class TH1>
 void SemiLeptanicAnalysis::setLeptonSelHist( TH1* h )
 {
     h->GetXaxis()->SetBinLabel(1,"1:0:0");
@@ -136,66 +123,6 @@ void SemiLeptanicAnalysis::setLeptonSelHist( TH1* h )
     h->GetXaxis()->SetBinLabel(4,"1:1:0");
     h->GetXaxis()->SetBinLabel(5,"0:1:1");
     h->GetXaxis()->SetBinLabel(6,"1:0:1");
-}
-bool SemiLeptanicAnalysis::isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCol, double dR )
-{
-    bool isIsoLepFromJets = true;
-    int const jetcolSize = jetCol.size();
-    for( int i=0; i<jetcolSize; i++ )
-    {
-        double dr = lepton.P4.DeltaR( jetCol[i].P4 );
-        if( dr < dR )
-        { 
-            isIsoLepFromJets = false;
-            break;
-        }
-    }
-    return isIsoLepFromJets;
-}
-float SemiLeptanicAnalysis::getChi2( Jet jet1, Jet jet2, Jet bjet, float M_top, float Wth_top, float M_W, float Wth_W )
-{
-    TLorentzVector qq_v  = jet1.P4 + jet2.P4;
-    TLorentzVector bqq_v = bjet.P4 + qq_v;
-    float iTop = ( bqq_v.M() - M_top )/Wth_top;
-    float iW   = (  qq_v.M() - M_W   )/Wth_W;
-    return iTop*iTop + iW*iW;
-}
-double SemiLeptanicAnalysis::Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 b, TVector3 bbar )
-{
-    TVector3 O2_1v = b + bbar;
-    TVector3 O2_2v = isoLep.Cross( hardJet );
-    double O2 = O2_1v.Dot( O2_2v );
-    return O2;
-}
-double SemiLeptanicAnalysis::Obs3( TLorentzVector isoLep, TLorentzVector hardJet, TLorentzVector b, TLorentzVector bbar, int charge )
-{
-    if( abs(charge) != 1 ){ std::cout<<">> [ERROR] SemiLeptanicAnalysis::Obs3 input strange charge: "<<charge<<", it shall be 1 or -1"<<std::endl; return 0.; }
-
-    // In CM(b,b~), b and b~ will back-to-back, i.e vector(b)=-vector(b~)
-    TVector3 bbCM = -( b + bbar ).BoostVector();
-    b.Boost(bbCM); isoLep.Boost(bbCM); hardJet.Boost(bbCM);
-
-    TVector3 bV       = b.Vect(); 
-    TVector3 isoLepV  = isoLep.Vect();
-    TVector3 hardJetV = hardJet.Vect(); 
-
-    double O3 = double(charge)*(bV.Dot(isoLepV.Cross(hardJetV)));
-    return O3;
-}
-double SemiLeptanicAnalysis::Obs4( TVector3 isoLep, TVector3 hardJet, TVector3 b, TVector3 bbar, int charge )
-{
-    if( abs(charge) != 1 ){ std::cout<<">> [ERROR] SemiLeptanicAnalysis::Obs4 input strange charge: "<<charge<<", it shall be 1 or -1"<<std::endl; return 0.; }
-    TVector3 O4_1v = b - bbar;
-    TVector3 O4_2v = isoLep.Cross( hardJet );
-    double O4 = double(charge)*(O4_1v.Dot( O4_2v ));
-    return O4;
-}
-double SemiLeptanicAnalysis::Obs7( TVector3 beam, TVector3 b, TVector3 bbar )
-{
-    double O7_1z = beam.Dot( b - bbar );
-    double O7_2z = beam.Dot( b.Cross( bbar ));
-    double O7 = O7_1z * O7_2z;
-    return O7;
 }
 
 // ------------ method called once each job just before starting event loop  ------------
@@ -659,18 +586,19 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                             h1.GetTH1("Evt_Top_Leptonic_Mt"  )->Fill( top_leptonic.MassT );
                             h1.GetTH1("Evt_Top_Leptonic_Phi" )->Fill( top_leptonic.Phi   );
 
-                            // Lable the hardest non_bjet 
-                            int j1=-1;
-                            double pt1=0;
-                            for( int i=0; i < sizeNonBJetCol; i++)
-                            {
-                                if( pt1 < nonBJetCol[i].Pt ){
-                                    j1=i;
-                                    pt1=nonBJetCol[i].Pt;
-                                }
-                            }
-                            if( j1 == -1 ){ std::cout<<">>[WARNING] "<<entry<<"Doesn't find hard jet!"<<endl; }
-                            hardJet = nonBJetCol[j1];
+                            // Lable the hardest non_bjet
+                            getHighPtObject( nonBJetCol, hardJet); 
+                            //int j1=-1;
+                            //double pt1=0;
+                            //for( int i=0; i < sizeNonBJetCol; i++)
+                            //{
+                            //    if( pt1 < nonBJetCol[i].Pt ){
+                            //        j1=i;
+                            //        pt1=nonBJetCol[i].Pt;
+                            //    }
+                            //}
+                            //if( j1 == -1 ){ std::cout<<">>[WARNING] "<<entry<<"Doesn't find hard jet!"<<endl; }
+                            //hardJet = nonBJetCol[j1];
                         }
                     }
                 }
