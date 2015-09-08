@@ -42,26 +42,11 @@ class SemiLeptanicResultsCheck : public edm::EDAnalyzer{
         virtual void analyze(const edm::Event&, const edm::EventSetup&);
         virtual void endJob();
 
-        std::string int2str( int i=3 );
-        template<class TH1>
-            void setObservableHist( TH1* h, string ob );
-        template<class TH1>
-            void fillObservableHist( TH1* h, double ob, string obs, double wrt=1 );
-        template <class Object, class matchingObject>
-            bool matchMultiObject( vector<Object> incol, vector<matchingObject> mcol, vector<matchingObject> &outcol );
-        template <class Object, class matchingObject>
-            bool matchObject( Object &obj, matchingObject &mobj, vector<matchingObject> col, double dR=0.5 );
         template <class Object>
             bool getHighPtSelectMo( vector<Object> col, Object &obj, int mo=0 );
         template <class Object>
-            void getHighPtObject(  vector<Object> col, Object &obj );
-        template <class Object>
             void get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 );
 
-        bool isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCol, double dR=0.5 );
-
-        double Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 bjet1, TVector3 bjet2 );
-        double Obs7( TVector3   beam, TVector3   bjet1, TVector3 bjet2);
 
         // ----------member data ---------------------------
 

@@ -38,6 +38,7 @@
 #include "PhysicsTools/Utilities/interface/LumiReweightingStandAlone.h" 
 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/format.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/functions.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/checkEvtTool.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Jet.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Vertex.h" 
@@ -81,139 +82,6 @@ SemiLeptanicResultsCheck::~SemiLeptanicResultsCheck()
 }
 
 // ------------ Other function -------------
-std::string SemiLeptanicResultsCheck::int2str( int i )
-{
-    std::string s;
-    stringstream ss(s);
-    ss << i;
-    return ss.str();
-}
-template<class TH1>
-void SemiLeptanicResultsCheck::setObservableHist( TH1* h, string ob ){
-    h->GetXaxis()->SetBinLabel(1,(ob+"<0").c_str());
-    h->GetXaxis()->SetBinLabel(2,(ob+">0").c_str());
-}
-template<class TH1>
-void SemiLeptanicResultsCheck::fillObservableHist( TH1* h, double ob, string obs, double wrt ){
-    if( ob > 0 ){
-        h->Fill((obs+">0").c_str(), wrt);
-    }else{
-        h->Fill((obs+"<0").c_str(), wrt);
-    }
-}
-template <class Object, class matchingObject>
-bool SemiLeptanicResultsCheck::matchMultiObject( vector<Object> incol, vector<matchingObject> mcol, vector<matchingObject> &outcol )
-{
-    if( incol.size() > mcol.size() )
-    {
-        std::cout<<">> [ERROR] input size: "<<incol.size()<<" > matching size: "<<mcol.size()<<std::endl;
-        return false;
-    }
-    const int inSize = incol.size();
-    const int mSize  = mcol.size();
-    double   dR[inSize][mSize];
-    int    iObj[inSize][mSize];
-    for( int i=0; i<inSize; i++ ){
-        for( int j=0; j<mSize; j++){
-            dR[i][j]=incol[i].P4.DeltaR( mcol[j].P4 );
-            iObj[i][j]=j;
-        }
-        for( int j=0; j<mSize; j++){
-            for( int k=0; k<mSize; k++){
-                if( dR[i][j] < dR[i][k] ) // NOTE: j is after k ( sort number small -> big )
-                {
-                    double tmp1 =   dR[i][j];
-                    int    tmp2 = iObj[i][j];
-                    dR[i][j] = dR[i][k];
-                    dR[i][k] = tmp1;
-                    iObj[i][j] = iObj[i][k];
-                    iObj[i][k] = tmp2;
-                }
-            }
-        }
-        //std::cout<<">> [ALPHA] "<<i<<" dR ";
-        //for( int j=0; j<mSize; j++){
-        //    std::cout<<dR[i][j]<<", ";
-        //}
-        //std::cout<<std::endl;
-        //std::cout<<">> [ALPHA] "<<i<<" idx ";
-        //for( int j=0; j<mSize; j++){
-        //    std::cout<<iObj[i][j]<<", ";
-        //}
-        //std::cout<<std::endl;
-    }
-    bool matched=false;
-    int iMatchedObj[inSize];
-    int iMatchedIdx[inSize];
-    for( int i=0; i<inSize; i++ )
-    { 
-        iMatchedObj[i] = iObj[i][0];
-        iMatchedIdx[i] = 0; 
-    }
-    //std::cout<<">> [ALPHA] ";
-    //for( int i=0; i<inSize; i++ ){
-    //    std::cout<<"( "<<i<<", "<<iMatchedObj[i]<<") ";
-    //}
-    while( !matched ) // Matching
-    {
-        matched=true;
-        for( int i=0; i<inSize; i++ ){
-            for( int j=0; j<i; j++ ){
-                if( iMatchedObj[i] == iMatchedObj[j] )
-                { 
-                    double dRi = dR[i][iMatchedIdx[i]];
-                    double dRj = dR[j][iMatchedIdx[j]];
-                    if( dRi < dRj )
-                    {
-                        int originIdx = iMatchedIdx[j];
-                        iMatchedIdx[j] = originIdx+1;             // move to next
-                        iMatchedObj[j] = iObj[j][iMatchedIdx[j]]; // move to next
-                    }else{
-                        int originIdx = iMatchedIdx[i];
-                        iMatchedIdx[i] = originIdx+1;             // move to next
-                        iMatchedObj[i] = iObj[i][iMatchedIdx[i]]; // move to next
-                    }   
-                    matched=false;
-                    //std::cout<<">> [ALPHA] ";
-                    //for( int z=0; z<inSize; z++ ){
-                    //    std::cout<<"( "<<z<<", "<<iMatchedObj[z]<<") ";
-                    //}
-                    //std::cout<<std::endl;
-                }
-            }
-        }
-    }
-    //std::cout<<">> [ALPHA] ";
-    for( int i=0; i<inSize; i++ )
-    {
-        outcol.push_back( mcol[iMatchedObj[i]] );
-        //std::cout<<"( "<<i<<", "<<iMatchedObj[i]<<" ) ";
-    }    
-    //std::cout<<std::endl;
-    return true;
-}
-template <class Object, class matchingObject>
-bool SemiLeptanicResultsCheck::matchObject( Object &obj, matchingObject &mobj, vector<matchingObject> col, double dR )
-{
-    int     obsize = col.size();
-    int       midx = -1;
-    bool   matched = false;
-    double      dr = 10000000;
-    for( int i=0; i<obsize; i++ )
-    {
-        double dr_ = col[i].P4.DeltaR(obj.P4); 
-        if( dr_ > dR ) continue;
-        if( dr_ < dr )
-        {
-              dr = dr_;
-            midx = i; 
-            matched = true;
-        }
-    }
-    if( matched ) mobj = col[midx];
-    //else std::cout<<"[WARING] Can't find matched particle in SemiLeptanicResultsCheck::matchObject<"<<typeid(obj).name()<<"> within dR "<<dR<<std::endl;
-    return matched;
-}
 template <class Object>
 bool SemiLeptanicResultsCheck::getHighPtSelectMo( vector<Object> col, Object &obj, int mo )
 {
@@ -235,22 +103,6 @@ bool SemiLeptanicResultsCheck::getHighPtSelectMo( vector<Object> col, Object &ob
     if( matched ) obj=col[o1];
     //else std::cout<<"[WARING] Can't find matched particle in SemiLeptanicResultsCheck::getHighPtSelectMo"<<std::endl;
     return matched;
-}
-    template <class Object>
-void SemiLeptanicResultsCheck::getHighPtObject( vector<Object> col, Object &obj )
-{
-    int o1(-1);
-    double pt(0);
-    const int size=col.size();
-    for( int i=0; i<size; i++)
-    {
-        if( pt < col[i].Pt )
-        {
-            pt=col[i].Pt;
-            o1=i;
-        }
-    }
-    obj=col[o1];
 }
 template <class Object>
 void SemiLeptanicResultsCheck::get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 )
@@ -274,36 +126,6 @@ void SemiLeptanicResultsCheck::get2HighPtObject( vector<Object> col, Object &obj
     obj1=col[o1];
     obj2=col[o2];
 }
-
-bool SemiLeptanicResultsCheck::isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCol, double dR )
-{
-    bool isIsoLepFromJets = true;
-    int const jetcolSize = jetCol.size();
-    for( int i=0; i<jetcolSize; i++ )
-    {
-        double dr = lepton.P4.DeltaR( jetCol[i].P4 );
-        if( dr < dR )
-        { 
-            isIsoLepFromJets = false;
-            break;
-        }
-    }
-    return isIsoLepFromJets;
-}
-double SemiLeptanicResultsCheck::Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 bjet1, TVector3 bjet2 )
-{
-    TVector3 O2_1v =  bjet1 + bjet2;
-    TVector3 O2_2v = isoLep.Cross( hardJet );
-    double O2 = O2_1v.Dot( O2_2v );
-    return O2;
-}
-double SemiLeptanicResultsCheck::Obs7( TVector3 beam, TVector3 bjet1, TVector3 bjet2 )
-{
-    double O7_1z = beam.Dot( bjet1 - bjet2 );
-    double O7_2z = beam.Dot( bjet1.Cross( bjet2 ));
-    double O7 = O7_1z * O7_2z;
-    return O7;
-}
 // ------------ method called once each job just before starting event loop  ------------
 void SemiLeptanicResultsCheck::beginJob()
 {
@@ -313,15 +135,15 @@ void SemiLeptanicResultsCheck::beginJob()
     h1.addNewTH1( "Evt_O7",                  "O7",                      "O_{7}",             "Events", "", "", 40,  -2,   2   );
     h1.addNewTH1( "Evt_O7_Mu",               "O7",                      "O_{7}",             "Events", "", "", 40,  -2,   2   );
     h1.addNewTH1( "Evt_O7_El",               "O7",                      "O_{7}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O7Asym",              "A_{O7}",                  "",                  "Events", "", "",  2,   0,   2   );
-    h1.addNewTH1( "Evt_O7Asym_Mu",           "A_{O7}",                  "",                  "Events", "", "",  2,   0,   2   );
-    h1.addNewTH1( "Evt_O7Asym_El",           "A_{O7}",                  "",                  "Events", "", "",  2,   0,   2   );
+    h1.addNewTH1( "Evt_O7Asym",              "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_O7Asym_Mu",           "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_O7Asym_El",           "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O2",                  "O2",                      "O_{2}",             "Events", "", "", 40,  -2,   2   );
     h1.addNewTH1( "Evt_O2_Mu",               "O2",                      "O_{2}",             "Events", "", "", 40,  -2,   2   );
     h1.addNewTH1( "Evt_O2_El",               "O2",                      "O_{2}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O2Asym",              "A_{O2}",                  "",                  "Events", "", "",  2,   0,   2   );
-    h1.addNewTH1( "Evt_O2Asym_Mu",           "A_{O2}",                  "",                  "Events", "", "",  2,   0,   2   );
-    h1.addNewTH1( "Evt_O2Asym_El",           "A_{O2}",                  "",                  "Events", "", "",  2,   0,   2   );
+    h1.addNewTH1( "Evt_O2Asym",              "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_O2Asym_Mu",           "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_O2Asym_El",           "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
 
     h1.addNewTH1( "Evt_Events",              "",                        "",                  "Events", "", "",  1,   1,   2   );
     h1.addNewTH1( "Evt_Channel",             "",                        "",                  "Events", "", "",  4,   0,   4   );
@@ -409,9 +231,9 @@ void SemiLeptanicResultsCheck::beginJob()
     h1.addNewTH1( "Gen_O2_highPt",           "O2",                      "",                  "Events", "", "", 40,  -2,   2  );
     h1.addNewTH1( "Gen_O2_highPt_Mu",        "O2",                      "",                  "Events", "", "", 40,  -2,   2  );
     h1.addNewTH1( "Gen_O2_highPt_El",        "O2",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "Gen_O2Asym_highPt",       "A_{O2}",                  "",                  "Events", "", "",  2,   0,   2  );
-    h1.addNewTH1( "Gen_O2Asym_highPt_Mu",    "A_{O2}",                  "",                  "Events", "", "",  2,   0,   2  );
-    h1.addNewTH1( "Gen_O2Asym_highPt_El",    "A_{O2}",                  "",                  "Events", "", "",  2,   0,   2  );
+    h1.addNewTH1( "Gen_O2Asym_highPt",       "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1  );
+    h1.addNewTH1( "Gen_O2Asym_highPt_Mu",    "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1  );
+    h1.addNewTH1( "Gen_O2Asym_highPt_El",    "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "Gen_highPtLQ_PID",        "",                        "",                  "Evetns", "", "", 60, -30,   30 );
     h1.addNewTH1( "Gen_highPtLQ_Mo1",        "",                        "",                  "Evetns", "", "", 60, -30,   30 );
     h1.addNewTH1( "Gen_highPtLQ_Mo2",        "",                        "",                  "Evetns", "", "", 60, -30,   30 );
@@ -423,26 +245,13 @@ void SemiLeptanicResultsCheck::beginJob()
     h1.addNewTH1( "Gen_O2_ideal",            "O2",                      "",                  "Events", "", "", 40,  -2,   2  );
     h1.addNewTH1( "Gen_O2_ideal_Mu",         "O2",                      "",                  "Events", "", "", 40,  -2,   2  );
     h1.addNewTH1( "Gen_O2_ideal_El",         "O2",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "Gen_O2Asym_ideal",        "A_{O2}",                  "",                  "Events", "", "",  2,   0,   2  );
-    h1.addNewTH1( "Gen_O2Asym_ideal_Mu",     "A_{O2}",                  "",                  "Events", "", "",  2,   0,   2  );
-    h1.addNewTH1( "Gen_O2Asym_ideal_El",     "A_{O2}",                  "",                  "Events", "", "",  2,   0,   2  );
+    h1.addNewTH1( "Gen_O2Asym_ideal",        "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1  );
+    h1.addNewTH1( "Gen_O2Asym_ideal_Mu",     "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1  );
+    h1.addNewTH1( "Gen_O2Asym_ideal_El",     "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "Gen_ideal_HasO2",         "O2 in theory",            "",                  "Evetns", "", "",  2,   0,   2  );
 
     h1.CreateTH1( fs );
     h1.Sumw2();
-
-    setObservableHist( h1.GetTH1("Evt_O7Asym"),           "O_{7}");
-    setObservableHist( h1.GetTH1("Evt_O7Asym_Mu"),        "O_{7}");
-    setObservableHist( h1.GetTH1("Evt_O7Asym_El"),        "O_{7}");
-    setObservableHist( h1.GetTH1("Evt_O2Asym"),           "O_{2}");
-    setObservableHist( h1.GetTH1("Evt_O2Asym_Mu"),        "O_{2}");
-    setObservableHist( h1.GetTH1("Evt_O2Asym_El"),        "O_{2}");
-    setObservableHist( h1.GetTH1("Gen_O2Asym_highPt"),    "O_{2}");
-    setObservableHist( h1.GetTH1("Gen_O2Asym_highPt_El"), "O_{2}");
-    setObservableHist( h1.GetTH1("Gen_O2Asym_highPt_Mu"), "O_{2}");
-    setObservableHist( h1.GetTH1("Gen_O2Asym_ideal"),     "O_{2}");
-    setObservableHist( h1.GetTH1("Gen_O2Asym_ideal_El"),  "O_{2}");
-    setObservableHist( h1.GetTH1("Gen_O2Asym_ideal_Mu"),  "O_{2}");
 
     // Create TH2D
     h2 = TH2InfoClass<TH2D>(Debug_);
@@ -627,7 +436,7 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
             getHighPtObject ( chargeLeps, lep    );
             double O2 = Obs2( lep.P3, lq.P3, b1.P3, b2.P3 );
 
-            fillObservableHist( h1.GetTH1("Gen_O2Asym_highPt"), O2, "O_{2}");
+            fillAsym( h1.GetTH1("Gen_O2Asym_highPt"), O2 );
             h1.GetTH1("Gen_O2_highPt"    )->Fill(  O2/Owrt_    );
             h1.GetTH1("Gen_highPtLQ_PID" )->Fill(  lq.PdgID    );
             h1.GetTH1("Gen_highPtLQ_Mo1" )->Fill(  lq.Mo1PdgID );
@@ -639,12 +448,12 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
             if( abs(lep.PdgID) == 11) // Electron channel
             {
                 h1.GetTH1("Gen_O2_highPt_El" )->Fill(O2/Owrt_);
-                fillObservableHist( h1.GetTH1("Gen_O2Asym_highPt_El"), O2, "O_{2}");
+                fillAsym( h1.GetTH1("Gen_O2Asym_highPt_El"), O2 );
             }
             if( abs(lep.PdgID) == 13) // muon channel
             {
                 h1.GetTH1("Gen_O2_highPt_Mu" )->Fill(O2/Owrt_);
-                fillObservableHist( h1.GetTH1("Gen_O2Asym_highPt_Mu"), O2, "O_{2}");
+                fillAsym( h1.GetTH1("Gen_O2Asym_highPt_Mu"), O2 );
             }
 
             if( b1.PdgID/b2.PdgID == -1 ) h1.GetTH1("Gen_highPtBQ_Pair")->Fill(1);
@@ -664,16 +473,16 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                     O2 = Obs2( isolep.P3, hardjet.P3, bbarjet.P3, bjet.P3 );
                     h1.GetTH1("Gen_O2_ideal"   )->Fill(O2/Owrt_);
                     h1.GetTH1("Gen_ideal_HasO2")->Fill(1);
-                    fillObservableHist( h1.GetTH1("Gen_O2Asym_ideal"), O2, "O_{2}");
+                    fillAsym( h1.GetTH1("Gen_O2Asym_ideal"), O2 );
                     if( abs(isolep.PdgID) == 11 ) // Electron channel
                     {
                         h1.GetTH1("Gen_O2_ideal_El")->Fill(O2/Owrt_);
-                        fillObservableHist( h1.GetTH1("Gen_O2Asym_ideal_El"), O2, "O_{2}");
+                        fillAsym( h1.GetTH1("Gen_O2Asym_ideal_El"), O2 );
                     }
                     if( abs(isolep.PdgID) == 13 ) // Muon channel
                     {
                         h1.GetTH1("Gen_O2_ideal_Mu")->Fill(O2/Owrt_);
-                        fillObservableHist( h1.GetTH1("Gen_O2Asym_ideal_Mu"), O2, "O_{2}");
+                        fillAsym( h1.GetTH1("Gen_O2Asym_ideal_Mu"), O2 );
                     }
                 }
             }  
@@ -772,10 +581,10 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                 h1.GetTH1("Evt_O2_El")->Fill(O2/Owrt_);
                 h1.GetTH1("Evt_O7"   )->Fill(O7/Owrt_);
                 h1.GetTH1("Evt_O7_El")->Fill(O7/Owrt_);
-                fillObservableHist( h1.GetTH1("Evt_O7Asym"),    O7, "O_{7}");
-                fillObservableHist( h1.GetTH1("Evt_O7Asym_El"), O7, "O_{7}");
-                fillObservableHist( h1.GetTH1("Evt_O2Asym"),    O2, "O_{2}");
-                fillObservableHist( h1.GetTH1("Evt_O2Asym_El"), O2, "O_{2}");
+                fillAsym( h1.GetTH1("Evt_O7Asym"),    O7 );
+                fillAsym( h1.GetTH1("Evt_O7Asym_El"), O7 );
+                fillAsym( h1.GetTH1("Evt_O2Asym"),    O2 );
+                fillAsym( h1.GetTH1("Evt_O2Asym_El"), O2 );
                 // Check gen particle match to objects
                 GenParticle isoLepGen;
                 vector<Jet> selectedJet;
@@ -859,10 +668,10 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                 h1.GetTH1("Evt_O2_Mu")->Fill(O2/Owrt_);
                 h1.GetTH1("Evt_O7"   )->Fill(O7/Owrt_);
                 h1.GetTH1("Evt_O7_Mu")->Fill(O7/Owrt_);
-                fillObservableHist( h1.GetTH1("Evt_O7Asym"),    O7, "O_{7}");
-                fillObservableHist( h1.GetTH1("Evt_O7Asym_Mu"), O7, "O_{7}");
-                fillObservableHist( h1.GetTH1("Evt_O2Asym"),    O2, "O_{2}");
-                fillObservableHist( h1.GetTH1("Evt_O2Asym_Mu"), O2, "O_{2}");
+                fillAsym( h1.GetTH1("Evt_O7Asym"),    O7 );
+                fillAsym( h1.GetTH1("Evt_O7Asym_Mu"), O7 );
+                fillAsym( h1.GetTH1("Evt_O2Asym"),    O2 );
+                fillAsym( h1.GetTH1("Evt_O2Asym_Mu"), O2 );
                 // Check gen particle match to objects
                 //GenParticle hardJetGen, bjet1Gen, bjet2Gen, isoLepGen;
                 // Check gen particle match to objects
