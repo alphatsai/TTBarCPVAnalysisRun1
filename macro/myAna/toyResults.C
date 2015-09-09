@@ -36,7 +36,7 @@ const int NCH=3;
 std::string fin="../results/30Aug_LepJet_AddO3O4/Final_PredictionTree.root";
 std::string outpath="../results/30Aug_LepJet_AddO3O4";
 
-void runAll()
+void toyResults()
 {
     TFile* f = new TFile(fin.c_str()); 
     for( int iobs=0; iobs<NOBS; iobs++ ){
