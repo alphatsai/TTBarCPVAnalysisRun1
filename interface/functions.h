@@ -8,8 +8,10 @@
 #include "TVector3.h"
 #include "TLorentzVector.h"
 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/format.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Jet.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h"
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/GenParticle.h" 
 
 const float mass_t  = 172.5;
 const float mass_W  = 82.9;
@@ -28,13 +30,21 @@ namespace{
         void fillAsym( TH1* h, double value );
 
     template<class Object>    
-        void getHighPtObject( vector<Object> col, Object &obj );
+        void getHighPtObject(  vector<Object> col, Object &obj );
+
+    template<class Object>    
+        void get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 );
 
     template <class Object, class matchingObject>
         bool matchObject( Object &obj, matchingObject &mobj, vector<matchingObject> col, double dR=0.5 );
 
     template <class Object, class matchingObject> 
         bool matchMultiObject( vector<Object> incol, vector<matchingObject> mcol, vector<matchingObject> &outcol );
+
+    bool checkMo( GenParticle     GenInfo, int moPdgID );
+    bool checkDa( GenParticle     GenInfo, int daPdgID );
+    bool checkMo( GenInfoBranches GenInfo, int idx, int moPdgID );
+    bool checkDa( GenInfoBranches GenInfo, int idx, int daPdgID );
     bool isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCol, double dR=0.5 );
 
     float getChi2( Jet jet1, Jet jet2, Jet bjet, float M_top=mass_t, float Wth_top=width_t, float M_W=mass_W, float Wth_W=width_W );
@@ -80,6 +90,31 @@ namespace{
                 }
             }
             obj=col[o1];
+        }
+
+    //* get 2 high pT object from collection
+    template <class Object>
+        void get2HighPtObject( vector<Object> col, Object &obj1, Object &obj2 )
+        {
+            int o1(-1); 
+            int o2(-1);
+            double pt1(0); 
+            double pt2(0);
+            const int size=col.size();
+            for( int i=0; i<size; i++)
+            {
+                if( pt1 < col[i].Pt ){
+                    pt2 = pt1;
+                    pt1 = col[i].Pt;
+                    o2  = o1;
+                    o1  = i;
+                }else if( pt2 < col[i].Pt ){
+                    pt2 = col[i].Pt;
+                    o2  = i;
+                }
+            }
+            obj1=col[o1];
+            obj2=col[o2];
         }
 
     //* Matching object with dR 
@@ -180,6 +215,34 @@ namespace{
             }    
             return true;
         }
+
+    //* check if the mo1 or mo2 = moPdgID
+    bool checkMo( GenParticle GenInfo, int moPdgID )
+    {
+        bool isMyMo=false;
+        if( GenInfo.Mo1PdgID == moPdgID || GenInfo.Mo2PdgID == moPdgID ) isMyMo = true;
+        return isMyMo;
+    }
+    bool checkMo( GenInfoBranches GenInfo, int idx, int moPdgID )
+    {
+        bool isMyMo=false;
+        if( GenInfo.Mo1PdgID[idx] == moPdgID || GenInfo.Mo2PdgID[idx] == moPdgID ) isMyMo = true;
+        return isMyMo;
+    }
+
+    //* check if the da1 or da2 = daPdgID
+    bool checkDa( GenParticle GenInfo, int daPdgID )
+    {
+        bool isMyDa=false;
+        if( GenInfo.Da1PdgID == daPdgID || GenInfo.Da2PdgID == daPdgID ) isMyDa = true;
+        return isMyDa;
+    }
+    bool checkDa( GenInfoBranches GenInfo, int idx, int daPdgID )
+    {
+        bool isMyDa=false;
+        if( GenInfo.Da1PdgID[idx] == daPdgID || GenInfo.Da2PdgID[idx] == daPdgID ) isMyDa = true;
+        return isMyDa;
+    }
 
     //* check if the lepton is isolated from jets
     bool isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCol, double dR )
