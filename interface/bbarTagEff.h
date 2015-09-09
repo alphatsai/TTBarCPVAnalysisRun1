@@ -42,6 +42,8 @@ class bbarTagEff : public edm::EDAnalyzer{
         virtual void analyze(const edm::Event&, const edm::EventSetup&);
         virtual void endJob();
 
+        template <class TH1>
+            void integralFromLowerBins( TH1* h_in, TH1* h_out );
         template <class Object>
             bool getHighPtSelectMo( vector<Object> col, Object &obj, int mo=0 );
 

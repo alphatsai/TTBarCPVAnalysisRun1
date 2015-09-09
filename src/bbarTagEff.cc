@@ -82,6 +82,23 @@ bbarTagEff::~bbarTagEff()
 }
 
 // ------------ Other function -------------
+    template <class TH1>
+void bbarTagEff::integralFromLowerBins( TH1* h_in, TH1* h_out )
+{
+    if( h_in->GetNbinsX() != h_out->GetNbinsX() ) printf(">> [ERROR] Deffirent bin size between h_in(%d) and h_out(%d)\n", h_in->GetNbinsX(), h_out->GetNbinsX() ); 
+    int minBin = 1;
+    int maxBin = h_in->GetNbinsX();
+    double sum   = 0;
+    double sumw2 = 0;
+    for( int b=minBin; b<=maxBin; b++ )
+    {
+        sum   += h_in->GetBinContent(b);
+        sumw2 += h_in->GetBinError(b)*h_in->GetBinError(b);
+        h_out->SetBinContent(b, sum);
+        h_out->SetBinError(b, sqrt(sumw2));
+    }
+}
+
     template <class Object>
 bool bbarTagEff::getHighPtSelectMo( vector<Object> col, Object &obj, int mo )
 {
@@ -146,11 +163,17 @@ void bbarTagEff::beginJob()
     h1.addNewTH1( "Evt_bMatched_Chi2_ll",   "",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
     h1.addNewTH1( "Evt_bMatched_Chi2_bbarb","",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
     h1.addNewTH1( "Evt_bMatched_Chi2_bbarl","",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
-    h1.addNewTH1( "Evt_bMatched_Chi2_lb","",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
+    h1.addNewTH1( "Evt_bMatched_Chi2_lb",   "",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
     h1.addNewTH1( "Evt_bMatched_Chi2_other","",                        "#chi^{2}",          "Events", "", "", 200,  0, 200 );
 
     h1.addNewTH1( "Evt_bJet_PdgID",        "",                        "",                  "Evetns", "", "", 60, -30,   30  );
     h1.addNewTH1( "Evt_bbarJet_PdgID",     "",                        "",                  "Evetns", "", "", 60, -30,   30  );
+
+    h1.addNewTH1( "Evt_Top_Hadronic_Chi2CutInt", "",                 "#chi^{2}",          "Events", "", "", 200,  0, 200 );
+    h1.addNewTH1( "Evt_Top_Hadronic_Chi2CutEff", "",                 "#chi^{2}",          "Events", "", "", 200,  0, 200 );
+    h1.addNewTH1( "Evt_bMatched_Chi2CutInt",     "",                 "#chi^{2}",          "Events", "", "", 200,  0, 200 );
+    h1.addNewTH1( "Evt_bMatched_Chi2CutEff",     "",                 "#chi^{2}",          "Events", "", "", 200,  0, 200 );
+    h1.addNewTH1( "Evt_Chi2CutEff",              "",                 "#chi^{2}",          "Events", "", "", 200,  0, 200 );
 
     h1.addNewTH1( "Gen_PID",               "",                        "",                  "Evetns", "", "", 60, -30,   30  );
     h1.addNewTH1( "Gen_PID_bMo1",          "",                        "",                  "Evetns", "", "", 60, -30,   30  );
@@ -289,7 +312,14 @@ void bbarTagEff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                 {
                     chargeLeps.push_back( particle );
                     h1.GetTH1("Gen_PID_lepMo1")->Fill( particle.Mo1PdgID );   
-                    h1.GetTH1("Gen_PID_lepMo2")->Fill( particle.Mo2PdgID );   
+                    h1.GetTH1("Gen_PID_lepMo2")->Fill( particle.Mo2PdgID );  
+                    //printf(" ID: %d, Mo: %d %d\n", particle.PdgID, particle.Mo1PdgID, particle.Mo2PdgID );
+                    //int mo1 = particle.Mo1; 
+                    //int mo2 = particle.Mo2; 
+                    //printf("    Mo1: %3d:%3d, status: %3d, Da: %3d %3d\n", particle.Mo1PdgID, GenInfo.PdgID[mo1], GenInfo.Status[mo1], GenInfo.Da1PdgID[mo1], GenInfo.Da2PdgID[mo1]); 
+                    //printf("                               Da: %3d %3d (%d %d)\n", GenInfo.PdgID[GenInfo.Da1[mo1]], GenInfo.PdgID[GenInfo.Da2[mo1]], GenInfo.Status[GenInfo.Da1[mo1]], GenInfo.Status[GenInfo.Da2[mo1]]); 
+                    //printf("    Mo2: %3d:%3d, status: %3d, Da: %3d %3d\n", particle.Mo2PdgID, GenInfo.PdgID[mo2], GenInfo.Status[mo2], GenInfo.Da1PdgID[mo2], GenInfo.Da2PdgID[mo2]); 
+                    //printf("                               Da: %3d %3d (%d %d)\n", GenInfo.PdgID[GenInfo.Da1[mo2]], GenInfo.PdgID[GenInfo.Da2[mo2]], GenInfo.Status[GenInfo.Da1[mo2]], GenInfo.Status[GenInfo.Da2[mo2]]); 
                 }
                 if( abs(particle.PdgID) == 12 || abs(particle.PdgID) == 14 || abs(particle.PdgID) == 16 )
                 { 
@@ -488,6 +518,18 @@ void bbarTagEff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 // ------------ method called once each job just after ending the event loop  ------------
 void bbarTagEff::endJob(){
+    integralFromLowerBins( h1.GetTH1("Evt_bMatched_Chi2"),     h1.GetTH1("Evt_bMatched_Chi2CutInt")    );
+    integralFromLowerBins( h1.GetTH1("Evt_Top_Hadronic_Chi2"), h1.GetTH1("Evt_Top_Hadronic_Chi2CutInt"));
+    h1.GetTH1("Evt_bMatched_Chi2CutEff"    )->Add( h1.GetTH1("Evt_bMatched_Chi2CutInt")    );
+    h1.GetTH1("Evt_Top_Hadronic_Chi2CutEff")->Add( h1.GetTH1("Evt_Top_Hadronic_Chi2CutInt"));
+
+    double scale = 1/h1.GetTH1("Evt_Top_Hadronic_Chi2")->Integral();
+    h1.GetTH1("Evt_Top_Hadronic_Chi2CutEff")->Scale(scale);
+    h1.GetTH1("Evt_bMatched_Chi2CutEff")->Divide( h1.GetTH1("Evt_Top_Hadronic_Chi2CutInt") );
+
+    h1.GetTH1("Evt_Chi2CutEff")->Add( h1.GetTH1("Evt_Top_Hadronic_Chi2CutEff") );
+    h1.GetTH1("Evt_Chi2CutEff")->Multiply( h1.GetTH1("Evt_bMatched_Chi2CutEff"));
+    
     std::cout<<">> [INFO] End of Job!"<<endl;
 }
 
