@@ -1,9 +1,9 @@
 #/bin/tcsh
-echo "#############################################"
-echo "###                                       ###"
-echo "### ./checkJob.csh [name] <reSubmit> <q>  ###"
-echo "###                                       ###"
-echo "#############################################"
+echo "########################################################"
+echo "###                                                  ###"
+echo "### ./checkJob.csh [name] <rootname> <reSubmit> <q>  ###"
+echo "###                                                  ###"
+echo "########################################################"
 if ( $1 == "" ) then
 	echo "ERROR: Please input work folder name."
 	echo "Ex: ./checkJobs.csh [name]"
@@ -20,11 +20,19 @@ cmsenv
 #	echo "Nothing output..."
 #	exit
 #endif
-if( $3 == "" ) then
+if( $4 == "" ) then
 	set sq="1nh" 
 else
-	set sq=$3
+	set sq=$4
 endif
+
+if( $2 == "" ) then
+    set rootname="SemiLeptanicAnalysis"
+else
+    set rootname=$2
+endif
+
+echo ">> Checking root file name $rootname..."
 cd $1
 	set nowPath=`pwd`
 	rm -f tmp_.log tmp_check_.log
@@ -73,8 +81,7 @@ cd $1
 		set kCPUNum3=`echo $kCPUJobs3 | wc -w `
 		set killedNum=`echo $killedJobs | wc -w `
 		set abNum=`echo $abJobs | wc -w `
-		#set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed 's/bprimeTobH_\(.*\)\.root/\1/g'` 
-		set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed 's/SemiLeptanicAnalysis_\(.*\)\.root/\1/g'` 
+		set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed "s/""$rootname""_\(.*\)\.root/\1/g"`
 		set doneNum=`echo $doneJobs | wc -w`	
 		set realdoneNum=`echo $doneNum'-'$killedNum'-'$abNum'-'$kCPUNum2'-'$kCPUNum3'-'$ksegNum'-'$kbadallocNum'-'$kRootNum | bc`
 		echo "Num Log Files $lognum/$jobNum"	
@@ -130,56 +137,57 @@ cd $1
 		endif
 		rm -f tmp_.log tmp_check_.log
 
-		if ( $2 == 'reSubmit' && $notDone != 0 ) then
+		if ( $3 == 'reSubmit' && $notDone != 0 ) then
 			foreach nn($notDonelist)
 				mv $nowPath/$sample/output/job_$nn.log $nowPath/$sample
 				echo resubmit job_$nn.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$nn.log source $nowPath/$sample/input/job_$nn.sh
 			end	
 		endif
-		if ( $2 == 'reSubmit' && $killedNum != 0 ) then
+		if ( $3 == 'reSubmit' && $killedNum != 0 ) then
 			foreach kn($killedJobs)
 				mv $nowPath/$sample/output/job_$kn.log $nowPath/$sample
-				rm -f $sample/output/SemiLeptanicAnalysis_$kn.root
+				rm -f $sample/output/$rootname_$kn.root
 				echo resubmit job_$kn.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kn.log source $nowPath/$sample/input/job_$kn.sh
 			end	
 		endif
-		if ( $2 == 'reSubmit' && $kCPUNum2 != 0 ) then
+		if ( $3 == 'reSubmit' && $kCPUNum2 != 0 ) then
 			foreach kcn($kCPUJobs2)
 				mv $nowPath/$sample/output/job_$kcn.log $nowPath/$sample
-				rm -f $sample/output/SemiLeptanicAnalysis_$kcn.root
+				rm -f $sample/output/$rootname_$kcn.root
 				echo resubmit job_$kcn.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kcn.log source $nowPath/$sample/input/job_$kcn.sh
 			end	
 		endif
-		if ( $2 == 'reSubmit' && $kCPUNum3 != 0 ) then
+		if ( $3 == 'reSubmit' && $kCPUNum3 != 0 ) then
 			foreach kcn3($kCPUJobs3)
 				mv $nowPath/$sample/output/job_$kcn3.log $nowPath/$sample
-				rm -f $sample/output/SemiLeptanicAnalysis_$kcn3.root
+				rm -f $sample/output/$rootname_$kcn3.root
 				echo resubmit job_$kcn3.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kcn3.log source $nowPath/$sample/input/job_$kcn3.sh
 			end	
 		endif
-		if ( $2 == 'reSubmit' && $abNum != 0 ) then
+		if ( $3 == 'reSubmit' && $abNum != 0 ) then
 			foreach an($abJobs)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
-				rm -f $sample/output/SemiLeptanicAnalysis_$an.root
+				rm -f $sample/output/$rootname_$an.root
 				echo resubmit job_$an.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$an.log source $nowPath/$sample/input/job_$an.sh
 			end	
 		endif
-		if ( $2 == 'reSubmit' && $kbadallocNum != 0 ) then
+		if ( $3 == 'reSubmit' && $kbadallocNum != 0 ) then
 			foreach an($kbadallocJobs)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
-				rm -f $sample/output/SemiLeptanicAnalysis_$an.root
+				rm -f $sample/output/$rootname_$an.root
 				echo resubmit job_$an.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$an.log source $nowPath/$sample/input/job_$an.sh
 			end	
 		endif
 	end
 	echo "============================================================================================="
-	echo "Summerize: $doneS/$total"
+        echo ">> Checking root file name $rootname.root"
+	echo ">> Summerize: $doneS/$total"
 	rm -f tmp_.log
 cd -
 
