@@ -164,8 +164,8 @@ def main():
   for filename in os.listdir(cfg_dirname):
     if not os.path.isfile(os.path.join(cfg_dirname,filename)):
       continue
-    #if re.search("inputMatrixElements_cfi.py", filename):
-    #  shutil.copy(os.path.join(cfg_dirname,filename),main_workdir)
+    if re.search("inputJsons_cfi.py", filename):
+      shutil.copy(os.path.join(cfg_dirname,filename),main_workdir)
 
   # open and read the dataset_list file
   dataset_list_file = open(dataset_list,"r")

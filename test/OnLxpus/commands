@@ -1,0 +1,2 @@
+./createAndSubmitJobs.py -w 10Sep_bbbarTaggingEff -d datasetListLepJetResults.txt -c ../bbarTagEff_cfg.py -o bbarTagEff
+./createAndSubmitJobs.py -w 10Sep_bbbarTaggingEff -d datasetListLepJetResults.txt -c ../semiLeptanicResultsCheck_cfg.py -o SemiLeptanicAnalysis 
