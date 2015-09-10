@@ -472,20 +472,23 @@ void bbarTagEff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
         jetCandidates.push_back( hardJet2 ); //3
 
         // 1* Gen matching to top
-        GenParticle GenParticle_matchedHadronicTop;
-        matchObject( topPair[iHadronic], GenParticle_matchedHadronicTop, tops, 1E+8);
-
-        double dR = topPair[iHadronic].P4.DeltaR(GenParticle_matchedHadronicTop.P4); 
-        h2.GetTH2("TH2_Chi2_vs_dR_GenPar_TopCan")->Fill( chi2, dR );           
- 
-        if( dR < 0.5 )
+        if( tops.size() != 0 )
         {
-            // Check whether the matched top is hadronic decay
-            int iW = (abs(GenParticle_matchedHadronicTop.Da1PdgID) == 24 )? GenParticle_matchedHadronicTop.Da1:GenParticle_matchedHadronicTop.Da2;
-            GenParticle W( GenInfo, iW );
-            if( abs(W.Da1PdgID) <=  5 || abs(W.Da2PdgID) <= 5 ) 
+            GenParticle GenParticle_matchedHadronicTop;
+            matchObject( topPair[iHadronic], GenParticle_matchedHadronicTop, tops, 1E+8);
+
+            double dR = topPair[iHadronic].P4.DeltaR(GenParticle_matchedHadronicTop.P4); 
+            h2.GetTH2("TH2_Chi2_vs_dR_GenPar_TopCan")->Fill( chi2, dR );           
+
+            if( dR < 0.5 )
             {
-                h1.GetTH1("Evt_tMatched_Chi2")->Fill( chi2 );            
+                // Check whether the matched top is hadronic decay
+                int iW = (abs(GenParticle_matchedHadronicTop.Da1PdgID) == 24 )? GenParticle_matchedHadronicTop.Da1:GenParticle_matchedHadronicTop.Da2;
+                GenParticle W( GenInfo, iW );
+                if( abs(W.Da1PdgID) <=  5 || abs(W.Da2PdgID) <= 5 ) 
+                {
+                    h1.GetTH1("Evt_tMatched_Chi2")->Fill( chi2 );            
+                }
             }
         }
 
