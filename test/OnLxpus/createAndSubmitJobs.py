@@ -86,7 +86,7 @@ cd MAIN_WORKDIR
 eval `scram runtime -sh`
 
 cp -v MAIN_WORKDIR/CMSSW_cfg.py $BATCHDIR/CMSSW_cfg.py
-#cp -v MAIN_WORKDIR/inputMatrixElements_cfi.py $BATCHDIR/
+cp -v MAIN_WORKDIR/inputJsons_cfi.py $BATCHDIR/
 cp -v DATASET_WORKDIR/input/inputFiles_JOB_NUMBER_cfi.py $BATCHDIR/inputFiles_cfi.py
 
 cd $BATCHDIR
