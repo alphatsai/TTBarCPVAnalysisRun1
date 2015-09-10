@@ -1,6 +1,6 @@
 # Dataset_name    Number_of_jobs    EOS_location    PyCfg_parameters (optional)
-TTJets_SemiLeptMGDecays 1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/TTJets_SemiLeptMGDecays 
-TTJets_FullLeptMGDecays 1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/TTJets_FullLeptMGDecays 
+TTJets_SemiLeptMGDecays 5 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/TTJets_SemiLeptMGDecays 
+TTJets_FullLeptMGDecays 2 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/TTJets_FullLeptMGDecays 
 TTJets_HadronicMGDecays 1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/TTJets_HadronicMGDecays 
 #
 T_t-channel  1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/T_t-channel
