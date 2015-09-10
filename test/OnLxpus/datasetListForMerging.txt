@@ -83,7 +83,7 @@ ZZ: L=19707
 ZZ 8.2
 
 ##### Dataset_name xs (in pb, for data set to -1)
-BkgMC: L=19707
+BkgMC_TTJetsNonSemiLeptMGDecaysExcluded: L=19707
 DYJetsToLL 3503.7
 WJetsToLNu 37509
 WW 56.0
@@ -96,7 +96,7 @@ Tbar_t-channel 29.74
 Tbar_s-channel 1.9
 Tbar_tW-channel 11.1
 
-BkgMC_TTJetsNonSemiLeptMGDecaysIncluded: L=19707
+BkgMC: L=19707
 TTJets_FullLeptMGDecays 26.826695116
 TTJets_HadronicMGDecays 115.56466064
 DYJetsToLL 3503.7

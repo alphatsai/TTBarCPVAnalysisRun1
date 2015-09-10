@@ -54,18 +54,18 @@ void mkSudoExpViaTemplate()
     h_all[OBS_O7][CH_Electron] = (TH1D*)fin->Get("MC__Evt_O7_El");
     h_all[OBS_O7][CH_Combined] = (TH1D*)fin->Get("MC__Evt_O7");
 
-    h_bkg[OBS_O2][CH_Electron]     = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O2_El"    );
-    h_bkg[OBS_O2][CH_Muon]         = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O2_Mu"    );
-    h_bkg[OBS_O2][CH_Combined]     = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O2"       );
-    h_bkg[OBS_O7][CH_Electron]     = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O7_El"    );
-    h_bkg[OBS_O7][CH_Muon]         = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O7_Mu"    );
-    h_bkg[OBS_O7][CH_Combined]     = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O7"       );
-    h_bkgAsym[OBS_O2][CH_Electron] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O2Asym_El");
-    h_bkgAsym[OBS_O2][CH_Muon]     = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O2Asym_Mu");
-    h_bkgAsym[OBS_O2][CH_Combined] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O2Asym"   );
-    h_bkgAsym[OBS_O7][CH_Electron] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O7Asym_El");
-    h_bkgAsym[OBS_O7][CH_Muon]     = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O7Asym_Mu");
-    h_bkgAsym[OBS_O7][CH_Combined] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_O7Asym"   );
+    h_bkg[OBS_O2][CH_Electron]     = (TH1D*)fin->Get("BkgMC__Evt_O2_El"    );
+    h_bkg[OBS_O2][CH_Muon]         = (TH1D*)fin->Get("BkgMC__Evt_O2_Mu"    );
+    h_bkg[OBS_O2][CH_Combined]     = (TH1D*)fin->Get("BkgMC__Evt_O2"       );
+    h_bkg[OBS_O7][CH_Electron]     = (TH1D*)fin->Get("BkgMC__Evt_O7_El"    );
+    h_bkg[OBS_O7][CH_Muon]         = (TH1D*)fin->Get("BkgMC__Evt_O7_Mu"    );
+    h_bkg[OBS_O7][CH_Combined]     = (TH1D*)fin->Get("BkgMC__Evt_O7"       );
+    h_bkgAsym[OBS_O2][CH_Electron] = (TH1D*)fin->Get("BkgMC__Evt_O2Asym_El");
+    h_bkgAsym[OBS_O2][CH_Muon]     = (TH1D*)fin->Get("BkgMC__Evt_O2Asym_Mu");
+    h_bkgAsym[OBS_O2][CH_Combined] = (TH1D*)fin->Get("BkgMC__Evt_O2Asym"   );
+    h_bkgAsym[OBS_O7][CH_Electron] = (TH1D*)fin->Get("BkgMC__Evt_O7Asym_El");
+    h_bkgAsym[OBS_O7][CH_Muon]     = (TH1D*)fin->Get("BkgMC__Evt_O7Asym_Mu");
+    h_bkgAsym[OBS_O7][CH_Combined] = (TH1D*)fin->Get("BkgMC__Evt_O7Asym"   );
 
     TFile* fout = new TFile(fout_s.c_str(), "RECREATE");
 

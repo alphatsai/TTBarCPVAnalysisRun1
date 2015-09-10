@@ -36,14 +36,14 @@ void results(TFile* f, string output="."){
 
     //drawObservableDist( f, output, "MC__Evt_O7", 	"O_{7}/M_{top}^{3}", "LepJets", 1);
     //drawObservableDist( f, output, "MC__Evt_O2", 	"O_{2}/M_{top}^{3}", "LepJets", 1);
-    drawACP( f, 1, "", "BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt", "O2", output, "ACP", "O_{2}");
-    drawACP( f, 1, "", "BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt", "O3", output, "ACP", "O_{3}");
-    drawACP( f, 1, "", "BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt", "O4", output, "ACP", "O_{4}");
-    drawACP( f, 1, "", "BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt", "O7", output, "ACP", "O_{7}");
-    drawACP( f, 0, "", "TTJets_SemiLeptMGDecays__Evt",                 "O2", output, "ACP", "O_{2}");
-    drawACP( f, 0, "", "TTJets_SemiLeptMGDecays__Evt",                 "O3", output, "ACP", "O_{3}");
-    drawACP( f, 0, "", "TTJets_SemiLeptMGDecays__Evt",                 "O4", output, "ACP", "O_{4}");
-    drawACP( f, 0, "", "TTJets_SemiLeptMGDecays__Evt",                 "O7", output, "ACP", "O_{7}");
+    drawACP( f, 1, "", "BkgMC__Evt", "O2", output, "ACP", "O_{2}");
+    drawACP( f, 1, "", "BkgMC__Evt", "O3", output, "ACP", "O_{3}");
+    drawACP( f, 1, "", "BkgMC__Evt", "O4", output, "ACP", "O_{4}");
+    drawACP( f, 1, "", "BkgMC__Evt", "O7", output, "ACP", "O_{7}");
+    drawACP( f, 0, "", "TTJets_SemiLeptMGDecays__Evt", "O2", output, "ACP", "O_{2}");
+    drawACP( f, 0, "", "TTJets_SemiLeptMGDecays__Evt", "O3", output, "ACP", "O_{3}");
+    drawACP( f, 0, "", "TTJets_SemiLeptMGDecays__Evt", "O4", output, "ACP", "O_{4}");
+    drawACP( f, 0, "", "TTJets_SemiLeptMGDecays__Evt", "O7", output, "ACP", "O_{7}");
 
     drawStack( f, "Evt_O2",    "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, 2, false );
     drawStack( f, "Evt_O2",    "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, 2, true );
@@ -80,18 +80,18 @@ void results(TFile* f, string output="."){
     drawStack( f, "Evt_CutFlow_Mu", "", "Events", output, 1, false );
     drawStack( f, "Evt_CutFlow_El", "", "Events", output, 1, false );
 
-    getCutFlowNum( f, "BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_CutFlow_Mu", true, output);
-    getCutFlowNum( f, "BkgMC_TTJetsNonSemiLeptMGDecaysIncluded__Evt_CutFlow_El", true, output);
-    getCutFlowNum( f, "TTJets_SemiLeptMGDecays__Evt_CutFlow_Mu",                 true, output);
-    getCutFlowNum( f, "TTJets_SemiLeptMGDecays__Evt_CutFlow_El",                 true, output);
-    getCutFlowNum( f, "TTJets_NonSemiLeptMGDecays__Evt_CutFlow_Mu",              true, output);
-    getCutFlowNum( f, "TTJets_NonSemiLeptMGDecays__Evt_CutFlow_El",              true, output);
-    getCutFlowNum( f, "SingleT__Evt_CutFlow_Mu",                                 true, output);
-    getCutFlowNum( f, "SingleT__Evt_CutFlow_El",                                 true, output);
-    getCutFlowNum( f, "DiBoson__Evt_CutFlow_Mu",                                 true, output);
-    getCutFlowNum( f, "DiBoson__Evt_CutFlow_El",                                 true, output);
-    getCutFlowNum( f, "WJetsToLNu__Evt_CutFlow_Mu",                              true, output);
-    getCutFlowNum( f, "WJetsToLNu__Evt_CutFlow_El",                              true, output);
-    getCutFlowNum( f, "DYJetsToLL__Evt_CutFlow_Mu",                              true, output);
-    getCutFlowNum( f, "DYJetsToLL__Evt_CutFlow_El",                              true, output);
+    getCutFlowNum( f, "BkgMC__Evt_CutFlow_Mu", true, output);
+    getCutFlowNum( f, "BkgMC__Evt_CutFlow_El", true, output);
+    getCutFlowNum( f, "TTJets_SemiLeptMGDecays__Evt_CutFlow_Mu",    true, output);
+    getCutFlowNum( f, "TTJets_SemiLeptMGDecays__Evt_CutFlow_El",    true, output);
+    getCutFlowNum( f, "TTJets_NonSemiLeptMGDecays__Evt_CutFlow_Mu", true, output);
+    getCutFlowNum( f, "TTJets_NonSemiLeptMGDecays__Evt_CutFlow_El", true, output);
+    getCutFlowNum( f, "SingleT__Evt_CutFlow_Mu",                    true, output);
+    getCutFlowNum( f, "SingleT__Evt_CutFlow_El",                    true, output);
+    getCutFlowNum( f, "DiBoson__Evt_CutFlow_Mu",                    true, output);
+    getCutFlowNum( f, "DiBoson__Evt_CutFlow_El",                    true, output);
+    getCutFlowNum( f, "WJetsToLNu__Evt_CutFlow_Mu",                 true, output);
+    getCutFlowNum( f, "WJetsToLNu__Evt_CutFlow_El",                 true, output);
+    getCutFlowNum( f, "DYJetsToLL__Evt_CutFlow_Mu",                 true, output);
+    getCutFlowNum( f, "DYJetsToLL__Evt_CutFlow_El",                 true, output);
 }
