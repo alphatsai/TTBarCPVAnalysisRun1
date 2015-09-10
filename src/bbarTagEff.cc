@@ -135,7 +135,7 @@ void bbarTagEff::beginJob()
     h1.addNewTH1( "Evt_O3Asym_Mu",         "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O3Asym_El",         "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
 
-    h1.addNewTH1( "Evt_Events",            "",                        "",                  "Events", "", "",  1,   1,   2   );
+    h1.addNewTH1( "Evt_CutFlow",           "",                        "",                  "Evetns", "", "",  2,   0,   2  );
     h1.addNewTH1( "Evt_Channel",           "",                        "",                  "Events", "", "",  4,   0,   4   );
     h1.addNewTH1( "Evt_NJets",             "Num. of jets",            "N(j)",              "Events", "", "", 20,   0,   20  );
     h1.addNewTH1( "Evt_NSelJets",          "Num. of selected jets",   "N(selected j)",     "Events", "", "", 20,   0,   20  );
@@ -205,9 +205,16 @@ void bbarTagEff::beginJob()
     std::cout<<">> [INFO] Chaining "<<inputFiles_.size()<<" files..."<<endl;
     chain_  = new TChain(inputTTree_.c_str());
 
+    double allEvents(0);
     for(unsigned i=0; i<inputFiles_.size(); ++i){
         chain_->Add(inputFiles_.at(i).c_str());
+        TFile* f = TFile::Open(inputFiles_.at(i).c_str(),"READ");
+        TH1D*  h = (TH1D*)f->Get("SemiLeptanic/Evt_CutFlow");
+        allEvents += h->GetBinContent(1);
+        f->Close();
     }
+
+    h1.GetTH1("Evt_CutFlow")->Fill(0.,allEvents);
 
     EvtInfo.Register(chain_);
     GenInfo.Register(chain_);
@@ -260,7 +267,7 @@ void bbarTagEff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
         if( Debug_ ){ if( ( entry%reportEvery_) == 0 ) cout<<">> [DEBUG] "<<entry<<" of "<< maxEvents_<<endl; }
 
-        h1.GetTH1("Evt_Events")->Fill(1);
+        h1.GetTH1("Evt_CutFlow")->Fill(1);
 
              if(  isMuonEvt_ &&  isElectronEvt_ ) h1.GetTH1("Evt_Channel")->Fill(3);
         else if(  isMuonEvt_ && !isElectronEvt_ ) h1.GetTH1("Evt_Channel")->Fill(2);
