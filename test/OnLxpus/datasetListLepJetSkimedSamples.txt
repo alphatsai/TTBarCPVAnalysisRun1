@@ -17,8 +17,8 @@ WJetsToLNu 20 /eos/cms/store/user/jtsai/TTBarCPV/skim/WJetsToLNu_TuneZ2Star_8TeV
 WW 5 /eos/cms/store/user/jtsai/TTBarCPV/skim/WW_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
 ZZ 5 /eos/cms/store/user/jtsai/TTBarCPV/skim/ZZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
 WZ 5 /eos/cms/store/user/jtsai/TTBarCPV/skim/WZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-ZZJetsTo2L2Q 5 /eos/cms/store/user/jtsai/TTBarCPV/skim/ZZJetsTo2L2Q_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-WZJetsTo2L2Q 5 /eos/cms/store/user/jtsai/TTBarCPV/skim/WZJetsTo2L2Q_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+#ZZJetsTo2L2Q 5 /eos/cms/store/user/jtsai/TTBarCPV/skim/ZZJetsTo2L2Q_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+#WZJetsTo2L2Q 5 /eos/cms/store/user/jtsai/TTBarCPV/skim/WZJetsTo2L2Q_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
 #
 SingleElectron_Run2012A-22Jan2013-v1_190645-193621 10 /eos/cms/store/user/jtsai/TTBarCPV/skim/SingleElectron_Run2012A-22Jan2013-v1_190645-193621 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
 SingleElectron_Run2012B-22Jan2013-v1_193834-194833 10 /eos/cms/store/user/jtsai/TTBarCPV/skim/SingleElectron_Run2012B-22Jan2013-v1_193834-194833 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
