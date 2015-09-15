@@ -17,22 +17,40 @@ void drawBBbarTagEff( TFile* f, std::string savePath, int rebin=1, std::string a
 {
     TH1D* h_topHadronChi2 = (TH1D*)f->Get((ana+"/Evt_Top_Hadronic_Chi2").c_str()); 
     TH1D* h_bbMatchedChi2 = (TH1D*)f->Get((ana+"/Evt_bMatched_Chi2").c_str()); 
+    TH1D* h_bbarbMTagChi2 = (TH1D*)f->Get((ana+"/Evt_bMatched_Chi2_bbarb").c_str());
+    TH1D* h_otherMTagChi2; 
+    TH1D* h_missTagChi2_lbbar = (TH1D*)f->Get((ana+"/Evt_bMatched_Chi2_lbbar").c_str()); h_otherMTagChi2 = (TH1D*)h_missTagChi2_lbbar->Clone("h_otherMTagChi2");
+    TH1D* h_missTagChi2_bl    = (TH1D*)f->Get((ana+"/Evt_bMatched_Chi2_bl"   ).c_str()); h_otherMTagChi2->Add(h_missTagChi2_bl   );
+    TH1D* h_missTagChi2_bbarl = (TH1D*)f->Get((ana+"/Evt_bMatched_Chi2_bbarl").c_str()); h_otherMTagChi2->Add(h_missTagChi2_bbarl);
+    TH1D* h_missTagChi2_lb    = (TH1D*)f->Get((ana+"/Evt_bMatched_Chi2_lb"   ).c_str()); h_otherMTagChi2->Add(h_missTagChi2_lb   );
+    TH1D* h_missTagChi2_ll    = (TH1D*)f->Get((ana+"/Evt_bMatched_Chi2_ll"   ).c_str()); h_otherMTagChi2->Add(h_missTagChi2_ll   );
     h_topHadronChi2->Rebin(rebin);
     h_bbMatchedChi2->Rebin(rebin);
+    h_bbarbMTagChi2->Rebin(rebin);
+    h_otherMTagChi2->Rebin(rebin);
 
     TH1D* h_topHadronChi2Int = (TH1D*)h_topHadronChi2->Clone("h_topHadronChi2Int");
     TH1D* h_bbMatchedChi2Int = (TH1D*)h_bbMatchedChi2->Clone("h_bbMatchedChi2Int");
+    TH1D* h_bbarbMTagChi2Int = (TH1D*)h_bbMatchedChi2->Clone("h_bbarbMTagChi2Int");
+    TH1D* h_otherMTagChi2Int = (TH1D*)h_otherMTagChi2->Clone("h_otherMTagChi2Int");
     integralFromLowerBins( h_topHadronChi2, h_topHadronChi2Int ); 
     integralFromLowerBins( h_bbMatchedChi2, h_bbMatchedChi2Int ); 
+    integralFromLowerBins( h_bbarbMTagChi2, h_bbarbMTagChi2Int ); 
+    integralFromLowerBins( h_otherMTagChi2, h_otherMTagChi2Int ); 
    
-    double totalEvts = h_topHadronChi2->Integral();
+    //double totalEvts = h_topHadronChi2->Integral();
+    double totalEvts = h_topHadronChi2->GetEntries();
     double nomalized = 1/totalEvts; 
     TH1D* h_topHadronChi2Eff = (TH1D*)h_topHadronChi2Int->Clone("h_topHadronChi2Eff"); 
     TH1D* h_bbMatchedChi2Eff = (TH1D*)h_bbMatchedChi2Int->Clone("h_bbMatchedChi2Eff"); 
+    TH1D* h_bbarbMTagChi2Eff = (TH1D*)h_bbarbMTagChi2Int->Clone("h_bbarbMTagChi2Eff"); 
+    TH1D* h_otherMTagChi2Eff = (TH1D*)h_otherMTagChi2Int->Clone("h_otherMTagChi2Eff"); 
     TH1D* h_bbTotalChi2Eff   = (TH1D*)h_bbMatchedChi2Int->Clone("h_bbMatchedChi2Eff");
 
     h_topHadronChi2Eff->Scale(nomalized); 
     h_bbMatchedChi2Eff->Divide(h_topHadronChi2Int); 
+    h_bbarbMTagChi2Eff->Divide(h_topHadronChi2Int); 
+    h_otherMTagChi2Eff->Divide(h_topHadronChi2Int); 
     h_bbTotalChi2Eff->Scale(nomalized); // The same h_topHadronChi2Eff->Multiply(h_bbMatchedChi2Eff);
 
     h_topHadronChi2Eff->GetXaxis()->SetTitle("#chi^{2} cut"); 
@@ -49,11 +67,17 @@ void drawBBbarTagEff( TFile* f, std::string savePath, int rebin=1, std::string a
     h_topHadronChi2Eff->GetYaxis()->SetTickLength(0.02);
     h_topHadronChi2Eff->GetYaxis()->SetTitleOffset(0.83);
     h_topHadronChi2Eff->GetYaxis()->SetTitleFont(42);
+    h_topHadronChi2Eff->GetYaxis()->SetRangeUser(0, 0.95);
     h_topHadronChi2Eff->SetMinimum(0);
     h_topHadronChi2Eff->SetLineColor(2); 
     h_topHadronChi2Eff->SetLineWidth(3); 
     h_bbMatchedChi2Eff->SetLineColor(4); 
     h_bbMatchedChi2Eff->SetLineWidth(3); 
+    h_bbarbMTagChi2Eff->SetLineColor(8); 
+    h_bbarbMTagChi2Eff->SetLineWidth(3); 
+    h_otherMTagChi2Eff->SetLineColor(8); 
+    h_otherMTagChi2Eff->SetLineWidth(3); 
+    h_otherMTagChi2Eff->SetLineStyle(7); 
     h_bbTotalChi2Eff->SetLineColor(1); 
     h_bbTotalChi2Eff->SetLineWidth(3); 
     h_bbTotalChi2Eff->SetLineStyle(7); 
@@ -77,22 +101,28 @@ void drawBBbarTagEff( TFile* f, std::string savePath, int rebin=1, std::string a
     h_topHadronChi2Eff->Draw("HIST"); 
     h_bbMatchedChi2Eff->Draw("HISTSAME"); 
     h_bbTotalChi2Eff->Draw("HISTSAME");
+    h_bbarbMTagChi2Eff->Draw("HISTSAME");
+    h_otherMTagChi2Eff->Draw("HISTSAME");
 
-    TLegend *leg = new TLegend(0.6186975,0.2217391,0.9978992,0.3985507,NULL,"brNDC");
+    TLegend *leg = new TLegend(0.5871849,0.6488439,0.9663866,0.8612717,NULL,"brNDC");
     leg->SetBorderSize(0);
     leg->SetLineStyle(0);
     leg->SetLineWidth(0);
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
-    leg->AddEntry( h_topHadronChi2Eff, "#chi^{2} cut eff.",   "l");
-    leg->AddEntry( h_bbMatchedChi2Eff, "b#bar{b}-tagging eff.","l");
-    leg->AddEntry( h_bbTotalChi2Eff,   "Total eff.","l");
+    leg->AddEntry( h_topHadronChi2Eff, "#chi^{2} cut eff.",         "l");
+    leg->AddEntry( h_bbMatchedChi2Eff, "b#bar{b}-tagging eff.",     "l");
+    leg->AddEntry( h_bbTotalChi2Eff,   "Total eff.",                "l");
+    leg->AddEntry( h_bbarbMTagChi2Eff, "#bar{b}b miss-tagging rate", "l");
+    leg->AddEntry( h_otherMTagChi2Eff, "Other miss-tagging rate", "l");
     leg->Draw();
 
     c1->SaveAs((savePath+"/bbbartagEff.pdf").c_str());
 
     delete h_topHadronChi2;
     delete h_bbMatchedChi2;
+    delete h_bbarbMTagChi2;
+    delete h_otherMTagChi2;
 }
 void drawBBbarTagPDF( TFile* f, std::string savePath, bool log=true, int rebin=1, int xMax=200, std::string ana="bbarTagEff" )
 {
