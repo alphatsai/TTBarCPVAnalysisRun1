@@ -27,7 +27,7 @@ namespace{
         std::string num2str( valuetype i );
 
     template<class TH1>       
-        void fillAsym( TH1* h, double value );
+        void fillAsym( TH1* h, double value, double wrt=1 );
 
     template<class Object>    
         void getHighPtObject(  vector<Object> col, Object &obj );
@@ -68,10 +68,10 @@ namespace{
 
     //* fill asymetric to histogram with 2 bins
     template<class TH1>
-        void fillAsym( TH1* h, double value )
+        void fillAsym( TH1* h, double value, double wrt )
         {
-            if( value < 0. ) h->Fill(-1);
-            else h->Fill(0);
+            if( value < 0. ) h->Fill(-1., wrt);
+            else h->Fill(0., wrt);
         }
 
     //* get high pT object from collection

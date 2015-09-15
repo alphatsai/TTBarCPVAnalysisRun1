@@ -2,6 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 from FWCore.ParameterSet.VarParsing import VarParsing
 from inputFiles_cfi import * 
+from inputJsons_cfi import * 
 
 options = VarParsing('python')
 
@@ -25,12 +26,22 @@ options.register('ttreedir', 'bprimeKit',
     VarParsing.varType.string,
     "Name of ROOT TTree dir: Either 'ntuple' or 'skim' or 'bVeto'"
     )
+options.register('HistPUDistMC', 'pileup_mc',
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.string,
+    "Name of Histogram for MC pileup weights"
+    )
+options.register('HistPUDistData', 'pileup_data',
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.string,
+    "Name of Histogram for data pileup weights"
+    )
 options.register('dRIsoLeptonFromJets', 0.5,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.float,
     "isolate lepton with deltaR( lepton, jet )"
     )
-options.register('MaxChi2', 90,
+options.register('MaxChi2', 40,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.float,
     "Event selection for hadronic top chi2"
@@ -89,12 +100,18 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
     MaxEvents             = cms.int32(options.MaxEvents),
     ReportEvery           = cms.int32(options.reportEvery),  
     InputTTree            = cms.string(options.ttreedir+'/root'),
+    InputJsons            = cms.vstring(JsonNames), 
     InputFiles            = cms.vstring(FileNames), 
     #InputFiles            = cms.vstring(FileNames_BprimtKits_NTUG3_SemiLeptTest), 
     #InputFiles            = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkim),
+    #InputFiles            = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkimData),
     #InputFiles            = cms.vstring(FileNames_BprimtKits_SemiLept),
     HLT_MuChannel         = cms.vint32( 2868,3244,3542,4204,4205,4827,5106,5573  ), # HLT_IsoMu24_eta2p1_v*
     HLT_ElChannel         = cms.vint32( 3155,3496,4002,4003,4004,5043 ),            # HLT_Ele27_WP80_v* 
+    File_PUDistMC         = cms.string('pileup_Data_Summer12_53X_S10.root'),
+    File_PUDistData       = cms.string('pileup_Data_Summer12_53X_S10.root'),
+    Hist_PUDistMC         = cms.string(options.HistPUDistMC),
+    Hist_PUDistData       = cms.string(options.HistPUDistData),
     SelPars_Vertex        = defaultVertexSelectionParameters.clone(), 
     SelPars_Jet           = defaultJetSelectionParameters.clone(), 
     SelPars_BJet          = defaultBJetSelectionParameters.clone(), 

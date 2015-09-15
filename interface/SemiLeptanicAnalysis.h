@@ -22,6 +22,9 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
+#include "PhysicsTools/Utilities/interface/LumiReWeighting.h"
+#include "PhysicsTools/Utilities/interface/LumiReweightingStandAlone.h" 
+
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1Info.h"
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1InfoClass.h"
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Jet.h"
@@ -53,8 +56,13 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
 
         int                             maxEvents_; 
         const int                       reportEvery_; 
-        const std::string               inputTTree_;
         const std::vector<std::string>  inputFiles_;
+        const std::vector<std::string>  inputJsons_;
+        const std::string               inputTTree_;
+        const std::string               file_PUDistMC_;
+        const std::string               file_PUDistData_;
+        const std::string               hist_PUDistMC_;
+        const std::string               hist_PUDistData_;
 
         vector<int> HLT_MuChannel_;
         vector<int> HLT_ElChannel_;
@@ -84,6 +92,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         double O4_;
         double O7_;
         double WrtObs_;
+        double WrtEvt_;
 
         edm::Service<TFileService> fs;
         TChain* chain_;
@@ -99,6 +108,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         TH1InfoClass<TH1D> h1;
         TH2InfoClass<TH2D> h2;
 
+        edm::LumiReWeighting LumiWeights_; 
 };
 
 #endif
