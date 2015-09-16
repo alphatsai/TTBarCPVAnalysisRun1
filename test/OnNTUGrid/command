@@ -1,0 +1,2 @@
+./createAndSubmitJobs.py -w 28July_Skim_WZ -d datasetListLepJetForSkim.txt -c ../filterLeptonJet_cfg.py -S /wk3/jtsai/TTBarCPV/CMSSW_6_2_8/src/TTBarCPV/TTBarCPVAnalysisRun1/test/OnNTUGrid/skimedNtuples
+./createAndSubmitJobsOnScreen.py -d datasetListLepJetForSkim.txt -w 13Augs_Skim_WJetsToLNu -c ../filterLeptonJet_cfg.py
