@@ -25,7 +25,7 @@ set dir=` echo $path_1 | sed 's/\/$//g' | sed 's/^\/.*\/\(.*\)$/\1/g'`
 set dir2=`echo $path_1 | sed 's/\/$//g' | sed "s/^\/.*\/\(.*\)\/$dir/\1/g"`
 set totalnum=$2 
 set endnum=0  
-@ endnum=$totalnum + 1
+@ endnum=$totalnum
 rm -f "tmp1$dir" "tmp2$dir" "tmp3$dir" "check_log/NotDone_ll_"$dir2"_ll_"$dir"" "check_log/Done_ll_"$dir2"_ll_"$dir"" "check_log/Duplicate_ll_"$dir2"_ll_"$dir""
 
 echo ">------------------------------------------------------------------<"
@@ -50,9 +50,9 @@ set list=`cat "tmp1$dir"`
 
 ##################### record and count the file ##########################
 echo ">>        Recording num of each $fileName.root..."
-set i=1
+set i=0
 touch "tmp2$dir"
-while ( $i != $endnum )
+while ( $i < $endnum )
 	set rootnum=`grep $fileName'_'$i'.root' "tmp1$dir"| wc -l` # Plaese change the name of the file (EX: myRoot_1_1_sjoe.root, results->myRoot )
 	echo $rootnum >> "tmp2$dir"
 	@ i++			
@@ -67,7 +67,7 @@ touch "check_log/cklog1_$dir" "check_log/cklog2_$dir"
 set no_count=0
 set many_count=0
 set badsize=0
-set i=1
+set i=0
 echo ">>        Making log file in ./check_log..."
 foreach n($size)
 	if ( $n == 0 ) then
@@ -90,17 +90,6 @@ foreach n($size)
                 endif
             endif
         endif
-        #else if ( $n == 1 ) then
-	#	#echo "Num $i ok !  "
-	#else  
-	#	echo "--------------------------------------------------------" >> "check_log/cklog2_$dir"
-	#	echo "Num $i have $n root " >> "check_log/cklog2_$dir"
-	#	echo "--------------------------------------------------------" >> "check_log/cklog2_$dir"
-	#	cat -A "tmp1$dir" | grep $fileName'_'$i'_' | awk -F "/" '{print $1"    "$2"    "$3" "$4" "$5}' | sed 's/\^\[\[00m//g' >> "check_log/cklog2_$dir" # Plaese change the name of the file (EX: myRoot_1_1_sjoe.root, results->myRoot )
-	#	echo "--------------------------------------------------------" >> "check_log/cklog2_$dir"
-	#	echo "" >> "check_log/cklog2_$dir"
-	#	@ many_count++
-	#endif
 	@ i++
 end
 if ( $no_count != 0 || $many_count != 0 ) then
