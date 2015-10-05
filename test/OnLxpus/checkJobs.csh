@@ -72,8 +72,10 @@ cd $1
 		set kCPUJobs2=`grep 'CPU time limit exceeded' $sample/output/*.log | grep 'sh:Exited' | sed 's/.*job_\(.*\)\.sh.*/\1/g'`
 		set kCPUJobs3=`grep 'CPU time limit exceeded' $sample/output/*.log | grep 'sh: line' | sed 's/.*job_\(.*\)\.sh.*/\1/g'`
 		set abJobs=`grep Aborted $sample/output/*.log | sed 's/.*job_\(.*\)\.sh.*/\1/g'`
+		set kEOSRoot=`grep 'Error while doing the asyn writing' $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
 
 		set kRootNum=`echo $kRoot | wc -w`
+		set kEOSRootNum=`echo $kEOSRoot | wc -w`
 		set ksegNum=`echo $ksegJobs | wc -w `
 		set kbadallocNum=`echo $kbadallocJobs| wc -w `
 		set kCPUNum=`echo $kCPUJobs | wc -w `
@@ -113,10 +115,6 @@ cd $1
 				@ i++
 			end
 		endif
-		if ( $notDone != 0 ) then
-			set notDonelist=`cat tmp_.log`	
-			echo "No root Jobs: "$notDonelist 
-		endif
 		if ( $kCPUNum != 0 ) then
 			echo "CPU Use Jobs: "$kCPUJobs 
 		endif
@@ -134,6 +132,13 @@ cd $1
 		endif
 		if ( $kbadallocNum != 0 ) then
 			echo "bad_alloc: "$kbadallocJobs 
+		endif
+                if ( $kEOSRootNum != 0 ) then
+                        echo "To eos fail: "$kEOSRoot
+                endif
+		if ( $notDone != 0 ) then
+			set notDonelist=`cat tmp_.log`	
+			echo "No root Jobs: "$notDonelist 
 		endif
 		rm -f tmp_.log tmp_check_.log
 
