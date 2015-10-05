@@ -111,7 +111,7 @@ std::string LeptonJetFilter::int2str( int i )
 // ------------ method called once each job just before starting event loop  ------------
 void LeptonJetFilter::beginJob()
 { 
-    h_CutFlow = fs->make<TH1D>("Evt_CutFlow", "", 4, 0, 4);
+    h_CutFlow = fs->make<TH1D>("Evt_CutFlow", "", 5, 0, 5);
     h_Events  = fs->make<TH1D>("Evt_Events",  "", 1, 0, 1);
 
     h_CutFlow->GetXaxis()->SetBinLabel(1, "Original");
