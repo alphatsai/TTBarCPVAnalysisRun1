@@ -1,5 +1,5 @@
 # Dataset_name    Number_of_jobs    EOS_location    PyCfg_parameters (optional)
-TTJets_SemiLeptMGDecays 25 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+TTJets_SemiLeptMGDecays 45 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
 TTJets_FullLeptMGDecays 15 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
 TTJets_HadronicMGDecays 15 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_HadronicMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v1     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
 #
