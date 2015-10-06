@@ -1,4 +1,4 @@
-void getEvtInfo( TFile* f, std::string dataname; std::string treeName="SemiLeptanic/tree" )
+void getEvtInfo( TFile* f, std::string dataname, std::string treeName="SemiLeptanic/tree" )
 {
         int RunNo;
         int LumiNo;
