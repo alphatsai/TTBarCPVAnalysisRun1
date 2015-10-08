@@ -263,10 +263,13 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     h_stack->Add(h_tt);
 
     if( logy ){
-        if( h_all->GetMinimum() > 0 ) 
+        if( h_all->GetMaximum() < h_data->GetMaximum()) h_stack->SetMaximum(h_data->GetMaximum()*10);
+        if( h_all->GetMinimum() > 0 )
             h_stack->SetMinimum(h_all->GetMinimum()/10);
         else
             h_stack->SetMinimum(10);
+    }else{
+        if( h_all->GetMaximum() < h_data->GetMaximum() ) h_stack->SetMaximum(h_data->GetMaximum()+h_data->GetMaximum()/10);
     }
 
     TCanvas* c1;
