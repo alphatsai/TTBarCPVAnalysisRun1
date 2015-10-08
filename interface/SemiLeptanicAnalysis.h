@@ -77,6 +77,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         const double maxChi2_;
         const double Owrt_;
         const unsigned int NJets_;
+        const int Shift_TopPtReWeight_;
         bool  Debug_;
         bool  isSkim_;
         bool  doSaveTree_;
@@ -101,6 +102,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         //const double jetPtMin_;
 
         EvtInfoBranches    EvtInfo;
+        GenInfoBranches    GenInfo;
         VertexInfoBranches VtxInfo;
         JetInfoBranches    JetInfo;
         LepInfoBranches    LepInfo;
