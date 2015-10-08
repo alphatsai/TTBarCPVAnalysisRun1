@@ -45,7 +45,8 @@
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorElectron.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorMuon.h" 
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorJet.h" 
-#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorVertex.h" 
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SelectorVertex.h"
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/BTagSFUtil.h" 
 
 //
 // constructors and destructor
@@ -73,6 +74,7 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
     maxChi2_(               iConfig.getParameter<double>("MaxChi2")),
     Owrt_(                  iConfig.getParameter<double>("Owrt")),
     NJets_(                 iConfig.getParameter<int>("NJets")),
+    Shift_BTagSF_(          iConfig.getParameter<int>("Shift_BTagSF")),
     Shift_TopPtReWeight_(   iConfig.getParameter<int>("Shift_TopPtReWeight")),
     Debug_(                 iConfig.getParameter<bool>("Debug")),
     isSkim_(                iConfig.getParameter<bool>("IsSkim")),
@@ -675,13 +677,34 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         h1.GetTH1("EvtNJet_NVertexNoWrt_El")->Fill( VxtColSelected.size(), wrtevtNoPU );
                     }
 
-                    if( BJetCol.size() >= 2 )
+                    
+                    const int sizeBJetCol = BJetCol.size();
+                    if( sizeBJetCol >= 2 )
                     {
-                        if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq2 bjets", wrtevt);
-                        if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill("#geq2 bjets", wrtevt);
+                        double wrtevt_btagSF(1);
+                        if( !isdata )
+                        {
+                            BTagSFUtil BTagSF;
+                            for( int b=0; b<sizeBJetCol; b++ )
+                            {
+                                wrtevt_btagSF *= BTagSF.getSF( "CSVM", BJetCol[b], Shift_BTagSF_ );
+                            }
+                        }
+                        if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq2 bjets", wrtevt*wrtevt_btagSF);
+                        if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill("#geq2 bjets", wrtevt*wrtevt_btagSF);
                     }
-                    if( BJetCol.size() == 2 )
+                    if( sizeBJetCol == 2 )
                     {
+                        double wrtevt_btagSF(1);
+                        if( !isdata )
+                        {
+                            BTagSFUtil BTagSF;
+                            for( int b=0; b<sizeBJetCol; b++ )
+                            {
+                                wrtevt_btagSF *= BTagSF.getSF( "CSVM", BJetCol[b], Shift_BTagSF_ );
+                            }
+                        }
+                        wrtevt *= wrtevt_btagSF;
                         if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill("=2 bjets", wrtevt);
                         if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill("=2 bjets", wrtevt);
 

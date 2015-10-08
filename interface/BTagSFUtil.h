@@ -3,19 +3,18 @@
 
 #include <string>
 #include "Jet.h"
+#include "SFlightFuncs_EPS2013.h"
 
-class BTagSFUtil{
+class BTagSFUtil
+{
     public:
-        BTagSFUtil()
-        {
-
-        }
+        BTagSFUtil(){};
         ~BTagSFUtil(){};
         float getSF( std::string tagType, Jet jet, int shift=0 )
         {
-            return getSF( tagType, jet.Pt, jet.GenFlavor, shift );
+            return getSF( tagType, jet.Pt, jet.Eta, jet.GenFlavor, shift );
         }
-        float getSF( std::string tagType, float pt, int flavor, int shift=0 ) 
+        float getSF( std::string tagType, float pt, float eta, int flavor, int shift=0 ) 
         {   
             float weight=1; 
             if( abs(flavor) == 5 )
@@ -23,15 +22,15 @@ class BTagSFUtil{
             else if( abs(flavor) == 4 ) // c use the same SF from b, but twice of unc.
                 weight=getSFb( tagType, pt, shift, true );
             else 
-                weight=getSFl( tagType, pt, shift );
+                weight=getSFl( tagType, pt, eta, shift );
             return weight;
         }
         float getSFb( std::string tagType, float pt, int shift=0, bool isC=false );
-        float getSFl( std::string tagType, float pt, int shift=0 );
+        float getSFl( std::string tagType, float pt, float eta, int shift=0 );
 
     private:
 
-}
+};
 
 float BTagSFUtil::getSFb( std::string tagType, float pt, int shift, bool isC )
 {
@@ -49,14 +48,19 @@ float BTagSFUtil::getSFb( std::string tagType, float pt, int shift, bool isC )
     float error=0;
     float SFb;
 
-    int bin;
+    int bin=-1;
     if( isC ) uncScale=2.;
     if( pt < 20  ){ pt = 20.;   uncScale=2; }
     if( pt > 800 ){ pt = 799.9; uncScale=2; }
     for( int i=0; i<int(sizeof(ptmin)/sizeof(ptmin[0])); ++i)
     {
-        if( pt >= ptmin[i] && pt < ptmax[i] ) bin=i;
+        if( pt >= ptmin[i] && pt < ptmax[i] )
+        { 
+            bin=i;
+            break;
+        }
     }
+    if( bin == -1 ) std::cout<<">> [ERROR] BTagSFUtil::GetSFb Wrong bin value!"<<std::endl;
 
     // Tagger: CSVL within 20 < pt < 800 GeV, abs(eta) < 2.4, x = pt
     if( tagType.compare("CSVL") == 0 )  
@@ -139,10 +143,62 @@ float BTagSFUtil::getSFb( std::string tagType, float pt, int shift, bool isC )
 
 }
 
-float BTagSFUtil::getSFl( std::string tagType, float pt, int shift )
+float BTagSFUtil::getSFl( std::string tagType, float pt, float eta, int shift )
 {
+    if( abs(shift) != 1 && shift != 0 )
+    {
+        std::cout<<">> [ERROR] BTagSFUtil::GetSFl shift should not be "<<shift<<std::endl; 
+        std::cout<<">>         Accept 0(nominal), 1(sigma), -1(-sigma)"<<std::endl; 
+        return 1.; 
+    }
+    if( abs(eta) > 2.4 )
+    {
+        std::cout<<">> [ERROR] BTagSFUtil::GetSFl eta should not be "<<eta<<std::endl; 
+        std::cout<<">>         Accept abs(eta) < 2.4"<<std::endl; 
+        return 1.; 
+    }
+    eta = abs(eta);
 
-
+    float weight=1;
+    if( tagType.compare("CSVL") == 0 )
+    {  
+        for ( int i=0; i<4; ++i) 
+        {
+            if( eta >= SFlight_CSVL_etamin[i] && eta < SFlight_CSVL_etamax[i] ) 
+            {
+                     if( shift > 0 ) weight = GetSFlmax("CSV","L",SFlight_CSVL_etamin[i], SFlight_CSVL_etamax[i], "ABCD")->Eval(pt); 
+                else if( shift < 0 ) weight = GetSFlmin("CSV","L",SFlight_CSVL_etamin[i], SFlight_CSVL_etamax[i], "ABCD")->Eval(pt); 
+                else weight = (GetSFlmean("CSV","L",SFlight_CSVL_etamin[i], SFlight_CSVL_etamax[i], "ABCD"))->Eval(pt); 
+                break ;
+            }
+        }
+    }
+    else if( tagType.compare("CSVM") == 0 ) 
+    { 
+        for (int i= 0; i< 4; ++i) 
+        {
+            if( eta >= SFlight_CSVM_etamin[i] && eta < SFlight_CSVM_etamax[i] ) 
+            {
+                     if( shift > 0) weight = GetSFlmax("CSV","M",SFlight_CSVM_etamin[i], SFlight_CSVM_etamax[i], "ABCD")->Eval(pt); 
+                else if( shift < 0) weight = GetSFlmin("CSV","M",SFlight_CSVM_etamin[i], SFlight_CSVM_etamax[i], "ABCD")->Eval(pt); 
+                else weight = (GetSFlmean("CSV","M",SFlight_CSVM_etamin[i], SFlight_CSVM_etamax[i], "ABCD"))->Eval(pt); 
+                break ;
+            }
+        }
+    }
+    else if( tagType.compare("CSVT") == 0 )
+    { 
+             if( shift > 0) weight = GetSFlmax("CSV","T",0.0, 2.4, "ABCD")->Eval(pt); 
+        else if( shift < 0) weight = GetSFlmin("CSV","T",0.0, 2.4, "ABCD")->Eval(pt);  
+        else weight = GetSFlmean("CSV","T",0.0, 2.4, "ABCD")->Eval(pt); 
+    }
+    else 
+    {
+        std::cout<<">> [ERROR] BTagSFUtil::GetSFl tagType not found "<<tagType<<std::endl; 
+        std::cout<<">>         Accept CSVL CSVM or CSMT"<<std::endl; 
+        return weight; 
+    }
+    return weight ; 
 }
 
 
