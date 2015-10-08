@@ -20,8 +20,13 @@ for name in fileNames:
     lines2 = filter( lambda x: not x.startswith('#'),  ( line.strip() for line in lines1 )) # Remove # comments lines
     lines3 = filter( None, ( line.split() for line in lines2 ))                             # Split RunNo, LumiNo, EvtNo
     fileInfos[name] = lines3
+    size=len(fileInfos[name])
+    i=1
     totalsame=0
     for info1 in fileInfos[name]:
+        if  i==1 or i%5000==0:
+            print ">>        %d/%d..."%( i, size) 
+
         same = 0
         for info2 in fileInfos[name]:
             if info1 == info2:
@@ -29,8 +34,9 @@ for name in fileNames:
         if same > 1:
             totalsame += 1
             print ">> [INFO] %d count events: %s %s %s"%( same, info1[RunNo], info1[LumiNo], info1[EvtNo])
-
+        i+=1
     print ">> [INFO] %d events double count"%( totalsame)
+
 for i in range(0, len(fileNames)):
     for j in range( i+1, len(fileNames)):
 

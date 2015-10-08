@@ -89,10 +89,8 @@ void TH1InfoClass<TH1>::defaultTH1Info()
     Info.push_back( TH1Info( "bJet2_Pt",     "pt of b-Jet",            "p_{t}(B-tagged j)",  "Yields", "GeV", "", 1000, -500, 500 ));
     Info.push_back( TH1Info( "Evt_Events",   "",                       "",                   "Events", "",    "", 1,     1,   2   ));
     Info.push_back( TH1Info( "Evt_Channel",  "",                       "",                   "",       "",    "", 2,     0,   2   ));
-    Info.push_back( TH1Info( "Evt_CutFlow",  "",                       "",                   "Evetns", "",    "", 11,    0,   11  ));
+    Info.push_back( TH1Info( "Evt_CutFlow",  "",                       "",                   "Evetns", "",    "", 12,    0,   12  ));
     Info.push_back( TH1Info( "Evt_NJets",    "Num. of jets",           "N(j)",               "Events", "",    "", 20,    0,   20  ));
-    Info.push_back( TH1Info( "Evt_NSelJets", "Num. of selected jets",  "N(selected j)",      "Events", "",    "", 20,    0,   20  ));
-    Info.push_back( TH1Info( "Evt_NbJets",   "Num. of b-jets",         "N(B-tagged j)",      "Events", "",    "", 20,    0,   20  ));
     Info.push_back( TH1Info( "Evt_O7",       "O7",                     "O_{7}",              "Events", "",    "",100,   -5,   5   ));
     Info.push_back( TH1Info( "Evt_O7Asym",   "O7 Asymetric",           "",                   "Events", "",    "", 2,    -1,   1   ));
 }
