@@ -51,6 +51,11 @@ options.register('NJets', 4,
     VarParsing.varType.int,
     "Number of jets"
     )
+options.register('ShiftBTagSF', 0,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.int,
+    "Systemtic unc. shift of btag sf: 0(nominal), 1(sigma), -1(-sigma)"
+    )
 options.register('ShiftTopPtReWeight', 0,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.int,
@@ -128,6 +133,7 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
     MaxChi2               = cms.double(options.MaxChi2),
     Owrt                  = cms.double(Oweight), 
     NJets                 = cms.int32(options.NJets),
+    Shift_BTagSF          = cms.int32(options.ShiftBTagSF),
     Shift_TopPtReWeight   = cms.int32(options.ShiftTopPtReWeight),
     Debug                 = cms.bool(options.Debug),
     IsSkim                = cms.bool(isSkim),
