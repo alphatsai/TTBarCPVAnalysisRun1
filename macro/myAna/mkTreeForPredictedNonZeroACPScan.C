@@ -26,8 +26,8 @@
 #include <cmath>
 
 using namespace std;
-const std::string fin_s  ="../results/30Aug_LepJet_AddO3O4/Final_histograms_SemiLeptanic.root";
-const std::string  out_s ="../results/30Aug_LepJet_AddO3O4/";
+const std::string fin_s  ="../results/15Sep_LepJet_Chi2Cut40/Final_histograms_SemiLeptanic.root";
+const std::string  out_s ="../results/15Sep_LepJet_Chi2Cut40/";
 const std::string fout_s = out_s + "Final_PredictionTree.root";
 const std::string tout_s ="tree";
 
