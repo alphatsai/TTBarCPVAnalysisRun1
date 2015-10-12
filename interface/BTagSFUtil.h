@@ -62,7 +62,7 @@ float BTagSFUtil::getSFb( std::string tagType, float pt, int shift, bool isC )
     }
     if( bin == -1 ) std::cout<<">> [ERROR] BTagSFUtil::GetSFb Wrong bin value!"<<std::endl;
 
-    // Tagger: CSVL within 20 < pt < 800 GeV, abs(eta) < 2.4, x = pt
+    // Tagger: CSVL within 20 < pt < 800 GeV, fabs(eta) < 2.4, x = pt
     if( tagType.compare("CSVL") == 0 )  
     {
         SFb = 0.997942*((1.+(0.00923753*pt))/(1.+(0.0096119*pt)));
@@ -85,7 +85,7 @@ float BTagSFUtil::getSFb( std::string tagType, float pt, int shift, bool isC )
             0.0350099 };
         error = SFb_error[bin];
     }
-    // Tagger: CSVM within 20 < pt < 800 GeV, abs(eta) < 2.4, x = pt
+    // Tagger: CSVM within 20 < pt < 800 GeV, fabs(eta) < 2.4, x = pt
     else if( tagType.compare("CSVM") == 0 ) 
     { 
         SFb = (0.938887+(0.00017124*pt))+(-2.76366e-07*(pt*pt));
@@ -108,7 +108,7 @@ float BTagSFUtil::getSFb( std::string tagType, float pt, int shift, bool isC )
             0.0596716 };
         error = SFb_error[bin];
     }
-    // Tagger: CSVT within 20 < pt < 800 GeV, abs(eta) < 2.4, x = pt
+    // Tagger: CSVT within 20 < pt < 800 GeV, fabs(eta) < 2.4, x = pt
     else if( tagType.compare("CSVT") == 0 ) 
     { 
         SFb = (0.927563+(1.55479e-05*pt))+(-1.90666e-07*(pt*pt));
@@ -151,13 +151,13 @@ float BTagSFUtil::getSFl( std::string tagType, float pt, float eta, int shift )
         std::cout<<">>         Accept 0(nominal), 1(sigma), -1(-sigma)"<<std::endl; 
         return 1.; 
     }
-    if( abs(eta) > 2.4 )
+    if( fabs(eta) > 2.4 )
     {
         std::cout<<">> [ERROR] BTagSFUtil::GetSFl eta should not be "<<eta<<std::endl; 
-        std::cout<<">>         Accept abs(eta) < 2.4"<<std::endl; 
+        std::cout<<">>         Accept fabs(eta) < 2.4"<<std::endl; 
         return 1.; 
     }
-    eta = abs(eta);
+    eta = fabs(eta);
 
     float weight=1;
     if( tagType.compare("CSVL") == 0 )
