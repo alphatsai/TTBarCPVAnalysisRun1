@@ -4,15 +4,102 @@
 #include "TVector3.h"
 #include "TLorentzVector.h"
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/format.h"
+using namespace std;
 
-class Jet{
+class Jet
+{
     public:
-        Jet(){};
+        // Constructor
+        Jet()
+        {
+            appliedJER=false; shiftJER=0;
+            appliedJES=false; shiftJES=0;
+            filledInfo=false;
+        }
         Jet( JetInfoBranches& JetInfo, int idx ){
+            appliedJER=false; shiftJER=0;
+            appliedJER=false; shiftJES=0;
+            filledInfo=false;
             Fill( JetInfo, idx );
         }
 
-        void Fill( JetInfoBranches& JetInfo, int idx ){
+        // Apply systematic unc and scale factors
+        int applyJER( int shift=0 )
+        {
+            if( !filledInfo )
+            {
+                std::cout<<">> [ERROR] Please do Jet::fill(JetInfoBranches& JetCol, int index) first!"<<std::endl;
+                return -1000;
+            }
+
+            appliedJER=true; shiftJER=shift;
+
+            // Reference: https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetResolution#JER_Scaling_factors_and_Unce_AN1
+            int iEta=-1;
+            float etaMin[]={0.0,0.5,1.1,1.7,2.3,2.8,3.2};
+            float etaMax[]={0.5,1.1,1.7,2.3,2.8,3.2,5.0};
+            float nominal[]={1.079,1.099,1.121,1.208,1.254,1.395,1.056}; 
+            float sigmaStat[]={0.005,0.005,0.005,0.013,0.026,0.036,0.048}; 
+            float sigmaSyst[]={0.026,0.028,0.029,0.045,0.056,0.051,0.185};
+
+            // Decide eta region
+            for( int i=0; i<int(sizeof(etaMin)/sizeof(etaMin[0])); i++)
+            {
+                if( fabs(Eta) >= etaMin[i] && fabs(Eta) < etaMax[i] ){ iEta=i; break; }
+                else iEta=i;
+
+            }
+
+            // JER secale factor
+            float sf = nominal[iEta];
+            if( shiftJER > 0. ) sf += sqrt( sigmaStat[iEta]*sigmaStat[iEta] + sigmaSyst[iEta]*sigmaSyst[iEta] );
+            if( shiftJER < 0. ) sf -= sqrt( sigmaStat[iEta]*sigmaStat[iEta] + sigmaSyst[iEta]*sigmaSyst[iEta] );
+
+            //// Debug
+            //std::cout<<">> fabs(eta): "<<fabs(Eta)<<", Eta: "<<Eta<<" , index: "<<iEta<<std::endl;
+            //std::cout<<"       geneta: "<<fabs(GenJetEta)<<" , genPt: "<<GenJetPt<<", genphi "<<GenJetPhi<<std::endl;
+            //std::cout<<"          Old pt: "<<Pt<<" ,Et: "<<Et<<std::endl;
+
+            // Caclute pT relation between matched Gen-jet 
+            float rescale=1.;
+            if( GenJetEta != 0 && GenJetPt != 0 && GenJetPhi != 0 ) // Has matched GenJet
+            {
+                float caculatedPt = GenJetPt + ( Pt - GenJetPt )*sf;
+                float maxPt = std::max( float(0.), caculatedPt );
+                if( maxPt > 0. ) rescale = caculatedPt/Pt; 
+            }
+
+            Pt = Pt * rescale;
+            Et = Et * rescale;
+            Px = Px * rescale; 
+            Py = Py * rescale; 
+            Pz = Pz * rescale;
+            Energy = Energy * rescale; 
+            PtCorrRaw   = PtCorrRaw   * rescale;
+            PtCorrL3    = PtCorrL3    * rescale;
+            PtCorrL7g   = PtCorrL7g   * rescale;
+            PtCorrL7uds = PtCorrL7uds * rescale;
+            PtCorrL7c   = PtCorrL7c   * rescale;
+            PtCorrL7b   = PtCorrL7b   * rescale;
+
+            P3.SetXYZ( Px, Py, Pz );
+            P4.SetPxPyPzE( Px, Py, Pz, Energy );
+            //std::cout<<"          new pt: "<<P4.Pt()<<" ,Et: "<<P4.Et()<<std::endl;
+
+            return shiftJER;
+
+        }
+
+        int applyJES( int shift=0 )
+        {
+            appliedJES=true; shiftJES=shift;
+            return shiftJES;
+        }
+
+        // Fill all infomations from bprimeKits 
+        void Fill( JetInfoBranches& JetInfo, int idx )
+        {
+            filledInfo=true;
             Index = JetInfo.Index[idx];
             NTracks = JetInfo.NTracks[idx];
             Et = JetInfo.Et[idx];
@@ -156,6 +243,13 @@ class Jet{
         std::vector<float> *SubjetCombinedSVBJetTags;
         std::vector<float> *SubjetPtUncorr;
         std::vector<float> *SubjetArea;
-};
 
+        bool appliedJER;
+        bool appliedJES;
+        int  shiftJER;
+        int  shiftJES;
+
+        private:
+            bool filledInfo;
+};
 #endif

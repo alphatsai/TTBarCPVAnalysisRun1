@@ -42,6 +42,7 @@ options.register('dRIsoLeptonFromJets', 0.5,
     "isolate lepton with deltaR( lepton, jet )"
     )
 options.register('MaxChi2', 40,
+#options.register('MaxChi2', 1000000,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.float,
     "Event selection for hadronic top chi2"
@@ -50,6 +51,11 @@ options.register('NJets', 4,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.int,
     "Number of jets"
+    )
+options.register('ShiftJER', 0,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.int,
+    "Systemtic unc. shift of JER sf: 0(nominal), 1(sigma), -1(-sigma)"
     )
 options.register('ShiftBTagSF', 0,
     VarParsing.multiplicity.singleton,    
@@ -133,6 +139,7 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
     MaxChi2               = cms.double(options.MaxChi2),
     Owrt                  = cms.double(Oweight), 
     NJets                 = cms.int32(options.NJets),
+    Shift_JER             = cms.int32(options.ShiftJER),
     Shift_BTagSF          = cms.int32(options.ShiftBTagSF),
     Shift_TopPtReWeight   = cms.int32(options.ShiftTopPtReWeight),
     Debug                 = cms.bool(options.Debug),

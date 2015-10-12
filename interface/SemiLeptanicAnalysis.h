@@ -77,6 +77,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         const double maxChi2_;
         const double Owrt_;
         const unsigned int NJets_;
+        const int Shift_JER_;
         const int Shift_BTagSF_;
         const int Shift_TopPtReWeight_;
         bool  Debug_;

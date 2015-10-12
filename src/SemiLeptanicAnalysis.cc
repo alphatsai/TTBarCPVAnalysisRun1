@@ -74,6 +74,7 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
     maxChi2_(               iConfig.getParameter<double>("MaxChi2")),
     Owrt_(                  iConfig.getParameter<double>("Owrt")),
     NJets_(                 iConfig.getParameter<int>("NJets")),
+    Shift_JER_(             iConfig.getParameter<int>("Shift_JER")),
     Shift_BTagSF_(          iConfig.getParameter<int>("Shift_BTagSF")),
     Shift_TopPtReWeight_(   iConfig.getParameter<int>("Shift_TopPtReWeight")),
     Debug_(                 iConfig.getParameter<bool>("Debug")),
@@ -295,7 +296,8 @@ void SemiLeptanicAnalysis::beginJob()
     h1.addNewTH1( "Evt_CutFlow_El",           "",                          "",                   "Evetns", "",    "", 12,   0,   12  );
     h1.addNewTH1( "Evt_MuCut",                "isoMu:looseMu:looseEl",     "",                   "Evetns", "",    "", 7,    0,   7   );
     h1.addNewTH1( "Evt_ElCut",                "isoEl:looseMu:looseEl",     "",                   "Evetns", "",    "", 7,    0,   7   );
-    h1.addNewTH1( "Evt_Wrtevt_TopPt",         "",                          "",                   "Evetns", "",    "", 2000, 0,   2   );
+    h1.addNewTH1( "Evt_Wrtevt_TopPt",         "",                          "",                   "Evetns", "",    "", 200,  0,   2   );
+    h1.addNewTH1( "Evt_Wrtevt_BTagSF",        "",                          "",                   "Evetns", "",    "", 200,  0,   2   );
     h1.addNewTH1( "Evt_SameChannel",          "",                          "",                   "Evetns", "",    "", 1,    0,   1   );
     h1.addNewTH1( "Evt_Triger",               "",                          "",                   "",       "",    "", 5900, 0,   5900);
     h1.addNewTH1( "Evt_NJsonExEvts",          "Num. of excluded evts",     "",                   "Events", "",    "", 1,    0,    1 );
@@ -491,6 +493,9 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         for( int idx=0; idx < JetInfo.Size; idx++)
         {
             Jet jet( JetInfo, idx );
+            if( !isdata ) jet.applyJER( Shift_JER_ );
+            //std::cout<<"          new pt: "<<jet.Pt<<" ,Et: "<<jet.Et<<std::endl;
+
             h1.GetTH1("Jet_Pt"  )->Fill( jet.Pt                 , wrtevt);
             h1.GetTH1("Jet_Px"  )->Fill( jet.Px                 , wrtevt);
             h1.GetTH1("Jet_Py"  )->Fill( jet.Py                 , wrtevt);
@@ -704,7 +709,10 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                                 wrtevt_btagSF *= BTagSF.getSF( "CSVM", BJetCol[b], Shift_BTagSF_ );
                             }
                         }
+                        wrtevtNoPU *= wrtevt_btagSF;
                         wrtevt *= wrtevt_btagSF;
+
+                        h1.GetTH1("Evt_Wrtevt_BTagSF")->Fill(wrtevt_btagSF);
                         if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill("=2 bjets", wrtevt);
                         if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill("=2 bjets", wrtevt);
 
