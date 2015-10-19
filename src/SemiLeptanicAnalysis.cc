@@ -743,7 +743,6 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         h1.GetTH1("EvtNJet_NVertexNoWrt_El")->Fill( VxtColSelected.size(), wrtevtNoPU );
                     }
 
-
                     const int sizeBJetCol = BJetCol.size();
                     if( sizeBJetCol >= 2 )
                     {
