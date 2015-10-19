@@ -73,7 +73,9 @@ cd $1
 		set kCPUJobs3=`grep 'CPU time limit exceeded' $sample/output/*.log | grep 'sh: line' | sed 's/.*job_\(.*\)\.sh.*/\1/g'`
 		set abJobs=`grep Aborted $sample/output/*.log | sed 's/.*job_\(.*\)\.sh.*/\1/g'`
 		set kEOSRoot=`grep 'Error while doing the asyn writing' $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
+                set failOpens=`grep 'Failed to open the file' $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
 
+                set failOpensNum=`echo $failOpens | wc -w`
 		set kRootNum=`echo $kRoot | wc -w`
 		set kEOSRootNum=`echo $kEOSRoot | wc -w`
 		set ksegNum=`echo $ksegJobs | wc -w `
@@ -85,7 +87,7 @@ cd $1
 		set abNum=`echo $abJobs | wc -w `
 		set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed "s/""$rootname""_\(.*\)\.root/\1/g"`
 		set doneNum=`echo $doneJobs | wc -w`	
-		set realdoneNum=`echo $doneNum'-'$killedNum'-'$abNum'-'$kCPUNum2'-'$kCPUNum3'-'$ksegNum'-'$kbadallocNum'-'$kRootNum | bc`
+		set realdoneNum=`echo $doneNum'-'$killedNum'-'$abNum'-'$kCPUNum2'-'$kCPUNum3'-'$ksegNum'-'$kbadallocNum'-'$kRootNum'-'$failOpensNum | bc`
 		echo "Num Log Files $lognum/$jobNum"	
 		echo "Status(root): $doneNum/$jobNum"
 		echo "Status(real): $realdoneNum/$jobNum"
@@ -136,6 +138,9 @@ cd $1
                 if ( $kEOSRootNum != 0 ) then
                         echo "To eos fail: "$kEOSRoot
                 endif
+                if ( $failOpensNum != 0 ) then
+                        echo "Failed open: "$failOpens
+                endif
 		if ( $notDone != 0 ) then
 			set notDonelist=`cat tmp_.log`	
 			echo "No root Jobs: "$notDonelist 
@@ -152,7 +157,7 @@ cd $1
 		if ( $3 == 'reSubmit' && $killedNum != 0 ) then
 			foreach kn($killedJobs)
 				mv $nowPath/$sample/output/job_$kn.log $nowPath/$sample
-				rm -f $sample/output/$rootname_$kn.root
+				rm -f $sample/output/$rootname'_'$kn.root
 				echo resubmit job_$kn.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kn.log source $nowPath/$sample/input/job_$kn.sh
 			end	
@@ -160,7 +165,7 @@ cd $1
 		if ( $3 == 'reSubmit' && $kCPUNum2 != 0 ) then
 			foreach kcn($kCPUJobs2)
 				mv $nowPath/$sample/output/job_$kcn.log $nowPath/$sample
-				rm -f $sample/output/$rootname_$kcn.root
+				rm -f $sample/output/$rootname'_'$kcn.root
 				echo resubmit job_$kcn.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kcn.log source $nowPath/$sample/input/job_$kcn.sh
 			end	
@@ -168,7 +173,7 @@ cd $1
 		if ( $3 == 'reSubmit' && $kCPUNum3 != 0 ) then
 			foreach kcn3($kCPUJobs3)
 				mv $nowPath/$sample/output/job_$kcn3.log $nowPath/$sample
-				rm -f $sample/output/$rootname_$kcn3.root
+				rm -f $sample/output/$rootname'_'$kcn3.root
 				echo resubmit job_$kcn3.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kcn3.log source $nowPath/$sample/input/job_$kcn3.sh
 			end	
@@ -176,7 +181,15 @@ cd $1
 		if ( $3 == 'reSubmit' && $abNum != 0 ) then
 			foreach an($abJobs)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
-				rm -f $sample/output/$rootname_$an.root
+				rm -f $sample/output/$rootname'_'$an.root
+				echo resubmit job_$an.sh...
+				bsub -q $sq -o $nowPath/$sample/output/job_$an.log source $nowPath/$sample/input/job_$an.sh
+			end	
+		endif
+		if ( $3 == 'reSubmit' && $failOpensNum != 0 ) then
+			foreach an($failOpens)
+				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
+				rm -f $sample/output/$rootname'_'$an.root
 				echo resubmit job_$an.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$an.log source $nowPath/$sample/input/job_$an.sh
 			end	
@@ -184,7 +197,7 @@ cd $1
 		if ( $3 == 'reSubmit' && $kbadallocNum != 0 ) then
 			foreach an($kbadallocJobs)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
-				rm -f $sample/output/$rootname_$an.root
+				rm -f $sample/output/$rootname'_'$an.root
 				echo resubmit job_$an.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$an.log source $nowPath/$sample/input/job_$an.sh
 			end	
