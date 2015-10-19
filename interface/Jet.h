@@ -84,6 +84,8 @@ class Jet
 
             P3.SetXYZ( Px, Py, Pz );
             P4.SetPxPyPzE( Px, Py, Pz, Energy );
+
+            Mass = P4.M();
             //std::cout<<"          new pt: "<<P4.Pt()<<" ,Et: "<<P4.Et()<<std::endl;
 
             return shiftJER;

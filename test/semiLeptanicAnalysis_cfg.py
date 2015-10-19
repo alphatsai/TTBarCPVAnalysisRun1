@@ -41,8 +41,8 @@ options.register('dRIsoLeptonFromJets', 0.5,
     VarParsing.varType.float,
     "isolate lepton with deltaR( lepton, jet )"
     )
-options.register('MaxChi2', 40,
-#options.register('MaxChi2', 1000000,
+#options.register('MaxChi2', 40,
+options.register('MaxChi2', 1000000,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.float,
     "Event selection for hadronic top chi2"
@@ -66,6 +66,11 @@ options.register('ShiftTopPtReWeight', 0,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.int,
     "Systemtic unc. shift of Top Pt Re-Weight: 0(nominal), 1(sigma), -1(-sigma)"
+    )
+options.register('ShiftTightElectronSF', 0,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.int,
+    "Systemtic unc. shift of tight electron sf: 0(nominal), 1(sigma), -1(-sigma)"
     )
 options.register('Owrt', 'MT:3',
     VarParsing.multiplicity.singleton,
@@ -117,9 +122,9 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
     ReportEvery           = cms.int32(options.reportEvery),  
     InputTTree            = cms.string(options.ttreedir+'/root'),
     InputJsons            = cms.vstring(JsonNames), 
-    InputFiles            = cms.vstring(FileNames), 
+    #InputFiles            = cms.vstring(FileNames), 
     #InputFiles            = cms.vstring(FileNames_BprimtKits_NTUG3_SemiLeptTest), 
-    #InputFiles            = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkim),
+    InputFiles            = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkim),
     #InputFiles            = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkimData),
     #InputFiles            = cms.vstring(FileNames_BprimtKits_SemiLept),
     HLT_MuChannel         = cms.vint32( 2868,3244,3542,4204,4205,4827,5106,5573  ), # HLT_IsoMu24_eta2p1_v*
@@ -142,6 +147,7 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
     Shift_JER             = cms.int32(options.ShiftJER),
     Shift_BTagSF          = cms.int32(options.ShiftBTagSF),
     Shift_TopPtReWeight   = cms.int32(options.ShiftTopPtReWeight),
+    Shift_TightElectronSF = cms.int32(options.ShiftTightElectronSF),
     Debug                 = cms.bool(options.Debug),
     IsSkim                = cms.bool(isSkim),
     DoSaveTree            = cms.bool(options.DoSaveTree), 

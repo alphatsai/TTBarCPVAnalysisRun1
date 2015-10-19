@@ -424,31 +424,50 @@ void bbarTagEff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
         // Distinguish hadronic-top and leptonic-top's b-jet by chi^2
         int iHadronic(0), iLeptonic(1);
         vector<TopCandidate> topPair;         
-        const int sizeNonBJetCol = nonBJetCol.size();
-        float chi2 = +1E10;
-        int topjet1(-1), topjet2(-1), hadronicTopbjet(-1), leptonicTopbjet(-1); 
-        for( int ij1=1; ij1<sizeNonBJetCol; ij1++){
-            for( int ij2=ij1-1; ij2<ij1; ij2++){
-                for( int bj=0; bj<2; bj++)
-                {
-                    float chi2_ = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], BJetCol[bj] );
-                    if( chi2_ < chi2 )
-                    { 
-                        topjet1  = ij1;
-                        topjet2  = ij2;
-                        hadronicTopbjet = bj;
-                        chi2 = chi2_;
-                    }
-                }
-            }
-        }       
+        //const int sizeNonBJetCol = nonBJetCol.size();
+        //float chi2 = +1E10;
+        //int topjet1(-1), topjet2(-1), hadronicTopbjet(-1), leptonicTopbjet(-1); 
+        //for( int ij1=1; ij1<sizeNonBJetCol; ij1++){
+        //    for( int ij2=ij1-1; ij2<ij1; ij2++){
+        //        for( int bj=0; bj<2; bj++)
+        //        {
+        //            float chi2_ = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], BJetCol[bj] );
+        //            if( chi2_ < chi2 )
+        //            { 
+        //                topjet1  = ij1;
+        //                topjet2  = ij2;
+        //                hadronicTopbjet = bj;
+        //                chi2 = chi2_;
+        //            }
+        //        }
+        //    }
+        //}       
 
+        //leptonicTopbjet = ( hadronicTopbjet==0 )? 1:0;
+        //for( int i=0; i<2; i++){
+        //    TopCandidate top_;
+        //    topPair.push_back(top_);
+        //}
+        //topPair[iHadronic].Fill( BJetCol[hadronicTopbjet], nonBJetCol[topjet1], nonBJetCol[topjet2] );
+        //topPair[iLeptonic].Fill( BJetCol[leptonicTopbjet], isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi  );
+        
+        float chi2 = +1E10;
+        int hadronicTopbjet(-1), leptonicTopbjet(-1); 
+        for( int bj=0; bj<2; bj++ )
+        {
+            float chi2_ = getChi2( hardJet1, hardJet2, BJetCol[bj] );
+            if( chi2_ < chi2 )
+            { 
+                hadronicTopbjet = bj;
+                chi2 = chi2_;
+            }
+        }
         leptonicTopbjet = ( hadronicTopbjet==0 )? 1:0;
         for( int i=0; i<2; i++){
             TopCandidate top_;
             topPair.push_back(top_);
         }
-        topPair[iHadronic].Fill( BJetCol[hadronicTopbjet], nonBJetCol[topjet1], nonBJetCol[topjet2] );
+        topPair[iHadronic].Fill( BJetCol[hadronicTopbjet], hardJet1, hardJet2 );
         topPair[iLeptonic].Fill( BJetCol[leptonicTopbjet], isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi  );
 
         h1.GetTH1("Evt_Top_Hadronic_Chi2")->Fill( chi2               );

@@ -80,6 +80,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         const int Shift_JER_;
         const int Shift_BTagSF_;
         const int Shift_TopPtReWeight_;
+        const int Shift_TightElectronSF_;
         bool  Debug_;
         bool  isSkim_;
         bool  doSaveTree_;

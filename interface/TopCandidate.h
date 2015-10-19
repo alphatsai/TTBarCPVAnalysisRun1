@@ -18,8 +18,10 @@ class TopCandidate{
         }
 
         // Hadronic top: t->bW( W->qq ) : jet1 and jet2 are from W boson decay
-        void Fill( Jet& bjet, Jet& jet1, Jet& jet2 ) 
+        void Fill( Jet& bjet, Jet& jet1, Jet& jet2, int isAntib=0 ) 
         { 
+            isAntiB = isAntib;
+
             isHadronicTop = true;
             isLeptonicTop = false;
     
@@ -42,8 +44,10 @@ class TopCandidate{
         }
 
         // Leptonic top: t->bW( W->ln ) : met is missing Et from nuetrino NOTE: ONLY result to transverse phase
-        void Fill( Jet& bjet, Lepton& lep, float& met, float& metPhi )
+        void Fill( Jet& bjet, Lepton& lep, float& met, float& metPhi, int isAntib=0 )
         {
+            isAntiB = isAntib;
+
             isHadronicTop = false;
             isLeptonicTop = true;
             
@@ -70,6 +74,7 @@ class TopCandidate{
         TLorentzVector P4;
         TLorentzVector W_P4;
 
+        bool isAntiB;
         bool isHadronicTop;
         bool isLeptonicTop;
 
