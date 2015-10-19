@@ -90,6 +90,7 @@ namespace{
                 }
             }
             obj=col[o1];
+            obj.Index = o1;
         }
 
     //* get 2 high pT object from collection
@@ -113,8 +114,8 @@ namespace{
                     o2  = i;
                 }
             }
-            obj1=col[o1];
-            obj2=col[o2];
+            obj1=col[o1]; obj1.Index = o1;
+            obj2=col[o2]; obj2.Index = o2;
         }
 
     //* Matching object with dR 

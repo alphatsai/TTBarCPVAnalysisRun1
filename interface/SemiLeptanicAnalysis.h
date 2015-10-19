@@ -29,6 +29,7 @@
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/TH1InfoClass.h"
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Jet.h"
 #include "TTBarCPV/TTBarCPVAnalysisRun1/interface/Lepton.h"
+#include "TTBarCPV/TTBarCPVAnalysisRun1/interface/SemiLeptanicTreeBranches.h"
 //
 // class declaration
 //
@@ -101,6 +102,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         edm::Service<TFileService> fs;
         TChain* chain_;
         TTree*  newtree_;
+        SemiLeptanicTreeBranches newAnaBranches_;
 
         //const double jetPtMin_;
 

@@ -11,7 +11,7 @@ class GenParticle{
         }
         void Fill( GenInfoBranches& GenInfo, int idx )
         {
-            index = idx;
+            Index = idx;
 
             Pt   = GenInfo.Pt[idx];
             Eta  = GenInfo.Eta[idx];
@@ -43,7 +43,7 @@ class GenParticle{
             P4.SetPtEtaPhiM( Pt, Eta, Phi, Mass );
         }
         
-        int index;
+        int Index;
 
         TVector3 P3;
         TLorentzVector P4;

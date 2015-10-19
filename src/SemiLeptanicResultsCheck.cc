@@ -604,7 +604,7 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                     //std::cout<<"[ALPHA] ";
                     //int sizeq = quarks.size();
                     //for( int q=0; q<sizeq; q++){
-                    //    std::cout<<"( "<<quarks[q].index<<", "<<quarks[q].PdgID<<" ) ";
+                    //    std::cout<<"( "<<quarks[q].Index<<", "<<quarks[q].PdgID<<" ) ";
                     //}
                     //std::cout<<endl;
                     GenParticle hardJetGen, bjet1Gen, bjet2Gen;
@@ -646,9 +646,9 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                     h1.GetTH1("Evt_bJet2_dRGen_El"     )->Fill( bjet2Gen.P4.DeltaR(bjet2.P4));
                     h1.GetTH1("Evt_isoLep_dRGen"       )->Fill( isoLepGen.P4.DeltaR(isoLep.P4));
                     h1.GetTH1("Evt_isoLep_dRGen_El"    )->Fill( isoLepGen.P4.DeltaR(isoLep.P4));
-                    if( hardJetGen.index == bjet1Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet1Gen.index<<", PID "<<bjet1Gen.PdgID<<", between 'hardJet' and 'bjet1' in Electron channel"<<std::endl;
-                    if( hardJetGen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between 'hardJet' and 'bjet2' in Electron channel"<<std::endl;
-                    if(   bjet1Gen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between   'bjet1' and 'bjet2' in Electron channel"<<std::endl;
+                    if( hardJetGen.Index == bjet1Gen.Index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet1Gen.Index<<", PID "<<bjet1Gen.PdgID<<", between 'hardJet' and 'bjet1' in Electron channel"<<std::endl;
+                    if( hardJetGen.Index == bjet2Gen.Index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.Index<<", PID "<<bjet2Gen.PdgID<<", between 'hardJet' and 'bjet2' in Electron channel"<<std::endl;
+                    if(   bjet1Gen.Index == bjet2Gen.Index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.Index<<", PID "<<bjet2Gen.PdgID<<", between   'bjet1' and 'bjet2' in Electron channel"<<std::endl;
                 }else{
                     h1.GetTH1("Evt_noMatched")->Fill(0);
                     h1.GetTH1("Evt_noMatched")->Fill(1);
@@ -693,7 +693,7 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                     //std::cout<<"[ALPHA] ";
                     //int sizeq = quarks.size();
                     //for( int q=0; q<sizeq; q++){
-                    //    std::cout<<"( "<<quarks[q].index<<", "<<quarks[q].PdgID<<" ) ";
+                    //    std::cout<<"( "<<quarks[q].Index<<", "<<quarks[q].PdgID<<" ) ";
                     //}
                     //std::cout<<endl;
                     GenParticle hardJetGen, bjet1Gen, bjet2Gen;
@@ -734,9 +734,9 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                     h1.GetTH1("Evt_bJet2_dRGen_Mu"     )->Fill( bjet2Gen.P4.DeltaR(bjet2.P4));
                     h1.GetTH1("Evt_isoLep_dRGen"       )->Fill( isoLepGen.P4.DeltaR(isoLep.P4));
                     h1.GetTH1("Evt_isoLep_dRGen_Mu"    )->Fill( isoLepGen.P4.DeltaR(isoLep.P4));
-                    if( hardJetGen.index == bjet1Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet1Gen.index<<", PID "<<bjet1Gen.PdgID<<", between 'hardJet' and 'bjet1' in Muon channel"<<std::endl;
-                    if( hardJetGen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between 'hardJet' and 'bjet2' in Muon channel"<<std::endl;
-                    if(   bjet1Gen.index == bjet2Gen.index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.index<<", PID "<<bjet2Gen.PdgID<<", between   'bjet1' and 'bjet2' in Muon channel"<<std::endl;
+                    if( hardJetGen.Index == bjet1Gen.Index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet1Gen.Index<<", PID "<<bjet1Gen.PdgID<<", between 'hardJet' and 'bjet1' in Muon channel"<<std::endl;
+                    if( hardJetGen.Index == bjet2Gen.Index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.Index<<", PID "<<bjet2Gen.PdgID<<", between 'hardJet' and 'bjet2' in Muon channel"<<std::endl;
+                    if(   bjet1Gen.Index == bjet2Gen.Index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.Index<<", PID "<<bjet2Gen.PdgID<<", between   'bjet1' and 'bjet2' in Muon channel"<<std::endl;
                 }else{
                     h1.GetTH1("Evt_noMatched")->Fill(0);
                     h1.GetTH1("Evt_noMatched")->Fill(2);
