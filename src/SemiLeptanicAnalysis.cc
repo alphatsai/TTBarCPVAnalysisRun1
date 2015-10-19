@@ -238,6 +238,44 @@ void SemiLeptanicAnalysis::beginJob()
     h1.addNewTH1( "Evt_HardNonBJet2_Phi_El",  "Phi of HardJet",            "#phi(HardJet)",      "Yields", "",    "", 64,  -3.2, 3.2 );
     h1.addNewTH1( "Evt_HardNonBJet2_BTag_El", "HardJet b-tagged",          "bTag",               "Yields", "",    "", 100,  0,   1   );
 
+    h1.addNewTH1( "Evt_TopNonBJet1_Pt",      "pT of HardJet",             "p_{T}(HardJet)",     "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet1_M",       "Mass of HardJet",           "Mass(HardJet)",      "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet1_E",       "Energy of HardJet",         "Energy(HardJet)",    "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet1_Eta",     "Eta of HardJet",            "#eta(HardJet)",      "Yields", "",    "", 100, -5,   5   );
+    h1.addNewTH1( "Evt_TopNonBJet1_Phi",     "Phi of HardJet",            "#phi(HardJet)",      "Yields", "",    "", 64,  -3.2, 3.2 );
+    h1.addNewTH1( "Evt_TopNonBJet1_BTag",    "HardJet b-tagged",          "bTag",               "Yields", "",    "", 100,  0,   1   );
+    h1.addNewTH1( "Evt_TopNonBJet1_Pt_Mu",   "pT of HardJet",             "p_{T}(HardJet)",     "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet1_M_Mu",    "Mass of HardJet",           "Mass(HardJet)",      "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet1_E_Mu",    "Energy of HardJet",         "Energy(HardJet)",    "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet1_Eta_Mu",  "Eta of HardJet",            "#eta(HardJet)",      "Yields", "",    "", 100, -5,   5   );
+    h1.addNewTH1( "Evt_TopNonBJet1_Phi_Mu",  "Phi of HardJet",            "#phi(HardJet)",      "Yields", "",    "", 64,  -3.2, 3.2 );
+    h1.addNewTH1( "Evt_TopNonBJet1_BTag_Mu", "HardJet b-tagged",          "bTag",               "Yields", "",    "", 100,  0,   1   );
+    h1.addNewTH1( "Evt_TopNonBJet1_Pt_El",   "pT of HardJet",             "p_{T}(HardJet)",     "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet1_M_El",    "Mass of HardJet",           "Mass(HardJet)",      "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet1_E_El",    "Energy of HardJet",         "Energy(HardJet)",    "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet1_Eta_El",  "Eta of HardJet",            "#eta(HardJet)",      "Yields", "",    "", 100, -5,   5   );
+    h1.addNewTH1( "Evt_TopNonBJet1_Phi_El",  "Phi of HardJet",            "#phi(HardJet)",      "Yields", "",    "", 64,  -3.2, 3.2 );
+    h1.addNewTH1( "Evt_TopNonBJet1_BTag_El", "HardJet b-tagged",          "bTag",               "Yields", "",    "", 100,  0,   1   );
+
+    h1.addNewTH1( "Evt_TopNonBJet2_Pt",      "pT of HardJet",             "p_{T}(HardJet)",     "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet2_M",       "Mass of HardJet",           "Mass(HardJet)",      "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet2_E",       "Energy of HardJet",         "Energy(HardJet)",    "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet2_Eta",     "Eta of HardJet",            "#eta(HardJet)",      "Yields", "",    "", 100, -5,   5   );
+    h1.addNewTH1( "Evt_TopNonBJet2_Phi",     "Phi of HardJet",            "#phi(HardJet)",      "Yields", "",    "", 64,  -3.2, 3.2 );
+    h1.addNewTH1( "Evt_TopNonBJet2_BTag",    "HardJet b-tagged",          "bTag",               "Yields", "",    "", 100,  0,   1   );
+    h1.addNewTH1( "Evt_TopNonBJet2_Pt_Mu",   "pT of HardJet",             "p_{T}(HardJet)",     "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet2_M_Mu",    "Mass of HardJet",           "Mass(HardJet)",      "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet2_E_Mu",    "Energy of HardJet",         "Energy(HardJet)",    "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet2_Eta_Mu",  "Eta of HardJet",            "#eta(HardJet)",      "Yields", "",    "", 100, -5,   5   );
+    h1.addNewTH1( "Evt_TopNonBJet2_Phi_Mu",  "Phi of HardJet",            "#phi(HardJet)",      "Yields", "",    "", 64,  -3.2, 3.2 );
+    h1.addNewTH1( "Evt_TopNonBJet2_BTag_Mu", "HardJet b-tagged",          "bTag",               "Yields", "",    "", 100,  0,   1   );
+    h1.addNewTH1( "Evt_TopNonBJet2_Pt_El",   "pT of HardJet",             "p_{T}(HardJet)",     "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet2_M_El",    "Mass of HardJet",           "Mass(HardJet)",      "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet2_E_El",    "Energy of HardJet",         "Energy(HardJet)",    "Yields", "GeV", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_TopNonBJet2_Eta_El",  "Eta of HardJet",            "#eta(HardJet)",      "Yields", "",    "", 100, -5,   5   );
+    h1.addNewTH1( "Evt_TopNonBJet2_Phi_El",  "Phi of HardJet",            "#phi(HardJet)",      "Yields", "",    "", 64,  -3.2, 3.2 );
+    h1.addNewTH1( "Evt_TopNonBJet2_BTag_El", "HardJet b-tagged",          "bTag",               "Yields", "",    "", 100,  0,   1   );
+
     h1.addNewTH1( "Evt_bJet_Pt",             "pT of b-Jet",               "p_{T}(B-tagged j)",  "Yields", "GeV", "", 500,  0,   500 );
     h1.addNewTH1( "Evt_bJet_M",              "Mass of b-Jet",             "Mass(B-tagged j)",   "Yields", "GeV", "", 500,  0,   500 );
     h1.addNewTH1( "Evt_bJet_E",              "Energy of b-Jet",           "Energy(B-tagged j)", "Yields", "GeV", "", 500,  0,   500 );
@@ -375,19 +413,20 @@ void SemiLeptanicAnalysis::beginJob()
         newtree_ = chain_->CloneTree(0);
     }else{
         newtree_ = fs->make<TTree>("tree", "");
-        newtree_->Branch("EvtInfo.RunNo",  &RunNo_,  "EvtInfo.RunNo/I"  );
-        newtree_->Branch("EvtInfo.EvtNo",  &EvtNo_,  "EvtInfo.EvtNo/L"  );
-        newtree_->Branch("EvtInfo.BxNo",   &BxNo_,   "EvtInfo.BxNo/I"   );
-        newtree_->Branch("EvtInfo.LumiNo", &LumiNo_, "EvtInfo.LumiNo/I" );
+        newtree_->Branch("EvtInfo.RunNo",  &b_RunNo_,  "EvtInfo.RunNo/I"  );
+        newtree_->Branch("EvtInfo.EvtNo",  &b_EvtNo_,  "EvtInfo.EvtNo/L"  );
+        newtree_->Branch("EvtInfo.BxNo",   &b_BxNo_,   "EvtInfo.BxNo/I"   );
+        newtree_->Branch("EvtInfo.LumiNo", &b_LumiNo_, "EvtInfo.LumiNo/I" );
     }
-    newtree_->Branch("EvtInfo.O2",        &O2_,        "EvtInfo.O2/D"        );
-    newtree_->Branch("EvtInfo.O3",        &O3_,        "EvtInfo.O3/D"        );
-    newtree_->Branch("EvtInfo.O4",        &O4_,        "EvtInfo.O4/D"        );
-    newtree_->Branch("EvtInfo.O7",        &O7_,        "EvtInfo.O7/D"        );
-    newtree_->Branch("EvtInfo.WrtObs",    &WrtObs_,    "EvtInfo.WrtObs/D"    );
-    newtree_->Branch("EvtInfo.WrtEvt",    &WrtEvt_,    "EvtInfo.WrtEvt/D"    );
-    newtree_->Branch("EvtInfo.isMuonEvt", &isMuonEvt_, "EvtInfo.isMuonEvt/I" );
-    newtree_->Branch("EvtInfo.isEleEvt",  &isEleEvt_,  "EvtInfo.isEleEvt/I"  );
+    newtree_->Branch("EvtInfo.O2",        &b_O2_,        "EvtInfo.O2/D"        );
+    newtree_->Branch("EvtInfo.O3",        &b_O3_,        "EvtInfo.O3/D"        );
+    newtree_->Branch("EvtInfo.O4",        &b_O4_,        "EvtInfo.O4/D"        );
+    newtree_->Branch("EvtInfo.O7",        &b_O7_,        "EvtInfo.O7/D"        );
+    newtree_->Branch("EvtInfo.MinChi2",   &b_minChi2_,   "EvtInfo.MinChi2/D"   );
+    newtree_->Branch("EvtInfo.WrtObs",    &b_WrtObs_,    "EvtInfo.WrtObs/D"    );
+    newtree_->Branch("EvtInfo.WrtEvt",    &b_WrtEvt_,    "EvtInfo.WrtEvt/D"    );
+    newtree_->Branch("EvtInfo.isMuonEvt", &b_isMuonEvt_, "EvtInfo.isMuonEvt/I" );
+    newtree_->Branch("EvtInfo.isEleEvt",  &b_isEleEvt_,  "EvtInfo.isEleEvt/I"  );
     newAnaBranches_.RegisterTree(newtree_);
 
     if( isSkim_ )
@@ -534,47 +573,28 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         {
             Jet jet( JetInfo, idx );
             if( !isdata ) jet.applyJER( Shift_JER_ );
-            //std::cout<<"          new pt: "<<jet.Pt<<" ,Et: "<<jet.Et<<std::endl;
 
             h1.GetTH1("Jet_Pt"  )->Fill( jet.Pt                 , wrtevt);
-            h1.GetTH1("Jet_Px"  )->Fill( jet.Px                 , wrtevt);
-            h1.GetTH1("Jet_Py"  )->Fill( jet.Py                 , wrtevt);
-            h1.GetTH1("Jet_Pz"  )->Fill( jet.Pz                 , wrtevt);
-            h1.GetTH1("Jet_M"   )->Fill( jet.Mass               , wrtevt);
-            h1.GetTH1("Jet_E"   )->Fill( jet.Energy             , wrtevt);
             h1.GetTH1("Jet_Eta" )->Fill( jet.Eta                , wrtevt);
-            h1.GetTH1("Jet_Phi" )->Fill( jet.Phi                , wrtevt);
             h1.GetTH1("Jet_BTag")->Fill( jet.CombinedSVBJetTags , wrtevt);
 
             if( JetSelection.isPass(jet) )
             { 
                 JetColSelected.push_back(jet);
                 h1.GetTH1("SelJet_Pt"  )->Fill( jet.Pt                 , wrtevt);
-                h1.GetTH1("SelJet_Px"  )->Fill( jet.Px                 , wrtevt);
-                h1.GetTH1("SelJet_Py"  )->Fill( jet.Py                 , wrtevt);
-                h1.GetTH1("SelJet_Pz"  )->Fill( jet.Pz                 , wrtevt);
-                h1.GetTH1("SelJet_M"   )->Fill( jet.Mass               , wrtevt);
-                h1.GetTH1("SelJet_E"   )->Fill( jet.Energy             , wrtevt);
                 h1.GetTH1("SelJet_Eta" )->Fill( jet.Eta                , wrtevt);
-                h1.GetTH1("SelJet_Phi" )->Fill( jet.Phi                , wrtevt);
                 h1.GetTH1("SelJet_BTag")->Fill( jet.CombinedSVBJetTags , wrtevt);
             }
             if( BJetSelection.isPass(jet) )
             { 
                 BJetCol.push_back(jet);
                 h1.GetTH1("bJet_Pt"  )->Fill( jet.Pt                 , wrtevt);
-                h1.GetTH1("bJet_Px"  )->Fill( jet.Px                 , wrtevt);
-                h1.GetTH1("bJet_Py"  )->Fill( jet.Py                 , wrtevt);
-                h1.GetTH1("bJet_Pz"  )->Fill( jet.Pz                 , wrtevt);
-                h1.GetTH1("bJet_M"   )->Fill( jet.Mass               , wrtevt);
-                h1.GetTH1("bJet_E"   )->Fill( jet.Energy             , wrtevt);
                 h1.GetTH1("bJet_Eta" )->Fill( jet.Eta                , wrtevt);
-                h1.GetTH1("bJet_Phi" )->Fill( jet.Phi                , wrtevt);
                 h1.GetTH1("bJet_BTag")->Fill( jet.CombinedSVBJetTags , wrtevt);
             }
             if( NonBJetSelection.isPass(jet) ) nonBJetCol.push_back(jet);
         }
-        h1.GetTH1("Evt_NJets"   )->Fill( JetInfo.Size          , wrtevt);
+        h1.GetTH1("Evt_NJets")->Fill( JetInfo.Size, wrtevt);
         if( JetColSelected.size() != ( nonBJetCol.size()+BJetCol.size()) ) std::cout<<">> [WARNING] JetColSelected.size() "<<JetColSelected.size()<<" != ( nonBJetCol.size() "<<nonBJetCol.size()<<" + BJetCol.size() "<<BJetCol.size()<<" )"<<std::endl;
 
         //* Lepton selection
@@ -620,7 +640,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         //* Event selection
         float minChi2 = +1E10;
         TopCandidate top_hadronic, top_leptonic;         
-        Jet hardJet, hardNonBJet1, hardNonBJet2, b_jet, bbar_jet;
+        Jet hardJet, hardNonBJet1, hardNonBJet2, TopNonBJet1, TopNonBJet2, b_jet, bbar_jet;
         Lepton isoLep;
         //int isoLepCharge=0;
         bool isGoodMuonEvt(false), isGoodElectronEvt(false);
@@ -723,7 +743,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         h1.GetTH1("EvtNJet_NVertexNoWrt_El")->Fill( VxtColSelected.size(), wrtevtNoPU );
                     }
 
-                    
+
                     const int sizeBJetCol = BJetCol.size();
                     if( sizeBJetCol >= 2 )
                     {
@@ -757,7 +777,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         h1.GetTH1("Evt_Wrtevt_BTagSF")->Fill(wrtevt_btagSF);
                         if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill("=2 bjets", wrtevt);
                         if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill("=2 bjets", wrtevt);
-                
+
                         // Lable the two hardest non_bjet
                         getHighPtObject( JetColSelected, hardJet ); 
                         get2HighPtObject( nonBJetCol, hardNonBJet1, hardNonBJet2 );
@@ -774,7 +794,9 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         //        minChi2 = chi2_;
                         //    }
                         //}
-                        
+                        //TopNonBJet1 = hardNonBJet1;
+                        //TopNonBJet2 = hardNonBJet2;
+
                         //// Distinguish hadronic-top and leptonic-top's b-jet by chi^2
                         //TopCandidate top_hadronic, top_leptonic;         
                         const int sizeNonBJetCol = nonBJetCol.size();
@@ -796,13 +818,13 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         }
                         if( nonBJetCol[topjet1].Pt > nonBJetCol[topjet2].Pt )
                         { 
-                            hardNonBJet1 = nonBJetCol[topjet1]; hardNonBJet1.Index = topjet1;
-                            hardNonBJet2 = nonBJetCol[topjet2]; hardNonBJet2.Index = topjet2;
+                            TopNonBJet1 = nonBJetCol[topjet1]; TopNonBJet1.Index = topjet1;
+                            TopNonBJet2 = nonBJetCol[topjet2]; TopNonBJet2.Index = topjet2;
                         }
                         else
                         {
-                            hardNonBJet1 = nonBJetCol[topjet2]; hardNonBJet1.Index = topjet2;
-                            hardNonBJet2 = nonBJetCol[topjet1]; hardNonBJet2.Index = topjet1;
+                            TopNonBJet1 = nonBJetCol[topjet2]; TopNonBJet1.Index = topjet2;
+                            TopNonBJet2 = nonBJetCol[topjet1]; TopNonBJet2.Index = topjet1;
                         }
 
                         if( maxChi2_ > minChi2 )
@@ -832,19 +854,19 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                             }
                             // reco top  
                             leptonicTopbjet = ( hadronicTopbjet==0 )? 1:0;
-                            if( isoLep.Charge < 0 ) // tbar->bbar+w-, w- -> l- v
+                            if( isoLep.Charge < 0 ) // tbar->bbar w- ( w- > l- v )
                             {
                                 b_jet    = BJetCol[hadronicTopbjet]; b_jet.Index    = hadronicTopbjet;
                                 bbar_jet = BJetCol[leptonicTopbjet]; bbar_jet.Index = leptonicTopbjet;
-                                top_hadronic.Fill( BJetCol[hadronicTopbjet], hardNonBJet1, hardNonBJet2, 0 );
-                                top_leptonic.Fill( BJetCol[leptonicTopbjet], isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi, 1 );
+                                top_hadronic.Fill( b_jet,    TopNonBJet1, TopNonBJet2, 0 );
+                                top_leptonic.Fill( bbar_jet, isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi, 1 );
                             }
-                            else if( isoLep.Charge > 0 ) //t->b+w+, w+ -> l+ v
+                            else if( isoLep.Charge > 0 ) //t->b w+ ( w+ > l+ v )
                             {
                                 b_jet    = BJetCol[leptonicTopbjet]; b_jet.Index    = leptonicTopbjet;
                                 bbar_jet = BJetCol[hadronicTopbjet]; bbar_jet.Index = hadronicTopbjet;
-                                top_hadronic.Fill( BJetCol[hadronicTopbjet], hardNonBJet1, hardNonBJet2, 1 );
-                                top_leptonic.Fill( BJetCol[leptonicTopbjet], isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi, 0 );
+                                top_hadronic.Fill( bbar_jet, TopNonBJet1, TopNonBJet2, 1 );
+                                top_leptonic.Fill( b_jet,    isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi, 0 );
                             }
                             else
                             { std::cout<<">> [ERROR] There an nuetral lepton!? "<<std::endl; }
@@ -897,21 +919,29 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         {
             if( !doSaveTree_ )
             {
-                RunNo_ = EvtInfo.RunNo;
-                EvtNo_ = EvtInfo.EvtNo;
-                BxNo_  = EvtInfo.BxNo;
-                LumiNo_= EvtInfo.LumiNo;
+                b_RunNo_ = EvtInfo.RunNo;
+                b_EvtNo_ = EvtInfo.EvtNo;
+                b_BxNo_  = EvtInfo.BxNo;
+                b_LumiNo_= EvtInfo.LumiNo;
             }
             newAnaBranches_.fill_BJetNewBranches( b_jet ); 
             newAnaBranches_.fill_BbarJetNewBranches( bbar_jet ); 
             newAnaBranches_.fill_nonBJetColNewBranches( nonBJetCol );
-            newAnaBranches_.fill_topHadronicNewBranches( top_hadronic, hardNonBJet1.Index, hardNonBJet2.Index );
+            newAnaBranches_.fill_topHadronicNewBranches( top_hadronic, TopNonBJet1.Index, TopNonBJet2.Index );
             newAnaBranches_.fill_isoLepNewBranches( isoLep ); 
 
-            double O2 = Obs2( isoLep.P3, hardNonBJet1.P3, b_jet.P3, bbar_jet.P3 );
-            double O3 = Obs3( isoLep.P4, hardNonBJet1.P4, b_jet.P4, bbar_jet.P4, isoLep.Charge );
-            double O4 = Obs4( isoLep.P3, hardNonBJet1.P3, b_jet.P3, bbar_jet.P3, isoLep.Charge );
+            double O2 = Obs2( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3 );
+            double O3 = Obs3( isoLep.P4, TopNonBJet1.P4, b_jet.P4, bbar_jet.P4, isoLep.Charge );
+            double O4 = Obs4( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3, isoLep.Charge );
             double O7 = Obs7( az, b_jet.P3, bbar_jet.P3 );
+
+            b_O2_ = O2;
+            b_O3_ = O3;
+            b_O4_ = O4;
+            b_O7_ = O7;
+            b_minChi2_ = minChi2;
+            b_WrtObs_ = Owrt_;
+            b_WrtEvt_ = wrtevt;
 
             h1.GetTH1("Evt_Wrtevt_TopPt"      )->Fill( wrtevt_topPt );
             h1.GetTH1("Evt_NVertex"           )->Fill( VxtColSelected.size()          , wrtevt     );
@@ -948,6 +978,18 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             h1.GetTH1("Evt_HardNonBJet2_E"    )->Fill( hardNonBJet2.Energy            , wrtevt     );
             h1.GetTH1("Evt_HardNonBJet2_M"    )->Fill( hardNonBJet2.Mass              , wrtevt     );
             h1.GetTH1("Evt_HardNonBJet2_BTag" )->Fill( hardNonBJet2.CombinedSVBJetTags, wrtevt     );
+            h1.GetTH1("Evt_TopNonBJet1_Pt"    )->Fill( TopNonBJet1.Pt                 , wrtevt     );
+            h1.GetTH1("Evt_TopNonBJet1_Eta"   )->Fill( TopNonBJet1.Eta                , wrtevt     );
+            h1.GetTH1("Evt_TopNonBJet1_Phi"   )->Fill( TopNonBJet1.Phi                , wrtevt     );
+            h1.GetTH1("Evt_TopNonBJet1_E"     )->Fill( TopNonBJet1.Energy             , wrtevt     );
+            h1.GetTH1("Evt_TopNonBJet1_M"     )->Fill( TopNonBJet1.Mass               , wrtevt     );
+            h1.GetTH1("Evt_TopNonBJet1_BTag"  )->Fill( TopNonBJet1.CombinedSVBJetTags , wrtevt     );
+            h1.GetTH1("Evt_TopNonBJet2_Pt"    )->Fill( TopNonBJet2.Pt                 , wrtevt     );
+            h1.GetTH1("Evt_TopNonBJet2_Eta"   )->Fill( TopNonBJet2.Eta                , wrtevt     );
+            h1.GetTH1("Evt_TopNonBJet2_Phi"   )->Fill( TopNonBJet2.Phi                , wrtevt     );
+            h1.GetTH1("Evt_TopNonBJet2_E"     )->Fill( TopNonBJet2.Energy             , wrtevt     );
+            h1.GetTH1("Evt_TopNonBJet2_M"     )->Fill( TopNonBJet2.Mass               , wrtevt     );
+            h1.GetTH1("Evt_TopNonBJet2_BTag"  )->Fill( TopNonBJet2.CombinedSVBJetTags , wrtevt     );
             h1.GetTH1("Evt_isoLep_Pt"         )->Fill( isoLep.Pt                      , wrtevt     );
             h1.GetTH1("Evt_isoLep_Et"         )->Fill( isoLep.Et                      , wrtevt     );
             h1.GetTH1("Evt_isoLep_Eta"        )->Fill( isoLep.Eta                     , wrtevt     );
@@ -968,16 +1010,11 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             fillAsym( h1.GetTH1("Evt_O3Asym"), O3, wrtevt );
             fillAsym( h1.GetTH1("Evt_O4Asym"), O4, wrtevt );
             fillAsym( h1.GetTH1("Evt_O7Asym"), O7, wrtevt );
-            //}
-            //* Fill observables O7 and O2
             // -- Muon channel
             if( isGoodMuonEvt )
             {
-                //double O2 = Obs2( isoMu.P3, hardNonBJet1.P3, b_jet.P3, bbar_jet.P3 );
-                //double O3 = Obs3( isoMu.P4, hardNonBJet1.P4, b_jet.P4, bbar_jet.P4, isoMu.Charge );
-                //double O4 = Obs4( isoMu.P3, hardNonBJet1.P3, b_jet.P3, bbar_jet.P3, isoMu.Charge );
-                //double O7 = Obs7( az, b_jet.P3, bbar_jet.P3 );
-
+                b_isMuonEvt_ = 1;
+                b_isEleEvt_  = 0;
                 h1.GetTH1("Evt_NVertex_Mu"          )->Fill( VxtColSelected.size()          , wrtevt     );
                 h1.GetTH1("Evt_NVertexNoWrt_Mu"     )->Fill( VxtColSelected.size()          , wrtevtNoPU );
                 h1.GetTH1("Evt_NSelJets_Mu"         )->Fill( JetColSelected.size()          , wrtevt     );
@@ -1012,6 +1049,18 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 h1.GetTH1("Evt_HardNonBJet2_E_Mu"   )->Fill( hardNonBJet2.Energy            , wrtevt     );
                 h1.GetTH1("Evt_HardNonBJet2_M_Mu"   )->Fill( hardNonBJet2.Mass              , wrtevt     );
                 h1.GetTH1("Evt_HardNonBJet2_BTag_Mu")->Fill( hardNonBJet2.CombinedSVBJetTags, wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet1_Pt_Mu"   )->Fill( TopNonBJet1.Pt                 , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet1_Eta_Mu"  )->Fill( TopNonBJet1.Eta                , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet1_Phi_Mu"  )->Fill( TopNonBJet1.Phi                , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet1_E_Mu"    )->Fill( TopNonBJet1.Energy             , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet1_M_Mu"    )->Fill( TopNonBJet1.Mass               , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet1_BTag_Mu" )->Fill( TopNonBJet1.CombinedSVBJetTags , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet2_Pt_Mu"   )->Fill( TopNonBJet2.Pt                 , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet2_Eta_Mu"  )->Fill( TopNonBJet2.Eta                , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet2_Phi_Mu"  )->Fill( TopNonBJet2.Phi                , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet2_E_Mu"    )->Fill( TopNonBJet2.Energy             , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet2_M_Mu"    )->Fill( TopNonBJet2.Mass               , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet2_BTag_Mu" )->Fill( TopNonBJet2.CombinedSVBJetTags , wrtevt     );
                 h1.GetTH1("Evt_isoLep_Pt_Mu"        )->Fill( isoLep.Pt                      , wrtevt     );
                 h1.GetTH1("Evt_isoLep_Et_Mu"        )->Fill( isoLep.Et                      , wrtevt     );
                 h1.GetTH1("Evt_isoLep_Eta_Mu"       )->Fill( isoLep.Eta                     , wrtevt     );
@@ -1032,25 +1081,12 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 fillAsym( h1.GetTH1("Evt_O3Asym_Mu"), O3, wrtevt );
                 fillAsym( h1.GetTH1("Evt_O4Asym_Mu"), O4, wrtevt );
                 fillAsym( h1.GetTH1("Evt_O7Asym_Mu"), O7, wrtevt );
-
-                O2_ = O2;
-                O3_ = O3;
-                O4_ = O4;
-                O7_ = O7;
-                WrtObs_ = Owrt_;
-                WrtEvt_ = wrtevt;
-                isMuonEvt_ = 1;
-                isEleEvt_  = 0;
-                newtree_->Fill();
             }
             // -- Electron channel
             if( isGoodElectronEvt )
             {
-                //double O2 = Obs2( isoEl.P3, hardNonBJet1.P3, b_jet.P3, bbar_jet.P3 );
-                //double O3 = Obs3( isoEl.P4, hardNonBJet1.P4, b_jet.P4, bbar_jet.P4, isoEl.Charge );
-                //double O4 = Obs4( isoEl.P3, hardNonBJet1.P3, b_jet.P3, bbar_jet.P3, isoEl.Charge );
-                //double O7 = Obs7( az, b_jet.P3, bbar_jet.P3 );
-
+                b_isMuonEvt_ = 0;
+                b_isEleEvt_  = 1;
                 h1.GetTH1("Evt_NVertex_El"          )->Fill( VxtColSelected.size()          , wrtevt     );
                 h1.GetTH1("Evt_NVertexNoWrt_El"     )->Fill( VxtColSelected.size()          , wrtevtNoPU );
                 h1.GetTH1("Evt_NSelJets_El"         )->Fill( JetColSelected.size()          , wrtevt     );
@@ -1085,6 +1121,18 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 h1.GetTH1("Evt_HardNonBJet2_E_El"   )->Fill( hardNonBJet2.Energy            , wrtevt     );
                 h1.GetTH1("Evt_HardNonBJet2_M_El"   )->Fill( hardNonBJet2.Mass              , wrtevt     );
                 h1.GetTH1("Evt_HardNonBJet2_BTag_El")->Fill( hardNonBJet2.CombinedSVBJetTags, wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet1_Pt_El"   )->Fill( TopNonBJet1.Pt                 , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet1_Eta_El"  )->Fill( TopNonBJet1.Eta                , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet1_Phi_El"  )->Fill( TopNonBJet1.Phi                , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet1_E_El"    )->Fill( TopNonBJet1.Energy             , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet1_M_El"    )->Fill( TopNonBJet1.Mass               , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet1_BTag_El" )->Fill( TopNonBJet1.CombinedSVBJetTags , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet2_Pt_El"   )->Fill( TopNonBJet2.Pt                 , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet2_Eta_El"  )->Fill( TopNonBJet2.Eta                , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet2_Phi_El"  )->Fill( TopNonBJet2.Phi                , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet2_E_El"    )->Fill( TopNonBJet2.Energy             , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet2_M_El"    )->Fill( TopNonBJet2.Mass               , wrtevt     );
+                h1.GetTH1("Evt_TopNonBJet2_BTag_El" )->Fill( TopNonBJet2.CombinedSVBJetTags , wrtevt     );
                 h1.GetTH1("Evt_isoLep_Pt_El"        )->Fill( isoLep.Pt                      , wrtevt     );
                 h1.GetTH1("Evt_isoLep_Et_El"        )->Fill( isoLep.Et                      , wrtevt     );
                 h1.GetTH1("Evt_isoLep_Eta_El"       )->Fill( isoLep.Eta                     , wrtevt     );
@@ -1105,18 +1153,9 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 fillAsym( h1.GetTH1("Evt_O3Asym_El"), O3, wrtevt );
                 fillAsym( h1.GetTH1("Evt_O4Asym_El"), O4, wrtevt );
                 fillAsym( h1.GetTH1("Evt_O7Asym_El"), O7, wrtevt );
-
-                O2_ = O2;
-                O3_ = O3;
-                O4_ = O4;
-                O7_ = O7;
-                WrtObs_ = Owrt_;
-                WrtEvt_ = wrtevt;
-                isMuonEvt_ = 0;
-                isEleEvt_  = 1;
-                newtree_->Fill();
             }
-    }
+            newtree_->Fill();
+        }
     }//// [END] entry loop 
 }
 

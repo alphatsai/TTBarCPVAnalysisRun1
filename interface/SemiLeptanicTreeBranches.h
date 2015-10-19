@@ -282,8 +282,9 @@ class SemiLeptanicTreeBranches
         }
         void fill_nonBJetColNewBranches( vector<Jet> nonBJetCol )
         {
-            const int size=nonBJetCol.size();
-            for( int i=0; i<size; i++ )
+            //const int size=nonBJetCol.size();
+            nonBJetColNewBranches.Size = nonBJetCol.size();
+            for( int i=0; i<nonBJetColNewBranches.Size; i++ )
             {
                 nonBJetColNewBranches.Et[i]   = nonBJetCol[i].Et;
                 nonBJetColNewBranches.Pt[i]   = nonBJetCol[i].Pt;

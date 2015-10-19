@@ -86,25 +86,24 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         bool  isSkim_;
         bool  doSaveTree_;
 
-        long long int EvtNo_;
-        int BxNo_;
-        int LumiNo_;
-        int RunNo_;
-        int isMuonEvt_;
-        int isEleEvt_;
-        double O2_;
-        double O3_;
-        double O4_;
-        double O7_;
-        double WrtObs_;
-        double WrtEvt_;
+        long long int b_EvtNo_;
+        int b_BxNo_;
+        int b_LumiNo_;
+        int b_RunNo_;
+        int b_isMuonEvt_;
+        int b_isEleEvt_;
+        double b_O2_;
+        double b_O3_;
+        double b_O4_;
+        double b_O7_;
+        double b_minChi2_;
+        double b_WrtObs_;
+        double b_WrtEvt_;
 
         edm::Service<TFileService> fs;
         TChain* chain_;
         TTree*  newtree_;
         SemiLeptanicTreeBranches newAnaBranches_;
-
-        //const double jetPtMin_;
 
         EvtInfoBranches    EvtInfo;
         GenInfoBranches    GenInfo;
