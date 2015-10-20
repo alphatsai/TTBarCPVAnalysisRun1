@@ -79,6 +79,7 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
     Shift_JER_(             iConfig.getParameter<int>("Shift_JER")),
     Shift_BTagSF_(          iConfig.getParameter<int>("Shift_BTagSF")),
     Shift_TopPtReWeight_(   iConfig.getParameter<int>("Shift_TopPtReWeight")),
+    Shift_TightMuonSF_(     iConfig.getParameter<int>("Shift_TightMuonSF")),
     Shift_TightElectronSF_( iConfig.getParameter<int>("Shift_TightElectronSF")),
     Debug_(                 iConfig.getParameter<bool>("Debug")),
     isSkim_(                iConfig.getParameter<bool>("IsSkim")),
@@ -377,6 +378,7 @@ void SemiLeptanicAnalysis::beginJob()
     h1.addNewTH1( "Evt_Wrtevt_TopPt",         "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
     h1.addNewTH1( "Evt_Wrtevt_BTagSF",        "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
     h1.addNewTH1( "Evt_Wrtevt_TightElSF",     "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
+    h1.addNewTH1( "Evt_Wrtevt_TightMuSF",     "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
     h1.addNewTH1( "Evt_SameChannel",          "",                          "",                  "Evetns", "",    "", 1,    0,   1   );
     h1.addNewTH1( "Evt_Triger",               "",                          "",                  "",       "",    "", 5900, 0,   5900);
     h1.addNewTH1( "Evt_NJsonExEvts",          "Num. of excluded evts",     "",                  "Events", "",    "", 1,    0,    1 );
@@ -859,6 +861,15 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                                 isGoodMuonEvt = true;
                                 isoLep = isoMu;
                                 h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
+                                //// Muon id scale factor
+                                float wrtevt_tightMu=1.;
+                                if( !isdata )
+                                {
+                                    wrtevt_tightMu = leptonSFUtil.getSF_TightMuon( isoMu, Shift_TightMuonSF_ );
+                                    wrtevt *= wrtevt_tightMu;
+                                    wrtevtNoPU *= wrtevt_tightMu;
+                                }
+                                h1.GetTH1("Evt_Wrtevt_TightMuSF")->Fill( wrtevt_tightMu );
                             }
                             if( passElectronSel )
                             { 
