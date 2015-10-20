@@ -472,7 +472,9 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
     ay.SetXYZ(0, 1, 0);
     az.SetXYZ(0, 0, 1);
 
-    // Create all selectors
+    //
+    //// *** Create all selectors *** -----------------------------------------------------------------------------------------
+    //
 
     SelectorVertex  VtxSelection( selPars_Vertex_, Debug_ );
 
@@ -486,13 +488,16 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
     SelectorElectron ElectronSelectionLoose(   selPars_LooseLepton_, Debug_ );
     SelectorElectron ElectronSelectionTight( selPars_TightElectron_, Debug_ );
 
-    // Loop evetns
+    //
+    //// *** Loop evetns *** -------------------------------------------------------------------------------------------------
+    //  
+
     for(int entry=0; entry<maxEvents_; entry++)
     {
         chain_->GetEntry(entry);
         if( Debug_ ){ if( ( entry%reportEvery_) == 0 ) cout<<">> [DEBUG] "<<entry<<" of "<< maxEvents_<<endl; }
 
-        // Check evt by json 
+        //// *** Check evt by json *** 
         bool isdata(0);
         isdata  = EvtInfo.McFlag ? 0 : 1; 
         if( isdata && !checkEvt.isGoodEvt( EvtInfo.RunNo, EvtInfo.LumiNo ) )
@@ -500,13 +505,11 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             h1.GetTH1("Evt_NJsonExEvts")->Fill(0); 
             continue;
         }
-
         h1.GetTH1("Evt_Events")->Fill(1);
 
+
+        //// *** Check GenInfo ***
         double genTopPt(-1), genAntiTopPt(-1);
-        double wrtevt(1);
-        double wrtevtNoPU(1);
-        // Check GenInfo
         for( int i=0; i<GenInfo.Size; i++)
         {
             if( GenInfo.Status[i] != 3 ) continue;
@@ -514,11 +517,13 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             if( GenInfo.PdgID[i] == -6 ) genAntiTopPt=GenInfo.Pt[i];
         }
 
-        // PU reweighting
+        //// *** PU reweighting ***
+        double wrtevt(1);
+        double wrtevtNoPU(1);
         double wrtevt_pu(1); 
         if( !isdata ) wrtevt_pu *= LumiWeights_.weight( EvtInfo.TrueIT[0] );
 
-        // Top pT reweighting (Only top-pair)
+        //// *** Top pT reweighting (Only top-pair) ***
         double wrtevt_topPt(1); 
         if( !isdata && genTopPt>=0. && genAntiTopPt>=0. )
         {
@@ -531,7 +536,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         wrtevt *= wrtevt_topPt;
         wrtevtNoPU *= wrtevt_topPt;
         
-        // HLT selection
+        //// *** HLT selection ***
         for( int i=0; i<EvtInfo.nTrgBook; i++){
             if( int(EvtInfo.TrgBook[i]) == 1)
                 h1.GetTH1("Evt_Triger")->Fill(i);
@@ -553,7 +558,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             }
         }
 
-        // Vertex selection
+        //// *** Vertex selection ***
         vector<Vertex> VxtColSelected;
         for( int idx=0; idx < VtxInfo.Size; idx++)
         {
@@ -567,7 +572,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         h1.GetTH1("EvtNoCut_NVertex_Mu"     )->Fill(VxtColSelected.size(), wrtevt     );
         h1.GetTH1("EvtNoCut_NVertexNoWrt_Mu")->Fill(VxtColSelected.size(), wrtevtNoPU );
 
-        //* Jet selection
+        //// *** Jet selection ***
         vector<Jet> JetColSelected, BJetCol, nonBJetCol;
         for( int idx=0; idx < JetInfo.Size; idx++)
         {
@@ -597,13 +602,13 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         h1.GetTH1("Evt_NJets")->Fill( JetInfo.Size, wrtevt);
         if( JetColSelected.size() != ( nonBJetCol.size()+BJetCol.size()) ) std::cout<<">> [WARNING] JetColSelected.size() "<<JetColSelected.size()<<" != ( nonBJetCol.size() "<<nonBJetCol.size()<<" + BJetCol.size() "<<BJetCol.size()<<" )"<<std::endl;
 
-        //* Lepton selection
+        //// *** Lepton selection ***
         vector<Lepton> MuColTight, MuColLoose_MuChannel, ElColLoose_MuChannel;
         vector<Lepton> ElColTight, MuColLoose_ElChannel, ElColLoose_ElChannel;
         for( int idx=0; idx < LepInfo.Size; idx++)
         {
             Lepton lepton( LepInfo, idx );
-            // Electron selections
+            //// ** Electron selections 
             if( lepton.LeptonType == 11 )
             {
                 if( ElectronSelectionLoose.isPass(lepton) ) ElColLoose_MuChannel.push_back(lepton);
@@ -619,7 +624,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                     ElColTight.push_back(lepton);
                 }
             }
-            // Muon selections
+            //// ** Muon selections
             if( lepton.LeptonType == 13 )
             {
                 if( MuonSelectionLoose.isPass(lepton) ) MuColLoose_ElChannel.push_back(lepton);
@@ -637,14 +642,16 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             }
         }
 
-        //* Event selection
+        //
+        //// *** Event selection ***
+        //  
         float minChi2 = +1E10;
         TopCandidate top_hadronic, top_leptonic;         
         Jet hardJet, hardNonBJet1, hardNonBJet2, TopNonBJet1, TopNonBJet2, b_jet, bbar_jet;
         Lepton isoLep;
-        //int isoLepCharge=0;
         bool isGoodMuonEvt(false), isGoodElectronEvt(false);
 
+        
         if( isSkim_ )
         {
             h1.GetTH1("Evt_CutFlow"   )->Fill("PreSelect", 1);
@@ -656,6 +663,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             h1.GetTH1("Evt_CutFlow_Mu")->Fill("All", 1);
         }
 
+        //// *** Number of vertex selection ***
         if( VxtColSelected.size() )
         {
             h1.GetTH1("Evt_CutFlow"   )->Fill("#geq1 goodVtx", wrtevt);
@@ -664,7 +672,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
 
             bool passElectronSel(false), passMuonSel(false);
             Lepton isoMu, isoEl;
-            // Muon channel
+            //// *** Muon channel *
             if( passMuonHLT )
             {
                 h1.GetTH1("EvtHLT_NVertex"        )->Fill(VxtColSelected.size(), wrtevt     );
@@ -672,29 +680,31 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 h1.GetTH1("EvtHLT_NVertex_Mu"     )->Fill(VxtColSelected.size(), wrtevt     );
                 h1.GetTH1("EvtHLT_NVertexNoWrt_Mu")->Fill(VxtColSelected.size(), wrtevtNoPU );
                 h1.GetTH1("Evt_CutFlow_Mu")->Fill("HLT", wrtevt);
+                //// *** Tight muon 
                 if( MuColTight.size() > 0 )
                 { 
                     h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq1 Lep", wrtevt);
+                    //// ** iso muon 
                     if( MuColTight.size() == 1 )
                     {
                         isoMu = MuColTight[0];
                         h1.GetTH1("Evt_CutFlow_Mu")->Fill("1 isoLep", wrtevt);
-
+                        //// * muon veto 
                         if( MuColLoose_MuChannel.size() == 0 )
                         {
                             h1.GetTH1("Evt_CutFlow_Mu")->Fill("veto(Loose #mu)", wrtevt);
-
+                            //// * electron veto 
                             if( ElColLoose_MuChannel.size() == 0 )
                             {
                                 h1.GetTH1("Evt_CutFlow_Mu")->Fill("veto(Loose e)", wrtevt);
                                 passMuonSel =true;
-                            }
-                        }
-                    }
-                }
-            } // [END] Muon channel
+                            } ////[END] electron veto
+                        } //// [END] muon veto
+                    } //// [END] iso muon
+                } //// [END] Tight muon
+            } //// [END] Muon channel
 
-            // Electron channel
+            //// *** Electron channel *
             if( passElectronHLT )
             {
                 h1.GetTH1("EvtHLT_NVertex"        )->Fill(VxtColSelected.size(), wrtevt     );
@@ -702,31 +712,34 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 h1.GetTH1("EvtHLT_NVertex_El"     )->Fill(VxtColSelected.size(), wrtevt     );
                 h1.GetTH1("EvtHLT_NVertexNoWrt_El")->Fill(VxtColSelected.size(), wrtevtNoPU );
                 h1.GetTH1("Evt_CutFlow_El")->Fill("HLT", wrtevt);
+                //// *** Tight electron
                 if( ElColTight.size() > 0 )
                 { 
                     h1.GetTH1("Evt_CutFlow_El")->Fill("#geq1 Lep", wrtevt);
+                    //// ** iso electron 
                     if( ElColTight.size() == 1 ) 
                     {
                         isoEl=ElColTight[0];
                         h1.GetTH1("Evt_CutFlow_El")->Fill("1 isoLep", wrtevt);
-
+                        //// * muon veto 
                         if( MuColLoose_ElChannel.size() == 0 )
                         {
                             h1.GetTH1("Evt_CutFlow_El")->Fill("veto(Loose #mu)", wrtevt);
-
+                            //// * electron veto 
                             if( ElColLoose_ElChannel.size() == 0 )
                             {
                                 h1.GetTH1("Evt_CutFlow_El")->Fill("veto(Loose e)", wrtevt);
                                 passElectronSel=true;
-                            }
-                        }
-                    }
-                }
-            } // [END] Electron channel
+                            } //// [END] electron veto
+                        } //// [END] muon veto
+                    } //// [END] iso electron
+                } //// [END] Tight electron
+            } //// [END] Electron channel
 
-            // jets and b-jet cut flow
+            //// *** jets and b-jet cut flow *
             if( passElectronSel || passMuonSel ) 
             {
+                //// *** Number of jets cuts 
                 int unsigned selectedJetsSize = BJetCol.size() + nonBJetCol.size();
                 if( selectedJetsSize >= NJets_ ) 
                 { 
@@ -742,7 +755,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         h1.GetTH1("EvtNJet_NVertex_El"     )->Fill( VxtColSelected.size(), wrtevt     );
                         h1.GetTH1("EvtNJet_NVertexNoWrt_El")->Fill( VxtColSelected.size(), wrtevtNoPU );
                     }
-
+                    
+                    //// ** Number of b-jets cuts, 1
                     const int sizeBJetCol = BJetCol.size();
                     if( sizeBJetCol >= 2 )
                     {
@@ -759,6 +773,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill("#geq2 bjets", wrtevt*wrtevt_btagSF);
                     }
 
+                    //// ** Number of b-jets cuts, 2
                     if( sizeBJetCol == 2 )
                     {
                         double wrtevt_btagSF(1);
@@ -777,12 +792,11 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill("=2 bjets", wrtevt);
                         if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill("=2 bjets", wrtevt);
 
-                        // Lable the two hardest non_bjet
+                        //// * Lable the two hardest non_bjet
                         getHighPtObject( JetColSelected, hardJet ); 
                         get2HighPtObject( nonBJetCol, hardNonBJet1, hardNonBJet2 );
 
-                        //// Distinguish hadronic-top and leptonic-top's b-jet by chi^2
-                        ////TopCandidate top_hadronic, top_leptonic;         
+                        //// * Distinguish hadronic-top and leptonic-top's b-jet by chi^2
                         //int hadronicTopbjet(-1), leptonicTopbjet(-1); 
                         //for( int bj=0; bj<2; bj++)
                         //{
@@ -796,8 +810,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         //TopNonBJet1 = hardNonBJet1;
                         //TopNonBJet2 = hardNonBJet2;
 
-                        //// Distinguish hadronic-top and leptonic-top's b-jet by chi^2
-                        //TopCandidate top_hadronic, top_leptonic;         
+                        //// * Distinguish hadronic-top and leptonic-top's b-jet by chi^2
                         const int sizeNonBJetCol = nonBJetCol.size();
                         int topjet1(-1), topjet2(-1), hadronicTopbjet(-1), leptonicTopbjet(-1); 
                         for( int ij1=1; ij1<sizeNonBJetCol; ij1++){
@@ -826,9 +839,10 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                             TopNonBJet2 = nonBJetCol[topjet1]; TopNonBJet2.Index = topjet1;
                         }
 
+                        //// * chi^2 cut
                         if( maxChi2_ > minChi2 )
                         {
-                            // Fill cutflow hist to each channel
+                            //// Fill cutflow hist to each channel
                             LeptonSFUtil leptonSFUtil;
                             if( passMuonSel )
                             {     
@@ -841,7 +855,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                                 isGoodElectronEvt = true;
                                 isoLep = isoEl;
                                 h1.GetTH1("Evt_CutFlow_El")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
-                                // Electron id scale factor
+                                //// Electron id scale factor
                                 float wrtevt_tightEl=1.;
                                 if( !isdata )
                                 {
@@ -851,7 +865,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                                 }
                                 h1.GetTH1("Evt_Wrtevt_TightElSF")->Fill( wrtevt_tightEl );
                             }
-                            // reco top  
+                            //// reco top  
                             leptonicTopbjet = ( hadronicTopbjet==0 )? 1:0;
                             if( isoLep.Charge < 0 ) // tbar->bbar w- ( w- > l- v )
                             {
@@ -869,12 +883,13 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                             }
                             else
                             { std::cout<<">> [ERROR] There an nuetral lepton!? "<<std::endl; }
-                        }
-                    }
-                }
-            }//[END] Jet and bjet cutflow
 
-            // Check events
+                        } //// [END] Chi^2 cut
+                    } //// [END] Number of b-jets cuts, 2
+                } //// [END] Number of jets cut
+            } //// [END] Jet and bjet cutflow
+
+            //// *** Check events *
             if( passElectronHLT || passMuonHLT ){
                 h1.GetTH1("Evt_CutFlow"           )->Fill("HLT", wrtevt);
                 if( ( MuColTight.size() + ElColTight.size()) > 0 ) h1.GetTH1("Evt_CutFlow")->Fill("#geq1 Lep", wrtevt);
@@ -910,9 +925,12 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         h1.GetTH1("Evt_ElCut")->Fill("1:1:1", 1);
                 }
             }
-        } // [END] Vxt selection
+        } //// [END] Vxt selection
+        //// [END] Event selections
 
-        //* Fill other events plots 
+        //
+        //// *** Fill other events plots ***
+        //  
         if( isGoodMuonEvt && isGoodElectronEvt ) h1.GetTH1("Evt_SameChannel")->Fill(0);
         if( isGoodMuonEvt || isGoodElectronEvt )
         {
@@ -1009,7 +1027,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             fillAsym( h1.GetTH1("Evt_O3Asym"), O3, wrtevt );
             fillAsym( h1.GetTH1("Evt_O4Asym"), O4, wrtevt );
             fillAsym( h1.GetTH1("Evt_O7Asym"), O7, wrtevt );
-            // -- Muon channel
+            //// *** Muon channel
             if( isGoodMuonEvt )
             {
                 b_isMuonEvt_ = 1;
@@ -1081,7 +1099,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 fillAsym( h1.GetTH1("Evt_O4Asym_Mu"), O4, wrtevt );
                 fillAsym( h1.GetTH1("Evt_O7Asym_Mu"), O7, wrtevt );
             }
-            // -- Electron channel
+            //// *** Electron channel
             if( isGoodElectronEvt )
             {
                 b_isMuonEvt_ = 0;
@@ -1154,9 +1172,9 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 fillAsym( h1.GetTH1("Evt_O7Asym_El"), O7, wrtevt );
             }
             newtree_->Fill();
-        }
-    }//// [END] entry loop 
-}
+        } //// [END] Fill plots
+    } //// [END] entry loop 
+} //// [END] Class
 
 // ------------ method called once each job just after ending the event loop  ------------
 void SemiLeptanicAnalysis::endJob(){
