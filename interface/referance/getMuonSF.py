@@ -3,8 +3,10 @@ import os, re, sys, shutil
 import math, time, array
 from ROOT import *
 
-f1 = TFile("MuonEfficiencies_Run2012ReReco_53X.root")
-histNames=['DATA_over_MC_Loose_pt_abseta','DATA_over_MC_Tight_pt_abseta']
+f1 = TFile("MuonEfficiencies_ISO_Run_2012ReReco_53X.root")
+histNames=['DATA_over_MC_combRelIsoPF04dBeta<012_Tight_pt_abseta']
+#f1 = TFile("MuonEfficiencies_Run2012ReReco_53X.root")
+#histNames=['DATA_over_MC_Loose_pt_abseta','DATA_over_MC_Tight_pt_abseta']
 absEta_range=['<0.9','0.9-1.2','1.2-2.1','2.1-2.4'];
 for histName in histNames:
     nominal=[]

@@ -54,36 +54,37 @@
 // constructors and destructor
 //
 SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) : 
-    maxEvents_(             iConfig.getParameter<int>("MaxEvents")), 
-    reportEvery_(           iConfig.getParameter<int>("ReportEvery")),
-    inputFiles_(            iConfig.getParameter<std::vector<std::string> >("InputFiles")),
-    inputJsons_(            iConfig.getParameter<std::vector<std::string> >("InputJsons")),
-    inputTTree_(            iConfig.getParameter<std::string>("InputTTree")),
-    file_PUDistMC_(         iConfig.getParameter<std::string>("File_PUDistMC")),
-    file_PUDistData_(       iConfig.getParameter<std::string>("File_PUDistData")),
-    hist_PUDistMC_(         iConfig.getParameter<std::string>("Hist_PUDistMC")),
-    hist_PUDistData_(       iConfig.getParameter<std::string>("Hist_PUDistData")),
-    HLT_MuChannel_(         iConfig.getParameter<std::vector<int>>("HLT_MuChannel")),
-    HLT_ElChannel_(         iConfig.getParameter<std::vector<int>>("HLT_ElChannel")),
-    selPars_Vertex_(        iConfig.getParameter<edm::ParameterSet>("SelPars_Vertex")),
-    selPars_Jet_(           iConfig.getParameter<edm::ParameterSet>("SelPars_Jet")),
-    selPars_BJet_(          iConfig.getParameter<edm::ParameterSet>("SelPars_BJet")),
-    selPars_NonBJet_(       iConfig.getParameter<edm::ParameterSet>("SelPars_NonBJet")),
-    selPars_LooseLepton_(   iConfig.getParameter<edm::ParameterSet>("SelPars_LooseLepton")),
-    selPars_TightMuon_(     iConfig.getParameter<edm::ParameterSet>("SelPars_TightMuon")),
-    selPars_TightElectron_( iConfig.getParameter<edm::ParameterSet>("SelPars_TightElectron")),
-    dR_IsoLeptonFromJets_(  iConfig.getParameter<double>("dR_IsoLeptonFromJets")),
-    maxChi2_(               iConfig.getParameter<double>("MaxChi2")),
-    Owrt_(                  iConfig.getParameter<double>("Owrt")),
-    NJets_(                 iConfig.getParameter<int>("NJets")),
-    Shift_JER_(             iConfig.getParameter<int>("Shift_JER")),
-    Shift_BTagSF_(          iConfig.getParameter<int>("Shift_BTagSF")),
-    Shift_TopPtReWeight_(   iConfig.getParameter<int>("Shift_TopPtReWeight")),
-    Shift_TightMuonSF_(     iConfig.getParameter<int>("Shift_TightMuonSF")),
-    Shift_TightElectronSF_( iConfig.getParameter<int>("Shift_TightElectronSF")),
-    Debug_(                 iConfig.getParameter<bool>("Debug")),
-    isSkim_(                iConfig.getParameter<bool>("IsSkim")),
-    doSaveTree_(            iConfig.getParameter<bool>("DoSaveTree"))
+    maxEvents_(               iConfig.getParameter<int>("MaxEvents")), 
+    reportEvery_(             iConfig.getParameter<int>("ReportEvery")),
+    inputFiles_(              iConfig.getParameter<std::vector<std::string> >("InputFiles")),
+    inputJsons_(              iConfig.getParameter<std::vector<std::string> >("InputJsons")),
+    inputTTree_(              iConfig.getParameter<std::string>("InputTTree")),
+    file_PUDistMC_(           iConfig.getParameter<std::string>("File_PUDistMC")),
+    file_PUDistData_(         iConfig.getParameter<std::string>("File_PUDistData")),
+    hist_PUDistMC_(           iConfig.getParameter<std::string>("Hist_PUDistMC")),
+    hist_PUDistData_(         iConfig.getParameter<std::string>("Hist_PUDistData")),
+    HLT_MuChannel_(           iConfig.getParameter<std::vector<int>>("HLT_MuChannel")),
+    HLT_ElChannel_(           iConfig.getParameter<std::vector<int>>("HLT_ElChannel")),
+    selPars_Vertex_(          iConfig.getParameter<edm::ParameterSet>("SelPars_Vertex")),
+    selPars_Jet_(             iConfig.getParameter<edm::ParameterSet>("SelPars_Jet")),
+    selPars_BJet_(            iConfig.getParameter<edm::ParameterSet>("SelPars_BJet")),
+    selPars_NonBJet_(         iConfig.getParameter<edm::ParameterSet>("SelPars_NonBJet")),
+    selPars_LooseLepton_(     iConfig.getParameter<edm::ParameterSet>("SelPars_LooseLepton")),
+    selPars_TightMuon_(       iConfig.getParameter<edm::ParameterSet>("SelPars_TightMuon")),
+    selPars_TightElectron_(   iConfig.getParameter<edm::ParameterSet>("SelPars_TightElectron")),
+    dR_IsoLeptonFromJets_(    iConfig.getParameter<double>("dR_IsoLeptonFromJets")),
+    maxChi2_(                 iConfig.getParameter<double>("MaxChi2")),
+    Owrt_(                    iConfig.getParameter<double>("Owrt")),
+    NJets_(                   iConfig.getParameter<int>("NJets")),
+    Shift_JER_(               iConfig.getParameter<int>("Shift_JER")),
+    Shift_BTagSF_(            iConfig.getParameter<int>("Shift_BTagSF")),
+    Shift_TopPtReWeight_(     iConfig.getParameter<int>("Shift_TopPtReWeight")),
+    Shift_TightMuonIDSF_(     iConfig.getParameter<int>("Shift_TightMuonIDSF")),
+    Shift_TightMuonIsoSF_(    iConfig.getParameter<int>("Shift_TightMuonIsoSF")),
+    Shift_TightElectronIDSF_( iConfig.getParameter<int>("Shift_TightElectronIDSF")),
+    Debug_(                   iConfig.getParameter<bool>("Debug")),
+    isSkim_(                  iConfig.getParameter<bool>("IsSkim")),
+    doSaveTree_(              iConfig.getParameter<bool>("DoSaveTree"))
 {
     if( inputTTree_.compare("Skim/root") == 0 ){ isSkim_=true; }
     LumiWeights_ = edm::LumiReWeighting( file_PUDistMC_, file_PUDistData_, hist_PUDistMC_, hist_PUDistData_ );
@@ -112,6 +113,7 @@ void SemiLeptanicAnalysis::setCutFlow( TH1* h )
         h->GetXaxis()->SetBinLabel(10, "#geq2 bjets"                            );
         h->GetXaxis()->SetBinLabel(11, "=2 bjets"                               );
         h->GetXaxis()->SetBinLabel(12, ("#chi^{2}<"+num2str(maxChi2_)).c_str()  );
+        //h->GetXaxis()->SetBinLabel(13, "H_{T}>250GeV"                           );
     }else{
         h->GetXaxis()->SetBinLabel(1,  "All"                                    );
         h->GetXaxis()->SetBinLabel(2,  "#geq1 goodVtx"                          );
@@ -124,6 +126,7 @@ void SemiLeptanicAnalysis::setCutFlow( TH1* h )
         h->GetXaxis()->SetBinLabel(9,  "#geq2 bjets"                            );
         h->GetXaxis()->SetBinLabel(10,  "=2 bjets"                              );
         h->GetXaxis()->SetBinLabel(11, ("#chi^{2}<"+num2str(maxChi2_)).c_str()  );
+        //h->GetXaxis()->SetBinLabel(12, "H_{T}>250GeV"                           );
     }
     return ;
 }
@@ -371,14 +374,15 @@ void SemiLeptanicAnalysis::beginJob()
     h1.addNewTH1( "Evt_NBJets",               "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "Evt_NBJets_Mu",            "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "Evt_NBJets_El",            "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
-    h1.addNewTH1( "Evt_CutFlow_Mu",           "",                          "",                  "Evetns", "",    "", 12,   0,   12  );
-    h1.addNewTH1( "Evt_CutFlow_El",           "",                          "",                  "Evetns", "",    "", 12,   0,   12  );
+    h1.addNewTH1( "Evt_CutFlow_Mu",           "",                          "",                  "Evetns", "",    "", 13,   0,   13  );
+    h1.addNewTH1( "Evt_CutFlow_El",           "",                          "",                  "Evetns", "",    "", 13,   0,   13  );
     h1.addNewTH1( "Evt_MuCut",                "isoMu:looseMu:looseEl",     "",                  "Evetns", "",    "", 7,    0,   7   );
     h1.addNewTH1( "Evt_ElCut",                "isoEl:looseMu:looseEl",     "",                  "Evetns", "",    "", 7,    0,   7   );
     h1.addNewTH1( "Evt_Wrtevt_TopPt",         "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
     h1.addNewTH1( "Evt_Wrtevt_BTagSF",        "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
-    h1.addNewTH1( "Evt_Wrtevt_TightElSF",     "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
-    h1.addNewTH1( "Evt_Wrtevt_TightMuSF",     "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
+    h1.addNewTH1( "Evt_Wrtevt_TightElIDSF",   "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
+    h1.addNewTH1( "Evt_Wrtevt_TightMuIDSF",   "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
+    h1.addNewTH1( "Evt_Wrtevt_TightMuIsoSF",  "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
     h1.addNewTH1( "Evt_SameChannel",          "",                          "",                  "Evetns", "",    "", 1,    0,   1   );
     h1.addNewTH1( "Evt_Triger",               "",                          "",                  "",       "",    "", 5900, 0,   5900);
     h1.addNewTH1( "Evt_NJsonExEvts",          "Num. of excluded evts",     "",                  "Events", "",    "", 1,    0,    1 );
@@ -860,31 +864,34 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                             {     
                                 isGoodMuonEvt = true;
                                 isoLep = isoMu;
-                                h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
                                 //// Muon id scale factor
-                                float wrtevt_tightMu=1.;
+                                float wrtevt_tightMuID=1.;
+                                float wrtevt_tightMuIso=1.;
                                 if( !isdata )
                                 {
-                                    wrtevt_tightMu = leptonSFUtil.getSF_TightMuon( isoMu, Shift_TightMuonSF_ );
-                                    wrtevt *= wrtevt_tightMu;
-                                    wrtevtNoPU *= wrtevt_tightMu;
+                                    wrtevt_tightMuID  = leptonSFUtil.getSF_TightMuonID(  isoMu, Shift_TightMuonIDSF_  );
+                                    wrtevt_tightMuIso = leptonSFUtil.getSF_TightMuonIso( isoMu, Shift_TightMuonIsoSF_ );
+                                    wrtevt *= wrtevt_tightMuID*wrtevt_tightMuIso;
+                                    wrtevtNoPU *= wrtevt_tightMuID*wrtevt_tightMuIso;
                                 }
-                                h1.GetTH1("Evt_Wrtevt_TightMuSF")->Fill( wrtevt_tightMu );
+                                h1.GetTH1("Evt_Wrtevt_TightMuIDSF" )->Fill( wrtevt_tightMuID  );
+                                h1.GetTH1("Evt_Wrtevt_TightMuIsoSF")->Fill( wrtevt_tightMuIso );
+                                h1.GetTH1("Evt_CutFlow_Mu"         )->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
                             }
                             if( passElectronSel )
                             { 
                                 isGoodElectronEvt = true;
                                 isoLep = isoEl;
-                                h1.GetTH1("Evt_CutFlow_El")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
                                 //// Electron id scale factor
-                                float wrtevt_tightEl=1.;
+                                float wrtevt_tightElID=1.;
                                 if( !isdata )
                                 {
-                                    wrtevt_tightEl = leptonSFUtil.getSF_TightElectron( isoEl, Shift_TightElectronSF_ );
-                                    wrtevt *= wrtevt_tightEl;
-                                    wrtevtNoPU *= wrtevt_tightEl;
+                                    wrtevt_tightElID = leptonSFUtil.getSF_TightElectronID( isoEl, Shift_TightElectronIDSF_ );
+                                    wrtevt *= wrtevt_tightElID;
+                                    wrtevtNoPU *= wrtevt_tightElID;
                                 }
-                                h1.GetTH1("Evt_Wrtevt_TightElSF")->Fill( wrtevt_tightEl );
+                                h1.GetTH1("Evt_Wrtevt_TightElIDSF")->Fill( wrtevt_tightElID );
+                                h1.GetTH1("Evt_CutFlow_El"        )->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
                             }
                             //// reco top  
                             leptonicTopbjet = ( hadronicTopbjet==0 )? 1:0;
@@ -908,6 +915,11 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                             //// Fill Ht = scale sum of selected jets
                             for( int j=0; j<sizeNonBJetCol; j++ ){ Ht += nonBJetCol[j].Pt; }
                             for( int j=0; j<sizeBJetCol;    j++ ){ Ht += BJetCol[j].Pt;    }
+                            //if( Ht < 250 )
+                            //{
+                            //    isGoodElectronEvt = false;
+                            //    isGoodMuonEvt = false;
+                            //}
 
                         } //// [END] Chi^2 cut
                     } //// [END] Number of b-jets cuts, 2
@@ -1059,6 +1071,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             //// *** Muon channel
             if( isGoodMuonEvt )
             {
+                //h1.GetTH1("Evt_CutFlow_Mu")->Fill("H_{T}>250GeV", wrtevt);
                 b_isMuonEvt_ = 1;
                 b_isEleEvt_  = 0;
                 h2.GetTH2("TH2_Chi2_vs_TopHadronicMass_Mu")->Fill( top_hadronic.Mass, minChi2,           wrtevt );
@@ -1135,6 +1148,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             //// *** Electron channel
             if( isGoodElectronEvt )
             {
+                //h1.GetTH1("Evt_CutFlow_El")->Fill("H_{T}>250GeV", wrtevt);
                 b_isMuonEvt_ = 0;
                 b_isEleEvt_  = 1;
                 h2.GetTH2("TH2_Chi2_vs_TopHadronicMass_El")->Fill( top_hadronic.Mass, minChi2,           wrtevt );

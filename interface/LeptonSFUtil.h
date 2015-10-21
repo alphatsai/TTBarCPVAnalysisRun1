@@ -9,11 +9,11 @@ class LeptonSFUtil
     public:
         LeptonSFUtil(){};
         ~LeptonSFUtil(){};
-        float getSF_TightElectron( Lepton electron, int shift=0 )
+        float getSF_TightElectronID( Lepton electron, int shift=0 )
         {
             if( electron.LeptonType != 11 )
             { 
-                std::cout<<">> [ERROR] LeptonSFUtil::getElectronSF only for Lepton::LeptonType==11(electron)"<<std::endl;
+                std::cout<<">> [ERROR] LeptonSFUtil::getSF_TightElectronID only for Lepton::LeptonType==11(electron)"<<std::endl;
                 return 1.;
             }
 
@@ -56,11 +56,13 @@ class LeptonSFUtil
             for( int i=0; i<sizeEta; i++ )
             {
                 if( eta >= etaMin[i] && eta < etaMax[i] ){ iEta=i; break; }
+                else if( eta < etaMin[i] ) iEta=0;
                 else iEta=i;
             } 
             for( int i=0; i<sizePt; i++ )
             {
                 if(  pt >= ptMin[i]  &&  pt < ptMax[i] ){  iPt=i; break; }
+                else if( pt < ptMin[i] ) iPt=0;
                 else iPt=i;
             } 
 
@@ -70,11 +72,11 @@ class LeptonSFUtil
 
             return weight;
         }
-        float getSF_TightMuon( Lepton muon, int shift=0 )
+        float getSF_TightMuonID( Lepton muon, int shift=0 )
         {
             if( muon.LeptonType != 13 )
             { 
-                std::cout<<">> [ERROR] LeptonSFUtil::getElectronSF only for Lepton::LeptonType==13(muon)"<<std::endl;
+                std::cout<<">> [ERROR] LeptonSFUtil::getSF_TightMuonID only for Lepton::LeptonType==13(muon)"<<std::endl;
                 return 1.;
             }
 
@@ -86,7 +88,8 @@ class LeptonSFUtil
             float etaMax[]={0.9,1.2,2.1,2.4};
             const int sizePt  = int(sizeof(ptMin)/sizeof(ptMin[0]));
             const int sizeEta = int(sizeof(etaMin)/sizeof(etaMin[0]));
-
+            
+            //// * DATA_over_MC_Tight_pt_*
             float nominal[sizeEta][sizePt]={ 
             //pt        0,       1,       2,       3,       4,       5,       6,       7,       8,       9
                 {0.970275,0.988865,0.992338,0.993283,0.993662,0.992392,0.991190,0.989417,1.003749,1.018503}, // eta 0
@@ -114,12 +117,74 @@ class LeptonSFUtil
             for( int i=0; i<sizeEta; i++ )
             {
                 if( eta >= etaMin[i] && eta < etaMax[i] ){ iEta=i; break; }
+                else if( eta < etaMin[i] ) iEta=0;
                 else iEta=i;
             } 
             for( int i=0; i<sizePt; i++ )
             {
                 if(  pt >= ptMin[i]  &&  pt < ptMax[i] ){  iPt=i; break; }
+                else if( pt < ptMin[i] ) iPt=0;
                 else iPt=i;
+            } 
+
+            float  weight = nominal[iEta][iPt];
+            if( shift < 0 ) weight -= sigmaNeg[iEta][iPt];
+            if( shift > 0 ) weight += sigmaPos[iEta][iPt];
+            return weight;
+        }
+        float getSF_TightMuonIso( Lepton muon, int shift=0 )
+        {
+            if( muon.LeptonType != 13 )
+            { 
+                std::cout<<">> [ERROR] LeptonSFUtil::getSF_TightMuonIso only for Lepton::LeptonType==13(muon)"<<std::endl;
+                return 1.;
+            }
+
+            float pt = muon.Pt;
+            float eta=fabs(muon.Eta);
+            float ptMin[]={10,20,25,30,35,40,50,60,90,140};
+            float ptMax[]={20,25,30,35,40,50,60,90,140,300};
+            float etaMin[]={0.0,0.9,1.2,2.1};
+            float etaMax[]={0.9,1.2,2.1,2.4};
+            const int sizePt  = int(sizeof(ptMin)/sizeof(ptMin[0]));
+            const int sizeEta = int(sizeof(etaMin)/sizeof(etaMin[0]));
+
+            //// * DATA_over_MC_combRelIsoPF04dBeta<012_*
+            float nominal[sizeEta][sizePt]={ 
+            //pt        0,       1,       2,       3,       4,       5,       6,       7,       8,       9
+                {0.940338,0.976738,0.996173,0.993228,0.993713,0.994084,0.996435,0.998658,1.000330,0.998813}, // eta 0
+                {0.948434,0.986367,1.000356,1.000087,0.999092,0.998868,0.997890,0.999215,1.001421,1.001854}, // eta 1 
+                {0.972437,0.990054,1.002820,1.004046,1.002147,1.000916,1.000404,1.000502,0.999158,0.996440}, // eta 2
+                {1.116727,1.115540,1.096718,1.074812,1.060585,1.037707,1.025292,1.014950,1.008129,1.010620}, // eta 3
+            };
+            float sigmaNeg[sizeEta][sizePt]={ 
+            //pt        0,       1,       2,       3,       4,       5,       6,       7,       8,       9
+                {0.004319,0.002177,0.001226,0.000798,0.000543,0.000273,0.000497,0.000578,0.001089,0.002471}, // eta 0
+                {0.004799,0.003062,0.002012,0.001434,0.000924,0.000435,0.000794,0.000970,0.001708,0.004325}, // eta 1 
+                {0.002315,0.001529,0.001033,0.000791,0.000562,0.000260,0.000480,0.000596,0.001189,0.002359}, // eta 2
+                {0.005545,0.004065,0.002836,0.002155,0.001661,0.000918,0.001669,0.002094,0.004357,0.014975}, // eta 3
+            };
+            float sigmaPos[sizeEta][sizePt]={ 
+            //pt        0,       1,       2,       3,       4,       5,       6,       7,       8,       9
+                {0.004324,0.002182,0.001229,0.000800,0.000544,0.000274,0.000501,0.000585,0.001133,0.002807}, // eta 0
+                {0.004821,0.003080,0.002021,0.001440,0.000930,0.000437,0.000805,0.000994,0.001854,0.005585}, // eta 1 
+                {0.002323,0.001534,0.001037,0.000794,0.000564,0.000260,0.000485,0.000606,0.001261,0.003209}, // eta 2
+                {0.005565,0.004078,0.002847,0.002164,0.001668,0.000923,0.001692,0.002146,0.004701,0.020880}, // eta 3
+            };
+
+            int iPt(-1);
+            int iEta(-1);
+            for( int i=0; i<sizeEta; i++ )
+            {
+                if( eta >= etaMin[i] && eta < etaMax[i] ){ iEta=i; break; }
+                else if( eta < etaMin[i] ) iEta=0;
+                else iEta=i;
+            } 
+            for( int i=0; i<sizePt; i++ )
+            {
+                if(  pt >= ptMin[i]  &&  pt < ptMax[i] ){ iPt=i; break; }
+                else if( pt < ptMin[i] ) iPt=0;
+                else iPt=i; 
             } 
 
             float  weight = nominal[iEta][iPt];
