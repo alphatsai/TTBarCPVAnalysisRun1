@@ -41,8 +41,8 @@ options.register('dRIsoLeptonFromJets', 0.5,
     VarParsing.varType.float,
     "isolate lepton with deltaR( lepton, jet )"
     )
+#options.register('MaxChi2', 20,
 options.register('MaxChi2', 40,
-#options.register('MaxChi2', 1000000,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.float,
     "Event selection for hadronic top chi2"
