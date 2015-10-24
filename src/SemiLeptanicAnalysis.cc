@@ -579,6 +579,10 @@ void SemiLeptanicAnalysis::beginJob()
     h1.addNewTH1( "Evt_Triger",               "",                          "",                  "",       "",    "", 5900, 0,   5900);
     h1.addNewTH1( "Evt_NJsonExEvts",          "Num. of excluded evts",     "",                  "Events", "",    "", 1,    0,    1 );
 
+    h1.addNewTH1( "JetNoJER_Pt",       "pT of Jet",              "p_{T}(j)",           "Yields", "GeV", "", 500,   0,   500 );
+    h1.addNewTH1( "JetNoJER_Eta",      "Eta of Jet",             "#eta(j)",            "Yields", "",    "", 100,  -5,   5   );
+    h1.addNewTH1( "JetNoJER_BTag",     "Jet b-tagged",           "bTag",               "Yields", "",    "", 100,   0,   1   );
+
     h1.CreateTH1( fs );
     h1.Sumw2();
 
@@ -794,6 +798,10 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         for( int idx=0; idx < JetInfo.Size; idx++)
         {
             Jet jet( JetInfo, idx );
+            h1.GetTH1("JetNoJeR_Pt"  )->Fill( jet.Pt                 , wrtevt);
+            h1.GetTH1("JetNoJeR_Eta" )->Fill( jet.Eta                , wrtevt);
+            h1.GetTH1("JetNoJeR_BTag")->Fill( jet.CombinedSVBJetTags , wrtevt);
+
             if( !isdata ) jet.applyJER( Shift_JER_ );
 
             h1.GetTH1("Jet_Pt"  )->Fill( jet.Pt                 , wrtevt);
