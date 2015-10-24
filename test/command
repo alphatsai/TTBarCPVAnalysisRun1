@@ -1,0 +1,2 @@
+cmsenv
+cmsRun semiLeptanicAnalysis_cfg.py ttreedir=Skim outFilename=SemiLeptanicAnalysis.root MaxEvents=2 Debug=True
