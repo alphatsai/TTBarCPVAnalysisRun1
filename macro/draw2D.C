@@ -1,21 +1,23 @@
 #include "caculate.C"
 #include <fstream>
-void drawObs( TFile* f, 
+void draw2D( TFile* f, 
         std::string hname="",
         std::string analysis="SemiLeptanic",
         std::string output=".",
         std::string ytitle="O",
         std::string xtitle="",
+        int         rebinY=20, 
         int         rebinX=1,
-        int         rebinY=20 )
+        float       setZmax=0,
+        bool        isdata=false)
 {
     bool murmur=true;
     TH2D *h;
     if( analysis.compare("") != 0 )
     { 
-        h = (TH2D*)f->Get((analysis+"/"+hname).c_str()); 
+        h = (TH2D*)((TH2D*)f->Get((analysis+"/"+hname).c_str()))->Clone(hname.c_str()); 
     }else{
-        h = (TH2D*)f->Get(hname.c_str()); 
+        h = (TH2D*)((TH2D*)f->Get(hname.c_str()))->Clone(hname.c_str()); 
     }
 
     const int allh=6;
@@ -48,7 +50,10 @@ void drawObs( TFile* f,
     h->GetYaxis()->SetTitleOffset(0.83);
     h->GetYaxis()->SetTitleFont(42);
     h->GetYaxis()->SetTitle(ytitle.c_str());
-    h->Draw("COLZTEXT");
+    if( setZmax !=0 )
+        h->GetZaxis()->SetRangeUser(0.,setZmax);
+    //h->Draw("COLZTEXT");
+    h->Draw("COLZ");
 
     double x0 = h->GetXaxis()->GetBinLowEdge(h->GetXaxis()->GetFirst());
     double x1 = h->GetXaxis()->GetBinUpEdge(h->GetXaxis()->GetLast());
@@ -61,7 +66,11 @@ void drawObs( TFile* f,
 
     TPaveText* t_title;
     t_title = new TPaveText(0.09842845,0.9387755,0.7278743,0.9843014,"brNDC");
-    t_title->AddText(("CMS Simulation, L = 19.7/fb, #sqrt{s} = 8TeV ["+hname+"]").c_str());
+    //t_title->AddText(("CMS Simulation, L = 19.7/fb, #sqrt{s} = 8TeV ["+hname+"]").c_str());
+    if( isdata )
+        t_title->AddText("CMS Data, L = 19.7/fb, #sqrt{s} = 8TeV");
+    else
+        t_title->AddText("CMS Simulation, L = 19.7/fb, #sqrt{s} = 8TeV ");
     t_title->SetTextColor(kBlack);
     t_title->SetFillColor(kWhite);
     t_title->SetFillStyle(0);

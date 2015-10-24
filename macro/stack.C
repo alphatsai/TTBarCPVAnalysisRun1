@@ -190,6 +190,12 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
 
     TH1D* h_mcunc = (TH1D*)h_all->Clone("mc_unc");
     h_mcunc->Divide(h_all);
+    for( int b=1; b<=bins; b++ )
+    {  
+        float error=h_mcunc->GetBinError(b); 
+        h_mcunc->SetBinContent(b, 0.);
+        h_mcunc->SetBinError(b, error);
+    }
 
     if( unity )
     {
@@ -205,7 +211,7 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     }    
 
     TH1D* h_ratio = (TH1D*)h_data->Clone("ratio"); 
-    //h_ratio->Add(h_all, -1);  
+    h_ratio->Add(h_all, -1);  
     h_ratio->Divide(h_all);  
 
     h_data->SetLineWidth(lineWidth);
@@ -251,7 +257,8 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     hs->GetYaxis()->SetLabelFont(42);
     hs->GetYaxis()->SetLabelSize(0.06);
     hs->GetYaxis()->SetTitleOffset(0.7);
-    hs->GetYaxis()->SetTitleSize(0.07);
+    //hs->GetYaxis()->SetTitleSize(0.07);
+    hs->GetYaxis()->SetTitleSize(0.079);
     hs->GetYaxis()->SetTitleFont(42);
 
     THStack* h_stack = new THStack("THStcak", "");
@@ -277,12 +284,14 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     if( logy ) 
     {
         c1 = new TCanvas( ("C_Log_"+hName).c_str(), "",59,67,1076,824);
+        //c1 = new TCanvas( ("C_Log_"+hName).c_str(), "",59,72,1083,826);
         p1 = new TPad( ("P1_Log_"+hName).c_str(), "", 0.01725746,0.3165195,0.9976679,0.9735183);
         p2 = new TPad( ("P2_Log_"+hName).c_str(), "", 0.01399254,0.03773585,0.9981343,0.318239);
     }
     else
     {
         c1 = new TCanvas( ("C_Linear_"+hName).c_str(), "",59,67,1076,824);
+        //c1 = new TCanvas( ("C_Log_"+hName).c_str(), "",59,72,1083,826);
         p1 = new TPad( ("P1_Linear_"+hName).c_str(), "", 0.01725746,0.3165195,0.9976679,0.9735183);
         p2 = new TPad( ("P2_Linear_"+hName).c_str(), "", 0.01399254,0.03773585,0.9981343,0.318239);
     }
@@ -301,15 +310,16 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
 
     p1->Draw();
     p1->cd();
-    //p1->Range(-61.85861,-44.37024,537.3432,9746.6);
-    p1->Range(-5.804078,-0.0003963955,53.70895,0.07552421);
+    //p1->Range(-5.804078,-0.0003963955,53.70895,0.07552421);
+    p1->Range(-69.93206,-11.83204,525.1982,2254.328);
     p1->SetFillColor(0);
     p1->SetBorderMode(0);
     p1->SetBorderSize(2);
     //p1->SetRightMargin(0.06232159);
-    //p1->SetTopMargin(0.05350622);
-    //p1->SetBottomMargin(0.004531751);
-    p1->SetRightMargin(0.06232159);
+    //p1->SetTopMargin(0.0532708);
+    //p1->SetBottomMargin(0.005221184);
+    p1->SetLeftMargin(0.1175071);
+    p1->SetRightMargin(0.04234062);
     p1->SetTopMargin(0.0532708);
     p1->SetBottomMargin(0.005221184);
     p1->SetFrameBorderMode(0);
@@ -319,8 +329,8 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     else p1->SetLogy(0);
 
     TLegend *leg;
-    //leg = new TLegend(0.6623264,0.6642202,0.9791667,0.9504587,NULL,"brNDC");
-    leg = new TLegend(0.6998097,0.6230769,0.9995243,0.9096154,NULL,"brNDC");
+    //leg = new TLegend(0.6998097,0.6230769,0.9995243,0.9096154,NULL,"brNDC");
+    leg = new TLegend(0.6979068,0.63162,0.9976213,0.9180829,NULL,"brNDC");
     leg->SetBorderSize(0);
     leg->SetLineStyle(0);
     leg->SetLineWidth(0);
@@ -335,7 +345,8 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     leg->AddEntry(h_all, "1#sigma Total stat.", "f");
 
     TPaveText* t_title;
-    t_title = new TPaveText(0.07088487,0.9153846,0.7007612,1,"brNDC");
+    t_title = new TPaveText(0.08705995,0.9123537,0.7169363,0.9963828,"brNDC");
+    //t_title = new TPaveText(0.07088487,0.9153846,0.7007612,1,"brNDC");
     t_title->AddText("CMS, L = 19.7/fb, #sqrt{s} = 8TeV");
     t_title->SetTextColor(kBlack);
     t_title->SetFillColor(kWhite);
@@ -356,21 +367,26 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
 
     p2->Draw();
     p2->cd();
-    p2->Range(-5.977337,-1.471186,53.79603,1.930508);
+    //p2->Range(-5.977337,-1.471186,53.79603,1.930508);
+    p2->Range(-71.06455,-0.4118644,526.3307,0.156511);
     p2->SetFillColor(0);
     p2->SetBorderMode(0);
     p2->SetBorderSize(0);
     p2->SetTickx(1);
-    p2->SetRightMargin(0.06350711);
-    p2->SetTopMargin(0.00896861);
-    p2->SetBottomMargin(0.4618834);
+    //p2->SetRightMargin(0.06350711);
+    //p2->SetTopMargin(0.00896861);
+    //p2->SetBottomMargin(0.4618834);
+    p2->SetLeftMargin(0.1189573);
+    p2->SetRightMargin(0.0440758);
+    p2->SetTopMargin(0.01145553);
+    p2->SetBottomMargin(0.4607244);
     p2->SetFrameBorderMode(0);
     p2->SetFrameBorderMode(0);
 
     float x0 = h_ratio->GetXaxis()->GetBinLowEdge(h_ratio->GetXaxis()->GetFirst());
     float x1 = h_ratio->GetXaxis()->GetBinUpEdge(h_ratio->GetXaxis()->GetLast()); 
-    //TLine* l = new TLine( x0, 0., x1, 0.);
-    TLine* l = new TLine( x0, 1., x1, 1.);
+    TLine* l = new TLine( x0, 0., x1, 0.);
+    //TLine* l = new TLine( x0, 1., x1, 1.);
     l->SetLineColor(1);
     l->SetLineWidth(2);
  
@@ -387,16 +403,20 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     h_mcunc->GetXaxis()->SetTitleSize(0.19);
     h_mcunc->GetXaxis()->SetTitleOffset(1.06);
     h_mcunc->GetXaxis()->SetTitleFont(42);
+    h_mcunc->GetYaxis()->SetTitle("#frac{Data-MC}{MC}");
     //h_mcunc->GetYaxis()->SetTitle("(Data-MC)/MC");
-    h_mcunc->GetYaxis()->SetTitle("Data/MC");
-    h_mcunc->GetYaxis()->SetNdivisions(507);
+    //h_mcunc->GetYaxis()->SetTitle("Data/MC");
+    h_mcunc->GetYaxis()->SetNdivisions(505);
     h_mcunc->GetYaxis()->SetLabelFont(42);
     h_mcunc->GetYaxis()->SetLabelSize(0.14);
     h_mcunc->GetYaxis()->SetTitleSize(0.15);
     h_mcunc->GetYaxis()->SetTitleOffset(0.32);
     h_mcunc->GetYaxis()->SetTitleFont(42);
+    h_mcunc->GetYaxis()->SetRangeUser(-0.15,0.15);
     //h_mcunc->GetYaxis()->SetRangeUser(-0.9,0.9);
-    h_mcunc->GetYaxis()->SetRangeUser(0.1,1.9);
+    //h_mcunc->GetYaxis()->SetRangeUser(0.1,1.9);
+    //h_mcunc->GetYaxis()->SetRangeUser(0.85,1.15);
+    //h_mcunc->GetYaxis()->SetRangeUser(0.45,1.55);
     h_mcunc->Draw("E2");
     h_ratio->Draw("esame");
     l->Draw("same");
