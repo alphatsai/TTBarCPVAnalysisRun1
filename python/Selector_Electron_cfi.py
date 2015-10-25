@@ -14,5 +14,5 @@ defaultElectronSelectionParameters = defaultLeptonSelectionParameters.clone(
     EgammaMVATrigMin              = cms.double(0.5),
     EgammaMVATrigMax              = cms.double(infiniteMax),
     NumberOfExpectedInnerHitsMax  = cms.double(1),
-
+    ConversionVeto                = cms.bool(True), 
 )

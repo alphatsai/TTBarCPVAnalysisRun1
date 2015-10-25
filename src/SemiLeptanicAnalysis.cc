@@ -798,9 +798,9 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         for( int idx=0; idx < JetInfo.Size; idx++)
         {
             Jet jet( JetInfo, idx );
-            h1.GetTH1("JetNoJeR_Pt"  )->Fill( jet.Pt                 , wrtevt);
-            h1.GetTH1("JetNoJeR_Eta" )->Fill( jet.Eta                , wrtevt);
-            h1.GetTH1("JetNoJeR_BTag")->Fill( jet.CombinedSVBJetTags , wrtevt);
+            h1.GetTH1("JetNoJER_Pt"  )->Fill( jet.Pt                 , wrtevt);
+            h1.GetTH1("JetNoJER_Eta" )->Fill( jet.Eta                , wrtevt);
+            h1.GetTH1("JetNoJER_BTag")->Fill( jet.CombinedSVBJetTags , wrtevt);
 
             if( !isdata ) jet.applyJER( Shift_JER_ );
 
@@ -832,7 +832,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         vector<Lepton> ElColTight, MuColLoose_ElChannel, ElColLoose_ElChannel;
         for( int idx=0; idx < LepInfo.Size; idx++)
         {
-            Lepton lepton( LepInfo, idx );
+            Lepton lepton( LepInfo, idx, EvtInfo.RhoPU[0] );
             //// ** Electron selections 
             if( lepton.LeptonType == 11 )
             {

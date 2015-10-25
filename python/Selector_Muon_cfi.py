@@ -11,6 +11,7 @@ defaultMounSelectionParameters = defaultLeptonSelectionParameters.clone(
 
     # Muon special
     MuAbsInnerTrackDxyPVMax       = cms.double(0.2),
+    MuAbsInnerTrackDzMax          = cms.double(0.5),
     MuGlobalNormalizedChi2Max     = cms.double(10),
 
     MuNMuonhitsMin                = cms.double(0),

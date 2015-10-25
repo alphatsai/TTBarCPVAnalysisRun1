@@ -41,6 +41,7 @@ class SelectorMuon{
             setPars( "lepAbsEta"                  );
             setPars( "lepRelIsoR04"               );
             setPars( "MuAbsInnerTrackDxyPV"       );
+            setPars( "MuAbsInnerTrackDz"          );
             setPars( "MuGlobalNormalizedChi2"     );
             setPars( "MuNMuonhits"                );
             setPars( "MuNMatchedStations"         );
@@ -56,6 +57,7 @@ class SelectorMuon{
                 printCuts("|Eta|",                      "lepAbsEta"                     );
                 printCuts("relIsoR04",                  "lepRelIsoR04"                  );
                 printCuts("|MuInnerTrackDxy_PV|",       "MuAbsInnerTrackDxyPV"          );
+                printCuts("|MuInnerTrackDz|",           "MuAbsInnerTrackDz"             );
                 printCuts("MuGlobalNormalizedChi2",     "MuGlobalNormalizedChi2"        );
                 printCuts("MuNMuonhits",                "MuNMuonhits"                   );
                 printCuts("MuNMatchedStations",         "MuNMatchedStations"            );
@@ -82,9 +84,11 @@ class SelectorMuon{
                 return false;
             }
             if( !pass( lepton.Pt,                         "lepPt"                      )) return false;
-            if( !pass( getRelIsoR04(lepton),              "lepRelIsoR04"               )) return false;
+            //if( !pass( getRelIsoR04(lepton),              "lepRelIsoR04"               )) return false;
+            if( !pass( lepton.RelIsoR04,                  "lepRelIsoR04"               )) return false;
             if( !pass( fabs(lepton.Eta),                  "lepAbsEta"                  )) return false;
             if( !pass( fabs(lepton.MuInnerTrackDxy_PV),   "MuAbsInnerTrackDxyPV"       )) return false;
+            if( !pass( fabs(lepton.MuInnerTrackDz),       "MuAbsInnerTrackDz"          )) return false;
             if( !pass( lepton.MuNMuonhits,                "MuNMuonhits"                )) return false;
             if( !pass( lepton.MuNMatchedStations,         "MuNMatchedStations"         )) return false;
             if( !pass( lepton.MuGlobalNormalizedChi2,     "MuGlobalNormalizedChi2"     )) return false;
@@ -110,7 +114,6 @@ class SelectorMuon{
         template<typename parType>
             bool pass( parType value, std::string parName )
             { 
-                //std::cout<<">>   Pass(): "<<parName<<std::endl;
                 return pass( value, getCut(parName+"Min"), getCut(parName+"Max")); 
             }
 
@@ -122,20 +125,20 @@ class SelectorMuon{
             return mapPars.find(parName)->second; 
         }
 
-        float getRelIsoR04( Lepton lepton )
-        {
-            float a = lepton.ChargedHadronIsoR04 + lepton.NeutralHadronIsoR04 + lepton.PhotonIsoR04;
-            float b = fabs(lepton.Pt);
-            float reliso = a/b;
-            return reliso;    
-        }
-        float getRelIsoR03( Lepton lepton )
-        {
-            float a = lepton.ChargedHadronIsoR03 + lepton.NeutralHadronIsoR03 + lepton.PhotonIsoR03;
-            float b = fabs(lepton.Pt);
-            float reliso = a/b;
-            return reliso;    
-        }
+        //float getRelIsoR04( Lepton lepton )
+        //{
+        //    float a = lepton.ChargedHadronIsoR04 + lepton.NeutralHadronIsoR04 + lepton.PhotonIsoR04;
+        //    float b = fabs(lepton.Pt);
+        //    float reliso = a/b;
+        //    return reliso;    
+        //}
+        //float getRelIsoR03( Lepton lepton )
+        //{
+        //    float a = lepton.ChargedHadronIsoR03 + lepton.NeutralHadronIsoR03 + lepton.PhotonIsoR03;
+        //    float b = fabs(lepton.Pt);
+        //    float reliso = a/b;
+        //    return reliso;    
+        //}
         void printCuts( string cutName, std::string parName )
         {
             std::string parMin=parName+"Min";
@@ -152,8 +155,8 @@ class SelectorMuon{
         int max;
         int min;
         std::string leptype;
-        bool   checkGlobalMuon;
-        bool   checkTrackerMuon;
+        bool checkGlobalMuon;
+        bool checkTrackerMuon;
         map<std::string, double> mapPars;
 };
 #endif

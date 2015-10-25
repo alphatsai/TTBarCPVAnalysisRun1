@@ -8,10 +8,10 @@
 class Lepton{
     public:
         Lepton(){}
-        Lepton( LepInfoBranches& LepInfo, int idx ){
-            Fill( LepInfo, idx );
+        Lepton( LepInfoBranches& LepInfo, int idx, float RhoPU=0 ){
+            Fill( LepInfo, idx, RhoPU );
         }
-        void Fill( LepInfoBranches& LepInfo, int idx ){
+        void Fill( LepInfoBranches& LepInfo, int idx, float RhoPU=0 ){
             Index = LepInfo.Index[idx];
             isEcalDriven = LepInfo.isEcalDriven[idx];
             isTrackerDriven = LepInfo.isTrackerDriven[idx];
@@ -183,10 +183,34 @@ class Lepton{
 
             P3.SetXYZ( Px, Py, Pz );
             P4.SetPxPyPzE( Px, Py, Pz, Energy );
+
+            RelIsoR03noCorr = ( ChargedHadronIsoR03 + NeutralHadronIsoR03 + PhotonIsoR03)/Pt;;
+            RelIsoR04noCorr = ( ChargedHadronIsoR04 + NeutralHadronIsoR04 + PhotonIsoR04)/Pt;
+
+            // https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaEARhoCorrection
+            // https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Muon_Isolation            
+            RhoPU = std::max( float(0.), RhoPU);
+
+            if( LeptonType == 11 ) 
+                RelIsoR03 = ( ChargedHadronIsoR03 + std::max( float(0.), NeutralHadronIsoR03 + PhotonIsoR03 - RhoPU*EffectiveAreaElectronR03(Eta) ) )/Pt;
+            else 
+                RelIsoR03 = RelIsoR03noCorr;
+
+            if( LeptonType == 11 )
+                RelIsoR04 = ( ChargedHadronIsoR04 + std::max( float(0.), NeutralHadronIsoR04 + PhotonIsoR04 - RhoPU*EffectiveAreaElectronR04(Eta) ) )/Pt;
+            else if( LeptonType == 13 )
+                RelIsoR04 = ( ChargedHadronIsoR04 + std::max( float(0.), NeutralHadronIsoR04 + PhotonIsoR04 - float(0.5)*sumPUPtR04 ) )/Pt;
+            else
+                RelIsoR04 = RelIsoR04noCorr;
         }
 
         TVector3 P3;
         TLorentzVector P4;
+
+        float RelIsoR03noCorr;
+        float RelIsoR04noCorr;
+        float RelIsoR03;
+        float RelIsoR04;
 
         int   Index;
         int   isEcalDriven;
@@ -355,7 +379,40 @@ class Lepton{
         float againstElectronMVA; 
         float againstMuonLoose; 
         float againstMuonMedium; 
-        float againstMuonTight; 
+        float againstMuonTight;
+    
+    private:
+        // https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaEARhoCorrection
+        float EffectiveAreaElectronR03( float eta )
+        {
+            eta = fabs(eta);
+            int iEta=-1;
+            float etaMin[]={0.,   1.,    1.479, 2.,    2.2,   2.3,  2.4 };
+            float etaMax[]={1.,   1.479, 2.,    2.2,   2.3,   2.4,  5.  };
+            float effEta[]={0.13, 0.14,  0.07,  0.09,  0.11,  0.11, 0.14};
+            for( int i=0; i<int(sizeof(etaMin)/sizeof(etaMin[0])); i++)
+            {
+                if( eta >= etaMin[i] && eta < etaMax[i] ){ iEta=i; break; }
+                else if( eta < etaMin[i] ) iEta=0;
+                else iEta=i;
+            }
+            return effEta[iEta];
+        }
+        float EffectiveAreaElectronR04( float eta )
+        {
+            eta = fabs(eta);
+            int iEta=-1;
+            float etaMin[]={0.,    1.,    1.479, 2.,    2.2,   2.3,   2.4  };
+            float etaMax[]={1.,    1.479, 2.,    2.2,   2.3,   2.4,   5.   };
+            float effEta[]={0.208, 0.209, 0.115, 0.143, 0.183, 0.194, 0.261};
+            for( int i=0; i<int(sizeof(etaMin)/sizeof(etaMin[0])); i++)
+            {
+                if( eta >= etaMin[i] && eta < etaMax[i] ){ iEta=i; break; }
+                else if( eta < etaMin[i] ) iEta=0;
+                else iEta=i;
+            }
+            return effEta[iEta];
+        }
 };
 
 #endif

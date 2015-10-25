@@ -28,9 +28,13 @@ defaultLeptonSelectionParameters = cms.PSet(
     NumberOfExpectedInnerHitsMin  = cms.double(infiniteMin),
     NumberOfExpectedInnerHitsMax  = cms.double(infiniteMax),
 
+    ConversionVeto                = cms.bool(False),
+
     # Muon special
     MuAbsInnerTrackDxyPVMin       = cms.double(infiniteMin),
     MuAbsInnerTrackDxyPVMax       = cms.double(infiniteMax),
+    MuAbsInnerTrackDzMin          = cms.double(infiniteMin),
+    MuAbsInnerTrackDzMax          = cms.double(infiniteMax),
     MuGlobalNormalizedChi2Min     = cms.double(infiniteMin),
     MuGlobalNormalizedChi2Max     = cms.double(infiniteMax),
 
