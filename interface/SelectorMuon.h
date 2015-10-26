@@ -84,7 +84,6 @@ class SelectorMuon{
                 return false;
             }
             if( !pass( lepton.Pt,                         "lepPt"                      )) return false;
-            //if( !pass( getRelIsoR04(lepton),              "lepRelIsoR04"               )) return false;
             if( !pass( lepton.RelIsoR04,                  "lepRelIsoR04"               )) return false;
             if( !pass( fabs(lepton.Eta),                  "lepAbsEta"                  )) return false;
             if( !pass( fabs(lepton.MuInnerTrackDxy_PV),   "MuAbsInnerTrackDxyPV"       )) return false;
@@ -125,20 +124,6 @@ class SelectorMuon{
             return mapPars.find(parName)->second; 
         }
 
-        //float getRelIsoR04( Lepton lepton )
-        //{
-        //    float a = lepton.ChargedHadronIsoR04 + lepton.NeutralHadronIsoR04 + lepton.PhotonIsoR04;
-        //    float b = fabs(lepton.Pt);
-        //    float reliso = a/b;
-        //    return reliso;    
-        //}
-        //float getRelIsoR03( Lepton lepton )
-        //{
-        //    float a = lepton.ChargedHadronIsoR03 + lepton.NeutralHadronIsoR03 + lepton.PhotonIsoR03;
-        //    float b = fabs(lepton.Pt);
-        //    float reliso = a/b;
-        //    return reliso;    
-        //}
         void printCuts( string cutName, std::string parName )
         {
             std::string parMin=parName+"Min";

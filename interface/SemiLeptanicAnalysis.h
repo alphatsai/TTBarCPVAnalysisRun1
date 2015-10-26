@@ -75,6 +75,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         edm::ParameterSet selPars_TightMuon_;
         edm::ParameterSet selPars_TightElectron_;
         const double dR_IsoLeptonFromJets_;
+        const double dR_rmElelectronOverlapeMuon_;
         const double maxChi2_;
         const double Owrt_;
         const unsigned int NJets_;

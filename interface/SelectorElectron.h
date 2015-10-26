@@ -78,7 +78,6 @@ class SelectorElectron{
             // Electron selections
             bool exclude=true;
             if( !pass( lepton.Et,                        "lepEt"                             )) return false;
-            //if( !pass( getRelIsoR03(lepton),             "lepRelIsoR03"                      )) return false;
             if( !pass( lepton.RelIsoR03,                 "lepRelIsoR03"                      )) return false;
             if( !pass( fabs(lepton.Eta),                 "lepAbsEta"                         )) return false;
             if( !pass( fabs(lepton.Eta),                 "lepAbsEtaExclude",         exclude )) return false;
@@ -115,20 +114,6 @@ class SelectorElectron{
             return mapPars.find(parName)->second; 
         }
 
-        //float getRelIsoR04( Lepton lepton )
-        //{
-        //    float a = lepton.ChargedHadronIsoR04 + lepton.NeutralHadronIsoR04 + lepton.PhotonIsoR04;
-        //    float b = fabs(lepton.Pt);
-        //    float reliso = a/b;
-        //    return reliso;
-        //}
-        //float getRelIsoR03( Lepton lepton )
-        //{
-        //    float a = lepton.ChargedHadronIsoR03 + lepton.NeutralHadronIsoR03 + lepton.PhotonIsoR03;
-        //    float b = fabs(lepton.Pt);
-        //    float reliso = a/b;
-        //    return reliso;
-        //}
         void printCuts( string cutName, std::string parName )
         {
             std::string parMin=parName+"Min";

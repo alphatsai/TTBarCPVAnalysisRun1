@@ -54,37 +54,38 @@
 // constructors and destructor
 //
 SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) : 
-    maxEvents_(               iConfig.getParameter<int>("MaxEvents")), 
-    reportEvery_(             iConfig.getParameter<int>("ReportEvery")),
-    inputFiles_(              iConfig.getParameter<std::vector<std::string> >("InputFiles")),
-    inputJsons_(              iConfig.getParameter<std::vector<std::string> >("InputJsons")),
-    inputTTree_(              iConfig.getParameter<std::string>("InputTTree")),
-    file_PUDistMC_(           iConfig.getParameter<std::string>("File_PUDistMC")),
-    file_PUDistData_(         iConfig.getParameter<std::string>("File_PUDistData")),
-    hist_PUDistMC_(           iConfig.getParameter<std::string>("Hist_PUDistMC")),
-    hist_PUDistData_(         iConfig.getParameter<std::string>("Hist_PUDistData")),
-    HLT_MuChannel_(           iConfig.getParameter<std::vector<int>>("HLT_MuChannel")),
-    HLT_ElChannel_(           iConfig.getParameter<std::vector<int>>("HLT_ElChannel")),
-    selPars_Vertex_(          iConfig.getParameter<edm::ParameterSet>("SelPars_Vertex")),
-    selPars_Jet_(             iConfig.getParameter<edm::ParameterSet>("SelPars_Jet")),
-    selPars_BJet_(            iConfig.getParameter<edm::ParameterSet>("SelPars_BJet")),
-    selPars_NonBJet_(         iConfig.getParameter<edm::ParameterSet>("SelPars_NonBJet")),
-    selPars_LooseLepton_(     iConfig.getParameter<edm::ParameterSet>("SelPars_LooseLepton")),
-    selPars_TightMuon_(       iConfig.getParameter<edm::ParameterSet>("SelPars_TightMuon")),
-    selPars_TightElectron_(   iConfig.getParameter<edm::ParameterSet>("SelPars_TightElectron")),
-    dR_IsoLeptonFromJets_(    iConfig.getParameter<double>("dR_IsoLeptonFromJets")),
-    maxChi2_(                 iConfig.getParameter<double>("MaxChi2")),
-    Owrt_(                    iConfig.getParameter<double>("Owrt")),
-    NJets_(                   iConfig.getParameter<int>("NJets")),
-    Shift_JER_(               iConfig.getParameter<int>("Shift_JER")),
-    Shift_BTagSF_(            iConfig.getParameter<int>("Shift_BTagSF")),
-    Shift_TopPtReWeight_(     iConfig.getParameter<int>("Shift_TopPtReWeight")),
-    Shift_TightMuonIDSF_(     iConfig.getParameter<int>("Shift_TightMuonIDSF")),
-    Shift_TightMuonIsoSF_(    iConfig.getParameter<int>("Shift_TightMuonIsoSF")),
-    Shift_TightElectronIDSF_( iConfig.getParameter<int>("Shift_TightElectronIDSF")),
-    Debug_(                   iConfig.getParameter<bool>("Debug")),
-    isSkim_(                  iConfig.getParameter<bool>("IsSkim")),
-    doSaveTree_(              iConfig.getParameter<bool>("DoSaveTree"))
+    maxEvents_(                   iConfig.getParameter<int>("MaxEvents")), 
+    reportEvery_(                 iConfig.getParameter<int>("ReportEvery")),
+    inputFiles_(                  iConfig.getParameter<std::vector<std::string> >("InputFiles")),
+    inputJsons_(                  iConfig.getParameter<std::vector<std::string> >("InputJsons")),
+    inputTTree_(                  iConfig.getParameter<std::string>("InputTTree")),
+    file_PUDistMC_(               iConfig.getParameter<std::string>("File_PUDistMC")),
+    file_PUDistData_(             iConfig.getParameter<std::string>("File_PUDistData")),
+    hist_PUDistMC_(               iConfig.getParameter<std::string>("Hist_PUDistMC")),
+    hist_PUDistData_(             iConfig.getParameter<std::string>("Hist_PUDistData")),
+    HLT_MuChannel_(               iConfig.getParameter<std::vector<int>>("HLT_MuChannel")),
+    HLT_ElChannel_(               iConfig.getParameter<std::vector<int>>("HLT_ElChannel")),
+    selPars_Vertex_(              iConfig.getParameter<edm::ParameterSet>("SelPars_Vertex")),
+    selPars_Jet_(                 iConfig.getParameter<edm::ParameterSet>("SelPars_Jet")),
+    selPars_BJet_(                iConfig.getParameter<edm::ParameterSet>("SelPars_BJet")),
+    selPars_NonBJet_(             iConfig.getParameter<edm::ParameterSet>("SelPars_NonBJet")),
+    selPars_LooseLepton_(         iConfig.getParameter<edm::ParameterSet>("SelPars_LooseLepton")),
+    selPars_TightMuon_(           iConfig.getParameter<edm::ParameterSet>("SelPars_TightMuon")),
+    selPars_TightElectron_(       iConfig.getParameter<edm::ParameterSet>("SelPars_TightElectron")),
+    dR_IsoLeptonFromJets_(        iConfig.getParameter<double>("dR_IsoLeptonFromJets")),
+    dR_rmElelectronOverlapeMuon_( iConfig.getParameter<double>("dR_rmElelectronOverlapeMuon")),
+    maxChi2_(                     iConfig.getParameter<double>("MaxChi2")),
+    Owrt_(                        iConfig.getParameter<double>("Owrt")),
+    NJets_(                       iConfig.getParameter<int>("NJets")),
+    Shift_JER_(                   iConfig.getParameter<int>("Shift_JER")),
+    Shift_BTagSF_(                iConfig.getParameter<int>("Shift_BTagSF")),
+    Shift_TopPtReWeight_(         iConfig.getParameter<int>("Shift_TopPtReWeight")),
+    Shift_TightMuonIDSF_(         iConfig.getParameter<int>("Shift_TightMuonIDSF")),
+    Shift_TightMuonIsoSF_(        iConfig.getParameter<int>("Shift_TightMuonIsoSF")),
+    Shift_TightElectronIDSF_(     iConfig.getParameter<int>("Shift_TightElectronIDSF")),
+    Debug_(                       iConfig.getParameter<bool>("Debug")),
+    isSkim_(                      iConfig.getParameter<bool>("IsSkim")),
+    doSaveTree_(                  iConfig.getParameter<bool>("DoSaveTree"))
 {
     if( inputTTree_.compare("Skim/root") == 0 ){ isSkim_=true; }
     LumiWeights_ = edm::LumiReWeighting( file_PUDistMC_, file_PUDistData_, hist_PUDistMC_, hist_PUDistData_ );
@@ -866,6 +867,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 }
             }
         }
+        if( ElColTight.size() > 0 && MuColTight.size() > 0 ) rmElelectronOverlapeMuon( ElColTight, MuColTight, dR_rmElelectronOverlapeMuon_ );
 
         //
         //// *** Event selection ***

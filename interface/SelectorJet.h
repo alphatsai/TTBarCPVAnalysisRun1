@@ -37,10 +37,10 @@ class SelectorJet{
             setPars( "jetPt"                 );
             setPars( "jetAbsEta"             );
             setPars( "jetNConstituents"      );
-            setPars( "jetCHF"                );
-            setPars( "jetNCH"                );
             setPars( "jetNEF"                );
             setPars( "jetNHF"                );
+            setPars( "jetCHF"                );
+            setPars( "jetNCH"                );
             setPars( "jetCEF"                );
             setPars( "jetCombinedSVBJetTags" );
 
@@ -51,10 +51,10 @@ class SelectorJet{
                 printCuts("pT",                 "jetPt"                 );
                 printCuts("|Eta|",              "jetAbsEta"             );
                 printCuts("NConstituents",      "jetNConstituents"      );
-                printCuts("CHF",                "jetCHF"                );
-                printCuts("NCH",                "jetNCH"                );
                 printCuts("NEF",                "jetNEF"                );
                 printCuts("NHF",                "jetNHF"                );
+                printCuts("CHF",                "jetCHF"                );
+                printCuts("NCH",                "jetNCH"                );
                 printCuts("CEF",                "jetCEF"                );
                 printCuts("CombinedSVBJetTags", "jetCombinedSVBJetTags" );
             }
@@ -81,12 +81,15 @@ class SelectorJet{
             if( !pass( jet.Pt,                 "jetPt"                 )) return false;
             if( !pass( fabs(jet.Eta),          "jetAbsEta"             )) return false;
             if( !pass( jet.NConstituents,      "jetNConstituents"      )) return false;
-            if( !pass( jet.CHF,                "jetCHF"                )) return false;
-            if( !pass( jet.NCH,                "jetNCH"                )) return false;
             if( !pass( jet.NEF,                "jetNEF"                )) return false;
             if( !pass( jet.NHF,                "jetNHF"                )) return false;
-            if( !pass( jet.CEF,                "jetCEF"                )) return false;
             if( !pass( jet.CombinedSVBJetTags, "jetCombinedSVBJetTags" )) return false;
+            if( fabs(jet.Eta) <= 2.4 )
+            {
+                if( !pass( jet.CHF,            "jetCHF"                )) return false;
+                if( !pass( jet.NCH,            "jetNCH"                )) return false;
+                if( !pass( jet.CEF,            "jetCEF"                )) return false;
+            }
             return true;
         }
 

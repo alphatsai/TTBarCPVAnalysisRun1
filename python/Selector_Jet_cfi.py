@@ -14,16 +14,17 @@ defaultJetSelectionParameters = cms.PSet(
     # jet id
     jetNConstituentsMin      = cms.double(1),
     jetNConstituentsMax      = cms.double(infiniteMax),
-    jetCHFMin                = cms.double(0),
-    jetCHFMax                = cms.double(infiniteMax),
+    jetNEFMin                = cms.double(infiniteMin),
+    jetNEFMax                = cms.double(0.9),
+    jetNHFMin                = cms.double(infiniteMin),
+    jetNHFMax                = cms.double(0.9),
+    # |eta| <= 2.4
     jetNCHMin                = cms.double(0),
     jetNCHMax                = cms.double(infiniteMax),
-    jetNEFMin                = cms.double(infiniteMin),
-    jetNEFMax                = cms.double(0.99),
-    jetNHFMin                = cms.double(infiniteMin),
-    jetNHFMax                = cms.double(0.99),
+    jetCHFMin                = cms.double(0),
+    jetCHFMax                = cms.double(infiniteMax),
     jetCEFMin                = cms.double(infiniteMin),
-    jetCEFMax                = cms.double(0.99),
+    jetCEFMax                = cms.double(0.9),
 
     # jet b tag
     jetCombinedSVBJetTagsMin = cms.double(infiniteMin),

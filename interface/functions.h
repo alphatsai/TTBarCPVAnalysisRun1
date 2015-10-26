@@ -46,6 +46,7 @@ namespace{
     bool checkMo( GenInfoBranches GenInfo, int idx, int moPdgID );
     bool checkDa( GenInfoBranches GenInfo, int idx, int daPdgID );
     bool isIsoLeptonFromJets( Lepton lepton, vector<Jet> jetCol, double dR=0.5 );
+    void rmElelectronOverlapeMuon( vector<Lepton> &elColl, vector<Lepton> muColl, double dR=0.3 );
 
     float getChi2( Jet jet1, Jet jet2, Jet bjet, float M_top=mass_t, float Wth_top=width_t, float M_W=mass_W, float Wth_W=width_W );
 
@@ -261,6 +262,20 @@ namespace{
         }
         return isIsoLepFromJets;
     }
+
+    //* Remove electron overpapping muon
+    void rmElelectronOverlapeMuon( vector<Lepton> &elColl, vector<Lepton> muColl, double dR )
+    {
+        if( elColl.size() == 0 || muColl.size() == 0 ) return;
+        vector<Lepton> newElColl;
+        for( vector<Lepton>::const_iterator el = elColl.begin(); el != elColl.end(); el++ ){
+            for( vector<Lepton>::const_iterator mu = muColl.begin(); mu != muColl.end(); mu++ ){
+                if( el->P4.DeltaR( mu->P4 ) > dR ) newElColl.push_back(*el); 
+            }
+        }
+        elColl.swap(newElColl);
+    }
+
 
     //* Get chi2 from 2 non-b jets and 1 b-jet
     float getChi2( Jet jet1, Jet jet2, Jet bjet, float M_top, float Wth_top, float M_W, float Wth_W )
