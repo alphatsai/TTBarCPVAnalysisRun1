@@ -73,9 +73,12 @@ cd $1
 		set kCPUJobs3=`grep 'CPU time limit exceeded' $sample/output/*.log | grep 'sh: line' | sed 's/.*job_\(.*\)\.sh.*/\1/g'`
 		set abJobs=`grep Aborted $sample/output/*.log | sed 's/.*job_\(.*\)\.sh.*/\1/g'`
 		set kEOSRoot=`grep 'Error while doing the asyn writing' $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
-                set failOpens=`grep 'Failed to open the file' $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
+                #set failOpens=`grep 'Failed to open the file' $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
+                set failOpens=`grep -r 'Failed to open the file' $sample/output | sed 's/.*job_\(.*\)\.log.*/\1/g'`
+                set eosCopys=`grep -r 'error: target file was not created!' $sample/output | sed 's/.*job_\(.*\)\.log.*/\1/g'`
 
                 set failOpensNum=`echo $failOpens | wc -w`
+                set eosCopysNum=`echo $eosCopys | wc -w`
 		set kRootNum=`echo $kRoot | wc -w`
 		set kEOSRootNum=`echo $kEOSRoot | wc -w`
 		set ksegNum=`echo $ksegJobs | wc -w `
@@ -87,7 +90,7 @@ cd $1
 		set abNum=`echo $abJobs | wc -w `
 		set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed "s/""$rootname""_\(.*\)\.root/\1/g"`
 		set doneNum=`echo $doneJobs | wc -w`	
-		set realdoneNum=`echo $doneNum'-'$killedNum'-'$abNum'-'$kCPUNum2'-'$kCPUNum3'-'$ksegNum'-'$kbadallocNum'-'$kRootNum'-'$failOpensNum | bc`
+		set realdoneNum=`echo $doneNum'-'$killedNum'-'$abNum'-'$kCPUNum2'-'$kCPUNum3'-'$ksegNum'-'$kbadallocNum'-'$kRootNum'-'$failOpensNum'-'$eosCopysNum | bc`
 		echo "Num Log Files $lognum/$jobNum"	
 		echo "Status(root): $doneNum/$jobNum"
 		echo "Status(real): $realdoneNum/$jobNum"
@@ -141,13 +144,16 @@ cd $1
                 if ( $failOpensNum != 0 ) then
                         echo "Failed open: "$failOpens
                 endif
-		if ( $notDone != 0 ) then
+                if ( $eosCopysNum != 0 ) then
+                        echo "Failed copy: "$eosCopys
+                endif
+		if ( $notDone != 0 && $rootname != 'Skim' ) then
 			set notDonelist=`cat tmp_.log`	
 			echo "No root Jobs: "$notDonelist 
 		endif
 		rm -f tmp_.log tmp_check_.log
 
-		if ( $3 == 'reSubmit' && $notDone != 0 ) then
+		if ( $3 == 'reSubmit' && $notDone != 0 && $rootname != 'Skim' ) then
 			foreach nn($notDonelist)
 				mv $nowPath/$sample/output/job_$nn.log $nowPath/$sample
 				echo resubmit job_$nn.sh...
@@ -188,6 +194,14 @@ cd $1
 		endif
 		if ( $3 == 'reSubmit' && $failOpensNum != 0 ) then
 			foreach an($failOpens)
+				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
+				rm -f $sample/output/$rootname'_'$an.root
+				echo resubmit job_$an.sh...
+				bsub -q $sq -o $nowPath/$sample/output/job_$an.log source $nowPath/$sample/input/job_$an.sh
+			end	
+		endif
+		if ( $3 == 'reSubmit' && $eosCopysNum != 0 ) then
+			foreach an($eosCopys)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
 				rm -f $sample/output/$rootname'_'$an.root
 				echo resubmit job_$an.sh...
