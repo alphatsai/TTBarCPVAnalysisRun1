@@ -1,9 +1,10 @@
 # Dataset_name    Number_of_jobs    EOS_location    PyCfg_parameters (optional)
-TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1 125 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1  outFilename=Skim.root
-TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2     125 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2  outFilename=Skim.root
-TTJets_HadronicMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v1     125 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/TTJets_HadronicMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
+#TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1 125 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1  outFilename=Skim.root
+#TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2     125 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2  outFilename=Skim.root
+#TTJets_HadronicMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1 125 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/TTJets_HadronicMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1  outFilename=Skim.root
 #
-T_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v2     5 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/T_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v2  outFilename=Skim.root
+T_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1     5 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/T_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
+T_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v3     5 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/T_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v3  outFilename=Skim.root
 T_s-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1     5 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/T_s-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
 T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 5 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
 #

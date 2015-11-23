@@ -97,6 +97,7 @@ else
 	mv OUTPUT_FILENAME.root OUTPUT_FILENAME_JOB_NUMBER.root
 fi
 
+rm -f OUTPUT_FILENAME.root
 rm -f $BATCHDIR/CMSSW_cfg*
 rm -f $BATCHDIR/inputJsons_cfi*
 rm -f $BATCHDIR/pileup*.root
