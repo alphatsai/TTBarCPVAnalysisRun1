@@ -159,6 +159,7 @@ cd $1
 				mv $nowPath/$sample/output/job_$nn.log $nowPath/$sample
 				echo resubmit job_$nn.sh...
 				cd $nowPath/$sample/output
+					#rm -f $rootname'_'$nn.root
 					condor_submit ../input/job_$nn/setup.condor 
 				cd -
 			end	
@@ -168,6 +169,7 @@ cd $1
 				mv $nowPath/$sample/output/job_$nn.log $nowPath/$sample
 				echo resubmit job_$nn.sh...
 				cd $nowPath/$sample/output
+					rm -f $rootname'_'$nn.root
 					condor_submit ../input/job_$nn/setup.condor 
 				cd -
 			end	
@@ -175,9 +177,9 @@ cd $1
 		if ( $3 == 'reSubmit' && $killedNum != 0 ) then
 			foreach kn($killedJobs)
 				mv $nowPath/$sample/output/job_$kn.log $nowPath/$sample
-				rm -f $sample/output/$rootname'_'$kn.root
 				echo resubmit job_$kn.sh...
 				cd $nowPath/$sample/output
+					rm -f $rootname'_'$kn.root
 					condor_submit ../input/job_$kn/setup.condor 
 				cd -
 			end	
@@ -188,6 +190,7 @@ cd $1
 				rm -f $sample/output/$rootname'_'$kcn.root
 				echo resubmit job_$kcn.sh...
 				cd $nowPath/$sample/output
+					rm -f $rootname'_'$kcn.root
 					condor_submit ../input/job_$kcn/setup.condor 
 				cd -
 			end	
@@ -195,9 +198,9 @@ cd $1
 		if ( $3 == 'reSubmit' && $kCPUNum3 != 0 ) then
 			foreach kcn3($kCPUJobs3)
 				mv $nowPath/$sample/output/job_$kcn3.log $nowPath/$sample
-				rm -f $sample/output/$rootname'_'$kcn3.root
 				echo resubmit job_$kcn3.sh...
 				cd $nowPath/$sample/output
+					rm -f $rootname'_'$kcn3.root
 					condor_submit ../input/job_$kcn3/setup.condor 
 				cd -
 			end	
@@ -208,6 +211,7 @@ cd $1
 				rm -f $sample/output/$rootname'_'$an.root
 				echo resubmit job_$an.sh...
 				cd $nowPath/$sample/output
+					rm -f $rootname'_'$an.root
 					condor_submit ../input/job_$an/setup.condor 
 				cd -
 			end	
@@ -215,9 +219,9 @@ cd $1
 		if ( $3 == 'reSubmit' && $failOpensNum != 0 ) then
 			foreach an($failOpens)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
-				rm -f $sample/output/$rootname'_'$an.root
 				echo resubmit job_$an.sh...
 				cd $nowPath/$sample/output
+					rm -f $rootname'_'$an.root
 					condor_submit ../input/job_$an/setup.condor 
 				cd -
 			end	
@@ -225,9 +229,9 @@ cd $1
 		if ( $3 == 'reSubmit' && $eosCopysNum != 0 ) then
 			foreach an($eosCopys)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
-				rm -f $sample/output/$rootname'_'$an.root
 				echo resubmit job_$an.sh...
 				cd $nowPath/$sample/output
+					rm -f $rootname'_'$an.root
 					condor_submit ../input/job_$an/setup.condor 
 				cd -
 			end	
@@ -235,9 +239,9 @@ cd $1
 		if ( $3 == 'reSubmit' && $kbadallocNum != 0 ) then
 			foreach an($kbadallocJobs)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
-				rm -f $sample/output/$rootname'_'$an.root
 				echo resubmit job_$an.sh...
 				cd $nowPath/$sample/output
+					rm -f $sample/output/$rootname'_'$an.root
 					condor_submit ../input/job_$an/setup.condor 
 				cd -
 			end	
