@@ -276,7 +276,7 @@ def main():
          print 'Submiting job_'+str(ijob)
          subprocess.call("condor_submit ../input/job_"+str(ijob)+'/setup.condor', shell=True)
          os.chdir(originPath)
-         time.sleep(1)
+         #time.sleep(1)
 
   # close all open files
   dataset_list_file.close()
