@@ -74,10 +74,16 @@ cd $1
 		set abJobs=`grep -r Aborted $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
 		set kEOSRoot=`grep 'Error while doing the asyn writing' $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
                 #set failOpens=`grep 'Failed to open the file' $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
-                set failOpens=`grep -r 'Failed to open the file' $sample/output | sed 's/.*job_\(.*\)\.log.*/\1/g'`
+                set failOpens1=`grep -r 'Failed to open the file'    $sample/output | sed 's/.*job_\(.*\)\.log.*/\1/g'`
+                set failOpens2=`grep -r 'No such file or directory'  $sample/output | sed 's/.*job_\(.*\)\.log.*/\1/g'`
+                set failOpens3=`grep -r 'Input/output error'         $sample/output | sed 's/.*job_\(.*\)\.log.*/\1/g'`
+                set failOpens4=`grep -r 'R__unzip'                   $sample/output | grep -i 'error' | sed 's/.*job_\(.*\)\.log.*/\1/g'`
                 set eosCopys=`grep -r 'error: target file was not created!' $sample/output | sed 's/.*job_\(.*\)\.log.*/\1/g'`
 
-                set failOpensNum=`echo $failOpens | wc -w`
+                set failOpens1Num=`echo $failOpens1 | wc -w`
+                set failOpens2Num=`echo $failOpens2 | wc -w`
+                set failOpens3Num=`echo $failOpens3 | wc -w`
+                set failOpens4Num=`echo $failOpens4 | wc -w`
                 set eosCopysNum=`echo $eosCopys | wc -w`
 		set kRootNum=`echo $kRoot | wc -w`
 		set kEOSRootNum=`echo $kEOSRoot | wc -w`
@@ -90,8 +96,7 @@ cd $1
 		set abNum=`echo $abJobs | wc -w `
 		set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed "s/""$rootname""_\(.*\)\.root/\1/g"`
 		set doneNum=`echo $doneJobs | wc -w`	
-		set realdoneNum=`echo $doneNum'-'$killedNum'-'$abNum'-'$kCPUNum2'-'$kCPUNum3'-'$ksegNum'-'$kbadallocNum'-'$kRootNum'-'$failOpensNum'-'$eosCopysNum | bc`
-		#echo $doneNum'-'$killedNum'-'$abNum'-'$kCPUNum2'-'$kCPUNum3'-'$ksegNum'-'$kbadallocNum'-'$kRootNum'-'$failOpensNum'-'$eosCopysNum 
+		set realdoneNum=`echo $doneNum'-'$killedNum'-'$abNum'-'$kCPUNum2'-'$kCPUNum3'-'$ksegNum'-'$kbadallocNum'-'$kRootNum'-'$failOpens1Num'-'$failOpens2Num'-'$failOpens3Num'-'$failOpens4Num'-'$eosCopysNum | bc`
 		echo "Num Log Files $lognum/$jobNum"	
 		echo "Status(root): $doneNum/$jobNum"
 		echo "Status(real): $realdoneNum/$jobNum"
@@ -142,8 +147,8 @@ cd $1
                 if ( $kEOSRootNum != 0 ) then
                         echo "To eos fail: "$kEOSRoot
                 endif
-                if ( $failOpensNum != 0 ) then
-                        echo "Failed open: "$failOpens
+                if ( $failOpens1Num != 0 || $failOpens2Num != 0 || $failOpens3Num != 0 || $failOpens4Num != 0 ) then
+                        echo "Failed open: "$failOpens1" "$failOpens2" "$failOpens3" "$failOpens4
                 endif
                 if ( $eosCopysNum != 0 ) then
                         echo "Failed copy: "$eosCopys
@@ -216,8 +221,38 @@ cd $1
 				cd -
 			end	
 		endif
-		if ( $3 == 'reSubmit' && $failOpensNum != 0 ) then
-			foreach an($failOpens)
+		if ( $3 == 'reSubmit' && $failOpens1Num != 0 ) then
+			foreach an($failOpens1)
+				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
+				echo resubmit job_$an.sh...
+				cd $nowPath/$sample/output
+					rm -f $rootname'_'$an.root
+					condor_submit ../input/job_$an/setup.condor 
+				cd -
+			end	
+		endif
+		if ( $3 == 'reSubmit' && $failOpens2Num != 0 ) then
+			foreach an($failOpens2)
+				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
+				echo resubmit job_$an.sh...
+				cd $nowPath/$sample/output
+					rm -f $rootname'_'$an.root
+					condor_submit ../input/job_$an/setup.condor 
+				cd -
+			end	
+		endif
+		if ( $3 == 'reSubmit' && $failOpens3Num != 0 ) then
+			foreach an($failOpens3)
+				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
+				echo resubmit job_$an.sh...
+				cd $nowPath/$sample/output
+					rm -f $rootname'_'$an.root
+					condor_submit ../input/job_$an/setup.condor 
+				cd -
+			end	
+		endif
+		if ( $3 == 'reSubmit' && $failOpens4Num != 0 ) then
+			foreach an($failOpens4)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
 				echo resubmit job_$an.sh...
 				cd $nowPath/$sample/output

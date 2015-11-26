@@ -174,6 +174,19 @@ WZ 33.6
 ZZ 8.2
 
 #### Dataset_name xs (in pb, for data set to -1)
+QCDMu: L=19707
+QCD_Pt-20to30_MuEnrichedPt5       1865500.0
+QCD_Pt-30to50_MuEnrichedPt5        806298.0
+QCD_Pt-50to80_MuEnrichedPt5  	   176187.6 
+QCD_Pt-80to120_MuEnrichedPt5        40448.0
+QCD_Pt-120to170_MuEnrichedPt5       7463.94
+QCD_Pt-170to300_MuEnrichedPt5      2229.752
+QCD_Pt-300to470_MuEnrichedPt5      151.8048
+#QCD_Pt-470to600_MuEnrichedPt5 
+#QCD_Pt-600to800_MuEnrichedPt5 
+#QCD_Pt-800to1000_MuEnrichedPt5
+#QCD_Pt-1000_MuEnrichedPt5     
+
 #QCD: L=19707
 #/QCD_Pt-170to300_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v2/AODSIM 34138.15
 #/QCD_Pt-300to470_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v2/AODSIM 1759.549
