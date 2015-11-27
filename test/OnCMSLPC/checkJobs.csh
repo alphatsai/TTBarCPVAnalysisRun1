@@ -169,7 +169,7 @@ cd $1
 				cd -
 			end	
 		endif
-		if ( $3 == 'reSubmit' && $kRootNum != 0 && $rootname != 'Skim' ) then
+		if ( $3 == 'reSubmit' && $kRootNum != 0 ) then
 			foreach nn($kRoot)
 				mv $nowPath/$sample/output/job_$nn.log $nowPath/$sample
 				echo resubmit job_$nn.sh...
