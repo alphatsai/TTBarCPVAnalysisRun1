@@ -15,9 +15,9 @@ Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V
 DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1 100 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1  outFilename=Skim.root
 WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v2      100 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v2  outFilename=Skim.root
 #
-WW 20 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/WW_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=Skim.root 
-ZZ 20 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/ZZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=Skim.root 
-WZ 20 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/WZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=Skim.root 
+WW_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 20 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/WW_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=Skim.root 
+ZZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 20 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/ZZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=Skim.root 
+WZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 20 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_MC/WZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=Skim.root 
 ##
 SingleElectron_Run2012A-22Jan2013-v1_190645-193621 100 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleElectron_Run2012A-22Jan2013-v1_190645-193621 outFilename=Skim.root
 SingleElectron_Run2012B-22Jan2013-v1_193834-194833 100 /eos/uscms/store/user/jtsai/bprimeKit/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleElectron_Run2012B-22Jan2013-v1_193834-194833 outFilename=Skim.root
