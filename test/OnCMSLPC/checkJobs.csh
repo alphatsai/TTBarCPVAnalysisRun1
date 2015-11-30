@@ -46,7 +46,9 @@ cd $1
 		echo "============================================================================================="
 		echo "$sample"
 		set jobNum=`ls -l $sample/input  | grep 'job_' | wc -l`
-		set lognum=`ls -l $sample/output | grep 'job_' | grep '.log' | wc -l`
+		set logs=`ls -l $sample/output | grep 'job_' | grep '.log' | awk '{print $9}' | sed "s/job_\(.*\)\.log/\1/g"`
+		set lognum=`echo $logs | wc -w`
+		#set lognum=`ls -l $sample/output | grep 'job_' | grep '.log' | wc -l`
 		if ( $rootname == 'Skim' ) then
 			set rootpath=`cat $sample/input/job_0/job_0.sh | grep 'EOSPATH="' | awk -F '"' '{print $2}' `	
 			echo "Checking roots in "$rootpath
@@ -107,7 +109,7 @@ cd $1
 		echo "Status(real): $realdoneNum/$jobNum"
 		if ( $doneNum == 0 && $lognum == 0 ) then
 			echo "Nothing output..."	
-		else if ( $realdoneNum == $jobNum ) then
+		else if ( $realdoneNum == $jobNum && $lognum == $jobNum ) then
 			@ doneS++
 			echo "Done!"	
 		else
@@ -116,11 +118,18 @@ cd $1
 				foreach job($doneJobs)	
 					if ( $i == $job ) then
 						set done=1
+						break
 						#echo "error $i $done"	
 					endif	
 					#echo $i "'"$job"'" $done
 				end
-				if ( $done == 0 ) then
+				foreach job($logs)	
+					if ( $i == $job ) then
+						set done=2
+						break
+					endif	
+				end
+				if ( $done != 2 ) then
 					#echo $i
 					echo $i >> tmp_.log
 					@ notDone++ 
