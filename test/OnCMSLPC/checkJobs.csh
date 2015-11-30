@@ -47,9 +47,16 @@ cd $1
 		echo "$sample"
 		set jobNum=`ls -l $sample/input  | grep 'job_' | wc -l`
 		set lognum=`ls -l $sample/output | grep 'job_' | grep '.log' | wc -l`
-		set killedJobs=`grep Killed $sample/output/*.log | grep -v 'cpu usage'| sed 's/.*job_\(.*\)\.sh.*/\1/g'`
-		set kRoot=`grep 'Fatal Root Error' $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
-		set ksegJobs=`grep 'Segmentation' $sample/output/*.log | sed 's/.*job_\(.*\)\.sh.*/\1/g'`
+		if ( $rootname == 'Skim' ) then
+			set rootpath=`cat $sample/input/job_0/job_0.sh | grep 'EOSPATH="' | awk -F '"' '{print $2}' `	
+			echo "Checking roots in "$rootpath
+			set doneJobs=`ls -l $rootpath | grep root | awk '{print $9}' | sed "s/""$rootname""_\(.*\)\.root/\1/g"`
+		else
+			set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed "s/""$rootname""_\(.*\)\.root/\1/g"`
+		endif
+		set killedJobs=`grep -r Killed $sample/output | grep -v 'cpu usage'| sed 's/.*job_\(.*\)\.log.*/\1/g'`
+		set kRoot=`grep -r 'Fatal Root Error' $sample/output | sed 's/.*job_\(.*\)\.log.*/\1/g'`
+		set ksegJobs=`grep -r 'Segmentation' $sample/output | sed 's/.*job_\(.*\)\.log.*/\1/g'`
 		set kbadallocJobs_=`grep -r 'bad_alloc' $sample/output | sed 's/.*job_\(.*\)\.log.*/\1/g'`
 		set kbadallocNum_=`echo $kbadallocJobs_ | wc -w` 
 		set check=0
@@ -73,7 +80,6 @@ cd $1
 		set kCPUJobs3=`grep 'CPU time limit exceeded' $sample/output/*.log | grep 'sh: line' | sed 's/.*job_\(.*\)\.sh.*/\1/g'`
 		set abJobs=`grep -r Aborted $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
 		set kEOSRoot=`grep 'Error while doing the asyn writing' $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
-                #set failOpens=`grep 'Failed to open the file' $sample/output/*.log | sed 's/.*job_\(.*\)\.log.*/\1/g'`
                 set failOpens1=`grep -r 'Failed to open the file'    $sample/output | sed 's/.*job_\(.*\)\.log.*/\1/g'`
                 set failOpens2=`grep -r 'No such file or directory'  $sample/output | sed 's/.*job_\(.*\)\.log.*/\1/g'`
                 set failOpens3=`grep -r 'Input/output error'         $sample/output | sed 's/.*job_\(.*\)\.log.*/\1/g'`
@@ -94,7 +100,6 @@ cd $1
 		set kCPUNum3=`echo $kCPUJobs3 | wc -w `
 		set killedNum=`echo $killedJobs | wc -w `
 		set abNum=`echo $abJobs | wc -w `
-		set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed "s/""$rootname""_\(.*\)\.root/\1/g"`
 		set doneNum=`echo $doneJobs | wc -w`	
 		set realdoneNum=`echo $doneNum'-'$killedNum'-'$abNum'-'$kCPUNum2'-'$kCPUNum3'-'$ksegNum'-'$kbadallocNum'-'$kRootNum'-'$failOpens1Num'-'$failOpens2Num'-'$failOpens3Num'-'$failOpens4Num'-'$eosCopysNum | bc`
 		echo "Num Log Files $lognum/$jobNum"	
@@ -153,13 +158,15 @@ cd $1
                 if ( $eosCopysNum != 0 ) then
                         echo "Failed copy: "$eosCopys
                 endif
-		if ( $notDone != 0 && $rootname != 'Skim' ) then
+		#if ( $notDone != 0 && $rootname != 'Skim' ) then
+		if ( $notDone != 0 ) then
 			set notDonelist=`cat tmp_.log`	
 			echo "No root Jobs: "$notDonelist 
 		endif
 		rm -f tmp_.log tmp_check_.log
 
 		if ( $3 == 'reSubmit' && $notDone != 0 && $rootname != 'Skim' ) then
+		#if ( $3 == 'reSubmit' && $notDone != 0 ) then
 			foreach nn($notDonelist)
 				mv $nowPath/$sample/output/job_$nn.log $nowPath/$sample
 				echo resubmit job_$nn.sh...
@@ -174,7 +181,11 @@ cd $1
 				mv $nowPath/$sample/output/job_$nn.log $nowPath/$sample
 				echo resubmit job_$nn.sh...
 				cd $nowPath/$sample/output
-					rm -f $rootname'_'$nn.root
+					if ( $rootname != 'Skim' ) then
+						rm -f $rootname'_'$nn.root
+					else
+						rm -f $rootpath/$rootname'_'$nn.root
+					endif
 					condor_submit ../input/job_$nn/setup.condor 
 				cd -
 			end	
@@ -184,7 +195,11 @@ cd $1
 				mv $nowPath/$sample/output/job_$kn.log $nowPath/$sample
 				echo resubmit job_$kn.sh...
 				cd $nowPath/$sample/output
-					rm -f $rootname'_'$kn.root
+					if ( $rootname != 'Skim' ) then
+						rm -f $rootname'_'$kn.root
+					else
+						rm -f $rootpath/$rootname'_'$kn.root
+					endif
 					condor_submit ../input/job_$kn/setup.condor 
 				cd -
 			end	
@@ -195,7 +210,11 @@ cd $1
 				rm -f $sample/output/$rootname'_'$kcn.root
 				echo resubmit job_$kcn.sh...
 				cd $nowPath/$sample/output
-					rm -f $rootname'_'$kcn.root
+					if ( $rootname != 'Skim' ) then
+						rm -f $rootname'_'$kcn.root
+					else
+						rm -f $rootpath/$rootname'_'$kcn.root
+					endif
 					condor_submit ../input/job_$kcn/setup.condor 
 				cd -
 			end	
@@ -205,7 +224,11 @@ cd $1
 				mv $nowPath/$sample/output/job_$kcn3.log $nowPath/$sample
 				echo resubmit job_$kcn3.sh...
 				cd $nowPath/$sample/output
-					rm -f $rootname'_'$kcn3.root
+					if ( $rootname != 'Skim' ) then
+						rm -f $rootname'_'$kcn3.root
+					else
+						rm -f $rootpath/$rootname'_'$kcn3.root
+					endif
 					condor_submit ../input/job_$kcn3/setup.condor 
 				cd -
 			end	
@@ -216,7 +239,11 @@ cd $1
 				rm -f $sample/output/$rootname'_'$an.root
 				echo resubmit job_$an.sh...
 				cd $nowPath/$sample/output
-					rm -f $rootname'_'$an.root
+					if ( $rootname != 'Skim' ) then
+						rm -f $rootname'_'$an.root
+					else
+						rm -f $rootpath/$rootname'_'$an.root
+					endif
 					condor_submit ../input/job_$an/setup.condor 
 				cd -
 			end	
@@ -226,7 +253,11 @@ cd $1
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
 				echo resubmit job_$an.sh...
 				cd $nowPath/$sample/output
-					rm -f $rootname'_'$an.root
+					if ( $rootname != 'Skim' ) then
+						rm -f $rootname'_'$an.root
+					else
+						rm -f $rootpath/$rootname'_'$an.root
+					endif
 					condor_submit ../input/job_$an/setup.condor 
 				cd -
 			end	
@@ -236,7 +267,11 @@ cd $1
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
 				echo resubmit job_$an.sh...
 				cd $nowPath/$sample/output
-					rm -f $rootname'_'$an.root
+					if ( $rootname != 'Skim' ) then
+						rm -f $rootname'_'$an.root
+					else
+						rm -f $rootpath/$rootname'_'$an.root
+					endif
 					condor_submit ../input/job_$an/setup.condor 
 				cd -
 			end	
@@ -246,7 +281,11 @@ cd $1
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
 				echo resubmit job_$an.sh...
 				cd $nowPath/$sample/output
-					rm -f $rootname'_'$an.root
+					if ( $rootname != 'Skim' ) then
+						rm -f $rootname'_'$an.root
+					else
+						rm -f $rootpath/$rootname'_'$an.root
+					endif
 					condor_submit ../input/job_$an/setup.condor 
 				cd -
 			end	
@@ -256,8 +295,8 @@ cd $1
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
 				echo resubmit job_$an.sh...
 				cd $nowPath/$sample/output
-					rm -f $rootname'_'$an.root
-					condor_submit ../input/job_$an/setup.condor 
+					#rm -f $rootname'_'$an.root
+					#condor_submit ../input/job_$an/setup.condor 
 				cd -
 			end	
 		endif
@@ -266,7 +305,11 @@ cd $1
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
 				echo resubmit job_$an.sh...
 				cd $nowPath/$sample/output
-					rm -f $rootname'_'$an.root
+					if ( $rootname != 'Skim' ) then
+						rm -f $rootname'_'$an.root
+					else
+						rm -f $rootpath/$rootname'_'$an.root
+					endif
 					condor_submit ../input/job_$an/setup.condor 
 				cd -
 			end	
@@ -276,7 +319,11 @@ cd $1
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
 				echo resubmit job_$an.sh...
 				cd $nowPath/$sample/output
-					rm -f $sample/output/$rootname'_'$an.root
+					if ( $rootname != 'Skim' ) then
+						rm -f $rootname'_'$an.root
+					else
+						rm -f $rootpath/$rootname'_'$an.root
+					endif
 					condor_submit ../input/job_$an/setup.condor 
 				cd -
 			end	
