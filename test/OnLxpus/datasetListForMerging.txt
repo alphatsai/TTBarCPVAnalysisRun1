@@ -174,16 +174,31 @@ WZ 33.6
 ZZ 8.2
 
 #### Dataset_name xs (in pb, for data set to -1)
-#QCD: L=19707
-#/QCD_Pt-170to300_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v2/AODSIM 34138.15
-#/QCD_Pt-300to470_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v2/AODSIM 1759.549
-#/QCD_Pt-470to600_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v2/AODSIM 113.8791 
-#/QCD_Pt-600to800_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v2/AODSIM 26.9921
-#/QCD_Pt-800to1000_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v2/AODSIM 3.550036
-#/QCD_Pt-1000to1400_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 0.737844
-#/QCD_Pt-1400to1800_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 0.03352235
-#/QCD_Pt-1800_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 0.001829005
-#
+# http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt-*_MuEnrichedPt5_TuneZ2star_8TeV_pythia6*
+# XS = gen-XS * gen-eff
+QCDMu: L=19707
+QCD_Pt-20to30_MuEnrichedPt5       1865500.0
+QCD_Pt-30to50_MuEnrichedPt5        806298.0
+QCD_Pt-50to80_MuEnrichedPt5  	   176187.6 
+QCD_Pt-80to120_MuEnrichedPt5        40448.0
+QCD_Pt-120to170_MuEnrichedPt5       7463.94
+QCD_Pt-170to300_MuEnrichedPt5      2229.752
+QCD_Pt-300to470_MuEnrichedPt5      151.8048
+QCD_Pt-470to600_MuEnrichedPt5      11.79648
+QCD_Pt-600to800_MuEnrichedPt5      2.690196
+QCD_Pt-800to1000_MuEnrichedPt5     0.368781
+QCD_Pt-1000_MuEnrichedPt5          0.0849078
+
+#### Dataset_name xs (in pb, for data set to -1)
+# http://cms.cern.ch/iCMS/jsp/mcprod/admin/requestmanagement.jsp?dsn=QCD_Pt_*_*_EMEnriched_TuneZ2star_8TeV_pythia6*
+# XS = gen-XS * gen-eff
+QCDEM: L=19707
+QCD_Pt_20_30_EMEnriched    2914860.0
+QCD_Pt_30_80_EMEnriched    4615893.0
+QCD_Pt_80_170_EMEnriched   183294.9
+QCD_Pt_170_250_EMEnriched  4586.52
+QCD_Pt_250_350_EMEnriched  556.75
+QCD_Pt_350_EMEnriched      89.1 
 
 #TTJets_TopPtReWrtUp: L=19707
 #/TTJets_TopPtReWrtUp_HadronicMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 115.56466064
