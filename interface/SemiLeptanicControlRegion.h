@@ -69,7 +69,8 @@ class SemiLeptanicControlRegion : public edm::EDAnalyzer{
         vector<int> HLT_ElChannel_;
         edm::ParameterSet selPars_Vertex_;
         edm::ParameterSet selPars_Jet_;
-        edm::ParameterSet selPars_BJet_;
+        edm::ParameterSet selPars_CSVM_BJet_;
+        edm::ParameterSet selPars_CSVL_BJet_;
         edm::ParameterSet selPars_NonBJet_;
         edm::ParameterSet selPars_LooseLepton_;
         edm::ParameterSet selPars_TightMuon_;
@@ -79,6 +80,7 @@ class SemiLeptanicControlRegion : public edm::EDAnalyzer{
         const double maxChi2_;
         const double Owrt_;
         const unsigned int NJets_;
+        const unsigned int NbJets_;
         const int Shift_JER_;
         const int Shift_BTagSF_;
         const int Shift_TopPtReWeight_;

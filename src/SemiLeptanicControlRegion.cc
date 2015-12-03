@@ -67,7 +67,8 @@ SemiLeptanicControlRegion::SemiLeptanicControlRegion(const edm::ParameterSet& iC
     HLT_ElChannel_(               iConfig.getParameter<std::vector<int>>("HLT_ElChannel")),
     selPars_Vertex_(              iConfig.getParameter<edm::ParameterSet>("SelPars_Vertex")),
     selPars_Jet_(                 iConfig.getParameter<edm::ParameterSet>("SelPars_Jet")),
-    selPars_BJet_(                iConfig.getParameter<edm::ParameterSet>("SelPars_BJet")),
+    selPars_CSVM_BJet_(           iConfig.getParameter<edm::ParameterSet>("SelPars_CSVM_BJet")),
+    selPars_CSVL_BJet_(           iConfig.getParameter<edm::ParameterSet>("SelPars_CSVL_BJet")),
     selPars_NonBJet_(             iConfig.getParameter<edm::ParameterSet>("SelPars_NonBJet")),
     selPars_LooseLepton_(         iConfig.getParameter<edm::ParameterSet>("SelPars_LooseLepton")),
     selPars_TightMuon_(           iConfig.getParameter<edm::ParameterSet>("SelPars_TightMuon")),
@@ -77,6 +78,7 @@ SemiLeptanicControlRegion::SemiLeptanicControlRegion(const edm::ParameterSet& iC
     maxChi2_(                     iConfig.getParameter<double>("MaxChi2")),
     Owrt_(                        iConfig.getParameter<double>("Owrt")),
     NJets_(                       iConfig.getParameter<int>("NJets")),
+    NbJets_(                      iConfig.getParameter<int>("NbJets")),
     Shift_JER_(                   iConfig.getParameter<int>("Shift_JER")),
     Shift_BTagSF_(                iConfig.getParameter<int>("Shift_BTagSF")),
     Shift_TopPtReWeight_(         iConfig.getParameter<int>("Shift_TopPtReWeight")),
@@ -102,32 +104,32 @@ void SemiLeptanicControlRegion::setCutFlow( TH1* h )
 {
     if( isSkim_ )
     {
-        h->GetXaxis()->SetBinLabel(1,  "All"                                    );
-        h->GetXaxis()->SetBinLabel(2,  "PreSelect"                              );
-        h->GetXaxis()->SetBinLabel(3,  "#geq1 goodVtx"                          );
-        h->GetXaxis()->SetBinLabel(4,  "HLT"                                    );
-        h->GetXaxis()->SetBinLabel(5,  "#geq1 Lep"                              );
-        h->GetXaxis()->SetBinLabel(6,  "1 isoLep"                               );
-        h->GetXaxis()->SetBinLabel(7,  "veto(Loose #mu)"                        );
-        h->GetXaxis()->SetBinLabel(8,  "veto(Loose e)"                          );
-        h->GetXaxis()->SetBinLabel(9,  ("#geq"+num2str(NJets_)+" Jets").c_str() );
-        h->GetXaxis()->SetBinLabel(10, "#geq2 bjets"                            );
-        h->GetXaxis()->SetBinLabel(11, "=2 bjets"                               );
-        h->GetXaxis()->SetBinLabel(12, ("#chi^{2}<"+num2str(maxChi2_)).c_str()  );
-        //h->GetXaxis()->SetBinLabel(13, "H_{T}>250GeV"                           );
+        h->GetXaxis()->SetBinLabel(1,  "All"                                       );
+        h->GetXaxis()->SetBinLabel(2,  "PreSelect"                                 );
+        h->GetXaxis()->SetBinLabel(3,  "#geq1 goodVtx"                             );
+        h->GetXaxis()->SetBinLabel(4,  "HLT"                                       );
+        h->GetXaxis()->SetBinLabel(5,  "#geq1 Lep"                                 );
+        h->GetXaxis()->SetBinLabel(6,  "1 isoLep"                                  );
+        h->GetXaxis()->SetBinLabel(7,  "veto(Loose #mu)"                           );
+        h->GetXaxis()->SetBinLabel(8,  "veto(Loose e)"                             );
+        h->GetXaxis()->SetBinLabel(9,  ("#geq"+num2str(NJets_)+" Jets").c_str()    );
+        h->GetXaxis()->SetBinLabel(10, ("#geq"+num2str(NbJets_)+" bjets").c_str()  );
+        h->GetXaxis()->SetBinLabel(11, ("="+num2str(NbJets_)+" bjets").c_str()     );
+        h->GetXaxis()->SetBinLabel(12, "=2 CSVL-bjets"                             );
+        h->GetXaxis()->SetBinLabel(13, ("#chi^{2}<"+num2str(maxChi2_)).c_str()     );
     }else{
-        h->GetXaxis()->SetBinLabel(1,  "All"                                    );
-        h->GetXaxis()->SetBinLabel(2,  "#geq1 goodVtx"                          );
-        h->GetXaxis()->SetBinLabel(3,  "HLT"                                    );
-        h->GetXaxis()->SetBinLabel(4,  "#geq1 Lep"                              );
-        h->GetXaxis()->SetBinLabel(5,  "1 isoLep"                               );
-        h->GetXaxis()->SetBinLabel(6,  "veto(Loose #mu)"                        );
-        h->GetXaxis()->SetBinLabel(7,  "veto(Loose e)"                          );
-        h->GetXaxis()->SetBinLabel(8,  ("#geq"+num2str(NJets_)+" Jets").c_str() );
-        h->GetXaxis()->SetBinLabel(9,  "#geq2 bjets"                            );
-        h->GetXaxis()->SetBinLabel(10,  "=2 bjets"                              );
-        h->GetXaxis()->SetBinLabel(11, ("#chi^{2}<"+num2str(maxChi2_)).c_str()  );
-        //h->GetXaxis()->SetBinLabel(12, "H_{T}>250GeV"                           );
+        h->GetXaxis()->SetBinLabel(1,  "All"                                       );
+        h->GetXaxis()->SetBinLabel(2,  "#geq1 goodVtx"                             );
+        h->GetXaxis()->SetBinLabel(3,  "HLT"                                       );
+        h->GetXaxis()->SetBinLabel(4,  "#geq1 Lep"                                 );
+        h->GetXaxis()->SetBinLabel(5,  "1 isoLep"                                  );
+        h->GetXaxis()->SetBinLabel(6,  "veto(Loose #mu)"                           );
+        h->GetXaxis()->SetBinLabel(7,  "veto(Loose e)"                             );
+        h->GetXaxis()->SetBinLabel(8,  ("#geq"+num2str(NJets_)+" Jets").c_str()    );
+        h->GetXaxis()->SetBinLabel(9,  ("#geq"+num2str(NbJets_)+" bjets").c_str()  );
+        h->GetXaxis()->SetBinLabel(10, ("="+num2str(NbJets_)+" bjets").c_str()     );
+        h->GetXaxis()->SetBinLabel(11, "=2 CSVL-bjets"                             );
+        h->GetXaxis()->SetBinLabel(12, ("#chi^{2}<"+num2str(maxChi2_)).c_str()     );
     }
     return ;
 }
@@ -558,21 +560,28 @@ void SemiLeptanicControlRegion::beginJob()
     h1.addNewTH1( "Evt_NSelJets",             "Num. of selected jets",     "N(selected j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "Evt_NSelJets_Mu",          "Num. of selected jets",     "N(selected j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "Evt_NSelJets_El",          "Num. of selected jets",     "N(selected j)",     "Events", "",    "", 20,   0,   20  );
-    h1.addNewTH1( "Evt_NBJets",               "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
-    h1.addNewTH1( "Evt_NBJets_Mu",            "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
-    h1.addNewTH1( "Evt_NBJets_El",            "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "Evt_NBJetsCSVM",           "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "Evt_NBJetsCSVM_Mu",        "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "Evt_NBJetsCSVM_El",        "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "Evt_NBJetsCSVL",           "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "Evt_NBJetsCSVL_Mu",        "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "Evt_NBJetsCSVL_El",        "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "EvtChi2_NSelJets",         "Num. of selected jets",     "N(selected j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "EvtChi2_NSelJets_Mu",      "Num. of selected jets",     "N(selected j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "EvtChi2_NSelJets_El",      "Num. of selected jets",     "N(selected j)",     "Events", "",    "", 20,   0,   20  );
-    h1.addNewTH1( "EvtChi2_NBJets",           "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
-    h1.addNewTH1( "EvtChi2_NBJets_Mu",        "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
-    h1.addNewTH1( "EvtChi2_NBJets_El",        "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "EvtChi2_NBJetsCSVM",       "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "EvtChi2_NBJetsCSVM_Mu",    "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "EvtChi2_NBJetsCSVM_El",    "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "EvtChi2_NBJetsCSVL",       "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "EvtChi2_NBJetsCSVL_Mu",    "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "EvtChi2_NBJetsCSVL_El",    "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "Evt_CutFlow_Mu",           "",                          "",                  "Evetns", "",    "", 13,   0,   13  );
     h1.addNewTH1( "Evt_CutFlow_El",           "",                          "",                  "Evetns", "",    "", 13,   0,   13  );
     h1.addNewTH1( "Evt_MuCut",                "isoMu:looseMu:looseEl",     "",                  "Evetns", "",    "", 7,    0,   7   );
     h1.addNewTH1( "Evt_ElCut",                "isoEl:looseMu:looseEl",     "",                  "Evetns", "",    "", 7,    0,   7   );
     h1.addNewTH1( "Evt_Wrtevt_TopPt",         "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
-    h1.addNewTH1( "Evt_Wrtevt_BTagSF",        "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
+    h1.addNewTH1( "Evt_Wrtevt_BTagSF_CSVM",   "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
+    h1.addNewTH1( "Evt_Wrtevt_BTagSF_CSVL",   "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
     h1.addNewTH1( "Evt_Wrtevt_TightElIDSF",   "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
     h1.addNewTH1( "Evt_Wrtevt_TightMuIDSF",   "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
     h1.addNewTH1( "Evt_Wrtevt_TightMuIsoSF",  "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
@@ -700,9 +709,10 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
 
     SelectorVertex  VtxSelection( selPars_Vertex_, Debug_ );
 
-    SelectorJet     JetSelection(     selPars_Jet_, Debug_ );
-    SelectorJet    BJetSelection(    selPars_BJet_, Debug_ );
-    SelectorJet NonBJetSelection( selPars_NonBJet_, Debug_ );
+    SelectorJet     JetSelection(      selPars_Jet_,       Debug_ );
+    SelectorJet    CSVM_BJetSelection( selPars_CSVM_BJet_, Debug_ );
+    SelectorJet    CSVL_BJetSelection( selPars_CSVL_BJet_, Debug_ );
+    SelectorJet NonBJetSelection(      selPars_NonBJet_,   Debug_ );
 
     SelectorMuon MuonSelectionTight(   selPars_TightMuon_, Debug_ );
     SelectorMuon MuonSelectionLoose( selPars_LooseLepton_, Debug_ );
@@ -795,7 +805,7 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
         h1.GetTH1("EvtNoCut_NVertexNoWrt_Mu")->Fill(VxtColSelected.size(), wrtevtNoPU );
 
         //// *** Jet selection ***
-        vector<Jet> JetColSelected, BJetCol, nonBJetCol;
+        vector<Jet> JetColSelected, BJetCol_CSVM, BJetCol_CSVL, nonBJetCol;
         for( int idx=0; idx < JetInfo.Size; idx++)
         {
             Jet jet( JetInfo, idx );
@@ -809,16 +819,11 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
             h1.GetTH1("Jet_Eta" )->Fill( jet.Eta                , wrtevt);
             h1.GetTH1("Jet_BTag")->Fill( jet.CombinedSVBJetTags , wrtevt);
 
-            if( JetSelection.isPass(jet) )
+            if( JetSelection.isPass(jet) ) JetColSelected.push_back(jet);
+            if( CSVM_BJetSelection.isPass(jet) ) BJetCol_CSVM.push_back(jet);
+            if( CSVL_BJetSelection.isPass(jet) )
             { 
-                JetColSelected.push_back(jet);
-                h1.GetTH1("SelJet_Pt"  )->Fill( jet.Pt                 , wrtevt);
-                h1.GetTH1("SelJet_Eta" )->Fill( jet.Eta                , wrtevt);
-                h1.GetTH1("SelJet_BTag")->Fill( jet.CombinedSVBJetTags , wrtevt);
-            }
-            if( BJetSelection.isPass(jet) )
-            { 
-                BJetCol.push_back(jet);
+                BJetCol_CSVL.push_back(jet);
                 h1.GetTH1("bJet_Pt"  )->Fill( jet.Pt                 , wrtevt);
                 h1.GetTH1("bJet_Eta" )->Fill( jet.Eta                , wrtevt);
                 h1.GetTH1("bJet_BTag")->Fill( jet.CombinedSVBJetTags , wrtevt);
@@ -826,7 +831,7 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
             if( NonBJetSelection.isPass(jet) ) nonBJetCol.push_back(jet);
         }
         h1.GetTH1("Evt_NJets")->Fill( JetInfo.Size, wrtevt);
-        if( JetColSelected.size() != ( nonBJetCol.size()+BJetCol.size()) ) std::cout<<">> [WARNING] JetColSelected.size() "<<JetColSelected.size()<<" != ( nonBJetCol.size() "<<nonBJetCol.size()<<" + BJetCol.size() "<<BJetCol.size()<<" )"<<std::endl;
+        if( JetColSelected.size() != ( nonBJetCol.size()+BJetCol_CSVL.size()) ) std::cout<<">> [WARNING] JetColSelected.size() "<<JetColSelected.size()<<" != ( nonBJetCol.size() "<<nonBJetCol.size()<<" + BJetCol_CSVL.size() "<<BJetCol_CSVL.size()<<" )"<<std::endl;
 
         //// *** Lepton selection ***
         vector<Lepton> MuColTight, MuColLoose_MuChannel, ElColLoose_MuChannel;
@@ -844,8 +849,7 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                     ElColLoose_ElChannel.push_back(lepton);
                 }
                 if( ElectronSelectionTight.isPass(lepton) &&
-                    isIsoLeptonFromJets( lepton, BJetCol,    dR_IsoLeptonFromJets_ ) && 
-                    isIsoLeptonFromJets( lepton, nonBJetCol, dR_IsoLeptonFromJets_ )) 
+                    isIsoLeptonFromJets( lepton, JetColSelected, dR_IsoLeptonFromJets_ )) 
                 {
                     ElColTight.push_back(lepton);
                 }
@@ -856,12 +860,10 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                 if( MuonSelectionLoose.isPass(lepton) ) MuColLoose_ElChannel.push_back(lepton);
                 if( MuonSelectionLoose.isPass(lepton) && 
                     lepton.Pt < MuonSelectionTight.getCut("lepPtMin"))
-                {
-                    MuColLoose_MuChannel.push_back(lepton);
+               { MuColLoose_MuChannel.push_back(lepton);
                 }
                 if( MuonSelectionTight.isPass(lepton) && 
-                    isIsoLeptonFromJets( lepton, BJetCol,    dR_IsoLeptonFromJets_ ) && 
-                    isIsoLeptonFromJets( lepton, nonBJetCol, dR_IsoLeptonFromJets_ )) 
+                    isIsoLeptonFromJets( lepton, JetColSelected, dR_IsoLeptonFromJets_ )) 
                 {
                     MuColTight.push_back(lepton);
                 }
@@ -977,7 +979,7 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
             if( passElectronSel || passMuonSel ) 
             {
                 //// *** Number of jets cuts 
-                int unsigned selectedJetsSize = BJetCol.size() + nonBJetCol.size();
+                int unsigned selectedJetsSize = JetColSelected.size();
                 if( selectedJetsSize >= NJets_ ) 
                 { 
                     h1.GetTH1("EvtNJet_NVertex"        )->Fill(VxtColSelected.size(), wrtevt     );
@@ -994,143 +996,131 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                     }
                     
                     //// ** Number of b-jets cuts, 1
-                    const int sizeBJetCol = BJetCol.size();
-                    if( sizeBJetCol >= 2 )
+                    double wrtevt_btagSF_CSVM(1);
+                    double wrtevt_btagSF_CSVL(1);
+                    int unsigned sizeBJetCol_CSVM = BJetCol_CSVM.size();
+                    int unsigned sizeBJetCol_CSVL = BJetCol_CSVL.size();
+                    if( sizeBJetCol_CSVM >= NbJets_ )
                     {
-                        double wrtevt_btagSF(1);
                         if( !isdata )
                         {
                             BTagSFUtil BTagSF;
-                            for( int b=0; b<sizeBJetCol; b++ )
+                            for( int b=0; b<int(sizeBJetCol_CSVM); b++ )
                             {
-                                wrtevt_btagSF *= BTagSF.getSF( "CSVM", BJetCol[b], Shift_BTagSF_ );
+                                wrtevt_btagSF_CSVM *= BTagSF.getSF( "CSVM", BJetCol_CSVM[b], Shift_BTagSF_ );
                             }
                         }
-                        if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill("#geq2 bjets", wrtevt*wrtevt_btagSF*wrtevt_tightMuID*wrtevt_tightMuIso );
-                        if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill("#geq2 bjets", wrtevt*wrtevt_btagSF*wrtevt_tightElID                   );
+                        wrtevt     *= wrtevt_btagSF_CSVM;
+                        wrtevtNoPU *= wrtevt_btagSF_CSVM;
+                        if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#geq"+num2str(NbJets_)+" bjets").c_str(), wrtevt*wrtevt_tightMuID*wrtevt_tightMuIso );
+                        if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#geq"+num2str(NbJets_)+" bjets").c_str(), wrtevt*wrtevt_tightElID                   );
                     }
 
-                    //// ** Number of b-jets cuts, 2
-                    if( sizeBJetCol == 2 )
+                    //// ** Number of b-jets cuts 
+                    if( sizeBJetCol_CSVM == NbJets_ )
                     {
-                        double wrtevt_btagSF(1);
-                        if( !isdata )
+                        //wrtevtNoPU *= wrtevt_btagSF_CSVM;
+                        //wrtevt *= wrtevt_btagSF_CSVM;
+                        h1.GetTH1("Evt_Wrtevt_BTagSF_CSVM")->Fill(wrtevt_btagSF_CSVM);
+                        h1.GetTH1("Evt_CutFlow_Mu")->Fill(("="+num2str(NbJets_)+" bjets").c_str(), wrtevt*wrtevt_tightMuID*wrtevt_tightMuIso );
+                        h1.GetTH1("Evt_CutFlow_El")->Fill(("="+num2str(NbJets_)+" bjets").c_str(), wrtevt*wrtevt_tightElID                   );
+                        if( sizeBJetCol_CSVL == 2 )
                         {
                             BTagSFUtil BTagSF;
-                            for( int b=0; b<sizeBJetCol; b++ )
+                            for( int b=0; b<int(sizeBJetCol_CSVL); b++ )
                             {
-                                wrtevt_btagSF *= BTagSF.getSF( "CSVM", BJetCol[b], Shift_BTagSF_ );
+                                wrtevt_btagSF_CSVL *= BTagSF.getSF( "CSVL", BJetCol_CSVL[b], Shift_BTagSF_ );
                             }
-                        }
-                        wrtevtNoPU *= wrtevt_btagSF;
-                        wrtevt *= wrtevt_btagSF;
-                        h1.GetTH1("Evt_Wrtevt_BTagSF")->Fill(wrtevt_btagSF);
+                            wrtevtNoPU *= wrtevt_btagSF_CSVL;
+                            wrtevt *= wrtevt_btagSF_CSVL;
+                            h1.GetTH1("Evt_Wrtevt_BTagSF_CSVL")->Fill(wrtevt_btagSF_CSVL);
+                            //// * Fill cutflow hist to each channel
+                            if( passMuonSel )
+                            {     
+                                isGoodMuonEvt = true;
+                                isoLep = isoMu;
+                                wrtevt *= wrtevt_tightMuID*wrtevt_tightMuIso;
+                                wrtevtNoPU *= wrtevt_tightMuID*wrtevt_tightMuIso;
+                                h1.GetTH1("Evt_Wrtevt_TightMuIDSF" )->Fill( wrtevt_tightMuID  );
+                                h1.GetTH1("Evt_Wrtevt_TightMuIsoSF")->Fill( wrtevt_tightMuIso );
+                                h1.GetTH1("Evt_CutFlow_Mu"         )->Fill("=2 CSVL-bjets", wrtevt);
+                            }
+                            if( passElectronSel )
+                            { 
+                                isGoodElectronEvt = true;
+                                isoLep = isoEl;
+                                wrtevt *= wrtevt_tightElID;
+                                wrtevtNoPU *= wrtevt_tightElID;
+                                h1.GetTH1("Evt_Wrtevt_TightElIDSF")->Fill( wrtevt_tightElID );
+                                h1.GetTH1("Evt_CutFlow_El"        )->Fill("=2 CSVL-bjets", wrtevt);
+                            }
 
-                        //// * Fill cutflow hist to each channel
-                        if( passMuonSel )
-                        {     
-                            isGoodMuonEvt = true;
-                            isoLep = isoMu;
-                            wrtevt *= wrtevt_tightMuID*wrtevt_tightMuIso;
-                            wrtevtNoPU *= wrtevt_tightMuID*wrtevt_tightMuIso;
-                            h1.GetTH1("Evt_Wrtevt_TightMuIDSF" )->Fill( wrtevt_tightMuID  );
-                            h1.GetTH1("Evt_Wrtevt_TightMuIsoSF")->Fill( wrtevt_tightMuIso );
-                            h1.GetTH1("Evt_CutFlow_Mu"         )->Fill("=2 bjets", wrtevt);
-                        }
-                        if( passElectronSel )
-                        { 
-                            isGoodElectronEvt = true;
-                            isoLep = isoEl;
-                            wrtevt *= wrtevt_tightElID;
-                            wrtevtNoPU *= wrtevt_tightElID;
-                            h1.GetTH1("Evt_Wrtevt_TightElIDSF")->Fill( wrtevt_tightElID );
-                            h1.GetTH1("Evt_CutFlow_El"        )->Fill("=2 bjets", wrtevt);
-                        }
+                            //// * Lable the two hardest non_bjet
+                            getHighPtObject( JetColSelected, hardJet ); 
+                            get2HighPtObject( nonBJetCol, hardNonBJet1, hardNonBJet2 );
 
-                        //// * Lable the two hardest non_bjet
-                        getHighPtObject( JetColSelected, hardJet ); 
-                        get2HighPtObject( nonBJetCol, hardNonBJet1, hardNonBJet2 );
-
-                        //// * Distinguish hadronic-top and leptonic-top's b-jet by chi^2
-                        //const int sizeNonBJetCol = nonBJetCol.size();
-                        //int hadronicTopbjet(-1), leptonicTopbjet(-1); 
-                        //for( int bj=0; bj<2; bj++)
-                        //{
-                        //    float chi2_ = getChi2( hardNonBJet1, hardNonBJet2, BJetCol[bj] );
-                        //    if( chi2_ < minChi2 )
-                        //    { 
-                        //        hadronicTopbjet = bj;
-                        //        minChi2 = chi2_;
-                        //    }
-                        //}
-                        //TopNonBJet1 = hardNonBJet1;
-                        //TopNonBJet2 = hardNonBJet2;
-
-                        //// * Distinguish hadronic-top and leptonic-top's b-jet by chi^2
-                        const int sizeNonBJetCol = nonBJetCol.size();
-                        int topjet1(-1), topjet2(-1), hadronicTopbjet(-1), leptonicTopbjet(-1); 
-                        for( int ij1=1; ij1<sizeNonBJetCol; ij1++){
-                            for( int ij2=ij1-1; ij2<ij1; ij2++){
-                                for( int bj=0; bj<2; bj++)
-                                {
-                                    float chi2_ = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], BJetCol[bj] );
-                                    if( chi2_ < minChi2 )
-                                    { 
-                                        topjet1  = ij1;
-                                        topjet2  = ij2;
-                                        hadronicTopbjet = bj;
-                                        minChi2 = chi2_;
+                            //// * Distinguish hadronic-top and leptonic-top's b-jet by chi^2
+                            const int sizeNonBJetCol = nonBJetCol.size();
+                            int topjet1(-1), topjet2(-1), hadronicTopbjet(-1), leptonicTopbjet(-1); 
+                            for( int ij1=1; ij1<sizeNonBJetCol; ij1++){
+                                for( int ij2=ij1-1; ij2<ij1; ij2++){
+                                    for( int bj=0; bj<2; bj++)
+                                    {
+                                        float chi2_ = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], BJetCol_CSVL[bj] );
+                                        if( chi2_ < minChi2 )
+                                        { 
+                                            topjet1  = ij1;
+                                            topjet2  = ij2;
+                                            hadronicTopbjet = bj;
+                                            minChi2 = chi2_;
+                                        }
                                     }
                                 }
                             }
-                        }
-                        if( nonBJetCol[topjet1].Pt > nonBJetCol[topjet2].Pt )
-                        { 
-                            TopNonBJet1 = nonBJetCol[topjet1]; TopNonBJet1.Index = topjet1;
-                            TopNonBJet2 = nonBJetCol[topjet2]; TopNonBJet2.Index = topjet2;
-                        }
-                        else
-                        {
-                            TopNonBJet1 = nonBJetCol[topjet2]; TopNonBJet1.Index = topjet2;
-                            TopNonBJet2 = nonBJetCol[topjet1]; TopNonBJet2.Index = topjet1;
-                        }
+                            if( nonBJetCol[topjet1].Pt > nonBJetCol[topjet2].Pt )
+                            { 
+                                TopNonBJet1 = nonBJetCol[topjet1]; TopNonBJet1.Index = topjet1;
+                                TopNonBJet2 = nonBJetCol[topjet2]; TopNonBJet2.Index = topjet2;
+                            }
+                            else
+                            {
+                                TopNonBJet1 = nonBJetCol[topjet2]; TopNonBJet1.Index = topjet2;
+                                TopNonBJet2 = nonBJetCol[topjet1]; TopNonBJet2.Index = topjet1;
+                            }
 
-                        //// * reco top  
-                        leptonicTopbjet = ( hadronicTopbjet==0 )? 1:0;
-                        if( isoLep.Charge < 0 ) // tbar->bbar w- ( w- > l- v )
-                        {
-                            b_jet    = BJetCol[hadronicTopbjet]; b_jet.Index    = hadronicTopbjet;
-                            bbar_jet = BJetCol[leptonicTopbjet]; bbar_jet.Index = leptonicTopbjet;
-                            top_hadronic.Fill( b_jet,    TopNonBJet1, TopNonBJet2, 0 );
-                            top_leptonic.Fill( bbar_jet, isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi, 1 );
-                        }
-                        else if( isoLep.Charge > 0 ) //t->b w+ ( w+ > l+ v )
-                        {
-                            b_jet    = BJetCol[leptonicTopbjet]; b_jet.Index    = leptonicTopbjet;
-                            bbar_jet = BJetCol[hadronicTopbjet]; bbar_jet.Index = hadronicTopbjet;
-                            top_hadronic.Fill( bbar_jet, TopNonBJet1, TopNonBJet2, 1 );
-                            top_leptonic.Fill( b_jet,    isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi, 0 );
-                        }
-                        else
-                        { std::cout<<">> [ERROR] There an nuetral lepton!? "<<std::endl; }
+                            //// * reco top  
+                            leptonicTopbjet = ( hadronicTopbjet==0 )? 1:0;
+                            if( isoLep.Charge < 0 ) // tbar->bbar w- ( w- > l- v )
+                            {
+                                b_jet    = BJetCol_CSVL[hadronicTopbjet]; b_jet.Index    = hadronicTopbjet;
+                                bbar_jet = BJetCol_CSVL[leptonicTopbjet]; bbar_jet.Index = leptonicTopbjet;
+                                top_hadronic.Fill( b_jet,    TopNonBJet1, TopNonBJet2, 0 );
+                                top_leptonic.Fill( bbar_jet, isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi, 1 );
+                            }
+                            else if( isoLep.Charge > 0 ) //t->b w+ ( w+ > l+ v )
+                            {
+                                b_jet    = BJetCol_CSVL[leptonicTopbjet]; b_jet.Index    = leptonicTopbjet;
+                                bbar_jet = BJetCol_CSVL[hadronicTopbjet]; bbar_jet.Index = hadronicTopbjet;
+                                top_hadronic.Fill( bbar_jet, TopNonBJet1, TopNonBJet2, 1 );
+                                top_leptonic.Fill( b_jet,    isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi, 0 );
+                            }
+                            else
+                            { std::cout<<">> [ERROR] There an nuetral lepton!? "<<std::endl; }
 
-                        //// * Fill Ht = scale sum of selected jets
-                        for( int j=0; j<sizeNonBJetCol; j++ ){ Ht += nonBJetCol[j].Pt; }
-                        for( int j=0; j<sizeBJetCol;    j++ ){ Ht += BJetCol[j].Pt;    }
+                            //// * Fill Ht = scale sum of selected jets
+                            //for( int j=0; j<int(sizeNonBJetCol);   j++ ){ Ht += nonBJetCol[j].Pt; }
+                            //for( int j=0; j<int(sizeBJetCol_CSVL); j++ ){ Ht += BJetCol[j].Pt;    }
+                            for( int j=0; j<int(selectedJetsSize); j++ ){ Ht += JetColSelected[j].Pt; }
 
-                        //// * chi^2 cut
-                        if( maxChi2_ > minChi2 )
-                        {
-                            passChi2Cut = true;
-                            if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
-                            if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
-                            //if( Ht < 250 )
-                            //{
-                            //    isGoodElectronEvt = false;
-                            //    isGoodMuonEvt = false;
-                            //}
-                        } //// [END] Chi^2 cut
-                    } //// [END] Number of b-jets cuts, 2
+                            ////// * chi^2 cut
+                            if( maxChi2_ > minChi2 )
+                            {
+                                passChi2Cut = true;
+                                if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
+                                if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
+                            } //// [END] Chi^2 cut
+                        } //// [END] Number of CSVL b-jets cuts, 2
+                    } //// [END] Number of CSVM b-jets cuts
                 } //// [END] Number of jets cut
             } //// [END] Jet and bjet cutflow
 
@@ -1196,6 +1186,10 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
             double O3 = Obs3( isoLep.P4, TopNonBJet1.P4, b_jet.P4, bbar_jet.P4, isoLep.Charge );
             double O4 = Obs4( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3, isoLep.Charge );
             double O7 = Obs7( az, b_jet.P3, bbar_jet.P3 );
+            //double O2 = 0;
+            //double O3 = 0;
+            //double O4 = 0;
+            //double O7 = 0;
 
             b_O2_ = O2;
             b_O3_ = O3;
@@ -1213,13 +1207,17 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
             h1.GetTH1("Evt_NVertex"           )->Fill( VxtColSelected.size()          , wrtevt     );
             h1.GetTH1("Evt_NVertexNoWrt"      )->Fill( VxtColSelected.size()          , wrtevtNoPU );
             h1.GetTH1("Evt_NSelJets"          )->Fill( JetColSelected.size()          , wrtevt     );
-            h1.GetTH1("Evt_NBJets"            )->Fill( BJetCol.size()                 , wrtevt     );
-            h1.GetTH1("Evt_bJet_Pt"           )->Fill( b_jet.Pt                       , wrtevt     );
-            h1.GetTH1("Evt_bJet_Eta"          )->Fill( b_jet.Eta                      , wrtevt     );
-            h1.GetTH1("Evt_bJet_Phi"          )->Fill( b_jet.Phi                      , wrtevt     );
-            h1.GetTH1("Evt_bJet_E"            )->Fill( b_jet.Energy                   , wrtevt     );
-            h1.GetTH1("Evt_bJet_M"            )->Fill( b_jet.Mass                     , wrtevt     );
-            h1.GetTH1("Evt_bJet_BTag"         )->Fill( b_jet.CombinedSVBJetTags       , wrtevt     );
+            h1.GetTH1("Evt_NBJetsCSVM"        )->Fill( BJetCol_CSVM.size()            , wrtevt     );
+            h1.GetTH1("Evt_NBJetsCSVL"        )->Fill( BJetCol_CSVL.size()            , wrtevt     );
+            if( NbJets_ > 0 )
+            {
+                h1.GetTH1("Evt_bJet_Pt"           )->Fill( b_jet.Pt                       , wrtevt     );
+                h1.GetTH1("Evt_bJet_Eta"          )->Fill( b_jet.Eta                      , wrtevt     );
+                h1.GetTH1("Evt_bJet_Phi"          )->Fill( b_jet.Phi                      , wrtevt     );
+                h1.GetTH1("Evt_bJet_E"            )->Fill( b_jet.Energy                   , wrtevt     );
+                h1.GetTH1("Evt_bJet_M"            )->Fill( b_jet.Mass                     , wrtevt     );
+                h1.GetTH1("Evt_bJet_BTag"         )->Fill( b_jet.CombinedSVBJetTags       , wrtevt     );
+            }
             h1.GetTH1("Evt_bbarJet_Pt"        )->Fill( bbar_jet.Pt                    , wrtevt     );
             h1.GetTH1("Evt_bbarJet_Eta"       )->Fill( bbar_jet.Eta                   , wrtevt     );
             h1.GetTH1("Evt_bbarJet_Phi"       )->Fill( bbar_jet.Phi                   , wrtevt     );
@@ -1285,7 +1283,8 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                 h1.GetTH1("EvtChi2_NVertex"           )->Fill( VxtColSelected.size()          , wrtevt     );
                 h1.GetTH1("EvtChi2_NVertexNoWrt"      )->Fill( VxtColSelected.size()          , wrtevtNoPU );
                 h1.GetTH1("EvtChi2_NSelJets"          )->Fill( JetColSelected.size()          , wrtevt     );
-                h1.GetTH1("EvtChi2_NBJets"            )->Fill( BJetCol.size()                 , wrtevt     );
+                h1.GetTH1("EvtChi2_NBJetsCSVM"        )->Fill( BJetCol_CSVM.size()            , wrtevt     );
+                h1.GetTH1("EvtChi2_NBJetsCSVL"        )->Fill( BJetCol_CSVL.size()            , wrtevt     );
                 h1.GetTH1("EvtChi2_bJet_Pt"           )->Fill( b_jet.Pt                       , wrtevt     );
                 h1.GetTH1("EvtChi2_bJet_Eta"          )->Fill( b_jet.Eta                      , wrtevt     );
                 h1.GetTH1("EvtChi2_bJet_Phi"          )->Fill( b_jet.Phi                      , wrtevt     );
@@ -1352,7 +1351,6 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
             //// *** Muon channel
             if( isGoodMuonEvt )
             {
-                //h1.GetTH1("Evt_CutFlow_Mu")->Fill("H_{T}>250GeV", wrtevt);
                 b_isMuonEvt_ = 1;
                 b_isEleEvt_  = 0;
                 h2.GetTH2("TH2_Chi2_vs_TopHadronicMass_Mu")->Fill( top_hadronic.Mass, minChi2,           wrtevt );
@@ -1362,13 +1360,17 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                 h1.GetTH1("Evt_NVertex_Mu"          )->Fill( VxtColSelected.size()          , wrtevt     );
                 h1.GetTH1("Evt_NVertexNoWrt_Mu"     )->Fill( VxtColSelected.size()          , wrtevtNoPU );
                 h1.GetTH1("Evt_NSelJets_Mu"         )->Fill( JetColSelected.size()          , wrtevt     );
-                h1.GetTH1("Evt_NBJets_Mu"           )->Fill( BJetCol.size()                 , wrtevt     );
-                h1.GetTH1("Evt_bJet_Pt_Mu"          )->Fill( b_jet.Pt                       , wrtevt     );
-                h1.GetTH1("Evt_bJet_Eta_Mu"         )->Fill( b_jet.Eta                      , wrtevt     );
-                h1.GetTH1("Evt_bJet_Phi_Mu"         )->Fill( b_jet.Phi                      , wrtevt     );
-                h1.GetTH1("Evt_bJet_E_Mu"           )->Fill( b_jet.Energy                   , wrtevt     );
-                h1.GetTH1("Evt_bJet_M_Mu"           )->Fill( b_jet.Mass                     , wrtevt     );
-                h1.GetTH1("Evt_bJet_BTag_Mu"        )->Fill( b_jet.CombinedSVBJetTags       , wrtevt     );
+                h1.GetTH1("Evt_NBJetsCSVM_Mu"       )->Fill( BJetCol_CSVM.size()            , wrtevt     );
+                h1.GetTH1("Evt_NBJetsCSVL_Mu"       )->Fill( BJetCol_CSVL.size()            , wrtevt     );
+                //if( NbJets_ > 0 )
+                //{
+                    h1.GetTH1("Evt_bJet_Pt_Mu"          )->Fill( b_jet.Pt                       , wrtevt     );
+                    h1.GetTH1("Evt_bJet_Eta_Mu"         )->Fill( b_jet.Eta                      , wrtevt     );
+                    h1.GetTH1("Evt_bJet_Phi_Mu"         )->Fill( b_jet.Phi                      , wrtevt     );
+                    h1.GetTH1("Evt_bJet_E_Mu"           )->Fill( b_jet.Energy                   , wrtevt     );
+                    h1.GetTH1("Evt_bJet_M_Mu"           )->Fill( b_jet.Mass                     , wrtevt     );
+                    h1.GetTH1("Evt_bJet_BTag_Mu"        )->Fill( b_jet.CombinedSVBJetTags       , wrtevt     );
+                //}
                 h1.GetTH1("Evt_bbarJet_Pt_Mu"       )->Fill( bbar_jet.Pt                    , wrtevt     );
                 h1.GetTH1("Evt_bbarJet_Eta_Mu"      )->Fill( bbar_jet.Eta                   , wrtevt     );
                 h1.GetTH1("Evt_bbarJet_Phi_Mu"      )->Fill( bbar_jet.Phi                   , wrtevt     );
@@ -1434,7 +1436,8 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                     h1.GetTH1("EvtChi2_NVertex_Mu"          )->Fill( VxtColSelected.size()          , wrtevt     );
                     h1.GetTH1("EvtChi2_NVertexNoWrt_Mu"     )->Fill( VxtColSelected.size()          , wrtevtNoPU );
                     h1.GetTH1("EvtChi2_NSelJets_Mu"         )->Fill( JetColSelected.size()          , wrtevt     );
-                    h1.GetTH1("EvtChi2_NBJets_Mu"           )->Fill( BJetCol.size()                 , wrtevt     );
+                    h1.GetTH1("EvtChi2_NBJetsCSVM_Mu"       )->Fill( BJetCol_CSVM.size()            , wrtevt     );
+                    h1.GetTH1("EvtChi2_NBJetsCSVL_Mu"       )->Fill( BJetCol_CSVL.size()            , wrtevt     );
                     h1.GetTH1("EvtChi2_bJet_Pt_Mu"          )->Fill( b_jet.Pt                       , wrtevt     );
                     h1.GetTH1("EvtChi2_bJet_Eta_Mu"         )->Fill( b_jet.Eta                      , wrtevt     );
                     h1.GetTH1("EvtChi2_bJet_Phi_Mu"         )->Fill( b_jet.Phi                      , wrtevt     );
@@ -1512,13 +1515,17 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                 h1.GetTH1("Evt_NVertex_El"          )->Fill( VxtColSelected.size()          , wrtevt     );
                 h1.GetTH1("Evt_NVertexNoWrt_El"     )->Fill( VxtColSelected.size()          , wrtevtNoPU );
                 h1.GetTH1("Evt_NSelJets_El"         )->Fill( JetColSelected.size()          , wrtevt     );
-                h1.GetTH1("Evt_NBJets_El"           )->Fill( BJetCol.size()                 , wrtevt     );
-                h1.GetTH1("Evt_bJet_Pt_El"          )->Fill( b_jet.Pt                       , wrtevt     );
-                h1.GetTH1("Evt_bJet_Eta_El"         )->Fill( b_jet.Eta                      , wrtevt     );
-                h1.GetTH1("Evt_bJet_Phi_El"         )->Fill( b_jet.Phi                      , wrtevt     );
-                h1.GetTH1("Evt_bJet_E_El"           )->Fill( b_jet.Energy                   , wrtevt     );
-                h1.GetTH1("Evt_bJet_M_El"           )->Fill( b_jet.Mass                     , wrtevt     );
-                h1.GetTH1("Evt_bJet_BTag_El"        )->Fill( b_jet.CombinedSVBJetTags       , wrtevt     );
+                h1.GetTH1("Evt_NBJetsCSVM_El"       )->Fill( BJetCol_CSVM.size()            , wrtevt     );
+                h1.GetTH1("Evt_NBJetsCSVL_El"       )->Fill( BJetCol_CSVL.size()            , wrtevt     );
+                //if( NbJets_ > 0 )
+                //{
+                    h1.GetTH1("Evt_bJet_Pt_El"          )->Fill( b_jet.Pt                       , wrtevt     );
+                    h1.GetTH1("Evt_bJet_Eta_El"         )->Fill( b_jet.Eta                      , wrtevt     );
+                    h1.GetTH1("Evt_bJet_Phi_El"         )->Fill( b_jet.Phi                      , wrtevt     );
+                    h1.GetTH1("Evt_bJet_E_El"           )->Fill( b_jet.Energy                   , wrtevt     );
+                    h1.GetTH1("Evt_bJet_M_El"           )->Fill( b_jet.Mass                     , wrtevt     );
+                    h1.GetTH1("Evt_bJet_BTag_El"        )->Fill( b_jet.CombinedSVBJetTags       , wrtevt     );
+                //}
                 h1.GetTH1("Evt_bbarJet_Pt_El"       )->Fill( bbar_jet.Pt                    , wrtevt     );
                 h1.GetTH1("Evt_bbarJet_Eta_El"      )->Fill( bbar_jet.Eta                   , wrtevt     );
                 h1.GetTH1("Evt_bbarJet_Phi_El"      )->Fill( bbar_jet.Phi                   , wrtevt     );
@@ -1584,7 +1591,8 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                     h1.GetTH1("EvtChi2_NVertex_El"          )->Fill( VxtColSelected.size()          , wrtevt     );
                     h1.GetTH1("EvtChi2_NVertexNoWrt_El"     )->Fill( VxtColSelected.size()          , wrtevtNoPU );
                     h1.GetTH1("EvtChi2_NSelJets_El"         )->Fill( JetColSelected.size()          , wrtevt     );
-                    h1.GetTH1("EvtChi2_NBJets_El"           )->Fill( BJetCol.size()                 , wrtevt     );
+                    h1.GetTH1("EvtChi2_NBJetsCSVM_El"       )->Fill( BJetCol_CSVM.size()            , wrtevt     );
+                    h1.GetTH1("EvtChi2_NBJetsCSVL_El"       )->Fill( BJetCol_CSVL.size()            , wrtevt     );
                     h1.GetTH1("EvtChi2_bJet_Pt_El"          )->Fill( b_jet.Pt                       , wrtevt     );
                     h1.GetTH1("EvtChi2_bJet_Eta_El"         )->Fill( b_jet.Eta                      , wrtevt     );
                     h1.GetTH1("EvtChi2_bJet_Phi_El"         )->Fill( b_jet.Phi                      , wrtevt     );

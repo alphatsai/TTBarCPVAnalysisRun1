@@ -7,5 +7,5 @@ defaultBJetSelectionParameters = defaultJetSelectionParameters.clone(
     jetType                  = cms.string('BJet'),
 
     # jet b tag
-    jetCombinedSVBJetTagsMin = cms.double(0.679),
+    jetCombinedSVBJetTagsMin = cms.double(0.679), # CSVL: 0.244, CSVM: 0.679, CSVT: 0.898
 )

@@ -57,6 +57,11 @@ options.register('NJets', 4,
     VarParsing.varType.int,
     "Number of jets"
     )
+options.register('NbJets', 1,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.int,
+    "Number of b-jets"
+    )
 options.register('ShiftJER', 0,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.int,
@@ -139,7 +144,7 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicControlRegion',
     InputJsons                  = cms.vstring(JsonNames), 
     InputFiles                  = cms.vstring(FileNames), 
     #InputFiles                  = cms.vstring(FileNames_BprimtKits_NTUG3_SemiLeptTest), 
-    #InputFiles                   = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkim),
+    #InputFiles                  = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkim),
     #InputFiles                  = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkimData),
     #InputFiles                  = cms.vstring(FileNames_BprimtKits_SemiLept),
     HLT_MuChannel               = cms.vint32( 2868,3244,3542,4204,4205,4827,5106,5573  ), # HLT_IsoMu24_eta2p1_v*
@@ -150,8 +155,16 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicControlRegion',
     Hist_PUDistData             = cms.string(options.HistPUDistData),
     SelPars_Vertex              = defaultVertexSelectionParameters.clone(), 
     SelPars_Jet                 = defaultJetSelectionParameters.clone(), 
-    SelPars_BJet                = defaultBJetSelectionParameters.clone(), 
-    SelPars_NonBJet             = defaultNonBJetSelectionParameters.clone(), 
+    SelPars_CSVM_BJet           = defaultBJetSelectionParameters.clone(
+                                jetType = cms.string('CSVM_BJet') 
+                                ), 
+    SelPars_CSVL_BJet           = defaultBJetSelectionParameters.clone(
+                                jetType = cms.string('CSVL_BJet'), 
+                                jetCombinedSVBJetTagsMin = cms.double(0.244)
+                                ), 
+    SelPars_NonBJet             = defaultNonBJetSelectionParameters.clone( 
+                                jetCombinedSVBJetTagsMax = cms.double(0.244)
+                                ),
     SelPars_LooseLepton         = defaultLeptonSelectionParameters.clone(), 
     SelPars_TightMuon           = defaultMounSelectionParameters.clone(), 
     SelPars_TightElectron       = defaultElectronSelectionParameters.clone(),
@@ -160,6 +173,7 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicControlRegion',
     MaxChi2                     = cms.double(options.MaxChi2),
     Owrt                        = cms.double(Oweight), 
     NJets                       = cms.int32(options.NJets),
+    NbJets                      = cms.int32(options.NbJets),
     Shift_JER                   = cms.int32(options.ShiftJER),
     Shift_BTagSF                = cms.int32(options.ShiftBTagSF),
     Shift_TopPtReWeight         = cms.int32(options.ShiftTopPtReWeight),
