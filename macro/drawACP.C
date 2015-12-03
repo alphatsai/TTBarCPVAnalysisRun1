@@ -1,5 +1,168 @@
 #include "caculate.C"
 #include <fstream>
+void drawACP2Ch( TFile* f,
+            bool wrtError=true,
+            std::string analysis="SemiLeptanic",
+            std::string evtEl="Evt_El",
+            std::string evtMu="Evt_Mu",
+            std::string obs = "O2",
+            std::string output=".",
+            std::string ytitle="ACP",
+            std::string xtitle="O_{2}",
+            double wrt=1,
+            int legX=1,
+            std::string nQCDEl="",
+            std::string nQCDMu=""
+            )
+{
+    bool murmur=true;
+    TH1D *hObs, *hObs_mu, *hObs_el;
+    if( analysis.compare("") != 0 )
+    { 
+        printf((analysis+"/"+evtEl+evtMu+"_"+obs+"Asym").c_str());
+        hObs    = (TH1D*)((TH1D*)f->Get((analysis+"/"+evtEl+"_"+obs+"Asym_El").c_str()))->Clone(); 
+        hObs_el = (TH1D*)f->Get((analysis+"/"+evtEl+"_"+obs+"Asym_El").c_str()); 
+        hObs_mu = (TH1D*)f->Get((analysis+"/"+evtMu+"_"+obs+"Asym_Mu").c_str()); 
+        hObs->Add(hObs_mu);
+        if( nQCDEl.compare("") != 0 && nQCDMu.compare("") != 0 )
+        {
+            TH1D *hObsQCD, *hObsQCD_mu, *hObsQCD_el;
+            hObsQCD    = (TH1D*)((TH1D*)f->Get((analysis+"/"+nQCDEl+"_"+obs+"Asym_El").c_str()))->Clone(); 
+            hObsQCD_el = (TH1D*)((TH1D*)f->Get((analysis+"/"+nQCDEl+"_"+obs+"Asym_El").c_str()))->Clone(); 
+            hObsQCD_mu = (TH1D*)((TH1D*)f->Get((analysis+"/"+nQCDMu+"_"+obs+"Asym_Mu").c_str()))->Clone();
+            hObsQCD->Add(hObsQCD_mu);
+            hObs->Add(hObsQCD);
+            hObs_el->Add(hObsQCD_el);
+            hObs_mu->Add(hObsQCD_mu);
+        }
+    }else{
+        printf((evtEl+evtMu+"_"+obs+"Asym").c_str());
+        hObs    = (TH1D*)((TH1D*)f->Get((evtEl+"_"+obs+"Asym_El").c_str()))->Clone(); 
+        hObs_el = (TH1D*)f->Get((evtEl+"_"+obs+"Asym_El").c_str()); 
+        hObs_mu = (TH1D*)f->Get((evtMu+"_"+obs+"Asym_Mu").c_str()); 
+        hObs->Add(hObs_mu);
+        if( nQCDEl.compare("") != 0 && nQCDMu.compare("") != 0 )
+        {
+            TH1D *hObsQCD, *hObsQCD_mu, *hObsQCD_el;
+            hObsQCD    = (TH1D*)((TH1D*)f->Get((nQCDEl+"_"+obs+"Asym_El").c_str()))->Clone(); 
+            hObsQCD_el = (TH1D*)((TH1D*)f->Get((nQCDEl+"_"+obs+"Asym_El").c_str()))->Clone(); 
+            hObsQCD_mu = (TH1D*)((TH1D*)f->Get((nQCDMu+"_"+obs+"Asym_Mu").c_str()))->Clone();
+            hObsQCD->Add(hObsQCD_mu);
+            hObs->Add(hObsQCD);
+            hObs_el->Add(hObsQCD_el);
+            hObs_mu->Add(hObsQCD_mu);
+        }
+    }
+
+    const int allh=3;
+
+    fstream out;
+    out.open((output+"/ACPCounting_"+evtEl+evtMu+"_"+obs+".txt").c_str(),ios_base::out);
+    out<<obs<<": "<<endl;
+    out<<caculateACPDetail( hObs, wrtError )<<endl;
+    out<<obs<<" muon: "<<endl;
+    out<<caculateACPDetail( hObs_mu, wrtError )<<endl;
+    out<<obs<<" electron: "<<endl;
+    out<<caculateACPDetail( hObs_el, wrtError)<<endl;
+    out.close();
+
+    TH1D* h1s = new TH1D(("all"+evtEl+evtMu+"_"+obs).c_str(), "", allh, 0, allh);
+
+    h1s->GetXaxis()->SetBinLabel(1, (xtitle+"^{e+#mu}").c_str());
+    h1s->GetXaxis()->SetBinLabel(2, (xtitle+"^{#mu}").c_str()  );
+    h1s->GetXaxis()->SetBinLabel(3, (xtitle+"^{e}").c_str()    );
+
+    double eObs(0), eObsMu(0), eObsEl(0); 
+    printf("%s Mean Combined, Muon, Electron channel:\n", obs.c_str());
+        h1s->Fill( 0., caculateACP( hObs,    murmur ));
+        h1s->Fill( 1., caculateACP( hObs_mu, murmur ));
+        h1s->Fill( 2., caculateACP( hObs_el, murmur ));
+
+    printf("%s Error Combined, Muon, Electron channel:\n", obs.c_str());
+        eObs   = (wrtError)? caculateACPerrorWrt( hObs    ):caculateACPerror( hObs    );
+        eObsMu = (wrtError)? caculateACPerrorWrt( hObs_mu ):caculateACPerror( hObs_mu );
+        eObsEl = (wrtError)? caculateACPerrorWrt( hObs_el ):caculateACPerror( hObs_el );
+
+    h1s->SetBinError( 1, eObs   );
+    h1s->SetBinError( 2, eObsMu );
+    h1s->SetBinError( 3, eObsEl );
+
+    TH1D* h2s = (TH1D*)h1s->Clone("h_2sigma");
+    h2s->SetBinError( 1, 2*eObs   );
+    h2s->SetBinError( 2, 2*eObsMu );
+    h2s->SetBinError( 3, 2*eObsEl );
+
+    TCanvas *c1 = new TCanvas(("CAcp_"+evtEl+evtMu+obs).c_str(), "c1", 41,111,859,637); c1->Clear();
+    gStyle->SetOptStat(0);
+    c1->Range(-0.4717744,-0.1330709,3.184476,0.1169291);
+    c1->SetFillColor(0);
+    c1->SetBorderMode(0);
+    c1->SetBorderSize(2);
+    c1->SetLeftMargin(0.1290323);
+    c1->SetRightMargin(0.05045492);
+    c1->SetTopMargin(0.06771654);
+    c1->SetBottomMargin(0.1322835);
+    c1->SetFrameBorderMode(0);
+    c1->SetFrameBorderMode(0);
+
+    h2s->SetMaximum(0.1*wrt);
+    h2s->SetMinimum(-0.1*wrt);
+    //h->SetFillColor(kBlue-9);
+    h2s->SetFillColor(kYellow);
+    h2s->GetXaxis()->SetLabelOffset(0.01);
+    h2s->GetXaxis()->SetLabelSize(0.07);
+    h2s->GetXaxis()->SetLabelFont(62);
+    h2s->GetXaxis()->SetTitleSize(0.035);
+    h2s->GetYaxis()->SetTitle(ytitle.c_str());
+    h2s->GetYaxis()->SetLabelOffset(0.01);
+    h2s->GetYaxis()->SetLabelSize(0.05);
+    h2s->GetYaxis()->SetTitleSize(0.06);
+    h2s->GetYaxis()->SetTitleOffset(1.05);
+    h2s->GetYaxis()->SetTitleFont(42);
+    h2s->GetZaxis()->SetLabelSize(0.035);
+    h2s->GetZaxis()->SetTitleSize(0.035);
+    h2s->Draw("E2");
+
+    h1s->SetFillColor(kGreen);
+    h1s->Draw("E2SAME");
+
+    TH1D* h0 = (TH1D*)h1s->Clone("Original");
+    //h0->SetMarkerStyle(21);
+    h0->SetMarkerStyle(22);
+    h0->SetMarkerSize(2);
+    h0->Draw("psame");
+    TLine* line = new TLine(0,0,allh,0);
+    line->SetLineColor(2);
+    line->SetLineWidth(3);
+    line->Draw();
+
+    TLegend *leg;
+    if( legX == 0 ) //Left 
+        leg = new TLegend(0.173516,0.6726768,0.4310502,0.8363384,NULL,"brNDC");
+    else //right
+        leg = new TLegend(0.7237386,0.7739403,0.9652605,0.8854003,NULL,"brNDC");
+    leg->SetBorderSize(0);
+    leg->SetLineStyle(0);
+    leg->SetLineWidth(0);
+    leg->SetFillColor(0);
+    leg->SetFillStyle(0);
+    leg->AddEntry(h1s,"1#sigma stat. error","f");
+    leg->AddEntry(h2s,"2#sigma stat. error","f");
+    leg->Draw();
+
+    TPaveText* t_title;
+    t_title = new TPaveText(0.09842845,0.9387755,0.7278743,0.9843014,"brNDC");
+    t_title->AddText("CMS Simulation, L = 19.7/fb, #sqrt{s} = 8TeV");
+    t_title->SetTextColor(kBlack);
+    t_title->SetFillColor(kWhite);
+    t_title->SetFillStyle(0);
+    t_title->SetBorderSize(0);
+    t_title->SetTextAlign(12);
+    t_title->SetTextSize(0.04);
+    t_title->Draw();
+
+    c1->SaveAs((output+"/ACP_"+evtEl+evtMu+"_"+obs+".pdf").c_str());
+}
 void drawACP( TFile* f,
             bool wrtError=true,
             std::string analysis="SemiLeptanic",
@@ -9,7 +172,9 @@ void drawACP( TFile* f,
             std::string ytitle="ACP",
             std::string xtitle="O_{2}",
             double wrt=1,
-            int legX=1
+            int legX=1,
+            std::string nQCDEl="",
+            std::string nQCDMu=""
             )
 {
     bool murmur=true;
@@ -20,11 +185,33 @@ void drawACP( TFile* f,
         hObs    = (TH1D*)f->Get((analysis+"/"+evtcat+"_"+obs+"Asym").c_str()); 
         hObs_mu = (TH1D*)f->Get((analysis+"/"+evtcat+"_"+obs+"Asym_Mu").c_str()); 
         hObs_el = (TH1D*)f->Get((analysis+"/"+evtcat+"_"+obs+"Asym_El").c_str()); 
+        if( nQCDEl.compare("") != 0 && nQCDMu.compare("") != 0 )
+        {
+            TH1D *hObsQCD, *hObsQCD_mu, *hObsQCD_el;
+            hObsQCD    = (TH1D*)((TH1D*)f->Get((analysis+"/"+nQCDEl+"_"+obs+"Asym_El").c_str()))->Clone(); 
+            hObsQCD_el = (TH1D*)((TH1D*)f->Get((analysis+"/"+nQCDEl+"_"+obs+"Asym_El").c_str()))->Clone(); 
+            hObsQCD_mu = (TH1D*)((TH1D*)f->Get((analysis+"/"+nQCDMu+"_"+obs+"Asym_Mu").c_str()))->Clone();
+            hObsQCD->Add(hObsQCD_mu);
+            hObs->Add(hObsQCD);
+            hObs_el->Add(hObsQCD_el);
+            hObs_mu->Add(hObsQCD_mu);
+        }
     }else{
         printf((analysis+"/"+evtcat+"_"+obs+"Asym").c_str());
         hObs    = (TH1D*)f->Get((evtcat+"_"+obs+"Asym").c_str()); 
         hObs_mu = (TH1D*)f->Get((evtcat+"_"+obs+"Asym_Mu").c_str()); 
-        hObs_el = (TH1D*)f->Get((evtcat+"_"+obs+"Asym_El").c_str()); 
+        hObs_el = (TH1D*)f->Get((evtcat+"_"+obs+"Asym_El").c_str());
+        if( nQCDEl.compare("") != 0 && nQCDMu.compare("") != 0 )
+        {
+            TH1D *hObsQCD, *hObsQCD_mu, *hObsQCD_el;
+            hObsQCD    = (TH1D*)((TH1D*)f->Get((nQCDEl+"_"+obs+"Asym_El").c_str()))->Clone(); 
+            hObsQCD_el = (TH1D*)((TH1D*)f->Get((nQCDEl+"_"+obs+"Asym_El").c_str()))->Clone(); 
+            hObsQCD_mu = (TH1D*)((TH1D*)f->Get((nQCDMu+"_"+obs+"Asym_Mu").c_str()))->Clone();
+            hObsQCD->Add(hObsQCD_mu);
+            hObs->Add(hObsQCD);
+            hObs_el->Add(hObsQCD_el);
+            hObs_mu->Add(hObsQCD_mu);
+        }
     }
 
     const int allh=3;
@@ -100,7 +287,8 @@ void drawACP( TFile* f,
     h1s->Draw("E2SAME");
 
     TH1D* h0 = (TH1D*)h1s->Clone("Original");
-    h0->SetMarkerStyle(21);
+    //h0->SetMarkerStyle(21);
+    h0->SetMarkerStyle(22);
     h0->SetMarkerSize(2);
     h0->Draw("psame");
     TLine* line = new TLine(0,0,allh,0);

@@ -10,49 +10,49 @@ std::string double2str( double i )
 ////* Caculate ACP
 double caculateACPerror( TH1* Oh, bool murmur=false)
 {
-    int binOg0=2; 
-    int binOl0=1; 
+    int binObsPos=2; 
+    int binObsNeg=1; 
 
-    double Og0 = Oh->GetBinContent(binOg0);
-    double Ol0 = Oh->GetBinContent(binOl0);
+    double ObsPos = Oh->GetBinContent(binObsPos);
+    double ObsNeg = Oh->GetBinContent(binObsNeg);
 
-    double n3  = (Og0+Ol0)*(Og0+Ol0)*(Og0+Ol0);
-    double ACPe = 2*sqrt(Og0*Ol0/n3);
+    double n3  = (ObsPos+ObsNeg)*(ObsPos+ObsNeg)*(ObsPos+ObsNeg);
+    double ACPe = 2*sqrt(ObsPos*ObsNeg/n3);
 
-    if ( murmur ) printf("O<0 : %.1f, O>0 : %.1f\n", Ol0, Og0);
+    if ( murmur ) printf("O<0 : %.1f, O>0 : %.1f\n", ObsNeg, ObsPos);
     printf("Call caculateACPerror: %f\n", ACPe);
     return ACPe;
 }
     template<class th1>
 double caculateACPerrorWrt( th1* Oh, bool murmur=false)
 {
-    int binOg0=2; 
-    int binOl0=1; 
+    int binObsPos=2; 
+    int binObsNeg=1; 
 
-    double Og0 = Oh->GetBinContent(binOg0);
-    double Ol0 = Oh->GetBinContent(binOl0);
-    double Og0e = Oh->GetBinError(binOg0);
-    double Ol0e = Oh->GetBinError(binOl0);
+    double ObsPos = Oh->GetBinContent(binObsPos);
+    double ObsNeg = Oh->GetBinContent(binObsNeg);
+    double ObsPosUnc = Oh->GetBinError(binObsPos);
+    double ObsNegUnc = Oh->GetBinError(binObsNeg);
 
-    double t1 = 2*Ol0/((Ol0+Og0)*(Ol0+Og0));  
-    double t2 = 2*Og0/((Ol0+Og0)*(Ol0+Og0)); 
-    double ACPe = sqrt( t1*t1*Og0e*Og0e + t2*t2*Ol0e*Ol0e ); 
+    double t1 = 2*ObsNeg/((ObsNeg+ObsPos)*(ObsNeg+ObsPos));  
+    double t2 = 2*ObsPos/((ObsNeg+ObsPos)*(ObsNeg+ObsPos)); 
+    double ACPe = sqrt( t1*t1*ObsPosUnc*ObsPosUnc + t2*t2*ObsNegUnc*ObsNegUnc ); 
 
-    if ( murmur ) printf("O<0 : %.1f, O>0 : %.1f\n", Ol0, Og0);
+    if ( murmur ) printf("O<0 : %.1f, O>0 : %.1f\n", ObsNeg, ObsPos);
     printf("Call caculateACPerror: %f\n", ACPe);
     return ACPe;
 }
     template<class th1>
 double caculateACP( th1* Oh, bool murmur=false)
 {
-    int binOg0=2; 
-    int binOl0=1; 
+    int binObsPos=2; 
+    int binObsNeg=1; 
 
-    double Og0 = Oh->GetBinContent(binOg0);
-    double Ol0 = Oh->GetBinContent(binOl0);
+    double ObsPos = Oh->GetBinContent(binObsPos);
+    double ObsNeg = Oh->GetBinContent(binObsNeg);
 
-    double ACP = (Og0-Ol0)/(Og0+Ol0);
-    if ( murmur ) printf("O<0 : %.1f, O>0 : %.1f\n", Ol0, Og0);
+    double ACP = (ObsPos-ObsNeg)/(ObsPos+ObsNeg);
+    if ( murmur ) printf("O<0 : %.1f, O>0 : %.1f\n", ObsNeg, ObsPos);
     printf("Call caculateACP: %f\n", ACP);
     return ACP;
 }
@@ -60,21 +60,21 @@ double caculateACP( th1* Oh, bool murmur=false)
 template<class th1>
 std::string caculateACPDetail( th1* h, bool wrtError=true, std::string Oname="O" )
 {
-    int binOg0=2; 
-    int binOl0=1; 
+    int binObsPos=2; 
+    int binObsNeg=1; 
 
-    double Og0 = h->GetBinContent(binOg0);
-    double Ol0 = h->GetBinContent(binOl0);
-    double Og0e = h->GetBinError(binOg0);
-    double Ol0e = h->GetBinError(binOl0);
+    double ObsPos = h->GetBinContent(binObsPos);
+    double ObsNeg = h->GetBinContent(binObsNeg);
+    double ObsPosUnc = h->GetBinError(binObsPos);
+    double ObsNegUnc = h->GetBinError(binObsNeg);
 
     double ACP = caculateACP(h);
     double ACPe; 
     if( wrtError ) ACPe = caculateACPerrorWrt(h);
     else ACPe = caculateACPerror(h);
 
-    printf("%s>0=%5.0f, %s<0=%5.0f, ACP=%6.3f +/-%6.3f \n", Oname.c_str(), Og0, Oname.c_str(), Ol0, ACP, ACPe);
-    std::string out = Oname+"+ = "+double2str(Og0)+"("+double2str(Og0e)+"), "+Oname+"- ="+double2str(Ol0)+"("+double2str(Ol0e)+"), ACP="+double2str(ACP)+" +/- "+double2str(ACPe);
+    printf("%s>0=%5.0f, %s<0=%5.0f, ACP=%6.3f +/-%6.3f \n", Oname.c_str(), ObsPos, Oname.c_str(), ObsNeg, ACP, ACPe);
+    std::string out = Oname+"+ = "+double2str(ObsPos)+"("+double2str(ObsPosUnc)+"), "+Oname+"- ="+double2str(ObsNeg)+"("+double2str(ObsNegUnc)+"), ACP="+double2str(ACP)+" +/- "+double2str(ACPe);
     return out; 
 }
 void caculateACPDetail( TFile* f, std::string histName, std::string Oname="O")
