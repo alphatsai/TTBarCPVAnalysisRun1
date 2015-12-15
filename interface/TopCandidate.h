@@ -25,8 +25,8 @@ class TopCandidate{
             isHadronicTop = true;
             isLeptonicTop = false;
     
-            W_P4   = jet1.P4 + jet2.P4;
-            P4     = bjet.P4 + W_P4;
+            P4_W   = jet1.P4 + jet2.P4;
+            P4     = bjet.P4 + P4_W;
             P3     = P4.Vect(); 
             Pt     = P4.Pt(); 
             Eta    = P4.Eta(); 
@@ -54,13 +54,15 @@ class TopCandidate{
             TLorentzVector nu_P4;
             nu_P4.SetPtEtaPhiM( met, lep.Eta, metPhi, 0. );
 
-            W_P4   =  lep.P4 + nu_P4;
-            P4     = bjet.P4 + W_P4;
+            P4_bl  = lep.P4 + bjet.P4;
+            P4_W   = lep.P4  + nu_P4;
+            P4     = bjet.P4 + P4_W;
             P3     = P4.Vect(); 
             Pt     = P4.Pt(); 
             Eta    = P4.Eta(); 
             Phi    = P4.Phi(); 
-            Mass   = P4.M(); 
+            Mass   = P4.M();
+            Massbl = P4_bl.M();
             //MassT  = P4.Mt(); 
             MassT  = TMath::Sqrt( lep.Et*lep.Et + met*met - 2*lep.Et*met*TMath::Cos(lep.Phi-metPhi));
             Energy = P4.Energy();
@@ -72,7 +74,8 @@ class TopCandidate{
  
         TVector3 P3;
         TLorentzVector P4;
-        TLorentzVector W_P4;
+        TLorentzVector P4_W;
+        TLorentzVector P4_bl;
 
         bool isAntiB;
         bool isHadronicTop;
@@ -83,6 +86,7 @@ class TopCandidate{
         float Phi;
 
         float Mass;
+        float Massbl;
         float MassT;
         float Energy;
 

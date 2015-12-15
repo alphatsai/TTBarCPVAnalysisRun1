@@ -75,6 +75,7 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
     dR_IsoLeptonFromJets_(        iConfig.getParameter<double>("dR_IsoLeptonFromJets")),
     dR_rmElelectronOverlapeMuon_( iConfig.getParameter<double>("dR_rmElelectronOverlapeMuon")),
     maxChi2_(                     iConfig.getParameter<double>("MaxChi2")),
+    minChi2_(                     iConfig.getParameter<double>("MinChi2")),
     Owrt_(                        iConfig.getParameter<double>("Owrt")),
     NJets_(                       iConfig.getParameter<int>("NJets")),
     Shift_JER_(                   iConfig.getParameter<int>("Shift_JER")),
@@ -113,8 +114,12 @@ void SemiLeptanicAnalysis::setCutFlow( TH1* h )
         h->GetXaxis()->SetBinLabel(9,  ("#geq"+num2str(NJets_)+" Jets").c_str() );
         h->GetXaxis()->SetBinLabel(10, "#geq2 bjets"                            );
         h->GetXaxis()->SetBinLabel(11, "=2 bjets"                               );
-        h->GetXaxis()->SetBinLabel(12, ("#chi^{2}<"+num2str(maxChi2_)).c_str()  );
+        //h->GetXaxis()->SetBinLabel(12, ("#chi^{2}<"+num2str(maxChi2_)).c_str()  );
         //h->GetXaxis()->SetBinLabel(13, "H_{T}>250GeV"                           );
+        if( minChi2_ == 0 )
+            h->GetXaxis()->SetBinLabel(12, ("#chi^{2}<"+num2str(maxChi2_)).c_str() );
+        else
+            h->GetXaxis()->SetBinLabel(12, ("#chi^{2}>"+num2str(minChi2_)).c_str() );
     }else{
         h->GetXaxis()->SetBinLabel(1,  "All"                                    );
         h->GetXaxis()->SetBinLabel(2,  "#geq1 goodVtx"                          );
@@ -126,8 +131,12 @@ void SemiLeptanicAnalysis::setCutFlow( TH1* h )
         h->GetXaxis()->SetBinLabel(8,  ("#geq"+num2str(NJets_)+" Jets").c_str() );
         h->GetXaxis()->SetBinLabel(9,  "#geq2 bjets"                            );
         h->GetXaxis()->SetBinLabel(10,  "=2 bjets"                              );
-        h->GetXaxis()->SetBinLabel(11, ("#chi^{2}<"+num2str(maxChi2_)).c_str()  );
+        //h->GetXaxis()->SetBinLabel(11, ("#chi^{2}<"+num2str(maxChi2_)).c_str()  );
         //h->GetXaxis()->SetBinLabel(12, "H_{T}>250GeV"                           );
+        if( minChi2_ == 0 )
+            h->GetXaxis()->SetBinLabel(11, ("#chi^{2}<"+num2str(maxChi2_)).c_str() );
+        else
+            h->GetXaxis()->SetBinLabel(11, ("#chi^{2}>"+num2str(minChi2_)).c_str() );
     }
     return ;
 }
@@ -331,6 +340,9 @@ void SemiLeptanicAnalysis::beginJob()
     h1.addNewTH1( "Evt_Top_Leptonic_Mt",      "",                          "Mass",              "Events", "",    "", 500,  0,   500 );
     h1.addNewTH1( "Evt_Top_Leptonic_Mt_El",   "",                          "Mass",              "Events", "",    "", 500,  0,   500 );
     h1.addNewTH1( "Evt_Top_Leptonic_Mt_Mu",   "",                          "Mass",              "Events", "",    "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_Top_Leptonic_Mbl",     "",                          "Mass",              "Events", "",    "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_Top_Leptonic_Mbl_El",  "",                          "Mass",              "Events", "",    "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_Top_Leptonic_Mbl_Mu",  "",                          "Mass",              "Events", "",    "", 500,  0,   500 );
     h1.addNewTH1( "Evt_Top_Leptonic_Phi",     "",                          "Phi",               "Events", "",    "", 65,  -3.2, 3.2 );
     h1.addNewTH1( "Evt_Top_Leptonic_Phi_El",  "",                          "Phi",               "Events", "",    "", 65,  -3.2, 3.2 );
     h1.addNewTH1( "Evt_Top_Leptonic_Phi_Mu",  "",                          "Phi",               "Events", "",    "", 65,  -3.2, 3.2 );
@@ -521,6 +533,9 @@ void SemiLeptanicAnalysis::beginJob()
     h1.addNewTH1( "EvtChi2_Top_Leptonic_Mt",     "",                          "Mass",              "Events", "",    "", 500,  0,   500 );
     h1.addNewTH1( "EvtChi2_Top_Leptonic_Mt_El",  "",                          "Mass",              "Events", "",    "", 500,  0,   500 );
     h1.addNewTH1( "EvtChi2_Top_Leptonic_Mt_Mu",  "",                          "Mass",              "Events", "",    "", 500,  0,   500 );
+    h1.addNewTH1( "EvtChi2_Top_Leptonic_Mbl",    "",                          "Mass",              "Events", "",    "", 500,  0,   500 );
+    h1.addNewTH1( "EvtChi2_Top_Leptonic_Mbl_El", "",                          "Mass",              "Events", "",    "", 500,  0,   500 );
+    h1.addNewTH1( "EvtChi2_Top_Leptonic_Mbl_Mu", "",                          "Mass",              "Events", "",    "", 500,  0,   500 );
     h1.addNewTH1( "EvtChi2_Top_Leptonic_Phi",    "",                          "Phi",               "Events", "",    "", 65,  -3.2, 3.2 );
     h1.addNewTH1( "EvtChi2_Top_Leptonic_Phi_El", "",                          "Phi",               "Events", "",    "", 65,  -3.2, 3.2 );
     h1.addNewTH1( "EvtChi2_Top_Leptonic_Phi_Mu", "",                          "Phi",               "Events", "",    "", 65,  -3.2, 3.2 );
@@ -1119,11 +1134,22 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         for( int j=0; j<sizeBJetCol;    j++ ){ Ht += BJetCol[j].Pt;    }
 
                         //// * chi^2 cut
-                        if( maxChi2_ > minChi2 )
+                        //if( maxChi2_ > minChi2 )
+                        if( maxChi2_ > minChi2 && minChi2_ <= minChi2 )
                         {
                             passChi2Cut = true;
-                            if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
-                            if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
+                            if( minChi2_ == 0 )
+                            {
+                                if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
+                                if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
+                            }
+                            else
+                            {
+                                if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#chi^{2}>"+num2str(minChi2_)).c_str(), wrtevt);
+                                if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#chi^{2}>"+num2str(minChi2_)).c_str(), wrtevt);
+                            }
+                            //if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
+                            //if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
                             //if( Ht < 250 )
                             //{
                             //    isGoodElectronEvt = false;
@@ -1267,6 +1293,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             h1.GetTH1("Evt_Top_Hadronic_Eta"  )->Fill( top_hadronic.Eta               , wrtevt     );
             h1.GetTH1("Evt_Top_Hadronic_Phi"  )->Fill( top_hadronic.Phi               , wrtevt     );
             h1.GetTH1("Evt_Top_Leptonic_Mt"   )->Fill( top_leptonic.MassT             , wrtevt     );
+            h1.GetTH1("Evt_Top_Leptonic_Mbl"  )->Fill( top_leptonic.Massbl            , wrtevt     );
             h1.GetTH1("Evt_Top_Leptonic_Phi"  )->Fill( top_leptonic.Phi               , wrtevt     );
             h1.GetTH1("Evt_O2"                )->Fill( O2/Owrt_                       , wrtevt     );
             h1.GetTH1("Evt_O3"                )->Fill( O3/Owrt_                       , wrtevt     );
@@ -1339,6 +1366,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 h1.GetTH1("EvtChi2_Top_Hadronic_Eta"  )->Fill( top_hadronic.Eta               , wrtevt     );
                 h1.GetTH1("EvtChi2_Top_Hadronic_Phi"  )->Fill( top_hadronic.Phi               , wrtevt     );
                 h1.GetTH1("EvtChi2_Top_Leptonic_Mt"   )->Fill( top_leptonic.MassT             , wrtevt     );
+                h1.GetTH1("EvtChi2_Top_Leptonic_Mbl"  )->Fill( top_leptonic.Massbl            , wrtevt     );
                 h1.GetTH1("EvtChi2_Top_Leptonic_Phi"  )->Fill( top_leptonic.Phi               , wrtevt     );
                 h1.GetTH1("EvtChi2_O2"                )->Fill( O2/Owrt_                       , wrtevt     );
                 h1.GetTH1("EvtChi2_O3"                )->Fill( O3/Owrt_                       , wrtevt     );
@@ -1416,6 +1444,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 h1.GetTH1("Evt_Top_Hadronic_Eta_Mu" )->Fill( top_hadronic.Eta               , wrtevt     );
                 h1.GetTH1("Evt_Top_Hadronic_Phi_Mu" )->Fill( top_hadronic.Phi               , wrtevt     );
                 h1.GetTH1("Evt_Top_Leptonic_Mt_Mu"  )->Fill( top_leptonic.MassT             , wrtevt     );
+                h1.GetTH1("Evt_Top_Leptonic_Mbl_Mu" )->Fill( top_leptonic.Massbl            , wrtevt     );
                 h1.GetTH1("Evt_Top_Leptonic_Phi_Mu" )->Fill( top_leptonic.Phi               , wrtevt     );
                 h1.GetTH1("Evt_O2_Mu"               )->Fill( O2/Owrt_                       , wrtevt     );
                 h1.GetTH1("Evt_O3_Mu"               )->Fill( O3/Owrt_                       , wrtevt     );
@@ -1488,6 +1517,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                     h1.GetTH1("EvtChi2_Top_Hadronic_Eta_Mu" )->Fill( top_hadronic.Eta               , wrtevt     );
                     h1.GetTH1("EvtChi2_Top_Hadronic_Phi_Mu" )->Fill( top_hadronic.Phi               , wrtevt     );
                     h1.GetTH1("EvtChi2_Top_Leptonic_Mt_Mu"  )->Fill( top_leptonic.MassT             , wrtevt     );
+                    h1.GetTH1("EvtChi2_Top_Leptonic_Mbl_Mu" )->Fill( top_leptonic.Massbl            , wrtevt     );
                     h1.GetTH1("EvtChi2_Top_Leptonic_Phi_Mu" )->Fill( top_leptonic.Phi               , wrtevt     );
                     h1.GetTH1("EvtChi2_O2_Mu"               )->Fill( O2/Owrt_                       , wrtevt     );
                     h1.GetTH1("EvtChi2_O3_Mu"               )->Fill( O3/Owrt_                       , wrtevt     );
@@ -1566,6 +1596,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 h1.GetTH1("Evt_Top_Hadronic_Eta_El" )->Fill( top_hadronic.Eta               , wrtevt     );
                 h1.GetTH1("Evt_Top_Hadronic_Phi_El" )->Fill( top_hadronic.Phi               , wrtevt     );
                 h1.GetTH1("Evt_Top_Leptonic_Mt_El"  )->Fill( top_leptonic.MassT             , wrtevt     );
+                h1.GetTH1("Evt_Top_Leptonic_Mbl_El" )->Fill( top_leptonic.Massbl            , wrtevt     );
                 h1.GetTH1("Evt_Top_Leptonic_Phi_El" )->Fill( top_leptonic.Phi               , wrtevt     );
                 h1.GetTH1("Evt_O2_El"               )->Fill( O2/Owrt_                       , wrtevt     );
                 h1.GetTH1("Evt_O3_El"               )->Fill( O3/Owrt_                       , wrtevt     );
@@ -1638,6 +1669,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                     h1.GetTH1("EvtChi2_Top_Hadronic_Eta_El" )->Fill( top_hadronic.Eta               , wrtevt     );
                     h1.GetTH1("EvtChi2_Top_Hadronic_Phi_El" )->Fill( top_hadronic.Phi               , wrtevt     );
                     h1.GetTH1("EvtChi2_Top_Leptonic_Mt_El"  )->Fill( top_leptonic.MassT             , wrtevt     );
+                    h1.GetTH1("EvtChi2_Top_Leptonic_Mbl_El" )->Fill( top_leptonic.Massbl            , wrtevt     );
                     h1.GetTH1("EvtChi2_Top_Leptonic_Phi_El" )->Fill( top_leptonic.Phi               , wrtevt     );
                     h1.GetTH1("EvtChi2_O2_El"               )->Fill( O2/Owrt_                       , wrtevt     );
                     h1.GetTH1("EvtChi2_O3_El"               )->Fill( O3/Owrt_                       , wrtevt     );

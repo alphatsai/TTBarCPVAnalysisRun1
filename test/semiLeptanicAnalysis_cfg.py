@@ -46,11 +46,15 @@ options.register('dRrmElelectronOverlapeMuon', 0.3,
     VarParsing.varType.float,
     "Remove electron overlapping with muon deltaR( el, mu )"
     )
-#options.register('MaxChi2', 20,
+options.register('MinChi2',  0,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.float,
+    "Event selection for hadronic top min of min_chi2"
+    )
 options.register('MaxChi2', 40,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.float,
-    "Event selection for hadronic top chi2"
+    "Event selection for hadronic top max of max_chi2"
     )
 options.register('NJets', 4,
     VarParsing.multiplicity.singleton,    
@@ -139,7 +143,7 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
     InputJsons                  = cms.vstring(JsonNames), 
     InputFiles                  = cms.vstring(FileNames), 
     #InputFiles                  = cms.vstring(FileNames_BprimtKits_NTUG3_SemiLeptTest), 
-    #InputFiles                   = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkim),
+    #InputFiles                  = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkim),
     #InputFiles                  = cms.vstring(FileNames_BprimtKits_SemiLeptTestSkimData),
     #InputFiles                  = cms.vstring(FileNames_BprimtKits_SemiLept),
     HLT_MuChannel               = cms.vint32( 2868,3244,3542,4204,4205,4827,5106,5573  ), # HLT_IsoMu24_eta2p1_v*
@@ -158,6 +162,7 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
     dR_IsoLeptonFromJets        = cms.double(options.dRIsoLeptonFromJets),
     dR_rmElelectronOverlapeMuon = cms.double(options.dRrmElelectronOverlapeMuon),
     MaxChi2                     = cms.double(options.MaxChi2),
+    MinChi2                     = cms.double(options.MinChi2),
     Owrt                        = cms.double(Oweight), 
     NJets                       = cms.int32(options.NJets),
     Shift_JER                   = cms.int32(options.ShiftJER),

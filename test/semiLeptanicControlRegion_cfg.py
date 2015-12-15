@@ -46,18 +46,22 @@ options.register('dRrmElelectronOverlapeMuon', 0.3,
     VarParsing.varType.float,
     "Remove electron overlapping with muon deltaR( el, mu )"
     )
-#options.register('MaxChi2', 20,
 options.register('MaxChi2', 40,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.float,
-    "Event selection for hadronic top chi2"
+    "Event selection for hadronic top max of min_chi2"
+    )
+options.register('MinChi2',  0,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.float,
+    "Event selection for hadronic top min of min_chi2"
     )
 options.register('NJets', 4,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.int,
     "Number of jets"
     )
-options.register('NbJets', 1,
+options.register('NbJets', 0,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.int,
     "Number of b-jets"
@@ -171,6 +175,7 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicControlRegion',
     dR_IsoLeptonFromJets        = cms.double(options.dRIsoLeptonFromJets),
     dR_rmElelectronOverlapeMuon = cms.double(options.dRrmElelectronOverlapeMuon),
     MaxChi2                     = cms.double(options.MaxChi2),
+    MinChi2                     = cms.double(options.MinChi2),
     Owrt                        = cms.double(Oweight), 
     NJets                       = cms.int32(options.NJets),
     NbJets                      = cms.int32(options.NbJets),
