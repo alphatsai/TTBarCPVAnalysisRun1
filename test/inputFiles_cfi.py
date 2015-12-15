@@ -2,21 +2,21 @@ FileNames_BprimtKits_NTUG3_SemiLeptTest = [
 	'file:/wk1/cmsdata/Production_CMSSW5311/CMSSW5_3_11_MC_AOD_v3/2012MC/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/results_801_2_aVZ.root'
 ]
 FileNames_BprimtKits_SemiLeptTestSkim = [
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/Skim_102.root',
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/Skim_101.root',
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/Skim_100.root',
+	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/Skim_102.root',
+	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/Skim_101.root',
+	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/Skim_100.root',
 ]
 FileNames_BprimtKits_SemiLeptTestSkimData = [
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_87.root',
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_88.root',
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_89.root',
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_86.root',
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_85.root',
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_84.root',
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_83.root',
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_82.root',
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_81.root',
-	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_80.root',
+	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_87.root',
+	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_88.root',
+	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_89.root',
+	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_86.root',
+	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_85.root',
+	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_84.root',
+	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_83.root',
+	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_82.root',
+	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_81.root',
+	'root://eoscms//eos/cms/store/caf/user/jtsai/TTBarCPV/skim/SingleMu_Run2012B-22Jan2013-v1_195834-196531/Skim_80.root',
 ]
 FileNames_BprimtKits_SemiLept = [
 	'root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/bprimekits/EightTeV/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1/results_1000_2_AYs.root',
