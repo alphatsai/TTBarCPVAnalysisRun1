@@ -16,6 +16,7 @@ void drawACP2Ch( TFile* f,
             )
 {
     bool murmur=true;
+    bool isData=false;
     TH1D *hObs, *hObs_mu, *hObs_el;
     if( analysis.compare("") != 0 )
     { 
@@ -54,70 +55,79 @@ void drawACP2Ch( TFile* f,
         }
     }
 
+    if( evtEl.find("DATA") !=std::string::npos || evtMu.compare("DATA") !=std::string::npos ) isData=true;
+
     const int allh=3;
 
     fstream out;
     out.open((output+"/ACPCounting_"+evtEl+evtMu+"_"+obs+".txt").c_str(),ios_base::out);
     out<<obs<<": "<<endl;
     out<<caculateACPDetail( hObs, wrtError )<<endl;
-    out<<obs<<" muon: "<<endl;
-    out<<caculateACPDetail( hObs_mu, wrtError )<<endl;
     out<<obs<<" electron: "<<endl;
     out<<caculateACPDetail( hObs_el, wrtError)<<endl;
+    out<<obs<<" muon: "<<endl;
+    out<<caculateACPDetail( hObs_mu, wrtError )<<endl;
     out.close();
 
     TH1D* h1s = new TH1D(("all"+evtEl+evtMu+"_"+obs).c_str(), "", allh, 0, allh);
 
     h1s->GetXaxis()->SetBinLabel(1, (xtitle+"^{e+#mu}").c_str());
-    h1s->GetXaxis()->SetBinLabel(2, (xtitle+"^{#mu}").c_str()  );
-    h1s->GetXaxis()->SetBinLabel(3, (xtitle+"^{e}").c_str()    );
+    h1s->GetXaxis()->SetBinLabel(2, (xtitle+"^{e}").c_str()    );
+    h1s->GetXaxis()->SetBinLabel(3, (xtitle+"^{#mu}").c_str()  );
 
-    double eObs(0), eObsMu(0), eObsEl(0); 
+    double eObs(0), eObsMu(0), eObsEl(0);
+    double percent=100; 
     printf("%s Mean Combined, Muon, Electron channel:\n", obs.c_str());
-        h1s->Fill( 0., caculateACP( hObs,    murmur ));
-        h1s->Fill( 1., caculateACP( hObs_mu, murmur ));
-        h1s->Fill( 2., caculateACP( hObs_el, murmur ));
+        h1s->Fill( 0., caculateACP( hObs,    murmur )*percent);
+        h1s->Fill( 1., caculateACP( hObs_el, murmur )*percent);
+        h1s->Fill( 2., caculateACP( hObs_mu, murmur )*percent);
 
     printf("%s Error Combined, Muon, Electron channel:\n", obs.c_str());
         eObs   = (wrtError)? caculateACPerrorWrt( hObs    ):caculateACPerror( hObs    );
         eObsMu = (wrtError)? caculateACPerrorWrt( hObs_mu ):caculateACPerror( hObs_mu );
         eObsEl = (wrtError)? caculateACPerrorWrt( hObs_el ):caculateACPerror( hObs_el );
 
-    h1s->SetBinError( 1, eObs   );
-    h1s->SetBinError( 2, eObsMu );
-    h1s->SetBinError( 3, eObsEl );
+    h1s->SetBinError( 1, eObs*percent   );
+    h1s->SetBinError( 2, eObsEl*percent );
+    h1s->SetBinError( 3, eObsMu*percent );
 
     TH1D* h2s = (TH1D*)h1s->Clone("h_2sigma");
-    h2s->SetBinError( 1, 2*eObs   );
-    h2s->SetBinError( 2, 2*eObsMu );
-    h2s->SetBinError( 3, 2*eObsEl );
+    h2s->SetBinError( 1, 2*eObs*percent   );
+    h2s->SetBinError( 2, 2*eObsEl*percent );
+    h2s->SetBinError( 3, 2*eObsMu*percent );
 
-    TCanvas *c1 = new TCanvas(("CAcp_"+evtEl+evtMu+obs).c_str(), "c1", 41,111,859,637); c1->Clear();
+    //TCanvas *c1 = new TCanvas(("CAcp_"+evtEl+evtMu+obs).c_str(), "c1", 41,111,859,637); c1->Clear();
+    TCanvas *c1 = new TCanvas(("CAcp_"+evtEl+evtMu+obs).c_str(), "c1", 41,133,859,639); c1->Clear();
     gStyle->SetOptStat(0);
-    c1->Range(-0.4717744,-0.1330709,3.184476,0.1169291);
+    //c1->Range(-0.4717744,-0.1330709,3.184476,0.1169291);
+    c1->Range(-0.5518248,-13.80753,3.192701,11.71548);
     c1->SetFillColor(0);
     c1->SetBorderMode(0);
     c1->SetBorderSize(2);
-    c1->SetLeftMargin(0.1290323);
-    c1->SetRightMargin(0.05045492);
-    c1->SetTopMargin(0.06771654);
-    c1->SetBottomMargin(0.1322835);
+    //c1->SetLeftMargin(0.1290323);
+    //c1->SetRightMargin(0.05045492);
+    //c1->SetTopMargin(0.06771654);
+    //c1->SetBottomMargin(0.1322835);
+    c1->SetLeftMargin(0.1473684);
+    c1->SetRightMargin(0.05146199);
+    c1->SetTopMargin(0.06721312);
+    c1->SetBottomMargin(0.1491803);
     c1->SetFrameBorderMode(0);
     c1->SetFrameBorderMode(0);
 
-    h2s->SetMaximum(0.1*wrt);
-    h2s->SetMinimum(-0.1*wrt);
+    h2s->SetMaximum(0.1*percent*wrt);
+    h2s->SetMinimum(-0.1*percent*wrt);
     //h->SetFillColor(kBlue-9);
     h2s->SetFillColor(kYellow);
     h2s->GetXaxis()->SetLabelOffset(0.01);
-    h2s->GetXaxis()->SetLabelSize(0.07);
+    h2s->GetXaxis()->SetLabelSize(0.12);
     h2s->GetXaxis()->SetLabelFont(62);
     h2s->GetXaxis()->SetTitleSize(0.035);
     h2s->GetYaxis()->SetTitle(ytitle.c_str());
     h2s->GetYaxis()->SetLabelOffset(0.01);
-    h2s->GetYaxis()->SetLabelSize(0.05);
-    h2s->GetYaxis()->SetTitleSize(0.06);
-    h2s->GetYaxis()->SetTitleOffset(1.05);
+    h2s->GetYaxis()->SetLabelSize(0.06);
+    h2s->GetYaxis()->SetTitleSize(0.07);
+    h2s->GetYaxis()->SetTitleOffset(0.84);
     h2s->GetYaxis()->SetTitleFont(42);
     h2s->GetZaxis()->SetLabelSize(0.035);
     h2s->GetZaxis()->SetTitleSize(0.035);
@@ -151,8 +161,10 @@ void drawACP2Ch( TFile* f,
     leg->Draw();
 
     TPaveText* t_title;
-    t_title = new TPaveText(0.09842845,0.9387755,0.7278743,0.9843014,"brNDC");
-    t_title->AddText("CMS Simulation, L = 19.7/fb, #sqrt{s} = 8TeV");
+    //t_title = new TPaveText(0.09842845,0.9387755,0.7278743,0.9843014,"brNDC");
+    t_title = new TPaveText(0.1134503,0.9393443,0.7426901,0.9852459,"brNDC");
+    if( !isData ) t_title->AddText("CMS Simulation, L = 19.7/fb, #sqrt{s} = 8TeV");
+    if(  isData ) t_title->AddText("CMS, L = 19.7/fb, #sqrt{s} = 8TeV");
     t_title->SetTextColor(kBlack);
     t_title->SetFillColor(kWhite);
     t_title->SetFillStyle(0);
@@ -220,64 +232,65 @@ void drawACP( TFile* f,
     out.open((output+"/ACPCounting_"+evtcat+"_"+obs+".txt").c_str(),ios_base::out);
     out<<obs<<": "<<endl;
     out<<caculateACPDetail( hObs, wrtError )<<endl;
-    out<<obs<<" muon: "<<endl;
-    out<<caculateACPDetail( hObs_mu, wrtError )<<endl;
     out<<obs<<" electron: "<<endl;
     out<<caculateACPDetail( hObs_el, wrtError)<<endl;
+    out<<obs<<" muon: "<<endl;
+    out<<caculateACPDetail( hObs_mu, wrtError )<<endl;
     out.close();
 
     TH1D* h1s = new TH1D(("all"+evtcat+"_"+obs).c_str(), "", allh, 0, allh);
 
     h1s->GetXaxis()->SetBinLabel(1, (xtitle+"^{e+#mu}").c_str());
-    h1s->GetXaxis()->SetBinLabel(2, (xtitle+"^{#mu}").c_str()  );
-    h1s->GetXaxis()->SetBinLabel(3, (xtitle+"^{e}").c_str()    );
+    h1s->GetXaxis()->SetBinLabel(2, (xtitle+"^{e}").c_str()    );
+    h1s->GetXaxis()->SetBinLabel(3, (xtitle+"^{#mu}").c_str()  );
 
     double eObs(0), eObsMu(0), eObsEl(0); 
+    double percent=100; 
     printf("%s Mean Combined, Muon, Electron channel:\n", obs.c_str());
-        h1s->Fill( 0., caculateACP( hObs,    murmur ));
-        h1s->Fill( 1., caculateACP( hObs_mu, murmur ));
-        h1s->Fill( 2., caculateACP( hObs_el, murmur ));
+        h1s->Fill( 0., caculateACP( hObs,    murmur )*percent);
+        h1s->Fill( 1., caculateACP( hObs_el, murmur )*percent);
+        h1s->Fill( 2., caculateACP( hObs_mu, murmur )*percent);
 
     printf("%s Error Combined, Muon, Electron channel:\n", obs.c_str());
         eObs   = (wrtError)? caculateACPerrorWrt( hObs    ):caculateACPerror( hObs    );
         eObsMu = (wrtError)? caculateACPerrorWrt( hObs_mu ):caculateACPerror( hObs_mu );
         eObsEl = (wrtError)? caculateACPerrorWrt( hObs_el ):caculateACPerror( hObs_el );
 
-    h1s->SetBinError( 1, eObs   );
-    h1s->SetBinError( 2, eObsMu );
-    h1s->SetBinError( 3, eObsEl );
+    h1s->SetBinError( 1, eObs*percent   );
+    h1s->SetBinError( 2, eObsEl*percent );
+    h1s->SetBinError( 3, eObsMu*percent );
 
     TH1D* h2s = (TH1D*)h1s->Clone("h_2sigma");
-    h2s->SetBinError( 1, 2*eObs   );
-    h2s->SetBinError( 2, 2*eObsMu );
-    h2s->SetBinError( 3, 2*eObsEl );
+    h2s->SetBinError( 1, 2*eObs*percent   );
+    h2s->SetBinError( 2, 2*eObsEl*percent );
+    h2s->SetBinError( 3, 2*eObsMu*percent );
 
-    TCanvas *c1 = new TCanvas(("CAcp_"+evtcat+obs).c_str(), "c1", 41,111,859,637); c1->Clear();
+    TCanvas *c1 = new TCanvas(("CAcp_"+evtcat+obs).c_str(), "c1", 41,133,859,639); c1->Clear();
     gStyle->SetOptStat(0);
-    c1->Range(-0.4717744,-0.1330709,3.184476,0.1169291);
+    c1->Range(-0.5518248,-13.80753,3.192701,11.71548);
     c1->SetFillColor(0);
     c1->SetBorderMode(0);
     c1->SetBorderSize(2);
-    c1->SetLeftMargin(0.1290323);
-    c1->SetRightMargin(0.05045492);
-    c1->SetTopMargin(0.06771654);
-    c1->SetBottomMargin(0.1322835);
+    c1->SetLeftMargin(0.1473684);
+    c1->SetRightMargin(0.05146199);
+    c1->SetTopMargin(0.06721312);
+    c1->SetBottomMargin(0.1491803);
     c1->SetFrameBorderMode(0);
     c1->SetFrameBorderMode(0);
 
-    h2s->SetMaximum(0.1*wrt);
-    h2s->SetMinimum(-0.1*wrt);
+    h2s->SetMaximum(0.1*percent*wrt);
+    h2s->SetMinimum(-0.1*percent*wrt);
     //h->SetFillColor(kBlue-9);
     h2s->SetFillColor(kYellow);
     h2s->GetXaxis()->SetLabelOffset(0.01);
-    h2s->GetXaxis()->SetLabelSize(0.07);
+    h2s->GetXaxis()->SetLabelSize(0.12);
     h2s->GetXaxis()->SetLabelFont(62);
     h2s->GetXaxis()->SetTitleSize(0.035);
     h2s->GetYaxis()->SetTitle(ytitle.c_str());
     h2s->GetYaxis()->SetLabelOffset(0.01);
-    h2s->GetYaxis()->SetLabelSize(0.05);
-    h2s->GetYaxis()->SetTitleSize(0.06);
-    h2s->GetYaxis()->SetTitleOffset(1.05);
+    h2s->GetYaxis()->SetLabelSize(0.06);
+    h2s->GetYaxis()->SetTitleSize(0.07);
+    h2s->GetYaxis()->SetTitleOffset(0.84);
     h2s->GetYaxis()->SetTitleFont(42);
     h2s->GetZaxis()->SetLabelSize(0.035);
     h2s->GetZaxis()->SetTitleSize(0.035);
@@ -311,7 +324,8 @@ void drawACP( TFile* f,
     leg->Draw();
 
     TPaveText* t_title;
-    t_title = new TPaveText(0.09842845,0.9387755,0.7278743,0.9843014,"brNDC");
+    //t_title = new TPaveText(0.09842845,0.9387755,0.7278743,0.9843014,"brNDC");
+    t_title = new TPaveText(0.1134503,0.9393443,0.7426901,0.9852459,"brNDC");
     t_title->AddText("CMS Simulation, L = 19.7/fb, #sqrt{s} = 8TeV");
     t_title->SetTextColor(kBlack);
     t_title->SetFillColor(kWhite);

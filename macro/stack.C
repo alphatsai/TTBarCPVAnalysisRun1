@@ -275,6 +275,7 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
         newRangeWithOverflow(h_b,     xMin, xMax);     
         newRangeWithOverflow(h_bkg,   xMin, xMax);   
         newRangeWithOverflow(h_all,   xMin, xMax);   
+        newRangeWithOverflow(h_data,  xMin, xMax);   
     }
     int bin1 = h_all->GetXaxis()->GetFirst();
     int bins = h_all->GetXaxis()->GetLast();
@@ -525,6 +526,224 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     else
         c1->SaveAs((output+"/StackData_Linear_"+hName+".pdf").c_str());
 }
+void drawStackWithQCD( TFile* f, std::string hName, std::string xtitle="", std::string ytitle="Events", std::string output=".", int rebin=1, bool logy=false, bool unity=false, float xMin=0, float xMax=0 )
+{
+
+    int lineWidth=3;
+    Color_t c_tt    = kOrange+1;
+    Color_t c_ttbkg = kOrange+2;
+    Color_t c_t     = kSpring+9;
+    Color_t c_b     = kAzure+2;
+    Color_t c_qcd   = kOrange+3;
+    Color_t c_unc   = kRed-7;
+    Color_t c_allunc = kRed-1;
+
+    TH1D *h_tt, *h_ttbkg, *h_t, *h_b, *h_bkg, *h_all, *hs;
+    h_tt     = (TH1D*)((TH1D*)f->Get(("TTJets_SemiLeptMGDecays__"+hName).c_str()))->Clone("TTBarSemiLept");     
+    h_ttbkg  = (TH1D*)((TH1D*)f->Get(("TTJets_NonSemiLeptMGDecays__"+hName).c_str()))->Clone("TTBarNonSemiLept");
+    h_t      = (TH1D*)((TH1D*)f->Get(("SingleT__"+hName).c_str()))->Clone("SingleTop");
+    h_b      = (TH1D*)((TH1D*)f->Get(("Boson__"+hName).c_str()))->Clone("Boson");
+    h_bkg    = (TH1D*)((TH1D*)f->Get(("BkgMC__"+hName).c_str()))->Clone("BkgUnc");
+    h_all    = (TH1D*)((TH1D*)f->Get(("MC__"+hName).c_str()))->Clone("AllUnc");
+
+    TH1D *h_QCD;
+    if( hName.find("_El") != std::string::npos && hName.find("_Mu") == std::string::npos ){
+        h_QCD  = (TH1D*)((TH1D*)f->Get(("QCDEM__"+hName).c_str()))->Clone("QCD");
+    }else if( hName.find("_El") == std::string::npos && hName.find("_Mu") != std::string::npos ){
+        h_QCD  = (TH1D*)((TH1D*)f->Get(("QCDMu__"+hName).c_str()))->Clone("QCD");
+    }else{
+        h_QCD  = (TH1D*)((TH1D*)f->Get(("QCDEM__"+hName+"_El").c_str()))->Clone("QCD");
+        TH1D* h_QCD_mu  = (TH1D*)f->Get(("QCDMu__"+hName+"_Mu").c_str());
+        h_QCD->Add(h_QCD_mu);
+        std::cout<<">> [INFO] Combined two channel for QCD"<<std::endl;
+        delete h_QCD_mu;
+    }
+
+    fix(h_tt);    h_tt->Rebin(rebin);
+    fix(h_ttbkg); h_ttbkg->Rebin(rebin);
+    fix(h_t);     h_t->Rebin(rebin);
+    fix(h_b);     h_b->Rebin(rebin);
+    fix(h_bkg);   h_bkg->Rebin(rebin);
+    fix(h_all);   h_all->Rebin(rebin);
+    fix(h_QCD);   h_QCD->Rebin(rebin);
+
+    if( xMin != xMax )
+    {   
+        newRangeWithOverflow(h_tt,    xMin, xMax);    
+        newRangeWithOverflow(h_ttbkg, xMin, xMax); 
+        newRangeWithOverflow(h_t,     xMin, xMax);     
+        newRangeWithOverflow(h_b,     xMin, xMax);     
+        newRangeWithOverflow(h_QCD,   xMin, xMax);   
+        newRangeWithOverflow(h_bkg,   xMin, xMax);   
+        newRangeWithOverflow(h_all,   xMin, xMax);   
+    }
+    int bin1 = h_all->GetXaxis()->GetFirst();
+    int bins = h_all->GetXaxis()->GetLast();
+    xMin = h_all->GetXaxis()->GetBinLowEdge(bin1);
+    xMax = h_all->GetXaxis()->GetBinUpEdge(bins);
+
+    TH1D* h_mcunc = (TH1D*)h_all->Clone("mc_unc");
+    h_mcunc->Divide(h_all);
+    for( int b=1; b<=bins; b++ )
+    {  
+        float error=h_mcunc->GetBinError(b); 
+        h_mcunc->SetBinContent(b, 0.);
+        h_mcunc->SetBinError(b, error);
+    }
+
+    h_bkg->Add(h_QCD);
+    h_all->Add(h_QCD);
+    if( unity )
+    {
+        float mc_s   = 1/(h_all->Integral());
+        h_tt->Scale(mc_s);
+        h_ttbkg->Scale(mc_s);
+        h_t->Scale(mc_s);
+        h_b->Scale(mc_s);
+        h_QCD->Scale(mc_s);
+        h_bkg->Scale(mc_s);
+        h_all->Scale(mc_s);
+    }    
+
+    h_tt->SetLineWidth(lineWidth);
+    h_tt->SetLineColor(c_tt);
+    h_tt->SetFillColor(c_tt);
+
+    h_ttbkg->SetLineWidth(lineWidth);
+    h_ttbkg->SetLineColor(c_ttbkg);
+    h_ttbkg->SetFillColor(c_ttbkg);
+
+    h_t->SetLineWidth(lineWidth);
+    h_t->SetLineColor(c_t);
+    h_t->SetFillColor(c_t);
+
+    h_b->SetLineWidth(lineWidth);
+    h_b->SetLineColor(c_b);
+    h_b->SetFillColor(c_b);
+
+    h_QCD->SetLineWidth(lineWidth);
+    h_QCD->SetLineColor(c_qcd);
+    h_QCD->SetFillColor(c_qcd);
+
+    h_bkg->SetFillStyle(3244);
+    h_bkg->SetFillColor(c_unc);
+
+    h_all->SetFillStyle(3244);
+    h_all->SetFillColor(c_allunc);
+
+    if( logy )
+        hs = new TH1D(("TH1DinStackLog"+hName).c_str(), "", bins, xMin, xMax);
+    else
+        hs = new TH1D(("TH1DinStackLinear"+hName).c_str(), "", bins, xMin, xMax);
+
+    hs->GetXaxis()->SetTitle(xtitle.c_str());
+    hs->GetYaxis()->SetTitle(ytitle.c_str());
+
+    hs->GetXaxis()->SetLabelFont(42);
+    hs->GetXaxis()->SetLabelSize(0.05);
+    hs->GetXaxis()->SetTitleSize(0.06);
+    hs->GetXaxis()->SetTitleOffset(0.98);
+    hs->GetXaxis()->SetTitleFont(42);
+    hs->GetYaxis()->SetLabelFont(42);
+    hs->GetYaxis()->SetLabelSize(0.06);
+    hs->GetYaxis()->SetTitleOffset(0.7);
+    //hs->GetYaxis()->SetTitleSize(0.07);
+    hs->GetYaxis()->SetTitleSize(0.079);
+    hs->GetYaxis()->SetTitleFont(42);
+
+    THStack* h_stack = new THStack("THStcak", "");
+    h_stack->SetHistogram(hs);
+
+    h_stack->Add(h_QCD);
+    h_stack->Add(h_b);
+    h_stack->Add(h_t);
+    h_stack->Add(h_ttbkg);
+    h_stack->Add(h_tt);
+
+    //if( logy ){
+    //    if( h_all->GetMaximum() < h_data->GetMaximum()) h_stack->SetMaximum(h_data->GetMaximum()*10);
+    //    if( h_all->GetMinimum() > 0 )
+    //        h_stack->SetMinimum(h_all->GetMinimum()/10);
+    //    else
+    //        h_stack->SetMinimum(10);
+    //}else{
+    //    if( h_all->GetMaximum() < h_data->GetMaximum() ) h_stack->SetMaximum(h_data->GetMaximum()+h_data->GetMaximum()/10);
+    //}
+
+    TCanvas* c1;
+    if( logy ) 
+    {
+        c1 = new TCanvas( ("C_Log_"+hName).c_str(), "",59,67,1076,824);
+    }
+    else
+    {
+        c1 = new TCanvas( ("C_Linear_"+hName).c_str(), "",59,67,1076,824);
+    }
+    c1->Range(-2.617021,-1.006188,2.382979,5.162451);
+    c1->SetFillColor(0);
+    c1->SetBorderMode(0);
+    c1->SetBorderSize(2);
+    c1->SetLeftMargin(0.1234043);
+    c1->SetRightMargin(0.07659575);
+    c1->SetTopMargin(0.06209987);
+    c1->SetBottomMargin(0.1376441);
+    c1->SetFrameBorderMode(0);
+    c1->SetFrameBorderMode(0);
+
+    //c1->Range(-2.617021,-1.006188,2.382979,5.162451);
+    //c1->SetFillColor(0);
+    //c1->SetBorderMode(0);
+    //c1->SetBorderSize(2);
+    //c1->SetLeftMargin(0.1234043);
+    //c1->SetRightMargin(0.07659575);
+    //c1->SetTopMargin(0.06209987);
+    //c1->SetBottomMargin(0.1376441);
+    //c1->SetFrameBorderMode(0);
+
+    gStyle->SetOptStat(0);
+    gStyle->SetOptTitle(0);
+
+    if( logy ) c1->SetLogy(1);
+    else c1->SetLogy(0);
+
+    TLegend *leg;
+    //leg = new TLegend(0.6998097,0.6230769,0.9995243,0.9096154,NULL,"brNDC");
+    leg = new TLegend(0.6979068,0.63162,0.9976213,0.9180829,NULL,"brNDC");
+    leg->SetBorderSize(0);
+    leg->SetLineStyle(0);
+    leg->SetLineWidth(0);
+    leg->SetFillColor(0);
+    leg->SetFillStyle(0);
+    leg->AddEntry(h_tt, "t#bar{t}+jet (lepton+jet)", "f");
+    leg->AddEntry(h_ttbkg, "t#bar{t}+jet (Other)", "f");
+    leg->AddEntry(h_t, "Single top", "f");
+    leg->AddEntry(h_b, "Z/#gamma*/W/WW/WZ/ZZ", "f");
+    leg->AddEntry(h_QCD, "QCD", "f");
+    //leg->AddEntry(h_bkg, "1#sigma non t#bar{t}+jet stat.", "f");
+    leg->AddEntry(h_all, "1#sigma Total stat.", "f");
+
+    TPaveText* t_title;
+    t_title = new TPaveText(0.08705995,0.9123537,0.7169363,0.9963828,"brNDC");
+    //t_title = new TPaveText(0.07088487,0.9153846,0.7007612,1,"brNDC");
+    t_title->AddText("CMS, L = 19.7/fb, #sqrt{s} = 8TeV");
+    t_title->SetTextColor(kBlack);
+    t_title->SetFillColor(kWhite);
+    t_title->SetFillStyle(0);
+    t_title->SetBorderSize(0);
+    t_title->SetTextAlign(11);
+    t_title->SetTextSize(0.04805273);
+
+    h_stack->Draw("HIST");
+    h_all->Draw("SAMEE2");
+    //h_bkg->Draw("SAMEE2");
+    leg->Draw();
+    t_title->Draw();
+
+    if( logy )
+        c1->SaveAs((output+"/StackQCD_Log_"+hName+".pdf").c_str());
+    else
+        c1->SaveAs((output+"/StackQCD_Linear_"+hName+".pdf").c_str());
+}
 void drawStackWithDataQCD( TFile* f, std::string hName, std::string xtitle="", std::string ytitle="Events", std::string output=".", int rebin=1, bool logy=false, bool unity=false, float xMin=0, float xMax=0 )
 {
 
@@ -582,6 +801,7 @@ void drawStackWithDataQCD( TFile* f, std::string hName, std::string xtitle="", s
         newRangeWithOverflow(h_QCD,   xMin, xMax);   
         newRangeWithOverflow(h_bkg,   xMin, xMax);   
         newRangeWithOverflow(h_all,   xMin, xMax);   
+        newRangeWithOverflow(h_data,  xMin, xMax);   
     }
     int bin1 = h_all->GetXaxis()->GetFirst();
     int bins = h_all->GetXaxis()->GetLast();
@@ -608,6 +828,7 @@ void drawStackWithDataQCD( TFile* f, std::string hName, std::string xtitle="", s
         h_ttbkg->Scale(mc_s);
         h_t->Scale(mc_s);
         h_b->Scale(mc_s);
+        h_QCD->Scale(mc_s);
         h_bkg->Scale(mc_s);
         h_all->Scale(mc_s);
     }    

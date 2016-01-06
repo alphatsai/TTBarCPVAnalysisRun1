@@ -103,10 +103,16 @@ void getCutFlowNum( TH1D* h_cutflow, std::string name="" )
         lastEvents = h_cutflow->GetBinContent(bin);
     }
 }
-void getCutFlowNum( TFile* f, std::string h_name="", bool printOut=false, std::string output="." )
+void getCutFlowNum( TFile* f, std::string h_name="", bool printOut=false, std::string output=".", std::string h_name_add="" )
 {
     std::string name = h_name;
-    TH1D* h_cutflow = (TH1D*)f->Get(name.c_str());
+    TH1D* h_cutflow = (TH1D*)((TH1D*)f->Get(name.c_str()))->Clone();
+    if( h_name_add.compare("") != 0 )
+    {
+        TH1D* h_cutflow_add = (TH1D*)f->Get(h_name_add.c_str());
+        h_cutflow->Add(h_cutflow_add);
+        name.append(h_name_add);
+    }
 
     FILE * out;
     if( printOut )
