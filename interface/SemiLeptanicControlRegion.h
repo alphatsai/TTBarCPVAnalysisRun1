@@ -81,7 +81,8 @@ class SemiLeptanicControlRegion : public edm::EDAnalyzer{
         const double minChi2_;
         const double Owrt_;
         const unsigned int NJets_;
-        const unsigned int NbJets_;
+        const unsigned int NbJetsCSVM_;
+        const unsigned int NbJetsCSVL_;
         const int Shift_JER_;
         const int Shift_BTagSF_;
         const int Shift_TopPtReWeight_;

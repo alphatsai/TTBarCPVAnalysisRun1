@@ -61,10 +61,15 @@ options.register('NJets', 4,
     VarParsing.varType.int,
     "Number of jets"
     )
-options.register('NbJets', 0,
+options.register('NbJetsCSVM', 0,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.int,
-    "Number of b-jets"
+    "Number of CSVM b-jets"
+    )
+options.register('NbJetsCSVL', 0,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.int,
+    "Number of CSVL b-jets"
     )
 options.register('ShiftJER', 0,
     VarParsing.multiplicity.singleton,    
@@ -178,7 +183,8 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicControlRegion',
     MinChi2                     = cms.double(options.MinChi2),
     Owrt                        = cms.double(Oweight), 
     NJets                       = cms.int32(options.NJets),
-    NbJets                      = cms.int32(options.NbJets),
+    NbJetsCSVM                  = cms.int32(options.NbJetsCSVM),
+    NbJetsCSVL                  = cms.int32(options.NbJetsCSVL),
     Shift_JER                   = cms.int32(options.ShiftJER),
     Shift_BTagSF                = cms.int32(options.ShiftBTagSF),
     Shift_TopPtReWeight         = cms.int32(options.ShiftTopPtReWeight),

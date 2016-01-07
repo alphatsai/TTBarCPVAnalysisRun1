@@ -79,7 +79,8 @@ SemiLeptanicControlRegion::SemiLeptanicControlRegion(const edm::ParameterSet& iC
     minChi2_(                     iConfig.getParameter<double>("MinChi2")),
     Owrt_(                        iConfig.getParameter<double>("Owrt")),
     NJets_(                       iConfig.getParameter<int>("NJets")),
-    NbJets_(                      iConfig.getParameter<int>("NbJets")),
+    NbJetsCSVM_(                  iConfig.getParameter<int>("NbJetsCSVM")),
+    NbJetsCSVL_(                  iConfig.getParameter<int>("NbJetsCSVL")),
     Shift_JER_(                   iConfig.getParameter<int>("Shift_JER")),
     Shift_BTagSF_(                iConfig.getParameter<int>("Shift_BTagSF")),
     Shift_TopPtReWeight_(         iConfig.getParameter<int>("Shift_TopPtReWeight")),
@@ -114,8 +115,8 @@ void SemiLeptanicControlRegion::setCutFlow( TH1* h )
         h->GetXaxis()->SetBinLabel(7,  "veto(Loose #mu)"                           );
         h->GetXaxis()->SetBinLabel(8,  "veto(Loose e)"                             );
         h->GetXaxis()->SetBinLabel(9,  ("#geq"+num2str(NJets_)+" Jets").c_str()    );
-        h->GetXaxis()->SetBinLabel(10, ("#geq"+num2str(NbJets_)+" bjets").c_str()  );
-        h->GetXaxis()->SetBinLabel(11, ("="+num2str(NbJets_)+" bjets").c_str()     );
+        h->GetXaxis()->SetBinLabel(10, ("#geq"+num2str(NbJetsCSVM_)+" bjets").c_str()  );
+        h->GetXaxis()->SetBinLabel(11, ("="+num2str(NbJetsCSVM_)+" bjets").c_str()     );
         h->GetXaxis()->SetBinLabel(12, "=2 CSVL-bjets"                             );
         if( minChi2_ == 0 )
             h->GetXaxis()->SetBinLabel(13, ("#chi^{2}<"+num2str(maxChi2_)).c_str() );
@@ -130,8 +131,8 @@ void SemiLeptanicControlRegion::setCutFlow( TH1* h )
         h->GetXaxis()->SetBinLabel(6,  "veto(Loose #mu)"                           );
         h->GetXaxis()->SetBinLabel(7,  "veto(Loose e)"                             );
         h->GetXaxis()->SetBinLabel(8,  ("#geq"+num2str(NJets_)+" Jets").c_str()    );
-        h->GetXaxis()->SetBinLabel(9,  ("#geq"+num2str(NbJets_)+" bjets").c_str()  );
-        h->GetXaxis()->SetBinLabel(10, ("="+num2str(NbJets_)+" bjets").c_str()     );
+        h->GetXaxis()->SetBinLabel(9,  ("#geq"+num2str(NbJetsCSVM_)+" bjets").c_str()  );
+        h->GetXaxis()->SetBinLabel(10, ("="+num2str(NbJetsCSVM_)+" bjets").c_str()     );
         h->GetXaxis()->SetBinLabel(11, "=2 CSVL-bjets"                             );
         if( minChi2_ == 0 )
             h->GetXaxis()->SetBinLabel(12, ("#chi^{2}<"+num2str(maxChi2_)).c_str() );
@@ -579,6 +580,9 @@ void SemiLeptanicControlRegion::beginJob()
     h1.addNewTH1( "Evt_NBJetsCSVL",           "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "Evt_NBJetsCSVL_Mu",        "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "Evt_NBJetsCSVL_El",        "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "Evt_NnonBJets",            "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "Evt_NnonBJets_Mu",         "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "Evt_NnonBJets_El",         "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "EvtChi2_NSelJets",         "Num. of selected jets",     "N(selected j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "EvtChi2_NSelJets_Mu",      "Num. of selected jets",     "N(selected j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "EvtChi2_NSelJets_El",      "Num. of selected jets",     "N(selected j)",     "Events", "",    "", 20,   0,   20  );
@@ -588,6 +592,9 @@ void SemiLeptanicControlRegion::beginJob()
     h1.addNewTH1( "EvtChi2_NBJetsCSVL",       "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "EvtChi2_NBJetsCSVL_Mu",    "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "EvtChi2_NBJetsCSVL_El",    "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "EvtChi2_NnonBJets",        "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "EvtChi2_NnonBJets_Mu",     "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
+    h1.addNewTH1( "EvtChi2_NnonBJets_El",     "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "Evt_CutFlow_Mu",           "",                          "",                  "Evetns", "",    "", 13,   0,   13  );
     h1.addNewTH1( "Evt_CutFlow_El",           "",                          "",                  "Evetns", "",    "", 13,   0,   13  );
     h1.addNewTH1( "Evt_MuCut",                "isoMu:looseMu:looseEl",     "",                  "Evetns", "",    "", 7,    0,   7   );
@@ -1013,7 +1020,7 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                     double wrtevt_btagSF_CSVL(1);
                     int unsigned sizeBJetCol_CSVM = BJetCol_CSVM.size();
                     int unsigned sizeBJetCol_CSVL = BJetCol_CSVL.size();
-                    if( sizeBJetCol_CSVM >= NbJets_ )
+                    if( sizeBJetCol_CSVM >= NbJetsCSVM_ )
                     {
                         if( !isdata )
                         {
@@ -1025,19 +1032,20 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                         }
                         wrtevt     *= wrtevt_btagSF_CSVM;
                         wrtevtNoPU *= wrtevt_btagSF_CSVM;
-                        if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#geq"+num2str(NbJets_)+" bjets").c_str(), wrtevt*wrtevt_tightMuID*wrtevt_tightMuIso );
-                        if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#geq"+num2str(NbJets_)+" bjets").c_str(), wrtevt*wrtevt_tightElID                   );
+                        if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#geq"+num2str(NbJetsCSVM_)+" bjets").c_str(), wrtevt*wrtevt_tightMuID*wrtevt_tightMuIso );
+                        if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#geq"+num2str(NbJetsCSVM_)+" bjets").c_str(), wrtevt*wrtevt_tightElID                   );
                     }
 
                     //// ** Number of b-jets cuts 
-                    if( sizeBJetCol_CSVM == NbJets_ )
+                    if( sizeBJetCol_CSVM == NbJetsCSVM_ )
                     {
                         //wrtevtNoPU *= wrtevt_btagSF_CSVM;
                         //wrtevt *= wrtevt_btagSF_CSVM;
                         h1.GetTH1("Evt_Wrtevt_BTagSF_CSVM")->Fill(wrtevt_btagSF_CSVM);
-                        if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("="+num2str(NbJets_)+" bjets").c_str(), wrtevt*wrtevt_tightMuID*wrtevt_tightMuIso );
-                        if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("="+num2str(NbJets_)+" bjets").c_str(), wrtevt*wrtevt_tightElID                   );
-                        if( sizeBJetCol_CSVL == 2 )
+                        if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("="+num2str(NbJetsCSVM_)+" bjets").c_str(), wrtevt*wrtevt_tightMuID*wrtevt_tightMuIso );
+                        if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("="+num2str(NbJetsCSVM_)+" bjets").c_str(), wrtevt*wrtevt_tightElID                   );
+                        //if( sizeBJetCol_CSVL == 2 )
+                        if( sizeBJetCol_CSVL == NbJetsCSVL_ )
                         {
                             BTagSFUtil BTagSF;
                             for( int b=0; b<int(sizeBJetCol_CSVL); b++ )
@@ -1068,28 +1076,101 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                                 h1.GetTH1("Evt_CutFlow_El"        )->Fill("=2 CSVL-bjets", wrtevt);
                             }
 
-                            //// * Lable the two hardest non_bjet
-                            getHighPtObject( JetColSelected, hardJet ); 
-                            get2HighPtObject( nonBJetCol, hardNonBJet1, hardNonBJet2 );
-
-                            //// * Distinguish hadronic-top and leptonic-top's b-jet by chi^2
                             const int sizeNonBJetCol = nonBJetCol.size();
                             int topjet1(-1), topjet2(-1), hadronicTopbjet(-1), leptonicTopbjet(-1); 
-                            for( int ij1=1; ij1<sizeNonBJetCol; ij1++){
-                                for( int ij2=ij1-1; ij2<ij1; ij2++){
-                                    for( int bj=0; bj<2; bj++)
-                                    {
-                                        float chi2_ = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], BJetCol_CSVL[bj] );
-                                        if( chi2_ < minChi2 )
-                                        { 
-                                            topjet1  = ij1;
-                                            topjet2  = ij2;
-                                            hadronicTopbjet = bj;
-                                            minChi2 = chi2_;
+                            if( NbJetsCSVL_ > 0 )
+                            {
+                                //// * Lable the two hardest non_bjet
+                                getHighPtObject( JetColSelected, hardJet ); 
+                                get2HighPtObject( nonBJetCol, hardNonBJet1, hardNonBJet2 );
+
+                                //// * Distinguish hadronic-top and leptonic-top's b-jet by chi^2
+                                for( int ij1=1; ij1<sizeNonBJetCol; ij1++){
+                                    for( int ij2=ij1-1; ij2<ij1; ij2++){
+                                        for( int bj=0; bj<2; bj++)
+                                        {
+                                            float chi2_ = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], BJetCol_CSVL[bj] );
+                                            if( chi2_ < minChi2 )
+                                            { 
+                                                topjet1  = ij1;
+                                                topjet2  = ij2;
+                                                hadronicTopbjet = bj;
+                                                minChi2 = chi2_;
+                                            }
                                         }
                                     }
                                 }
+                                leptonicTopbjet = ( hadronicTopbjet==0 )? 1:0;
+                                //// * reco top  
+                                if( isoLep.Charge < 0 ) // tbar->bbar w- ( w- > l- v )
+                                {
+                                    b_jet    = BJetCol_CSVL[hadronicTopbjet]; b_jet.Index    = hadronicTopbjet;
+                                    bbar_jet = BJetCol_CSVL[leptonicTopbjet]; bbar_jet.Index = leptonicTopbjet;
+                                    top_hadronic.Fill( b_jet,    nonBJetCol[topjet1], nonBJetCol[topjet2], 0 );
+                                    top_leptonic.Fill( bbar_jet, isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi, 1 );
+                                    //top_hadronic.Fill( b_jet,    TopNonBJet1, TopNonBJet2, 0 );
+                                }
+                                else if( isoLep.Charge > 0 ) //t->b w+ ( w+ > l+ v )
+                                {
+                                    b_jet    = BJetCol_CSVL[leptonicTopbjet]; b_jet.Index    = leptonicTopbjet;
+                                    bbar_jet = BJetCol_CSVL[hadronicTopbjet]; bbar_jet.Index = hadronicTopbjet;
+                                    top_hadronic.Fill( bbar_jet, nonBJetCol[topjet1], nonBJetCol[topjet2], 1 );
+                                    top_leptonic.Fill( b_jet,    isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi, 0 );
+                                    //top_hadronic.Fill( bbar_jet, TopNonBJet1, TopNonBJet2, 1 );
+                                }
+                                else
+                                { std::cout<<">> [ERROR] There an nuetral lepton!? "<<std::endl; }
                             }
+                            else
+                            {
+                                if( JetColSelected.size() != nonBJetCol.size() ) std::cout<<">> [WARNING] JetColSelected.size() "<<JetColSelected.size()<<" !=  nonBJetCol.size() "<<nonBJetCol.size()<<std::endl;
+                                for( int ij1=1; ij1<sizeNonBJetCol; ij1++ ){
+                                    for( int ij2=ij1-1; ij2<ij1; ij2++ ){
+                                        for( int bj=0; bj<sizeNonBJetCol; bj++ )
+                                        {
+                                            if( bj != ij1 && bj != ij2 )
+                                            {
+                                                float chi2_ = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], nonBJetCol[bj] );
+                                                if( chi2_ < minChi2 )
+                                                { 
+                                                    topjet1  = ij1;
+                                                    topjet2  = ij2;
+                                                    hadronicTopbjet = bj;
+                                                    minChi2 = chi2_;
+                                                }
+                                            } 
+                                        }
+                                    }
+                                }
+                                float minPt=0.;
+                                for( int ij=0; ij<sizeNonBJetCol; ij++ )
+                                {
+                                    if( ij != topjet1 && ij != topjet2 && ij != hadronicTopbjet ){
+                                        if( nonBJetCol[ij].Pt > minPt )
+                                        {
+                                                minPt = nonBJetCol[ij].Pt;
+                                                leptonicTopbjet = ij;
+                                        }
+                                    }
+                                }
+                                if( isoLep.Charge < 0 ) // tbar->bbar w- ( w- > l- v )
+                                {
+                                    b_jet    = nonBJetCol[hadronicTopbjet]; b_jet.Index    = hadronicTopbjet;
+                                    bbar_jet = nonBJetCol[leptonicTopbjet]; bbar_jet.Index = leptonicTopbjet;
+                                    top_hadronic.Fill( b_jet,    nonBJetCol[topjet1], nonBJetCol[topjet2], 0 );
+                                    top_leptonic.Fill( bbar_jet, isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi,  1 );
+                                }
+                                else if( isoLep.Charge > 0 ) //t->b w+ ( w+ > l+ v )
+                                {
+                                    b_jet    = nonBJetCol[leptonicTopbjet]; b_jet.Index    = leptonicTopbjet;
+                                    bbar_jet = nonBJetCol[hadronicTopbjet]; bbar_jet.Index = hadronicTopbjet;
+                                    top_hadronic.Fill( bbar_jet, nonBJetCol[topjet1], nonBJetCol[topjet2], 1 );
+                                    top_leptonic.Fill( b_jet,    isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi,  0 );
+                                }
+                                else
+                                { std::cout<<">> [ERROR] There an nuetral lepton!? "<<std::endl; }
+                            }
+
                             if( nonBJetCol[topjet1].Pt > nonBJetCol[topjet2].Pt )
                             { 
                                 TopNonBJet1 = nonBJetCol[topjet1]; TopNonBJet1.Index = topjet1;
@@ -1101,24 +1182,6 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                                 TopNonBJet2 = nonBJetCol[topjet1]; TopNonBJet2.Index = topjet1;
                             }
 
-                            //// * reco top  
-                            leptonicTopbjet = ( hadronicTopbjet==0 )? 1:0;
-                            if( isoLep.Charge < 0 ) // tbar->bbar w- ( w- > l- v )
-                            {
-                                b_jet    = BJetCol_CSVL[hadronicTopbjet]; b_jet.Index    = hadronicTopbjet;
-                                bbar_jet = BJetCol_CSVL[leptonicTopbjet]; bbar_jet.Index = leptonicTopbjet;
-                                top_hadronic.Fill( b_jet,    TopNonBJet1, TopNonBJet2, 0 );
-                                top_leptonic.Fill( bbar_jet, isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi, 1 );
-                            }
-                            else if( isoLep.Charge > 0 ) //t->b w+ ( w+ > l+ v )
-                            {
-                                b_jet    = BJetCol_CSVL[leptonicTopbjet]; b_jet.Index    = leptonicTopbjet;
-                                bbar_jet = BJetCol_CSVL[hadronicTopbjet]; bbar_jet.Index = hadronicTopbjet;
-                                top_hadronic.Fill( bbar_jet, TopNonBJet1, TopNonBJet2, 1 );
-                                top_leptonic.Fill( b_jet,    isoLep, EvtInfo.PFMET, EvtInfo.PFMETPhi, 0 );
-                            }
-                            else
-                            { std::cout<<">> [ERROR] There an nuetral lepton!? "<<std::endl; }
 
                             //// * Fill Ht = scale sum of selected jets
                             //for( int j=0; j<int(sizeNonBJetCol);   j++ ){ Ht += nonBJetCol[j].Pt; }
@@ -1230,7 +1293,8 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
             h1.GetTH1("Evt_NSelJets"          )->Fill( JetColSelected.size()          , wrtevt     );
             h1.GetTH1("Evt_NBJetsCSVM"        )->Fill( BJetCol_CSVM.size()            , wrtevt     );
             h1.GetTH1("Evt_NBJetsCSVL"        )->Fill( BJetCol_CSVL.size()            , wrtevt     );
-            if( NbJets_ > 0 )
+            h1.GetTH1("Evt_NnonBJets"         )->Fill( nonBJetCol.size()              , wrtevt     );
+            if( NbJetsCSVM_ > 0 )
             {
                 h1.GetTH1("Evt_bJet_Pt"           )->Fill( b_jet.Pt                       , wrtevt     );
                 h1.GetTH1("Evt_bJet_Eta"          )->Fill( b_jet.Eta                      , wrtevt     );
@@ -1307,6 +1371,7 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                 h1.GetTH1("EvtChi2_NSelJets"          )->Fill( JetColSelected.size()          , wrtevt     );
                 h1.GetTH1("EvtChi2_NBJetsCSVM"        )->Fill( BJetCol_CSVM.size()            , wrtevt     );
                 h1.GetTH1("EvtChi2_NBJetsCSVL"        )->Fill( BJetCol_CSVL.size()            , wrtevt     );
+                h1.GetTH1("EvtChi2_NnonBJets"         )->Fill( nonBJetCol.size()              , wrtevt     );
                 h1.GetTH1("EvtChi2_bJet_Pt"           )->Fill( b_jet.Pt                       , wrtevt     );
                 h1.GetTH1("EvtChi2_bJet_Eta"          )->Fill( b_jet.Eta                      , wrtevt     );
                 h1.GetTH1("EvtChi2_bJet_Phi"          )->Fill( b_jet.Phi                      , wrtevt     );
@@ -1385,7 +1450,8 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                 h1.GetTH1("Evt_NSelJets_Mu"         )->Fill( JetColSelected.size()          , wrtevt     );
                 h1.GetTH1("Evt_NBJetsCSVM_Mu"       )->Fill( BJetCol_CSVM.size()            , wrtevt     );
                 h1.GetTH1("Evt_NBJetsCSVL_Mu"       )->Fill( BJetCol_CSVL.size()            , wrtevt     );
-                //if( NbJets_ > 0 )
+                h1.GetTH1("Evt_NnonBJets_Mu"        )->Fill( nonBJetCol.size()              , wrtevt     );
+                //if( NbJetsCSVM_ > 0 )
                 //{
                     h1.GetTH1("Evt_bJet_Pt_Mu"          )->Fill( b_jet.Pt                       , wrtevt     );
                     h1.GetTH1("Evt_bJet_Eta_Mu"         )->Fill( b_jet.Eta                      , wrtevt     );
@@ -1462,6 +1528,7 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                     h1.GetTH1("EvtChi2_NSelJets_Mu"         )->Fill( JetColSelected.size()          , wrtevt     );
                     h1.GetTH1("EvtChi2_NBJetsCSVM_Mu"       )->Fill( BJetCol_CSVM.size()            , wrtevt     );
                     h1.GetTH1("EvtChi2_NBJetsCSVL_Mu"       )->Fill( BJetCol_CSVL.size()            , wrtevt     );
+                    h1.GetTH1("EvtChi2_NnonBJets_Mu"        )->Fill( nonBJetCol.size()              , wrtevt     );
                     h1.GetTH1("EvtChi2_bJet_Pt_Mu"          )->Fill( b_jet.Pt                       , wrtevt     );
                     h1.GetTH1("EvtChi2_bJet_Eta_Mu"         )->Fill( b_jet.Eta                      , wrtevt     );
                     h1.GetTH1("EvtChi2_bJet_Phi_Mu"         )->Fill( b_jet.Phi                      , wrtevt     );
@@ -1542,7 +1609,8 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                 h1.GetTH1("Evt_NSelJets_El"         )->Fill( JetColSelected.size()          , wrtevt     );
                 h1.GetTH1("Evt_NBJetsCSVM_El"       )->Fill( BJetCol_CSVM.size()            , wrtevt     );
                 h1.GetTH1("Evt_NBJetsCSVL_El"       )->Fill( BJetCol_CSVL.size()            , wrtevt     );
-                //if( NbJets_ > 0 )
+                h1.GetTH1("Evt_NnonBJets_El"        )->Fill( nonBJetCol.size()              , wrtevt     );
+                //if( NbJetsCSVM_ > 0 )
                 //{
                     h1.GetTH1("Evt_bJet_Pt_El"          )->Fill( b_jet.Pt                       , wrtevt     );
                     h1.GetTH1("Evt_bJet_Eta_El"         )->Fill( b_jet.Eta                      , wrtevt     );
@@ -1619,6 +1687,7 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                     h1.GetTH1("EvtChi2_NSelJets_El"         )->Fill( JetColSelected.size()          , wrtevt     );
                     h1.GetTH1("EvtChi2_NBJetsCSVM_El"       )->Fill( BJetCol_CSVM.size()            , wrtevt     );
                     h1.GetTH1("EvtChi2_NBJetsCSVL_El"       )->Fill( BJetCol_CSVL.size()            , wrtevt     );
+                    h1.GetTH1("EvtChi2_NnonBJets_El"        )->Fill( nonBJetCol.size()              , wrtevt     );
                     h1.GetTH1("EvtChi2_bJet_Pt_El"          )->Fill( b_jet.Pt                       , wrtevt     );
                     h1.GetTH1("EvtChi2_bJet_Eta_El"         )->Fill( b_jet.Eta                      , wrtevt     );
                     h1.GetTH1("EvtChi2_bJet_Phi_El"         )->Fill( b_jet.Phi                      , wrtevt     );
@@ -1682,7 +1751,6 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                     fillAsym( h1.GetTH1("EvtChi2_O3Asym_El"), O3, wrtevt );
                     fillAsym( h1.GetTH1("EvtChi2_O4Asym_El"), O4, wrtevt );
                     fillAsym( h1.GetTH1("EvtChi2_O7Asym_El"), O7, wrtevt );
-
                 }
             }
             newtree_->Fill();
