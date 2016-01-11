@@ -287,8 +287,8 @@ void pullTest( TFile* fin, std::string name, int chN=0, int nExp=1000, float nSi
         channel="Combined channel";
     }
 
-    TH1D* hPullSig = new TH1D("hPullSig", "", 70, -350, 350);
-    TH1D* hPullBkg = new TH1D("hPullBkg", "", 70, -350, 350);
+    TH1D* hPullSig = new TH1D("hPullSig", "", 50, -500, 500);
+    TH1D* hPullBkg = new TH1D("hPullBkg", "", 50, -500, 500);
     TH1D* hSig = (TH1D*)((TH1D*)fin->Get(("SigMC"+ch).c_str()))->Clone();
     TH1D* hBkg = (TH1D*)((TH1D*)fin->Get(("BkgMC"+ch).c_str()))->Clone();
 
@@ -339,7 +339,7 @@ void pullTest( TFile* fin, std::string name, int chN=0, int nExp=1000, float nSi
     c1->cd(2);
     hPullBkg->Draw();
 
-    c1->SaveAs((output+"/PullTest_"+name+ch+".pdf").c_str())
+    c1->SaveAs((output+"/PullTest_"+name+ch+".pdf").c_str());
 }
 
 
