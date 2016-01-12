@@ -6,13 +6,17 @@
 std::string fileName="Final_histograms_SemiLeptanic.root";
 std::string systDir="Syst";
 std::string fName="../results/15Dec_LepJet_MCDATA";
-std::string hName="EvtChi2_Ht";
-std::string output=".";
+std::string hName="EvtChi2_Top_Leptonic_Mbl";
+//std::string hName="EvtChi2_Top_Hadronic_Mass";
+//std::string hName="EvtChi2_Ht";
+std::string output=fName;
 bool doFit=true;
 int rebin=20;
 int CoCH=0;
 int ElCH=1;
 int MuCH=2;
+int sig=0;
+int bkg=1;
 void getHistStatUnc( TH1D* h, TH1D* h_u, TH1D* h_d )
 {
     int bins=h->GetNbinsX();
@@ -24,8 +28,8 @@ void getHistStatUnc( TH1D* h, TH1D* h_u, TH1D* h_d )
 }
 void mkTemplateSyst()
 {
-    const int nCh=3, nSyst=2+7, nMC=2, nTune=2;
-    std::string mcName[nMC]={"TTJets__", "BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__"}; // sig=0, bkg=1
+    const int nCh=3, nSyst=2+7, nMC=3, nTune=2;
+    std::string mcName[nMC]={"TTJets__", "BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__", "MC__"}; // sig=0, bkg=1
     std::string chName[nCh]={"", "_El", "_Mu"};
     std::string tuneName[nTune]={"up", "down"};
     std::string systName[nSyst]={"", "Stat", "PU", "JER", "BTagSF", "TopPT", "elID", "muID", "muISO"};
@@ -60,8 +64,9 @@ void mkTemplateSyst()
     for( int mc=0; mc<nMC; mc++ )
     {
         std::string name0;
-        if( mc==0 ) name0="SigMC"; 
-        else name0="BkgMC"; 
+        if( mc==sig )      name0="SigMC"; 
+        else if( mc==bkg ) name0="BkgMC"; 
+        else name0="MC"; 
         std::cout<<"       "<<name0<<"..."<<std::endl;
         for( int ch=0; ch<nCh; ch++ )
         {
@@ -101,7 +106,6 @@ void mkTemplateSyst()
     // Fitting
     if( doFit )
     {
-        const int sig=0, bkg=1;
         std::string nameSig0 = "SigFitted";
         std::string nameBkg0 = "BkgFitted";
         std::cout<<"[INFO] Fitting MC..."<<std::endl;
