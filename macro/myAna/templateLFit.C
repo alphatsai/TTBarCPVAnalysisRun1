@@ -1,18 +1,19 @@
+#include <fstream>
+#include <iostream>
+#include <vector>
 #include "TH2.h"
 #include "TStyle.h"
 #include "TCanvas.h"
 #include "TF1.h"
-#include <fstream>
-#include <iostream>
-#include <TMinuit.h>
-#include "vector.h"
-#include <TMath.h>
+#include "TMinuit.h"
+#include "TMath.h"
 #include "TVirtualFitter.h"
 #include "TFile.h"
 #include "TLegend.h"
 #include "TMarker.h"
 #include "TLine.h"
 #include "TRandom2.h"
+#include "TPaveText.h"
 #define NPAR 2
 #define SIGFRAC 0.8 // Default is 0.5
 using namespace std;
@@ -52,12 +53,10 @@ Double_t* fitter_LH( TH1D* hSig, TH1D* hBkg, TH1D* hData )
     sigColl.clear();
     bkgColl.clear();
 
-    TH1D *hsum = (TH1D*)hBkg->Clone();
-    hsum->Add(hSig);
     // normalize template
     printf(" --------- before the fit ------------- \n");
     printf("Nsig %2.3f, Nbg %2.3f \n", hSig->Integral(), hBkg->Integral());
-    printf("Purity %2.3f, init size %4.3f,  test sample size %4d\n", hSig->Integral()/hsum->Integral(), hsum->Integral(), nData);
+    printf("Purity %2.3f, init size %4.3f,  test sample size %4d\n", hSig->Integral()/(hSig->Integral()+hBkg->Integral()), (hSig->Integral()+hBkg->Integral()), nData);
     printf(" -------------------------------------- \n");
 
     hSig->Scale(1./hSig->Integral());
@@ -68,6 +67,7 @@ Double_t* fitter_LH( TH1D* hSig, TH1D* hBkg, TH1D* hData )
         sigColl.push_back(hSig->GetBinContent(ibin));
         bkgColl.push_back(hBkg->GetBinContent(ibin));    
     }
+
     printf( " -----  Got %d, %d, %d events for fit ----- \n ", dataColl.size(), sigColl.size(), bkgColl.size() );  
     if ( dataColl.size() != sigColl.size() || sigColl.size()!=bkgColl.size() ) {
         printf(" error ...  inconsistent hit collection size \n");
@@ -127,6 +127,8 @@ Double_t* fitter_LH( TH1D* hSig, TH1D* hBkg, TH1D* hData )
 
     printf(" ========= happy ending !? =========================== \n");
     printf("FCN =  %3.3f \n", amin);
+    printf("Fitted sig =  %3.3f (%3.3f)\n", para[0], errpara[0]);
+    printf("Fitted bkg =  %3.3f (%3.3f)\n", para[1], errpara[1]);
 
     hSig->Scale(para[0]);
     hBkg->Scale(para[1]);
@@ -259,11 +261,18 @@ Double_t* fitter_LH( TFile* fin, std::string name, int chN=0, std::string output
     sprintf( text, "BKG %5.1f #pm %5.1f events", fitted[2], fitted[3] ); cout<<text<<endl;
     tleg->AddEntry( hBkg, text, "f");
     tleg->Draw();
+    
+    TPaveText* t_title;
+    t_title = new TPaveText(0.1317204,0.9451852,0.7620968,0.9896296,"brNDC");
+    t_title->AddText("CMS #sqrt{s} = 8TeV, L=19.7 fb^{-1}");
+    t_title->SetTextColor(kBlack);
+    t_title->SetFillColor(kWhite);
+    t_title->SetFillStyle(0);
+    t_title->SetBorderSize(0);
+    t_title->SetTextAlign(12);
+    t_title->SetTextSize(0.04);
 
-    TLatex *tlx = new TLatex(6.247421e-06,9218.143,"CMS #sqrt{s} = 8TeV, L=19.7 fb^{-1}");
-    tlx->SetTextSize(0.035);
-    tlx->SetLineWidth(2);
-    tlx->Draw();
+    t_title->Draw();
 
     hData->Chi2Test( hFitted, "P");
     c1->SaveAs((output+"/FittingResults_"+name+ch+".pdf").c_str());
@@ -287,10 +296,16 @@ void pullTest( TFile* fin, std::string name, int chN=0, int nExp=1000, float nSi
         channel="Combined channel";
     }
 
-    TH1D* hPullSig = new TH1D("hPullSig", "", 50, -500, 500);
-    TH1D* hPullBkg = new TH1D("hPullBkg", "", 50, -500, 500);
+    float bins=  60;
+    float min = -600;
+    float max =  600;
+
     TH1D* hSig = (TH1D*)((TH1D*)fin->Get(("SigMC"+ch).c_str()))->Clone();
     TH1D* hBkg = (TH1D*)((TH1D*)fin->Get(("BkgMC"+ch).c_str()))->Clone();
+
+    TFile* fout = new TFile((output+"/PullTest_"+name+ch+".root").c_str(), "RECREATE");
+    TH1D* hPullSig = new TH1D("hPullSig", "", bins, min, max);
+    TH1D* hPullBkg = new TH1D("hPullBkg", "", bins, min, max);
 
     int  nbins = hSig->GetNbinsX();
     float bMin = hSig->GetBinLowEdge(1);
@@ -323,23 +338,85 @@ void pullTest( TFile* fin, std::string name, int chN=0, int nExp=1000, float nSi
         hPullSig->Fill(fittedSig-nSig);
         hPullBkg->Fill(fittedBkg-nBkg);
     }
-    TCanvas* c1 = new TCanvas("c1_pull", "", 800,600); 
+
+    //hPullSig->SetTitle("Signal");
+    //hPullBkg->SetTitle("Background");
+    hPullSig->GetYaxis()->SetTitle("Number of exp.");
+    hPullBkg->GetYaxis()->SetTitle("Number of exp.");
+    hPullSig->GetXaxis()->SetTitle("Resisual");
+    hPullBkg->GetXaxis()->SetTitle("Resisual");
+
+    hPullSig->GetXaxis()->SetTitle("Resisual");
+    hPullSig->GetXaxis()->SetNdivisions(30504);
+    hPullSig->GetXaxis()->SetLabelFont(42);
+    hPullSig->GetXaxis()->SetLabelSize(0.05);
+    hPullSig->GetXaxis()->SetTitleSize(0.07);
+    hPullSig->GetXaxis()->SetTitleOffset(0.83);
+    hPullSig->GetXaxis()->SetTitleFont(42);
+    hPullSig->GetYaxis()->SetLabelFont(42);
+    hPullSig->GetYaxis()->SetLabelSize(0.05);
+    hPullSig->GetYaxis()->SetTitleSize(0.07);
+    hPullSig->GetYaxis()->SetTitleOffset(0.97);
+    hPullSig->GetYaxis()->SetTitleFont(42);
+
+    hPullBkg->GetXaxis()->SetTitle("Resisual");
+    hPullBkg->GetXaxis()->SetNdivisions(30504);
+    hPullBkg->GetXaxis()->SetLabelFont(42);
+    hPullBkg->GetXaxis()->SetLabelSize(0.05);
+    hPullBkg->GetXaxis()->SetTitleSize(0.07);
+    hPullBkg->GetXaxis()->SetTitleOffset(0.83);
+    hPullBkg->GetXaxis()->SetTitleFont(42);
+    hPullBkg->GetYaxis()->SetLabelFont(42);
+    hPullBkg->GetYaxis()->SetLabelSize(0.05);
+    hPullBkg->GetYaxis()->SetTitleSize(0.07);
+    hPullBkg->GetYaxis()->SetTitleOffset(0.97);
+    hPullBkg->GetYaxis()->SetTitleFont(42);
+
+    TCanvas *c1 = new TCanvas("c1_pull", "",1396,155,810,716);
+    c1->Range(-865.285,-0.2176583,805.1813,1.166891);
+    c1->SetFillColor(0);
+    c1->SetBorderMode(0);
+    c1->SetBorderSize(2);
+    c1->SetLeftMargin(0.1588089);
+    c1->SetRightMargin(0.1228288);
+    c1->SetTopMargin(0.08442504);
+    c1->SetBottomMargin(0.1572052);
+    c1->SetFrameBorderMode(0);
+    c1->SetFrameBorderMode(0);
     gStyle->SetOptStat(0);
     gStyle->SetOptFit(101);
-    //gStyle->SetFitFormat("3.3g");
-    c1->Divide(2,1);
+    gStyle->SetFitFormat("3.3g");
 
-    c1->cd(1);
-    //TF1* gaus = new TF1("gaus", "gaus", min, max);
-    //gaus->SetLineColor(2);
-    //hPullSig->Fit( gaus, "WR"); cout<<endl;
-    //gaus->Draw("SAME");
+    char text[50];
+    TPaveText *pt = new TPaveText(0.2543424,0.9330422,0.5148883,0.9898108,"blNDC");
+    pt->SetBorderSize(0);
+    pt->SetFillColor(0);
+    pt->SetFillStyle(0);
+    pt->SetTextFont(42);
+    pt->SetTextSize(0.04366812);
+    TF1* gaus1 = new TF1("gaus1", "gaus", min, max);
+    TF1* gaus2 = new TF1("gaus2", "gaus", min, max);
+    gaus1->SetLineColor(2);
+    gaus2->SetLineColor(2);
+
+    hPullSig->Fit( gaus1, "WR"); cout<<endl;
     hPullSig->Draw();
+    gaus1->Draw("SAME");
+    sprintf( text, "Expected sig. %d (%d exp.) ", nSig, nExp ); 
+    pt->AddText(text);
+    pt->Draw();
+    c1->SaveAs((output+"/PullTestSig_"+name+ch+".pdf").c_str());
 
-    c1->cd(2);
+    hPullBkg->Fit( gaus2, "WR"); cout<<endl;
     hPullBkg->Draw();
+    gaus2->Draw("SAME");
+    sprintf( text, "Expected bkg. %d (%d exp.) ", nBkg, nExp ); 
+    pt->Clear();
+    pt->AddText(text);
+    pt->Draw();
+    c1->SaveAs((output+"/PullTestBkg_"+name+ch+".pdf").c_str());
 
-    c1->SaveAs((output+"/PullTest_"+name+ch+".pdf").c_str());
+    fout->Write();
 }
 
 
