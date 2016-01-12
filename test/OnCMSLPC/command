@@ -1,0 +1,1 @@
+./createAndSubmitJobs.py -w 11Jan_Skim_topSyst -d datasetListLepJetForSkim.txt -c ../filterLeptonJet_cfg.py -E /eos/uscms/store/user/jtsai/TTBarCPV/skim/v0

@@ -61,6 +61,11 @@ options.register('NJets', 4,
     VarParsing.varType.int,
     "Number of jets"
     )
+options.register('ShiftPU', 0,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.int,
+    "Systemtic unc. shift of PU sf: 0(nominal), 1(sigma), -1(-sigma)"
+    )
 options.register('ShiftJER', 0,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.int,
@@ -127,6 +132,11 @@ while ( i < power ):
 isSkim = False
 if options.ttreedir.lower() == 'skim':
     isSkim = True
+
+if options.ShiftPU > 0:
+  options.HistPUDistData="pileup_data_1sigUp"
+elif options.ShiftPU < 0:
+  options.HistPUDistData="pileup_data_1sigDown"
 
 from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Vertex_cfi   import*
 from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Jet_cfi      import*

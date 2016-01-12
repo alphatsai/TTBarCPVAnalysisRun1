@@ -26,7 +26,8 @@ options.register('ttreedir', 'bprimeKit',
     VarParsing.varType.string,
     "Name of ROOT TTree dir: Either 'ntuple' or 'skim' or 'bVeto'"
     )
-options.register('NJet', 4,
+#options.register('NJet', 4,
+options.register('NJet', 3,
     VarParsing.multiplicity.singleton, 
     VarParsing.varType.int,
     "Number of jets"
