@@ -26,11 +26,13 @@
 using namespace std;
 void sumTemplateInfo( TFile* f, string output=".", string xElTitle="", string xMuTitel="", string yTitle="Events", bool logy=true )
 {
-    const int nElSyst=5, nMuSyst=6;
+    const int nElSyst=6, nMuSyst=7;
     float *mcEl[nElSyst], *sigEl[nElSyst], *bkgEl[nElSyst];
     float *mcMu[nMuSyst], *sigMu[nMuSyst], *bkgMu[nMuSyst];
-    string systNameEl[nElSyst]={"PU", "JER", "BTagSF", "TopPT", "elID"};
-    string systNameMu[nMuSyst]={"PU", "JER", "BTagSF", "TopPT", "muID", "muISO"};
+    float sumw2El[2], sumw2sigEl[2], sumw2bkgEl[2];
+    float sumw2Mu[2], sumw2sigMu[2], sumw2bkgMu[2];
+    string systNameEl[nElSyst]={"Stat", "PU", "JER", "BTagSF", "TopPT", "elID"};
+    string systNameMu[nMuSyst]={"Stat", "PU", "JER", "BTagSF", "TopPT", "muID", "muISO"};
     FILE* outTxt;
 
     outTxt = fopen((output+"/SystUncertainties.txt").c_str(),"w");
@@ -69,21 +71,28 @@ void sumTemplateInfo( TFile* f, string output=".", string xElTitle="", string xM
         bkgMu[i] = drawSyst( f, "BkgMC_Mu", systNameMu[i], output, xMuTitel, yTitle, logy);
         fprintf( outTxt, "%8s", systNameMu[i].c_str() );
     }
+    fprintf( outTxt, "%8s", "Syst" );
     fprintf( outTxt, "\nMC:");
     fprintf( outTxt, "\n%8s", "+1sigma" );
-    for( int i=0; i<nMuSyst; i++ ){ fprintf( outTxt, "%+8.2f", (mcMu[i][1]-mcMu[i][0])/mcMu[i][0]*100 ); }   
+    for( int i=0; i<nMuSyst; i++ ){ float v=(mcMu[i][1]-mcMu[i][0])/mcMu[i][0]*100; fprintf( outTxt, "%+8.2f", v ); sumw2Mu[0]+=v*v; }  
+    fprintf( outTxt, "%+8.2f", sqrt(sumw2Mu[0]) );
     fprintf( outTxt, "\n%8s", "-1sigma" );
-    for( int i=0; i<nMuSyst; i++ ){ fprintf( outTxt, "%+8.2f", (mcMu[i][2]-mcMu[i][0])/mcMu[i][0]*100 ); }   
+    for( int i=0; i<nMuSyst; i++ ){ float v=(mcMu[i][2]-mcMu[i][0])/mcMu[i][0]*100; fprintf( outTxt, "%+8.2f", v ); sumw2Mu[1]+=v*v; }   
+    fprintf( outTxt, "%+8.2f", -sqrt(sumw2Mu[1]) );
     fprintf( outTxt, "\nSig:");
     fprintf( outTxt, "\n%8s", "+1sigma" );
-    for( int i=0; i<nMuSyst; i++ ){ fprintf( outTxt, "%+8.2f", (sigMu[i][1]-sigMu[i][0])/sigMu[i][0]*100 ); }   
+    for( int i=0; i<nMuSyst; i++ ){ float v=(sigMu[i][1]-sigMu[i][0])/sigMu[i][0]*100; fprintf( outTxt, "%+8.2f", v ); sumw2sigMu[0]+=v*v; }   
+    fprintf( outTxt, "%+8.2f", sqrt(sumw2sigMu[0]) );
     fprintf( outTxt, "\n%8s", "-1sigma" );
-    for( int i=0; i<nMuSyst; i++ ){ fprintf( outTxt, "%+8.2f", (sigMu[i][2]-sigMu[i][0])/sigMu[i][0]*100 ); }   
+    for( int i=0; i<nMuSyst; i++ ){ float v=(sigMu[i][2]-sigMu[i][0])/sigMu[i][0]*100; fprintf( outTxt, "%+8.2f", v ); sumw2sigMu[1]+=v*v; }   
+    fprintf( outTxt, "%+8.2f", -sqrt(sumw2sigMu[1]) );
     fprintf( outTxt, "\nBkg:");
     fprintf( outTxt, "\n%8s", "+1sigma" );
-    for( int i=0; i<nMuSyst; i++ ){ fprintf( outTxt, "%+8.2f", (bkgMu[i][1]-bkgMu[i][0])/bkgMu[i][0]*100 ); }   
+    for( int i=0; i<nMuSyst; i++ ){ float v=(bkgMu[i][1]-bkgMu[i][0])/bkgMu[i][0]*100; fprintf( outTxt, "%+8.2f", v ); sumw2bkgMu[0]+=v*v; }   
+    fprintf( outTxt, "%+8.2f", sqrt(sumw2bkgMu[0]) );
     fprintf( outTxt, "\n%8s", "-1sigma" );
-    for( int i=0; i<nMuSyst; i++ ){ fprintf( outTxt, "%+8.2f", (bkgMu[i][2]-bkgMu[i][0])/bkgMu[i][0]*100 ); }   
+    for( int i=0; i<nMuSyst; i++ ){ float v=(bkgMu[i][2]-bkgMu[i][0])/bkgMu[i][0]*100; fprintf( outTxt, "%+8.2f", v ); sumw2bkgMu[1]+=v*v; }   
+    fprintf( outTxt, "%+8.2f", -sqrt(sumw2bkgMu[1]) );
     fprintf( outTxt, "\n\n");
     fclose( outTxt );
 }

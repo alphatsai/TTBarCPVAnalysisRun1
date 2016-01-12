@@ -11,7 +11,7 @@ std::string hName="EvtChi2_Top_Leptonic_Mbl";
 //std::string hName="EvtChi2_Ht";
 std::string output=fName;
 bool doFit=true;
-int rebin=20;
+int rebin=10;
 int CoCH=0;
 int ElCH=1;
 int MuCH=2;
@@ -25,6 +25,19 @@ void getHistStatUnc( TH1D* h, TH1D* h_u, TH1D* h_d )
         h_u->SetBinContent(i, h->GetBinContent(i)+h->GetBinError(i));
         h_d->SetBinContent(i, h->GetBinContent(i)-h->GetBinError(i));
     }
+}
+void getHistStatUncNomalized( TH1D* h, TH1D* h_u, TH1D* h_d )
+{
+    int bins=h->GetNbinsX();
+    double sumEvts=0;
+    double sumw2=0;
+    for( int i=1; i<=bins; i++)
+    {
+        sumEvts += h->GetBinContent(i);
+        sumw2 += h->GetBinError(i)*h->GetBinError(i);
+    }
+    h_u->Scale((sumEvts+sqrt(sumw2))/h_u->Integral());
+    h_d->Scale((sumEvts-sqrt(sumw2))/h_d->Integral());
 }
 void mkTemplateSyst()
 {
@@ -86,7 +99,8 @@ void mkTemplateSyst()
                     std::string named = name2+tuneName[1];
                     h_mc[mc][ch][s][0] = (TH1D*)h_mc[mc][ch][0][0]->Clone(nameu.c_str());
                     h_mc[mc][ch][s][1] = (TH1D*)h_mc[mc][ch][0][0]->Clone(named.c_str());
-                    getHistStatUnc( h_mc[mc][ch][0][0], h_mc[mc][ch][s][0], h_mc[mc][ch][s][1] );
+                    getHistStatUncNomalized( h_mc[mc][ch][0][0], h_mc[mc][ch][s][0], h_mc[mc][ch][s][1] );
+                    //getHistStatUnc( h_mc[mc][ch][0][0], h_mc[mc][ch][s][0], h_mc[mc][ch][s][1] );
                 }
                 else
                 {
