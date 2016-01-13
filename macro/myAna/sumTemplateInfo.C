@@ -24,7 +24,7 @@
 #include <vector>
 #include "getTemplateInfo.C"
 using namespace std;
-void sumTemplateInfo( TFile* f, string output=".", string xElTitle="", string xMuTitel="", string yTitle="Events", bool logy=true )
+void sumTemplateInfo( TFile* f, string name, string output=".", string xElTitle="", string xMuTitle="", string yTitle="Events", bool logy=true )
 {
     const int nElSyst=6, nMuSyst=7;
     float *mcEl[nElSyst], *sigEl[nElSyst], *bkgEl[nElSyst];
@@ -35,8 +35,8 @@ void sumTemplateInfo( TFile* f, string output=".", string xElTitle="", string xM
     string systNameMu[nMuSyst]={"Stat", "PU", "JER", "BTagSF", "TopPT", "muID", "muISO"};
     FILE* outTxt;
 
-    outTxt = fopen((output+"/SystUncertainties.txt").c_str(),"w");
-    fprintf( outTxt, "Electron channel\n", );
+    outTxt = fopen((output+"/SystUncertainties_MC.txt").c_str(),"w");
+    fprintf( outTxt, "Electron channel\n" );
     fprintf( outTxt, "%8s", " ");
     for( int i=0; i<nElSyst; i++ )
     {
@@ -66,9 +66,9 @@ void sumTemplateInfo( TFile* f, string output=".", string xElTitle="", string xM
     fprintf( outTxt, "%8s", " ");
     for( int i=0; i<nMuSyst; i++ )
     {
-        mcMu[i]  = drawSyst( f, "MC_Mu",    systNameMu[i], output, xMuTitel, yTitle, logy);
-        sigMu[i] = drawSyst( f, "SigMC_Mu", systNameMu[i], output, xMuTitel, yTitle, logy);
-        bkgMu[i] = drawSyst( f, "BkgMC_Mu", systNameMu[i], output, xMuTitel, yTitle, logy);
+        mcMu[i]  = drawSyst( f, "MC_Mu",    systNameMu[i], output, xMuTitle, yTitle, logy);
+        sigMu[i] = drawSyst( f, "SigMC_Mu", systNameMu[i], output, xMuTitle, yTitle, logy);
+        bkgMu[i] = drawSyst( f, "BkgMC_Mu", systNameMu[i], output, xMuTitle, yTitle, logy);
         fprintf( outTxt, "%8s", systNameMu[i].c_str() );
     }
     fprintf( outTxt, "%8s", "Syst" );
@@ -95,4 +95,7 @@ void sumTemplateInfo( TFile* f, string output=".", string xElTitle="", string xM
     fprintf( outTxt, "%+8.2f", -sqrt(sumw2bkgMu[1]) );
     fprintf( outTxt, "\n\n");
     fclose( outTxt );
+    
+    drawFittedStack( f, name, systNameEl, nElSyst, 1, output, xElTitle, yTitle );
+    drawFittedStack( f, name, systNameMu, nMuSyst, 2, output, xMuTitle, yTitle );
 }

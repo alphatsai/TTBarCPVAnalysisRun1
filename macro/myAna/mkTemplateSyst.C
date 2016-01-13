@@ -9,7 +9,8 @@ std::string fName="../results/15Dec_LepJet_MCDATA";
 std::string hName="EvtChi2_Top_Leptonic_Mbl";
 //std::string hName="EvtChi2_Top_Hadronic_Mass";
 //std::string hName="EvtChi2_Ht";
-std::string output=fName;
+std::string output=fName+"/FitResults";
+std::string xTitle="M(lepton+bjet) [GeV]";
 bool doFit=true;
 int rebin=10;
 //int rebin=20;
@@ -36,6 +37,8 @@ void getHistStatUncNomalized( TH1D* h, TH1D* h_u, TH1D* h_d )
     {
         sumEvts += h->GetBinContent(i);
         sumw2 += h->GetBinError(i)*h->GetBinError(i);
+        h_u->SetBinContent(i, h->GetBinContent(i)+h->GetBinError(i));
+        h_d->SetBinContent(i, h->GetBinContent(i)-h->GetBinError(i));
     }
     h_u->Scale((sumEvts+sqrt(sumw2))/h_u->Integral());
     h_d->Scale((sumEvts-sqrt(sumw2))/h_d->Integral());
@@ -133,18 +136,21 @@ void mkTemplateSyst()
             std::string nameBkg1 = nameBkg0+chName[ch];
             h_fittedMC[sig][ch][0][0] = (TH1D*)h_mc[sig][ch][0][0]->Clone(nameSig1.c_str());
             h_fittedMC[bkg][ch][0][0] = (TH1D*)h_mc[bkg][ch][0][0]->Clone(nameBkg1.c_str());
-            fitter_LH( h_fittedMC[sig][ch][0][0], h_fittedMC[bkg][ch][0][0], h_data[ch] );
+            //fitter_LH( h_fittedMC[sig][ch][0][0], h_fittedMC[bkg][ch][0][0], h_data[ch] );
+            fitter_LH_Plot( h_fittedMC[sig][ch][0][0], h_fittedMC[bkg][ch][0][0], h_data[ch], hName, ch, output, xTitle);
 
             for( int s=1; s<nSyst; s++ )
             {
                 std::cout<<"[INFO] Ch"<<chName[ch]<<"::"<<systName[s]<<" ========================================================================================== "<<std::endl;
                 for( int t=0; t<nTune; t++ )
                 {
-                    std::string nameSig2 = nameSig1+"_"+systName[s]+tuneName[t];
-                    std::string nameBkg2 = nameBkg1+"_"+systName[s]+tuneName[t];
+                    std::string name_ = "_"+systName[s]+tuneName[t];
+                    std::string nameSig2 = nameSig1+name_;
+                    std::string nameBkg2 = nameBkg1+name_;
                     h_fittedMC[sig][ch][s][t] = (TH1D*)h_mc[sig][ch][s][t]->Clone(nameSig2.c_str());
                     h_fittedMC[bkg][ch][s][t] = (TH1D*)h_mc[bkg][ch][s][t]->Clone(nameBkg2.c_str());
-                    fitter_LH( h_fittedMC[sig][ch][s][t], h_fittedMC[bkg][ch][s][t], h_data[ch] );
+                    //fitter_LH( h_fittedMC[sig][ch][s][t], h_fittedMC[bkg][ch][s][t], h_data[ch] );
+                    fitter_LH_Plot( h_fittedMC[sig][ch][s][t], h_fittedMC[bkg][ch][s][t], h_data[ch], hName+name_, ch, output, xTitle );
                 } 
             }
             std::cout<<std::endl;

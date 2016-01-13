@@ -141,7 +141,8 @@ Double_t* fitter_LH( TH1D* hSig, TH1D* hBkg, TH1D* hData )
     return fitted;
 }
 
-Double_t* fitter_LH( TFile* fin, std::string name, int chN=0, std::string output=".", std::string xTitle="", std::string yTitle="Events" )
+Double_t* fitter_LH_Plot( TH1D* hSig_, TH1D* hBkg_, TH1D* hData_, std::string name, int chN=0, std::string output=".", std::string xTitle="", std::string yTitle="Events" )
+//Double_t* fitter_LH_Plot( TH1D* hSig, TH1D* hBkg, TH1D* hData_, std::string name, int chN=0, std::string output=".", std::string xTitle="", std::string yTitle="Events" )
 {
     double count=0;
     dataColl.clear();
@@ -149,9 +150,145 @@ Double_t* fitter_LH( TFile* fin, std::string name, int chN=0, std::string output
     bkgColl.clear();
 
     //Get data from looping tree
-    TH1D *hSig_toymc = new TH1D();
-    TH1D *hBkg_toymc = new TH1D();
+    char hname[30];
+    std::string ch;
+    std::string channel;
+    if( chN == 1 ){
+        ch="_El";
+        channel="Electron channel";
+    }else if( chN == 2){
+        ch="_Mu";
+        channel="Muon channel";
+    }else{
+        ch="";
+        channel="Combined channel";
+    }
 
+    //Double_t* fitted = fitter_LH( hSig, hBkg, hData_ );
+    Double_t* fitted = fitter_LH( hSig_, hBkg_, hData_ );
+    TH1D* hData = (TH1D*)hData_->Clone();
+    TH1D* hSig  = (TH1D*)hSig_->Clone();
+    TH1D* hBkg  = (TH1D*)hBkg_->Clone();
+
+    TH1D* hFitted = (TH1D*)hBkg->Clone();
+    hFitted->Add(hSig);
+
+    // plot
+    double yerr[100];
+    for(int i=0;i<100;i++){ yerr[i] = 0.; }
+    hFitted->SetError(yerr);
+    hBkg->SetError(yerr);
+    hSig->SetError(yerr);
+
+    TCanvas *c1 = new TCanvas("HF1", "Histos1", 258,92,748,702);
+    c1->Range(-104.4905,-2560.33,537.9965,11563.46);
+    c1->SetFillColor(0);
+    c1->SetBorderMode(0);
+    c1->SetBorderSize(2);
+    c1->SetLeftMargin(0.1626344);
+    c1->SetRightMargin(0.05913978);
+    c1->SetTopMargin(0.05349183);
+    c1->SetBottomMargin(0.1812779);
+    c1->SetFrameBorderMode(0);
+    c1->SetFrameBorderMode(0);
+    gStyle->SetOptStat(0);
+    gStyle->SetOptTitle(0); 
+    c1->Draw(); 
+
+    hSig->SetLineColor(4);
+    hSig->SetLineWidth(2);
+
+    hData->SetLineColor(1);
+    hData->SetXTitle(xTitle.c_str());
+    hData->SetYTitle(yTitle.c_str());
+    hData->SetTitle("");
+    hData->SetMarkerStyle(8);
+    hData->SetMinimum(0.);
+    hData->GetXaxis()->SetNdivisions(505);
+    hData->GetXaxis()->SetLabelFont(42);
+    hData->GetXaxis()->SetLabelSize(0.05);
+    hData->GetXaxis()->SetTitleSize(0.06);
+    hData->GetXaxis()->SetTitleOffset(1.15);
+    hData->GetXaxis()->SetTitleFont(42);
+    hData->GetYaxis()->SetNdivisions(505);
+    hData->GetYaxis()->SetLabelFont(42);
+    hData->GetYaxis()->SetLabelSize(0.035);
+    hData->GetYaxis()->SetTitleSize(0.06);
+    hData->GetYaxis()->SetTitleOffset(1.21);
+    hData->GetYaxis()->SetTitleFont(42);
+
+    float ymax = hData->GetMaximum();
+    if ( hFitted->GetMaximum() > hData->GetMaximum() ) ymax = hFitted->GetMaximum();
+    if ( hData->GetMaximum() < 15 ) ymax = 15;
+    hData->SetMaximum(ymax*1.4);
+    hBkg->SetMarkerStyle(0);
+    hBkg->SetFillColor(2);
+    hBkg->SetLineWidth(1);
+    hBkg->SetLineColor(2);
+    hBkg->SetFillStyle(3005);
+    hSig->SetMarkerStyle(0);
+    hSig->SetLineStyle(2);
+
+    hFitted->SetMarkerStyle(0);
+    hFitted->SetLineColor(1);
+    hFitted->SetLineWidth(2);
+
+    hData->Draw("e p");
+    hBkg->Draw("h same");
+    hSig->Draw("h same");
+    hFitted->Draw("h same");
+    hData->Draw("e p same");
+
+    TLegend *tleg = new TLegend(0.5241935,0.6344725,0.8682796,0.9331352,NULL,"brNDC");
+    char text[50];
+    tleg->SetHeader(channel.c_str());
+    tleg->SetBorderSize(0);
+    tleg->SetTextSize(0.03120357);
+    tleg->SetLineColor(1);
+    tleg->SetLineStyle(1);
+    tleg->SetLineWidth(1);
+    tleg->SetFillColor(0);
+    tleg->SetFillStyle(0);
+    cout<<"[ "<<channel<<" ]"<<endl;
+    sprintf( text, "Data %5.1f events",  hData->Integral()); cout<<text<<endl;
+    tleg->AddEntry( hData, text,"elp");
+    sprintf( text, "Fitted %5.1f events",hFitted->Integral()); cout<<text<<endl;
+    tleg->AddEntry( hFitted, text,"l");
+    sprintf( text, "SIG %5.1f #pm %5.1f events", fitted[0], fitted[1] ); cout<<text<<endl;
+    tleg->AddEntry( hSig, text, "f");
+    sprintf( text, "BKG %5.1f #pm %5.1f events", fitted[2], fitted[3] ); cout<<text<<endl;
+    tleg->AddEntry( hBkg, text, "f");
+    tleg->Draw();
+    
+    TPaveText* t_title;
+    t_title = new TPaveText(0.1317204,0.9451852,0.7620968,0.9896296,"brNDC");
+    t_title->AddText("CMS #sqrt{s} = 8TeV, L=19.7 fb^{-1}");
+    t_title->SetTextColor(kBlack);
+    t_title->SetFillColor(kWhite);
+    t_title->SetFillStyle(0);
+    t_title->SetBorderSize(0);
+    t_title->SetTextAlign(12);
+    t_title->SetTextSize(0.04);
+
+    t_title->Draw();
+
+    hData->Chi2Test( hFitted, "P");
+    c1->SaveAs((output+"/FittingResults_"+name+ch+".pdf").c_str());
+
+    delete hData; 
+    delete hSig; 
+    delete hBkg; 
+    delete hFitted;
+    return fitted;
+}
+Double_t* fitter_LH_Plot( TFile* fin, std::string name, int chN=0, std::string output=".", std::string xTitle="", std::string yTitle="Events" )
+{
+    double count=0;
+    dataColl.clear();
+    sigColl.clear();
+    bkgColl.clear();
+
+    //Get data from looping tree
     char hname[30];
     std::string ch;
     std::string channel;
