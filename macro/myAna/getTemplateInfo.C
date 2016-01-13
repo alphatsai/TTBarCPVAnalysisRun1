@@ -190,12 +190,12 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
     h_data->SetMarkerColor(1);
     h_data->SetMarkerStyle(8);
 
-    h_sig->SetLineWidth(lineWidth);
-    h_sig->SetLineColor(50);
+    h_sig->SetLineWidth(lineWidth-1);
+    h_sig->SetLineColor(1);
     h_sig->SetFillColor(50);
 
-    h_bkg->SetLineWidth(lineWidth);
-    h_bkg->SetLineColor(8);
+    h_bkg->SetLineWidth(lineWidth-1);
+    h_bkg->SetLineColor(1);
     h_bkg->SetFillColor(8);
 
     Int_t ci;      // for color index setting

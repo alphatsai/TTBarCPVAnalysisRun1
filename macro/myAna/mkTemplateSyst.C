@@ -11,6 +11,7 @@ std::string hName="EvtChi2_Top_Leptonic_Mbl";
 //std::string hName="EvtChi2_Ht";
 std::string output=fName+"/FitResults";
 std::string xTitle="M(lepton+bjet) [GeV]";
+//std::string xTitle="M_{top}(bjj) [GeV]";
 bool doFit=true;
 int rebin=10;
 //int rebin=20;
