@@ -29,12 +29,12 @@ void fcn( Int_t &npar, Double_t *gin, Double_t &f, Double_t *par, Int_t iflag )
   Double_t Nevt=0.;
   Double_t fs = par[0];
   Double_t fb = par[1];
-  for ( int i=0; i<dataColl.size(); i++ ) {
+  for ( int i=0; i<int(dataColl.size()); i++ ) {
     Nevt += dataColl[i];
     //PDF for signal and background
     Double_t Ls = sigColl[i];
     Double_t Lb = bkgColl[i];
-    for (int data=0; data<dataColl[i]; data++) {
+    for (int data=0; data<int(dataColl[i]); data++) {
       //Get Log Likelihood
       if( Ls!=0. || Lb!=0.) Lsum += TMath::Log( (fs*Ls + fb*Lb) / (fs+fb) );
       //if( Ls!=0. && Lb!=0. ) Lsum += TMath::Log( (fs*Ls + fb*Lb) / (fs+fb) );
@@ -68,7 +68,7 @@ Double_t* fitter_LH( TH1D* hSig, TH1D* hBkg, TH1D* hData )
         bkgColl.push_back(hBkg->GetBinContent(ibin));    
     }
 
-    printf( " -----  Got %d, %d, %d events for fit ----- \n ", dataColl.size(), sigColl.size(), bkgColl.size() );  
+    printf( " -----  Got %d, %d, %d events for fit ----- \n ", int(dataColl.size()), int(sigColl.size()), int(bkgColl.size()) );  
     if ( dataColl.size() != sigColl.size() || sigColl.size()!=bkgColl.size() ) {
         printf(" error ...  inconsistent hit collection size \n");
         return fitted;
@@ -100,7 +100,7 @@ Double_t* fitter_LH( TH1D* hSig, TH1D* hBkg, TH1D* hData )
     arglist[1] = 1.;
     gMinuit->mnexcm("MIGRAD", arglist ,2,ierflg);
     printf (" -------------------------------------------- \n");
-    printf("Finished.  ierr = %2.2f \n", ierflg);
+    printf("Finished.  ierr = %2.2d \n", ierflg);
 
     double para[NPAR+1], errpara[NPAR+1];
     if ( ierflg == 0 ) 
@@ -230,16 +230,17 @@ Double_t* fitter_LH( TFile* fin, std::string name, int chN=0, std::string output
     hBkg->SetLineColor(2);
     hBkg->SetFillStyle(3005);
     hSig->SetMarkerStyle(0);
+    hSig->SetLineStyle(2);
 
     hFitted->SetMarkerStyle(0);
     hFitted->SetLineColor(1);
     hFitted->SetLineWidth(2);
 
-    hData->Draw("p e");
+    hData->Draw("e p");
     hBkg->Draw("h same");
     hSig->Draw("h same");
     hFitted->Draw("h same");
-    hData->Draw("p e same");
+    hData->Draw("e p same");
 
     TLegend *tleg = new TLegend(0.5241935,0.6344725,0.8682796,0.9331352,NULL,"brNDC");
     char text[50];
@@ -253,7 +254,7 @@ Double_t* fitter_LH( TFile* fin, std::string name, int chN=0, std::string output
     tleg->SetFillStyle(0);
     cout<<"[ "<<channel<<" ]"<<endl;
     sprintf( text, "Data %5.1f events",  hData->Integral()); cout<<text<<endl;
-    tleg->AddEntry( hData, text,"pl");
+    tleg->AddEntry( hData, text,"elp");
     sprintf( text, "Fitted %5.1f events",hFitted->Integral()); cout<<text<<endl;
     tleg->AddEntry( hFitted, text,"l");
     sprintf( text, "SIG %5.1f #pm %5.1f events", fitted[0], fitted[1] ); cout<<text<<endl;
@@ -280,7 +281,7 @@ Double_t* fitter_LH( TFile* fin, std::string name, int chN=0, std::string output
     return fitted;
 }
 
-void pullTest( TFile* fin, std::string name, int chN=0, int nExp=1000, float nSig=400, float nBkg=400, std::string output="." )
+void pullTest( TFile* fin, std::string name, int chN=0, int nExp=1000, float nSig=400, float nBkg=400, float eSig=0.4, float eBkg=0.4, std::string output="." )
 {
     char hname[30];
     std::string ch;
@@ -304,8 +305,10 @@ void pullTest( TFile* fin, std::string name, int chN=0, int nExp=1000, float nSi
     TH1D* hBkg = (TH1D*)((TH1D*)fin->Get(("BkgMC"+ch).c_str()))->Clone();
 
     TFile* fout = new TFile((output+"/PullTest_"+name+ch+".root").c_str(), "RECREATE");
-    TH1D* hPullSig = new TH1D("hPullSig", "", bins, min, max);
-    TH1D* hPullBkg = new TH1D("hPullBkg", "", bins, min, max);
+    TH1D* hPullSig = new TH1D("hPullSig", "", 30, -3, 3);
+    TH1D* hPullBkg = new TH1D("hPullBkg", "", 30, -3, 3);
+    TH1D* hResiSig = new TH1D("hResiSig", "", bins, min, max);
+    TH1D* hResiBkg = new TH1D("hResiBkg", "", bins, min, max);
 
     int  nbins = hSig->GetNbinsX();
     float bMin = hSig->GetBinLowEdge(1);
@@ -335,18 +338,45 @@ void pullTest( TFile* fin, std::string name, int chN=0, int nExp=1000, float nSi
 
         float fittedSig = fitted[0];
         float fittedBkg = fitted[2];
-        hPullSig->Fill(fittedSig-nSig);
-        hPullBkg->Fill(fittedBkg-nBkg);
+        hPullSig->Fill((fittedSig-nSig)/eSig);
+        hPullBkg->Fill((fittedBkg-nBkg)/eBkg);
+        hResiSig->Fill((fittedSig-nSig));
+        hResiBkg->Fill((fittedBkg-nBkg));
     }
 
     //hPullSig->SetTitle("Signal");
     //hPullBkg->SetTitle("Background");
+    hResiSig->GetYaxis()->SetTitle("Number of exp.");
+    hResiBkg->GetYaxis()->SetTitle("Number of exp.");
+    hResiSig->GetXaxis()->SetTitle("Resisual");
+    hResiBkg->GetXaxis()->SetTitle("Resisual");
+    hResiSig->GetXaxis()->SetNdivisions(30504);
+    hResiSig->GetXaxis()->SetLabelFont(42);
+    hResiSig->GetXaxis()->SetLabelSize(0.05);
+    hResiSig->GetXaxis()->SetTitleSize(0.07);
+    hResiSig->GetXaxis()->SetTitleOffset(0.83);
+    hResiSig->GetXaxis()->SetTitleFont(42);
+    hResiSig->GetYaxis()->SetLabelFont(42);
+    hResiSig->GetYaxis()->SetLabelSize(0.05);
+    hResiSig->GetYaxis()->SetTitleSize(0.07);
+    hResiSig->GetYaxis()->SetTitleOffset(0.97);
+    hResiSig->GetYaxis()->SetTitleFont(42);
+    hResiBkg->GetXaxis()->SetNdivisions(30504);
+    hResiBkg->GetXaxis()->SetLabelFont(42);
+    hResiBkg->GetXaxis()->SetLabelSize(0.05);
+    hResiBkg->GetXaxis()->SetTitleSize(0.07);
+    hResiBkg->GetXaxis()->SetTitleOffset(0.83);
+    hResiBkg->GetXaxis()->SetTitleFont(42);
+    hResiBkg->GetYaxis()->SetLabelFont(42);
+    hResiBkg->GetYaxis()->SetLabelSize(0.05);
+    hResiBkg->GetYaxis()->SetTitleSize(0.07);
+    hResiBkg->GetYaxis()->SetTitleOffset(0.97);
+    hResiBkg->GetYaxis()->SetTitleFont(42);
+
     hPullSig->GetYaxis()->SetTitle("Number of exp.");
     hPullBkg->GetYaxis()->SetTitle("Number of exp.");
-    hPullSig->GetXaxis()->SetTitle("Resisual");
-    hPullBkg->GetXaxis()->SetTitle("Resisual");
-
-    hPullSig->GetXaxis()->SetTitle("Resisual");
+    hPullSig->GetXaxis()->SetTitle("#sigma");
+    hPullBkg->GetXaxis()->SetTitle("#sigma");
     hPullSig->GetXaxis()->SetNdivisions(30504);
     hPullSig->GetXaxis()->SetLabelFont(42);
     hPullSig->GetXaxis()->SetLabelSize(0.05);
@@ -358,8 +388,6 @@ void pullTest( TFile* fin, std::string name, int chN=0, int nExp=1000, float nSi
     hPullSig->GetYaxis()->SetTitleSize(0.07);
     hPullSig->GetYaxis()->SetTitleOffset(0.97);
     hPullSig->GetYaxis()->SetTitleFont(42);
-
-    hPullBkg->GetXaxis()->SetTitle("Resisual");
     hPullBkg->GetXaxis()->SetNdivisions(30504);
     hPullBkg->GetXaxis()->SetLabelFont(42);
     hPullBkg->GetXaxis()->SetLabelSize(0.05);
@@ -394,28 +422,45 @@ void pullTest( TFile* fin, std::string name, int chN=0, int nExp=1000, float nSi
     pt->SetFillStyle(0);
     pt->SetTextFont(42);
     pt->SetTextSize(0.04366812);
-    TF1* gaus1 = new TF1("gaus1", "gaus", min, max);
-    TF1* gaus2 = new TF1("gaus2", "gaus", min, max);
-    gaus1->SetLineColor(2);
-    gaus2->SetLineColor(2);
+    TF1* gausResi1 = new TF1("gausResi1", "gaus", min, max);
+    TF1* gausResi2 = new TF1("gausResi2", "gaus", min, max);
+    TF1* gausPull1 = new TF1("gausPull1", "gaus", min, max);
+    TF1* gausPull2 = new TF1("gausPull2", "gaus", min, max);
+    gausResi1->SetLineColor(2);
+    gausResi2->SetLineColor(2);
+    gausPull1->SetLineColor(2);
+    gausPull2->SetLineColor(2);
 
-    hPullSig->Fit( gaus1, "WR"); cout<<endl;
+    sprintf( text, "Expected sig. %.0f (%d exp.) ", nSig, nExp ); 
+    hPullSig->Fit( gausPull1, "WR"); cout<<endl;
     hPullSig->Draw();
-    gaus1->Draw("SAME");
-    sprintf( text, "Expected sig. %d (%d exp.) ", nSig, nExp ); 
+    gausPull1->Draw("SAME");
     pt->AddText(text);
     pt->Draw();
     c1->SaveAs((output+"/PullTestSig_"+name+ch+".pdf").c_str());
 
-    hPullBkg->Fit( gaus2, "WR"); cout<<endl;
+    hResiSig->Fit( gausResi1, "WR"); cout<<endl;
+    hResiSig->Draw();
+    gausResi1->Draw("SAME");
+    pt->Draw();
+    c1->SaveAs((output+"/ResiTestSig_"+name+ch+".pdf").c_str());
+
+    sprintf( text, "Expected bkg. %.0f (%d exp.) ", nBkg, nExp ); 
+    hPullBkg->Fit( gausPull2, "WR"); cout<<endl;
     hPullBkg->Draw();
-    gaus2->Draw("SAME");
-    sprintf( text, "Expected bkg. %d (%d exp.) ", nBkg, nExp ); 
+    gausPull2->Draw("SAME");
     pt->Clear();
     pt->AddText(text);
     pt->Draw();
     c1->SaveAs((output+"/PullTestBkg_"+name+ch+".pdf").c_str());
 
+    hResiBkg->Fit( gausResi2, "WR"); cout<<endl;
+    hResiBkg->Draw();
+    gausResi2->Draw("SAME");
+    pt->Draw();
+    c1->SaveAs((output+"/ResiTestBkg_"+name+ch+".pdf").c_str());
+
+    cout<<"Input: nExp "<<nExp<<", nSig "<<nSig<<", nBkg "<<nBkg<<endl;
     fout->Write();
 }
 

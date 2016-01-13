@@ -12,6 +12,7 @@ std::string hName="EvtChi2_Top_Leptonic_Mbl";
 std::string output=fName;
 bool doFit=true;
 int rebin=10;
+//int rebin=20;
 int CoCH=0;
 int ElCH=1;
 int MuCH=2;
