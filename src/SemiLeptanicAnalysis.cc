@@ -56,9 +56,10 @@
 SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) : 
     maxEvents_(                   iConfig.getParameter<int>("MaxEvents")), 
     reportEvery_(                 iConfig.getParameter<int>("ReportEvery")),
-    inputFiles_(                  iConfig.getParameter<std::vector<std::string> >("InputFiles")),
-    inputJsons_(                  iConfig.getParameter<std::vector<std::string> >("InputJsons")),
+    inputFiles_(                  iConfig.getParameter<std::vector<std::string>>("InputFiles")),
+    inputJsons_(                  iConfig.getParameter<std::vector<std::string>>("InputJsons")),
     inputTTree_(                  iConfig.getParameter<std::string>("InputTTree")),
+    file_JESUncs_(                iConfig.getParameter<std::string>("File_JESUncs")),
     file_PUDistMC_(               iConfig.getParameter<std::string>("File_PUDistMC")),
     file_PUDistData_(             iConfig.getParameter<std::string>("File_PUDistData")),
     hist_PUDistMC_(               iConfig.getParameter<std::string>("Hist_PUDistMC")),
@@ -79,6 +80,7 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
     Owrt_(                        iConfig.getParameter<double>("Owrt")),
     NJets_(                       iConfig.getParameter<int>("NJets")),
     Shift_JER_(                   iConfig.getParameter<int>("Shift_JER")),
+    Shift_JES_(                   iConfig.getParameter<int>("Shift_JES")),
     Shift_BTagSF_(                iConfig.getParameter<int>("Shift_BTagSF")),
     Shift_TopPtReWeight_(         iConfig.getParameter<int>("Shift_TopPtReWeight")),
     Shift_TightMuonIDSF_(         iConfig.getParameter<int>("Shift_TightMuonIDSF")),
@@ -819,6 +821,7 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             h1.GetTH1("JetNoJER_BTag")->Fill( jet.CombinedSVBJetTags , wrtevt);
 
             if( !isdata ) jet.applyJER( Shift_JER_ );
+            if( !isdata ) jet.applyJES( Shift_JES_, file_JESUncs_ );
 
             h1.GetTH1("Jet_Pt"  )->Fill( jet.Pt                 , wrtevt);
             h1.GetTH1("Jet_Eta" )->Fill( jet.Eta                , wrtevt);

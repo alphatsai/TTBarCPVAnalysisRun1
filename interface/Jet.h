@@ -1,5 +1,9 @@
 #ifndef JET_H 
-#define JET_H 
+#define JET_H
+#include <fstream> 
+ 
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 
 #include "TVector3.h"
 #include "TLorentzVector.h"
@@ -47,7 +51,6 @@ class Jet
             {
                 if( fabs(Eta) >= etaMin[i] && fabs(Eta) < etaMax[i] ){ iEta=i; break; }
                 else iEta=i;
-
             }
 
             // JER secale factor
@@ -92,9 +95,58 @@ class Jet
 
         }
 
-        int applyJES( int shift=0 )
+        int applyJES( int shift=0, std::string fileNameJES="Summer13_V5_DATA_UncertaintySources_AK5PFchs.txt" )
         {
-            appliedJES=true; shiftJES=shift;
+            if( !filledInfo )
+            {
+                std::cout<<">> [ERROR] Please do Jet::fill(JetInfoBranches& JetCol, int index) first!"<<std::endl;
+                return -1000;
+            }
+
+            appliedJES=true; 
+            shiftJES=shift;
+            if( shiftJES == 0 ) return shiftJES;
+
+            JetCorrectionUncertainty* jecUncert;
+            ifstream fileJEC(fileNameJES.c_str());
+            if( fileJEC ){ 
+                jecUncert = new JetCorrectionUncertainty(*(new JetCorrectorParameters(fileNameJES,"Total")));
+            }else{ 
+                std::cout<<"[ERROR] "<<fileNameJES<<" is not found!"<<std::endl;
+                return -1000;
+            }
+ 
+            jecUncert->setJetPt(Pt);
+            jecUncert->setJetEta(Eta);
+ 
+            float rescale=1.;
+            if( shiftJES > 0. ) 
+                rescale = 1. + jecUncert->getUncertainty(true);
+            else if( shiftJES < 0. ) 
+                rescale = 1. - jecUncert->getUncertainty(false);
+ 
+            // Debug
+            //std::cout<<">>          Old pt: "<<Pt<<" ,Et: "<<Et<<std::endl;
+            Pt = Pt * rescale;
+            Et = Et * rescale;
+            Px = Px * rescale; 
+            Py = Py * rescale; 
+            Pz = Pz * rescale;
+            Energy = Energy * rescale; 
+            PtCorrRaw   = PtCorrRaw   * rescale;
+            PtCorrL3    = PtCorrL3    * rescale;
+            PtCorrL7g   = PtCorrL7g   * rescale;
+            PtCorrL7uds = PtCorrL7uds * rescale;
+            PtCorrL7c   = PtCorrL7c   * rescale;
+            PtCorrL7b   = PtCorrL7b   * rescale;
+
+            P3.SetXYZ( Px, Py, Pz );
+            P4.SetPxPyPzE( Px, Py, Pz, Energy );
+
+            Mass = P4.M();
+            //std::cout<<"          new pt: "<<P4.Pt()<<" ,Et: "<<P4.Et()<<std::endl;
+
+            delete jecUncert;
             return shiftJES;
         }
 

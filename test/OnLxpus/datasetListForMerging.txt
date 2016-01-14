@@ -76,6 +76,18 @@ TTJets_HadronicMGDecays 115.56466064
 TTJets_FullLeptMGDecays: L=19707
 TTJets_FullLeptMGDecays 26.826695116
 
+TTJets_MatchingUp: L=19707
+TTJets_MatchingUp 252.89
+
+TTJets_MatchingDown: L=19707
+TTJets_MatchingDown 252.89
+
+TTJets_ScaleUp: L=19707
+TTJets_ScaleUp 252.89
+
+TTJets_ScaleDown: L=19707
+TTJets_ScaleDown 252.89
+
 ##### Dataset_name xs (in pb, for data set to -1)
 SingleT: L=19707
 T_t-channel 54.87
@@ -161,6 +173,62 @@ MC: L=19707
 TTJets_HadronicMGDecays 115.56466064
 TTJets_SemiLeptMGDecays 111.3592011
 TTJets_FullLeptMGDecays 26.826695116
+T_t-channel 54.87
+T_s-channel 3.34
+T_tW-channel 11.1
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
+Tbar_tW-channel 11.1
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
+
+MC_TopMatchUp: L=19707
+TTJets_MatchingUp 252.89
+T_t-channel 54.87
+T_s-channel 3.34
+T_tW-channel 11.1
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
+Tbar_tW-channel 11.1
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
+
+MC_TopMatchDown: L=19707
+TTJets_MatchingDown 252.89
+T_t-channel 54.87
+T_s-channel 3.34
+T_tW-channel 11.1
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
+Tbar_tW-channel 11.1
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
+
+MC_TopScaleUp: L=19707
+TTJets_ScaleUp 252.89
+T_t-channel 54.87
+T_s-channel 3.34
+T_tW-channel 11.1
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
+Tbar_tW-channel 11.1
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
+
+MC_TopScaleDown: L=19707
+TTJets_ScaleDown 252.89
 T_t-channel 54.87
 T_s-channel 3.34
 T_tW-channel 11.1

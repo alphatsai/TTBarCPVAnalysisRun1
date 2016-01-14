@@ -60,6 +60,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         const std::vector<std::string>  inputFiles_;
         const std::vector<std::string>  inputJsons_;
         const std::string               inputTTree_;
+        const std::string               file_JESUncs_;
         const std::string               file_PUDistMC_;
         const std::string               file_PUDistData_;
         const std::string               hist_PUDistMC_;
@@ -81,6 +82,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         const double Owrt_;
         const unsigned int NJets_;
         const int Shift_JER_;
+        const int Shift_JES_;
         const int Shift_BTagSF_;
         const int Shift_TopPtReWeight_;
         const int Shift_TightMuonIDSF_;

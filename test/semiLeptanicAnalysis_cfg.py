@@ -71,6 +71,11 @@ options.register('ShiftJER', 0,
     VarParsing.varType.int,
     "Systemtic unc. shift of JER sf: 0(nominal), 1(sigma), -1(-sigma)"
     )
+options.register('ShiftJES', 0,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.int,
+    "Systemtic unc. shift of JES sf: 0(nominal), 1(sigma), -1(-sigma)"
+    )
 options.register('ShiftBTagSF', 0,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.int,
@@ -158,6 +163,7 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
     #InputFiles                  = cms.vstring(FileNames_BprimtKits_SemiLept),
     HLT_MuChannel               = cms.vint32( 2868,3244,3542,4204,4205,4827,5106,5573  ), # HLT_IsoMu24_eta2p1_v*
     HLT_ElChannel               = cms.vint32( 3155,3496,4002,4003,4004,5043 ),            # HLT_Ele27_WP80_v* 
+    File_JESUncs                = cms.string('Summer13_V5_DATA_UncertaintySources_AK5PFchs.txt'),
     File_PUDistMC               = cms.string('pileup_Data_Summer12_53X_S10.root'),
     File_PUDistData             = cms.string('pileup_Data_Summer12_53X_S10.root'),
     Hist_PUDistMC               = cms.string(options.HistPUDistMC),
@@ -176,6 +182,7 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
     Owrt                        = cms.double(Oweight), 
     NJets                       = cms.int32(options.NJets),
     Shift_JER                   = cms.int32(options.ShiftJER),
+    Shift_JES                   = cms.int32(options.ShiftJES),
     Shift_BTagSF                = cms.int32(options.ShiftBTagSF),
     Shift_TopPtReWeight         = cms.int32(options.ShiftTopPtReWeight),
     Shift_TightMuonIDSF         = cms.int32(options.ShiftTightMuonIDSF),
