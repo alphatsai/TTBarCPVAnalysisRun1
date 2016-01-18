@@ -89,6 +89,7 @@ cp -v MAIN_WORKDIR/CMSSW_cfg.py $BATCHDIR/CMSSW_cfg.py
 cp -v MAIN_WORKDIR/inputJsons_cfi.py $BATCHDIR/
 cp -v MAIN_WORKDIR/pileup*.root $BATCHDIR/
 cp -v MAIN_WORKDIR/Cert*JSON*.txt $BATCHDIR/
+cp -v MAIN_WORKDIR/*UncertaintySources*.txt $BATCHDIR/
 cp -v DATASET_WORKDIR/input/inputFiles_JOB_NUMBER_cfi.py $BATCHDIR/inputFiles_cfi.py
 
 cd $BATCHDIR
@@ -171,6 +172,8 @@ def main():
     if re.search("^pileup.*\.root$",  filename):
       shutil.copy(os.path.join(cfg_dirname,filename),main_workdir)
     if re.search("^Cert.*JSON.*\.txt$",  filename):
+      shutil.copy(os.path.join(cfg_dirname,filename),main_workdir)
+    if re.search(".*UncertaintySources.*\.txt$",  filename):
       shutil.copy(os.path.join(cfg_dirname,filename),main_workdir)
 
   # open and read the dataset_list file
