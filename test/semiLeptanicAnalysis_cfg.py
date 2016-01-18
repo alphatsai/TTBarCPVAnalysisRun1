@@ -194,5 +194,6 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
 ) 
 
 process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
+#process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(0) )
 process.p = cms.Path(process.SemiLeptanic)
 
