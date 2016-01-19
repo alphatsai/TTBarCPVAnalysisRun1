@@ -4,8 +4,10 @@ TTJets_MatchingDown  25 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_matchingd
 TTJets_ScaleUp       25 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_scaleup_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1      outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
 TTJets_ScaleDown     25 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_scaledown_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1    outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
 #
-TTJets_SemiLeptMGDecays 45 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim  
-TTJets_FullLeptMGDecays 15 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim  
+TTJets_SemiLeptMGDecays 90 /eos/cms/store/user/jtsai/TTBarCPV/skim/v1/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim  
+TTJets_FullLeptMGDecays 30 /eos/cms/store/user/jtsai/TTBarCPV/skim/v1/TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim  
+#TTJets_SemiLeptMGDecays 45 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim  
+#TTJets_FullLeptMGDecays 15 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim  
 TTJets_HadronicMGDecays 15 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_HadronicMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim  
 #
 T_t-channel  1 /eos/cms/store/user/jtsai/TTBarCPV/skim/T_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim  
