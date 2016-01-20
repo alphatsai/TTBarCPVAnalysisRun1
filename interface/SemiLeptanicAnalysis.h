@@ -90,7 +90,9 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         const int Shift_TightElectronIDSF_;
         bool  Debug_;
         bool  isSkim_;
+        bool  doPDFTree_;
         bool  doSaveTree_;
+        bool  doFullTree_;
 
         long long int b_EvtNo_;
         int b_BxNo_;
@@ -102,6 +104,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         double b_O3_;
         double b_O4_;
         double b_O7_;
+        double b_TopMlb_;
         double b_minChi2_;
         double b_WrtObs_;
         double b_WrtEvt_;
@@ -109,6 +112,7 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         edm::Service<TFileService> fs;
         TChain* chain_;
         TTree*  newtree_;
+        TTree*  pdftree_;
         SemiLeptanicTreeBranches newAnaBranches_;
 
         EvtInfoBranches    EvtInfo;

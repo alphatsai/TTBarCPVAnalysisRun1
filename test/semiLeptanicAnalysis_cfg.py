@@ -106,7 +106,17 @@ options.register('Owrt', 'MT:3',
     VarParsing.varType.string,
     "Weight the obseverble in top mass"
     )
-options.register('DoSaveTree', False,
+options.register('DoPDFTree', False,
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.bool,
+    "Store pdf tree"
+    )
+options.register('DoSaveTree', True,
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.bool,
+    "Store tree for selected events"
+    )
+options.register('DoFullTree', False,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
     "Store tree for selected events"
@@ -142,6 +152,9 @@ if options.ShiftPU > 0:
   options.HistPUDistData="pileup_data_1sigUp"
 elif options.ShiftPU < 0:
   options.HistPUDistData="pileup_data_1sigDown"
+
+if options.DoFullTree is True:
+    options.DoSaveTree = False
 
 from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Vertex_cfi   import*
 from TTBarCPV.TTBarCPVAnalysisRun1.Selector_Jet_cfi      import*
@@ -190,7 +203,9 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
     Shift_TightElectronIDSF     = cms.int32(options.ShiftTightElectronIDSF),
     Debug                       = cms.bool(options.Debug),
     IsSkim                      = cms.bool(isSkim),
+    DoPDFTree                   = cms.bool(options.DoPDFTree), 
     DoSaveTree                  = cms.bool(options.DoSaveTree), 
+    DoFullTree                  = cms.bool(options.DoFullTree), 
 ) 
 
 process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )

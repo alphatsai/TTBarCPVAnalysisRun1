@@ -88,7 +88,9 @@ SemiLeptanicAnalysis::SemiLeptanicAnalysis(const edm::ParameterSet& iConfig) :
     Shift_TightElectronIDSF_(     iConfig.getParameter<int>("Shift_TightElectronIDSF")),
     Debug_(                       iConfig.getParameter<bool>("Debug")),
     isSkim_(                      iConfig.getParameter<bool>("IsSkim")),
-    doSaveTree_(                  iConfig.getParameter<bool>("DoSaveTree"))
+    doPDFTree_(                   iConfig.getParameter<bool>("DoPDFTree")),
+    doSaveTree_(                  iConfig.getParameter<bool>("DoSaveTree")),
+    doFullTree_(                  iConfig.getParameter<bool>("DoFullTree"))
 {
     if( inputTTree_.compare("Skim/root") == 0 ){ isSkim_=true; }
     LumiWeights_ = edm::LumiReWeighting( file_PUDistMC_, file_PUDistData_, hist_PUDistMC_, hist_PUDistData_ );
@@ -116,12 +118,11 @@ void SemiLeptanicAnalysis::setCutFlow( TH1* h )
         h->GetXaxis()->SetBinLabel(9,  ("#geq"+num2str(NJets_)+" Jets").c_str() );
         h->GetXaxis()->SetBinLabel(10, "#geq2 bjets"                            );
         h->GetXaxis()->SetBinLabel(11, "=2 bjets"                               );
-        //h->GetXaxis()->SetBinLabel(12, ("#chi^{2}<"+num2str(maxChi2_)).c_str()  );
-        //h->GetXaxis()->SetBinLabel(13, "H_{T}>250GeV"                           );
         if( minChi2_ == 0 )
             h->GetXaxis()->SetBinLabel(12, ("#chi^{2}<"+num2str(maxChi2_)).c_str() );
         else
             h->GetXaxis()->SetBinLabel(12, ("#chi^{2}>"+num2str(minChi2_)).c_str() );
+        //h->GetXaxis()->SetBinLabel(13, "H_{T}>250GeV"                           );
     }else{
         h->GetXaxis()->SetBinLabel(1,  "All"                                    );
         h->GetXaxis()->SetBinLabel(2,  "#geq1 goodVtx"                          );
@@ -133,12 +134,11 @@ void SemiLeptanicAnalysis::setCutFlow( TH1* h )
         h->GetXaxis()->SetBinLabel(8,  ("#geq"+num2str(NJets_)+" Jets").c_str() );
         h->GetXaxis()->SetBinLabel(9,  "#geq2 bjets"                            );
         h->GetXaxis()->SetBinLabel(10,  "=2 bjets"                              );
-        //h->GetXaxis()->SetBinLabel(11, ("#chi^{2}<"+num2str(maxChi2_)).c_str()  );
-        //h->GetXaxis()->SetBinLabel(12, "H_{T}>250GeV"                           );
         if( minChi2_ == 0 )
             h->GetXaxis()->SetBinLabel(11, ("#chi^{2}<"+num2str(maxChi2_)).c_str() );
         else
             h->GetXaxis()->SetBinLabel(11, ("#chi^{2}>"+num2str(minChi2_)).c_str() );
+        //h->GetXaxis()->SetBinLabel(12, "H_{T}>250GeV"                           );
     }
     return ;
 }
@@ -646,27 +646,71 @@ void SemiLeptanicAnalysis::beginJob()
             f->Close();
         }
     }
-    if( doSaveTree_ )
+
+    EvtInfo.Register(chain_);
+    GenInfo.Register(chain_);
+    VtxInfo.Register(chain_);
+    JetInfo.Register(chain_,"PFJetInfo");
+    LepInfo.Register(chain_,"PFLepInfo");
+    
+    // Do PDF tree
+    if( doPDFTree_ )
+    {
+        pdftree_ = fs->make<TTree>("pdftree", "");
+        pdftree_ -> Branch("EvtInfo.McFlag"   , &EvtInfo.McFlag  , "EvtInfo.McFlag/I"   ); 
+        pdftree_ -> Branch("EvtInfo.PDFid1"   , &EvtInfo.PDFid1  , "EvtInfo.PDFid1/I"   ); 
+        pdftree_ -> Branch("EvtInfo.PDFid2"   , &EvtInfo.PDFid1  , "EvtInfo.PDFid2/I"   ); 
+        pdftree_ -> Branch("EvtInfo.PDFx1"    , &EvtInfo.PDFx1   , "EvtInfo.PDFx1/F"    ); 
+        pdftree_ -> Branch("EvtInfo.PDFx2"    , &EvtInfo.PDFx1   , "EvtInfo.PDFx2/F"    ); 
+        pdftree_ -> Branch("EvtInfo.PDFv1"    , &EvtInfo.PDFv1   , "EvtInfo.PDFv1/F"    ); 
+        pdftree_ -> Branch("EvtInfo.PDFv2"    , &EvtInfo.PDFv2   , "EvtInfo.PDFv2/F"    ); 
+        pdftree_ -> Branch("EvtInfo.PDFscale" , &EvtInfo.PDFscale, "EvtInfo.PDFscale/F" ); 
+        pdftree_ -> Branch("EvtInfo.O2"       , &b_O2_           , "EvtInfo.O2/D"       );
+        pdftree_ -> Branch("EvtInfo.O3"       , &b_O3_           , "EvtInfo.O3/D"       );
+        pdftree_ -> Branch("EvtInfo.O4"       , &b_O4_           , "EvtInfo.O4/D"       );
+        pdftree_ -> Branch("EvtInfo.O7"       , &b_O7_           , "EvtInfo.O7/D"       );
+        pdftree_ -> Branch("EvtInfo.TopMlb"   , &b_TopMlb_       , "EvtInfo.TopMlb/D"   ); 
+        pdftree_ -> Branch("EvtInfo.MinChi2"  , &b_minChi2_      , "EvtInfo.MinChi2/D"  );
+        pdftree_ -> Branch("EvtInfo.WrtObs"   , &b_WrtObs_       , "EvtInfo.WrtObs/D"   );
+        pdftree_ -> Branch("EvtInfo.WrtEvt"   , &b_WrtEvt_       , "EvtInfo.WrtEvt/D"   ); 
+        pdftree_ -> Branch("EvtInfo.isMuonEvt", &b_isMuonEvt_    , "EvtInfo.isMuonEvt/I");
+        pdftree_ -> Branch("EvtInfo.isEleEvt" , &b_isEleEvt_     , "EvtInfo.isEleEvt/I" );
+    }
+
+    // Do analysis tree
+    if( doFullTree_ )
     {
         fs->cd();
         newtree_ = chain_->CloneTree(0);
-    }else{
-        newtree_ = fs->make<TTree>("tree", "");
-        newtree_->Branch("EvtInfo.RunNo",  &b_RunNo_,  "EvtInfo.RunNo/I"  );
-        newtree_->Branch("EvtInfo.EvtNo",  &b_EvtNo_,  "EvtInfo.EvtNo/L"  );
-        newtree_->Branch("EvtInfo.BxNo",   &b_BxNo_,   "EvtInfo.BxNo/I"   );
-        newtree_->Branch("EvtInfo.LumiNo", &b_LumiNo_, "EvtInfo.LumiNo/I" );
+        newtree_->Branch("EvtInfo.O2",        &b_O2_,        "EvtInfo.O2/D"        );
+        newtree_->Branch("EvtInfo.O3",        &b_O3_,        "EvtInfo.O3/D"        );
+        newtree_->Branch("EvtInfo.O4",        &b_O4_,        "EvtInfo.O4/D"        );
+        newtree_->Branch("EvtInfo.O7",        &b_O7_,        "EvtInfo.O7/D"        );
+        newtree_->Branch("EvtInfo.MinChi2",   &b_minChi2_,   "EvtInfo.MinChi2/D"   );
+        newtree_->Branch("EvtInfo.WrtObs",    &b_WrtObs_,    "EvtInfo.WrtObs/D"    );
+        newtree_->Branch("EvtInfo.WrtEvt",    &b_WrtEvt_,    "EvtInfo.WrtEvt/D"    );
+        newtree_->Branch("EvtInfo.isMuonEvt", &b_isMuonEvt_, "EvtInfo.isMuonEvt/I" );
+        newtree_->Branch("EvtInfo.isEleEvt",  &b_isEleEvt_,  "EvtInfo.isEleEvt/I"  );
+        newAnaBranches_.RegisterTree(newtree_);
     }
-    newtree_->Branch("EvtInfo.O2",        &b_O2_,        "EvtInfo.O2/D"        );
-    newtree_->Branch("EvtInfo.O3",        &b_O3_,        "EvtInfo.O3/D"        );
-    newtree_->Branch("EvtInfo.O4",        &b_O4_,        "EvtInfo.O4/D"        );
-    newtree_->Branch("EvtInfo.O7",        &b_O7_,        "EvtInfo.O7/D"        );
-    newtree_->Branch("EvtInfo.MinChi2",   &b_minChi2_,   "EvtInfo.MinChi2/D"   );
-    newtree_->Branch("EvtInfo.WrtObs",    &b_WrtObs_,    "EvtInfo.WrtObs/D"    );
-    newtree_->Branch("EvtInfo.WrtEvt",    &b_WrtEvt_,    "EvtInfo.WrtEvt/D"    );
-    newtree_->Branch("EvtInfo.isMuonEvt", &b_isMuonEvt_, "EvtInfo.isMuonEvt/I" );
-    newtree_->Branch("EvtInfo.isEleEvt",  &b_isEleEvt_,  "EvtInfo.isEleEvt/I"  );
-    newAnaBranches_.RegisterTree(newtree_);
+    else if( doSaveTree_ || !doFullTree_ )
+    {
+        newtree_ = fs->make<TTree>("tree", "");
+        newtree_->Branch("EvtInfo.RunNo",     &b_RunNo_,     "EvtInfo.RunNo/I"     );
+        newtree_->Branch("EvtInfo.EvtNo",     &b_EvtNo_,     "EvtInfo.EvtNo/L"     );
+        newtree_->Branch("EvtInfo.BxNo",      &b_BxNo_,      "EvtInfo.BxNo/I"      );
+        newtree_->Branch("EvtInfo.LumiNo",    &b_LumiNo_,    "EvtInfo.LumiNo/I"    );
+        newtree_->Branch("EvtInfo.O2",        &b_O2_,        "EvtInfo.O2/D"        );
+        newtree_->Branch("EvtInfo.O3",        &b_O3_,        "EvtInfo.O3/D"        );
+        newtree_->Branch("EvtInfo.O4",        &b_O4_,        "EvtInfo.O4/D"        );
+        newtree_->Branch("EvtInfo.O7",        &b_O7_,        "EvtInfo.O7/D"        );
+        newtree_->Branch("EvtInfo.MinChi2",   &b_minChi2_,   "EvtInfo.MinChi2/D"   );
+        newtree_->Branch("EvtInfo.WrtObs",    &b_WrtObs_,    "EvtInfo.WrtObs/D"    );
+        newtree_->Branch("EvtInfo.WrtEvt",    &b_WrtEvt_,    "EvtInfo.WrtEvt/D"    );
+        newtree_->Branch("EvtInfo.isMuonEvt", &b_isMuonEvt_, "EvtInfo.isMuonEvt/I" );
+        newtree_->Branch("EvtInfo.isEleEvt",  &b_isEleEvt_,  "EvtInfo.isEleEvt/I"  );
+        newAnaBranches_.RegisterTree(newtree_);
+    }
 
     if( isSkim_ )
     { 
@@ -677,12 +721,6 @@ void SemiLeptanicAnalysis::beginJob()
         h1.GetTH1("Evt_CutFlow_Mu")->SetBinError(1, sqrt(allEvents));
         h1.GetTH1("Evt_CutFlow_El")->SetBinError(1, sqrt(allEvents));
     }
-
-    EvtInfo.Register(chain_);
-    GenInfo.Register(chain_);
-    VtxInfo.Register(chain_);
-    JetInfo.Register(chain_,"PFJetInfo");
-    LepInfo.Register(chain_,"PFLepInfo");
 
     if( maxEvents_<0 || maxEvents_>chain_->GetEntries() ) maxEvents_ = chain_->GetEntries();
 
@@ -756,8 +794,11 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
             if( GenInfo.PdgID[i] == -6 ) genAntiTopPt=GenInfo.Pt[i];
         }
 
-        //// *** PU reweighting ***
+        //// *** MC event weight ***
         double wrtevt(1);
+        if( !isdata ) wrtevt = GenInfo.Weight;
+
+        //// *** PU reweighting ***
         double wrtevtNoPU(1);
         double wrtevt_pu(1); 
         if( !isdata ) wrtevt_pu *= LumiWeights_.weight( EvtInfo.TrueIT[0] );
@@ -1012,14 +1053,13 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                     }
                     
                     //// ** Number of b-jets cuts, 1
-                    const int sizeBJetCol = BJetCol.size();
-                    if( sizeBJetCol >= 2 )
+                    if( BJetCol.size() >= 2 )
                     {
                         double wrtevt_btagSF(1);
                         if( !isdata )
                         {
                             BTagSFUtil BTagSF;
-                            for( int b=0; b<sizeBJetCol; b++ )
+                            for( int b=0; b<int(BJetCol.size()); b++ )
                             {
                                 wrtevt_btagSF *= BTagSF.getSF( "CSVM", BJetCol[b], Shift_BTagSF_ );
                             }
@@ -1029,13 +1069,13 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                     }
 
                     //// ** Number of b-jets cuts, 2
-                    if( sizeBJetCol == 2 )
+                    if( BJetCol.size() == 2 )
                     {
                         double wrtevt_btagSF(1);
                         if( !isdata )
                         {
                             BTagSFUtil BTagSF;
-                            for( int b=0; b<sizeBJetCol; b++ )
+                            for( int b=0; b<int(BJetCol.size()); b++ )
                             {
                                 wrtevt_btagSF *= BTagSF.getSF( "CSVM", BJetCol[b], Shift_BTagSF_ );
                             }
@@ -1070,7 +1110,6 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         get2HighPtObject( nonBJetCol, hardNonBJet1, hardNonBJet2 );
 
                         //// * Distinguish hadronic-top and leptonic-top's b-jet by chi^2
-                        //const int sizeNonBJetCol = nonBJetCol.size();
                         //int hadronicTopbjet(-1), leptonicTopbjet(-1); 
                         //for( int bj=0; bj<2; bj++)
                         //{
@@ -1085,9 +1124,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         //TopNonBJet2 = hardNonBJet2;
 
                         //// * Distinguish hadronic-top and leptonic-top's b-jet by chi^2
-                        const int sizeNonBJetCol = nonBJetCol.size();
                         int topjet1(-1), topjet2(-1), hadronicTopbjet(-1), leptonicTopbjet(-1); 
-                        for( int ij1=1; ij1<sizeNonBJetCol; ij1++){
+                        for( int ij1=1; ij1<int(nonBJetCol.size()); ij1++){
                             for( int ij2=ij1-1; ij2<ij1; ij2++){
                                 for( int bj=0; bj<2; bj++)
                                 {
@@ -1133,11 +1171,10 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         { std::cout<<">> [ERROR] There an nuetral lepton!? "<<std::endl; }
 
                         //// * Fill Ht = scale sum of selected jets
-                        for( int j=0; j<sizeNonBJetCol; j++ ){ Ht += nonBJetCol[j].Pt; }
-                        for( int j=0; j<sizeBJetCol;    j++ ){ Ht += BJetCol[j].Pt;    }
+                        for( int j=0; j<int(nonBJetCol.size()); j++ ){ Ht += nonBJetCol[j].Pt; }
+                        for( int j=0; j<int(BJetCol.size());    j++ ){ Ht += BJetCol[j].Pt;    }
 
                         //// * chi^2 cut
-                        //if( maxChi2_ > minChi2 )
                         if( maxChi2_ > minChi2 && minChi2_ <= minChi2 )
                         {
                             passChi2Cut = true;
@@ -1151,8 +1188,6 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                                 if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#chi^{2}>"+num2str(minChi2_)).c_str(), wrtevt);
                                 if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#chi^{2}>"+num2str(minChi2_)).c_str(), wrtevt);
                             }
-                            //if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
-                            //if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#chi^{2}<"+num2str(maxChi2_)).c_str(), wrtevt);
                             //if( Ht < 250 )
                             //{
                             //    isGoodElectronEvt = false;
@@ -1205,34 +1240,40 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         //
         //// *** Fill other events plots ***
         //  
+        double O2 = 0;
+        double O3 = 0;
+        double O4 = 0;
+        double O7 = 0;
         if( isGoodMuonEvt && isGoodElectronEvt ) h1.GetTH1("Evt_SameChannel")->Fill(0);
         if( isGoodMuonEvt || isGoodElectronEvt )
         {
-            if( !doSaveTree_ )
+            O2 = Obs2( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3 );
+            O3 = Obs3( isoLep.P4, TopNonBJet1.P4, b_jet.P4, bbar_jet.P4, isoLep.Charge );
+            O4 = Obs4( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3, isoLep.Charge );
+            O7 = Obs7( az, b_jet.P3, bbar_jet.P3 );
+
+            if( !doFullTree_ && doSaveTree_ )
             {
                 b_RunNo_ = EvtInfo.RunNo;
                 b_EvtNo_ = EvtInfo.EvtNo;
                 b_BxNo_  = EvtInfo.BxNo;
                 b_LumiNo_= EvtInfo.LumiNo;
             }
-            newAnaBranches_.fill_BJetNewBranches( b_jet ); 
-            newAnaBranches_.fill_BbarJetNewBranches( bbar_jet ); 
-            newAnaBranches_.fill_nonBJetColNewBranches( nonBJetCol );
-            newAnaBranches_.fill_topHadronicNewBranches( top_hadronic, TopNonBJet1.Index, TopNonBJet2.Index );
-            newAnaBranches_.fill_isoLepNewBranches( isoLep ); 
-
-            double O2 = Obs2( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3 );
-            double O3 = Obs3( isoLep.P4, TopNonBJet1.P4, b_jet.P4, bbar_jet.P4, isoLep.Charge );
-            double O4 = Obs4( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3, isoLep.Charge );
-            double O7 = Obs7( az, b_jet.P3, bbar_jet.P3 );
-
-            b_O2_ = O2;
-            b_O3_ = O3;
-            b_O4_ = O4;
-            b_O7_ = O7;
-            b_minChi2_ = minChi2;
-            b_WrtObs_ = Owrt_;
-            b_WrtEvt_ = wrtevt;
+            if(  doFullTree_ || doSaveTree_ )
+            {
+                newAnaBranches_.fill_BJetNewBranches( b_jet ); 
+                newAnaBranches_.fill_BbarJetNewBranches( bbar_jet ); 
+                newAnaBranches_.fill_nonBJetColNewBranches( nonBJetCol );
+                newAnaBranches_.fill_topHadronicNewBranches( top_hadronic, TopNonBJet1.Index, TopNonBJet2.Index );
+                newAnaBranches_.fill_isoLepNewBranches( isoLep ); 
+                b_O2_ = O2;
+                b_O3_ = O3;
+                b_O4_ = O4;
+                b_O7_ = O7;
+                b_minChi2_ = minChi2;
+                b_WrtObs_ = Owrt_;
+                b_WrtEvt_ = wrtevt;
+            }
 
             h2.GetTH2("TH2_Chi2_vs_TopHadronicMass")->Fill( top_hadronic.Mass, minChi2,           wrtevt );
             h2.GetTH2("TH2_Chi2_vs_Ht"             )->Fill( Ht,                minChi2,           wrtevt );
@@ -1682,11 +1723,42 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                     fillAsym( h1.GetTH1("EvtChi2_O3Asym_El"), O3, wrtevt );
                     fillAsym( h1.GetTH1("EvtChi2_O4Asym_El"), O4, wrtevt );
                     fillAsym( h1.GetTH1("EvtChi2_O7Asym_El"), O7, wrtevt );
-
                 }
             }
             newtree_->Fill();
         } //// [END] Fill plots
+        if( doPDFTree_ )
+        {
+            if( !passChi2Cut ){ 
+                b_TopMlb_=0;
+                b_WrtEvt_=0;
+            }else{
+                b_TopMlb_=top_leptonic.Massbl;
+                b_WrtEvt_=wrtevt;
+            }
+            if( isGoodElectronEvt && !isGoodMuonEvt )
+            { 
+                b_isMuonEvt_ = 0;
+                b_isEleEvt_  = 1;
+            }
+            else if( !isGoodElectronEvt && isGoodMuonEvt )
+            {
+                b_isMuonEvt_ = 1;
+                b_isEleEvt_  = 0;
+            }
+            else
+            {
+                b_isMuonEvt_ = 0;
+                b_isEleEvt_  = 0;
+            }
+            b_O2_ = O2;
+            b_O3_ = O3;
+            b_O4_ = O4;
+            b_O7_ = O7;
+            b_minChi2_ = minChi2;
+            b_WrtObs_  = Owrt_;
+            pdftree_->Fill();
+        }
     } //// [END] entry loop 
 } //// [END] Class
 
