@@ -150,7 +150,8 @@ void drawACP2Ch( TFile* f,
     if( legX == 0 ) //Left 
         leg = new TLegend(0.173516,0.6726768,0.4310502,0.8363384,NULL,"brNDC");
     else //right
-        leg = new TLegend(0.7237386,0.7739403,0.9652605,0.8854003,NULL,"brNDC");
+        leg = new TLegend(0.6081871,0.7859477,0.8502924,0.8970588,NULL,"brNDC");
+   leg->SetTextSize(0.06535948);
     leg->SetBorderSize(0);
     leg->SetLineStyle(0);
     leg->SetLineWidth(0);
@@ -313,8 +314,9 @@ void drawACP( TFile* f,
     if( legX == 0 ) //Left 
         leg = new TLegend(0.173516,0.6726768,0.4310502,0.8363384,NULL,"brNDC");
     else //right
-        leg = new TLegend(0.7237386,0.7739403,0.9652605,0.8854003,NULL,"brNDC");
+        leg = new TLegend(0.6081871,0.7859477,0.8502924,0.8970588,NULL,"brNDC");
     leg->SetBorderSize(0);
+   leg->SetTextSize(0.06535948);
     leg->SetLineStyle(0);
     leg->SetLineWidth(0);
     leg->SetFillColor(0);

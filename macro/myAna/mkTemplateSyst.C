@@ -5,7 +5,7 @@
 
 std::string fileName="Final_histograms_SemiLeptanic.root";
 std::string systDir="Syst";
-std::string fName="../results/15Dec_LepJet_MCDATA";
+std::string fName="../results/11Jan_LepJet_MCDATA";
 std::string hName="EvtChi2_Top_Leptonic_Mbl";
 //std::string hName="EvtChi2_Top_Hadronic_Mass";
 //std::string hName="EvtChi2_Ht";
@@ -46,15 +46,15 @@ void getHistStatUncNomalized( TH1D* h, TH1D* h_u, TH1D* h_d )
 }
 void mkTemplateSyst()
 {
-    const int nCh=3, nSyst=2+7, nMC=3, nTune=2;
-    std::string mcName[nMC]={"TTJets__", "BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__", "MC__"}; // sig=0, bkg=1
+    const int nCh=3, nSyst=4+8, nMC=3, nTune=2;
+    std::string mcName[nMC]={"TTJets", "BkgMC_TTJetsNonSemiLeptMGDecaysExcluded", "MC"}; // sig=0, bkg=1
     std::string chName[nCh]={"", "_El", "_Mu"};
     std::string tuneName[nTune]={"up", "down"};
-    std::string systName[nSyst]={"", "Stat", "PU", "JER", "BTagSF", "TopPT", "elID", "muID", "muISO"};
+    std::string systName[nSyst]={"", "Stat", "TopMatch", "TopScale", "TopPT", "PU", "JER", "JES", "BTagSF", "elID", "muID", "muISO"};
     
     TFile* fin[nSyst][nTune];
-    fin[0][0] = new TFile((fName+"/"+fileName).c_str()); //mean hist
-    for( int s=2; s<nSyst; s++ ){
+    fin[0][0] = new TFile((fName+"/"+fileName).c_str()); //nominal hist
+    for( int s=4; s<nSyst; s++ ){
         for( int t=0; t<nTune; t++ ){
             std::string fname=fName+"/"+systDir+"/"+systName[s]+tuneName[t]+"/"+fileName;
             fin[s][t] = new TFile(fname.c_str());
@@ -89,7 +89,7 @@ void mkTemplateSyst()
         for( int ch=0; ch<nCh; ch++ )
         {
             std::cout<<"        Ch"<<chName[ch]<<std::endl<<"          ";
-            std::string hname = mcName[mc]+hName+chName[ch];
+            std::string hname = mcName[mc]+"__"+hName+chName[ch];
             std::string name1 = name0+chName[ch];
             h_mc[mc][ch][0][0] = (TH1D*)((TH1D*)fin[0][0]->Get(hname.c_str()))->Clone(name1.c_str());
             h_mc[mc][ch][0][0]->Rebin(rebin);
@@ -106,6 +106,34 @@ void mkTemplateSyst()
                     h_mc[mc][ch][s][1] = (TH1D*)h_mc[mc][ch][0][0]->Clone(named.c_str());
                     getHistStatUncNomalized( h_mc[mc][ch][0][0], h_mc[mc][ch][s][0], h_mc[mc][ch][s][1] );
                     //getHistStatUnc( h_mc[mc][ch][0][0], h_mc[mc][ch][s][0], h_mc[mc][ch][s][1] );
+                }
+                else if( s==2 || s==3 )
+                {
+                    // top scale and matching are stored in nominal file
+                    std::string hnameTopU;
+                    std::string hnameTopD;
+                    if( mc==sig ){
+                        std::string systname="";
+                        if( s==2 ) systname="Matching";
+                        else if( s==3 ) systname="Scale";
+                        hnameTopU = mcName[mc]+"_"+systname+"Up__"+hName+chName[ch];
+                        hnameTopD = mcName[mc]+"_"+systname+"Down__"+hName+chName[ch];
+                    }else if( mc== bkg ){
+                        hnameTopU = mcName[mc]+"__"+hName+chName[ch];
+                        hnameTopD = mcName[mc]+"__"+hName+chName[ch];
+                    }else{
+                        hnameTopU = mcName[mc]+"_"+systName[s]+"Up__"+hName+chName[ch];
+                        hnameTopD = mcName[mc]+"_"+systName[s]+"Down__"+hName+chName[ch];
+                    }
+                    //cout<<hnameTopU<<" "<<hnameTopD<<endl;
+                    std::string nameTopU = name2+tuneName[0];
+                    std::string nameTopD = name2+tuneName[1];
+                    h_mc[mc][ch][s][0] = (TH1D*)((TH1D*)fin[0][0]->Get(hnameTopU.c_str()))->Clone(nameTopU.c_str());;
+                    h_mc[mc][ch][s][1] = (TH1D*)((TH1D*)fin[0][0]->Get(hnameTopD.c_str()))->Clone(nameTopD.c_str());;
+                    h_mc[mc][ch][s][0]->Rebin(rebin);
+                    h_mc[mc][ch][s][1]->Rebin(rebin);
+                    fix(h_mc[mc][ch][s][0]);
+                    fix(h_mc[mc][ch][s][1]);
                 }
                 else
                 {

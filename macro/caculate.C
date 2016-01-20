@@ -20,7 +20,7 @@ double caculateACPerror( TH1* Oh, bool murmur=false)
     double ACPe = 2*sqrt(ObsPos*ObsNeg/n3);
 
     if ( murmur ) printf("O<0 : %.1f, O>0 : %.1f\n", ObsNeg, ObsPos);
-    printf("Call caculateACPerror: %f\n", ACPe);
+    //printf("Call caculateACPerror: %f\n", ACPe);
     return ACPe;
 }
     template<class th1>
@@ -39,7 +39,7 @@ double caculateACPerrorWrt( th1* Oh, bool murmur=false)
     double ACPe = sqrt( t1*t1*ObsPosUnc*ObsPosUnc + t2*t2*ObsNegUnc*ObsNegUnc ); 
 
     if ( murmur ) printf("O<0 : %.1f, O>0 : %.1f\n", ObsNeg, ObsPos);
-    printf("Call caculateACPerror: %f\n", ACPe);
+    //printf("Call caculateACPerror: %f\n", ACPe);
     return ACPe;
 }
     template<class th1>
@@ -53,7 +53,7 @@ double caculateACP( th1* Oh, bool murmur=false)
 
     double ACP = (ObsPos-ObsNeg)/(ObsPos+ObsNeg);
     if ( murmur ) printf("O<0 : %.1f, O>0 : %.1f\n", ObsNeg, ObsPos);
-    printf("Call caculateACP: %f\n", ACP);
+    //printf("Call caculateACP: %f\n", ACP);
     return ACP;
 }
 
@@ -81,7 +81,7 @@ void caculateACPDetail( TFile* f, std::string histName, std::string Oname="O")
 {
     TH1D* Oh = (TH1D*)f->Get(histName.c_str());
     printf("%-15s: ", histName.c_str());
-    std::cout<<caculateACPDetail(Oh, Oname)<<std::endl;;
+    //std::cout<<caculateACPDetail(Oh, Oname)<<std::endl;;
 }
 
 ////* Caculate Cutflow

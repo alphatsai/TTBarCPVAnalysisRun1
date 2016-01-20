@@ -156,6 +156,7 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
         for( int t=0; t<2; t++)
         {
             std::string name = systName[i]+tune[t];
+            cout<<name<<endl;
             h_sigUnc[t]    = (TH1D*)f->Get((("SigFitted"+ch+"_"+name).c_str()));
             h_allUnc[i][t] = (TH1D*)((TH1D*)f->Get((("BkgFitted"+ch+"_"+name).c_str())))->Clone(("UNC_"+name).c_str());
             uncSig[i][t]=h_sigUnc[t]->Integral();
@@ -198,11 +199,9 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
     h_bkg->SetLineColor(1);
     h_bkg->SetFillColor(8);
 
-    Int_t ci;      // for color index setting
-    TColor *color; // for color definition with alpha
-    ci = TColor::GetColor("#3333ff");
-    h_allAsymErr->SetFillColor(ci);
-    h_allAsymErr->SetFillStyle(3010);
+    h_allAsymErr->SetLineColor(13);
+    h_allAsymErr->SetFillColor(13);
+    h_allAsymErr->SetFillStyle(3001);
 
     float xMin = h_all->GetXaxis()->GetBinLowEdge(1);
     float xMax = h_all->GetXaxis()->GetBinUpEdge(bins);
@@ -262,7 +261,7 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
     leg->SetLineWidth(0);
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
-    leg->AddEntry(h_data, "Data", "lp");
+    leg->AddEntry(h_data, "Data", "lpe");
     leg->AddEntry(h_sig,  "Estimated sig.", "f");
     leg->AddEntry(h_bkg,  "Estimated bkg.", "f");
     leg->AddEntry(h_allAsymErr, "1#sigma, Stat.+Syst.", "f");
@@ -279,9 +278,8 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
     t_title->SetTextSize(0.04805273);
 
     h_stack->Draw("HIST");
-    h_data->Draw("ESAME");
     h_allAsymErr->Draw("E2SAME");
-    //h_allAsymErr->Draw("peSAME");
+    h_data->Draw("ESAME");
     leg->Draw();
     t_title->Draw();
 
@@ -290,28 +288,35 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
     else
         c1->SaveAs((output+"/StackFitted_Linear_"+hName+ch+".pdf").c_str());
 
+    float sumw2[2]={0,0}, sumw2sig[2]={0,0}, sumw2bkg[2]={0,0};
     FILE* outTxt;
     outTxt = fopen((output+"/SystUncertainties_"+hName+ch+".txt").c_str(),"w");
     fprintf( outTxt, "%s\n", channel.c_str() );
-    fprintf( outTxt, "%8s", " ");
-    for( int i=0; i<systNi; i++ ){ fprintf( outTxt, "%8s", systName[i].c_str()); }   
+    fprintf( outTxt, "%9s", " ");
+    for( int i=0; i<systNi; i++ ){ fprintf( outTxt, "%9s", systName[i].c_str()); }   
     fprintf( outTxt, "\nTotal:");
-    fprintf( outTxt, "\n%8s", "+1sigma" );
-    for( int i=0; i<systNi; i++ ){ fprintf( outTxt, "%+8.2f", (uncAll[i][0]-meanAll)/meanAll*100 ); }   
-    fprintf( outTxt, "\n%8s", "-1sigma" );
-    for( int i=0; i<systNi; i++ ){ fprintf( outTxt, "%+8.2f", (uncAll[i][1]-meanAll)/meanAll*100 ); }   
+    fprintf( outTxt, "\n%9s", "+1sigma" );
+    for( int i=0; i<systNi; i++ ){ float v=(uncAll[i][0]-meanAll)/meanAll*100; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2[0]+=v*v; } }   
+    fprintf( outTxt, "%+9.2f", sqrt(sumw2[0]) );
+    fprintf( outTxt, "\n%9s", "-1sigma" );
+    for( int i=0; i<systNi; i++ ){ float v=(uncAll[i][1]-meanAll)/meanAll*100; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2[1]+=v*v; } }  
+    fprintf( outTxt, "%+9.2f", -sqrt(sumw2[1]) );
     fprintf( outTxt, "\n");
     fprintf( outTxt, "\nSig:");
-    fprintf( outTxt, "\n%8s", "+1sigma" );
-    for( int i=0; i<systNi; i++ ){ fprintf( outTxt, "%+8.2f", (uncSig[i][0]-meanSig)/meanSig*100 ); }   
-    fprintf( outTxt, "\n%8s", "-1sigma" );
-    for( int i=0; i<systNi; i++ ){ fprintf( outTxt, "%+8.2f", (uncSig[i][1]-meanSig)/meanSig*100 ); }   
+    fprintf( outTxt, "\n%9s", "+1sigma" );
+    for( int i=0; i<systNi; i++ ){ float v=(uncSig[i][0]-meanSig)/meanSig*100; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2sig[0]+=v*v; } }   
+    fprintf( outTxt, "%+9.2f", sqrt(sumw2sig[0]) );
+    fprintf( outTxt, "\n%9s", "-1sigma" );
+    for( int i=0; i<systNi; i++ ){ float v=(uncSig[i][1]-meanSig)/meanSig*100; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2sig[1]+=v*v; } }   
+    fprintf( outTxt, "%+9.2f", -sqrt(sumw2sig[1]) );
     fprintf( outTxt, "\n");
     fprintf( outTxt, "\nBkg:");
-    fprintf( outTxt, "\n%8s", "+1sigma" );
-    for( int i=0; i<systNi; i++ ){ fprintf( outTxt, "%+8.2f", (uncBkg[i][0]-meanBkg)/meanBkg*100 ); }   
-    fprintf( outTxt, "\n%8s", "-1sigma" );
-    for( int i=0; i<systNi; i++ ){ fprintf( outTxt, "%+8.2f", (uncBkg[i][1]-meanBkg)/meanBkg*100 ); }   
+    fprintf( outTxt, "\n%9s", "+1sigma" );
+    for( int i=0; i<systNi; i++ ){ float v=(uncBkg[i][0]-meanBkg)/meanBkg*100; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2bkg[0]+=v*v; }}   
+    fprintf( outTxt, "%+9.2f", sqrt(sumw2bkg[0]) );
+    fprintf( outTxt, "\n%9s", "-1sigma" );
+    for( int i=0; i<systNi; i++ ){ float v=(uncBkg[i][1]-meanBkg)/meanBkg*100; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2bkg[1]+=v*v; }}   
+    fprintf( outTxt, "%+9.2f", -sqrt(sumw2bkg[1]) );
     fprintf( outTxt, "\n\n");
     fclose( outTxt );
 }
