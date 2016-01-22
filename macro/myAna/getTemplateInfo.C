@@ -1,6 +1,7 @@
 #include "TGraphAsymmErrors.h"
 #include "TPaveText.h"
 #include "TColor.h"
+#include "../caculate.C"
 float* drawSyst( TFile* fin, std::string hName, std::string systName, std::string output=".", std::string xTitle="", std::string yTitle="Events", bool logy=false )
 {
     float *values = new float[3];
@@ -296,27 +297,216 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
     for( int i=0; i<systNi; i++ ){ fprintf( outTxt, "%9s", systName[i].c_str()); }   
     fprintf( outTxt, "\nTotal:");
     fprintf( outTxt, "\n%9s", "+1sigma" );
-    for( int i=0; i<systNi; i++ ){ float v=(uncAll[i][0]-meanAll)/meanAll*100; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2[0]+=v*v; } }   
+    for( int i=0; i<systNi; i++ ){ float v=(uncAll[i][0]-meanAll)/meanAll*100.; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2[0]+=v*v; } }   
     fprintf( outTxt, "%+9.2f", sqrt(sumw2[0]) );
     fprintf( outTxt, "\n%9s", "-1sigma" );
-    for( int i=0; i<systNi; i++ ){ float v=(uncAll[i][1]-meanAll)/meanAll*100; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2[1]+=v*v; } }  
+    for( int i=0; i<systNi; i++ ){ float v=(uncAll[i][1]-meanAll)/meanAll*100.; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2[1]+=v*v; } }  
     fprintf( outTxt, "%+9.2f", -sqrt(sumw2[1]) );
     fprintf( outTxt, "\n");
     fprintf( outTxt, "\nSig:");
     fprintf( outTxt, "\n%9s", "+1sigma" );
-    for( int i=0; i<systNi; i++ ){ float v=(uncSig[i][0]-meanSig)/meanSig*100; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2sig[0]+=v*v; } }   
+    for( int i=0; i<systNi; i++ ){ float v=(uncSig[i][0]-meanSig)/meanSig*100.; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2sig[0]+=v*v; } }   
     fprintf( outTxt, "%+9.2f", sqrt(sumw2sig[0]) );
     fprintf( outTxt, "\n%9s", "-1sigma" );
-    for( int i=0; i<systNi; i++ ){ float v=(uncSig[i][1]-meanSig)/meanSig*100; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2sig[1]+=v*v; } }   
+    for( int i=0; i<systNi; i++ ){ float v=(uncSig[i][1]-meanSig)/meanSig*100.; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2sig[1]+=v*v; } }   
     fprintf( outTxt, "%+9.2f", -sqrt(sumw2sig[1]) );
     fprintf( outTxt, "\n");
     fprintf( outTxt, "\nBkg:");
     fprintf( outTxt, "\n%9s", "+1sigma" );
-    for( int i=0; i<systNi; i++ ){ float v=(uncBkg[i][0]-meanBkg)/meanBkg*100; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2bkg[0]+=v*v; }}   
+    for( int i=0; i<systNi; i++ ){ float v=(uncBkg[i][0]-meanBkg)/meanBkg*100.; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2bkg[0]+=v*v; }}   
     fprintf( outTxt, "%+9.2f", sqrt(sumw2bkg[0]) );
     fprintf( outTxt, "\n%9s", "-1sigma" );
-    for( int i=0; i<systNi; i++ ){ float v=(uncBkg[i][1]-meanBkg)/meanBkg*100; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2bkg[1]+=v*v; }}   
+    for( int i=0; i<systNi; i++ ){ float v=(uncBkg[i][1]-meanBkg)/meanBkg*100.; fprintf( outTxt, "%+9.2f", v ); if( i!=0 ){ sumw2bkg[1]+=v*v; }}   
     fprintf( outTxt, "%+9.2f", -sqrt(sumw2bkg[1]) );
     fprintf( outTxt, "\n\n");
     fclose( outTxt );
 }
+
+void fillFinalAcpText( FILE* outTxt, std::string oName, std::string chName, double Acp, double eAcp, int systN, std::string* systName, double* eAcpSystUp, double* eAcpSystDown )
+{
+    char text[128];
+    sprintf( text, "Nominal Acp(%s) = %.2lf\n", oName.c_str(), Acp*100. ); 
+    fprintf( outTxt, text ); 
+     printf( text );
+    fprintf( outTxt, "%9s %9s ", " ", "Stat." ); 
+     printf( "%9s %9s ", " ", "Stat." ); 
+    for( int s=0; s<systN; s++)
+    { 
+         printf( "%9s ", systName[s].c_str()); 
+        fprintf( outTxt, "%9s ", systName[s].c_str() ); 
+    }
+    fprintf( outTxt, "\n" );
+     printf( "\n" );
+    fprintf( outTxt, "%9s", "+1Sigma");
+     printf( "%9s ", "+1Sigma");
+    sprintf( text, "%+9.2lf ", eAcp*100. ); 
+    fprintf( outTxt, text ); 
+     printf( text );
+     for( int s=0; s<systN; s++ )
+     { 
+         sprintf( text, "%+9.2lf ", eAcpSystUp[s]*100. ); 
+         fprintf( outTxt, text ); 
+          printf( text );
+     }
+    fprintf( outTxt, "\n" );
+     printf( "\n" );
+    fprintf( outTxt, "%9s", "-1Sigma");
+     printf( "%9s ", "-1Sigma");
+    sprintf( text, "%+9.2lf ", -1*eAcp*100. ); 
+    fprintf( outTxt, text ); 
+     printf( text );
+     for( int s=0; s<systN; s++ )
+     { 
+         sprintf( text, "%+9.2lf ", eAcpSystDown[s]*100. ); 
+         fprintf( outTxt, text ); 
+          printf( text );
+     }
+    fprintf( outTxt, "\n" );
+     printf( "\n" );
+}
+
+void getSubtractBkgResults( TFile* f, FILE* outTxt, std::string oName, int systN, std::string* systName, int channel=0, bool unBlind=false )
+{
+    std::string chName="";
+    std::string chFullName="Combined channel";
+    if( channel == 0 ){ chName="_El"; chFullName="Electron channel";} 
+    if( channel == 1 ){ chName="_Mu"; chFullName="Muon channel";} 
+    std::string tuneName[2]={"up","down"};
+    std::string dataName="DATA";
+    if( !unBlind ){ dataName="MC"; std::cout<<"[INFO] Blinding! Using MC"<<std::endl;}
+
+    float evtBkgMCMean;
+    float evtBkgFitMean;
+    float bkgWrt;
+    double  Acp;
+    double eAcp;
+    double  AcpSyst[2][systN];
+    double eAcpSyst[2][systN];
+
+    TH1D* hO_data;
+    TH1D* hO_bkg; 
+    TH1D* hT_bkg;
+    TH1D* hO_dataSyst[2][systN];
+    TH1D* hO_bkgSyst[2][systN];
+    TH1D* hT_bkgSyst[2][systN];   
+    float bkgWrtSyst[2][systN];
+    
+    hO_data = (TH1D*)((TH1D*)f->Get((dataName+"_"+oName+chName).c_str()))->Clone();
+    hO_bkg  = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName).c_str()))->Clone();
+    hT_bkg  = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName).c_str()))->Clone();
+
+    evtBkgMCMean  = hO_bkg->Integral();
+    evtBkgFitMean = hT_bkg->Integral();
+    bkgWrt = evtBkgFitMean/evtBkgMCMean;
+
+    fprintf( outTxt, "* %s (%%)\n", chFullName.c_str() );
+     printf( "* %s (%%)\n", chFullName.c_str() );
+    fprintf( outTxt, "* Events - Data:%.1f\n", hO_data->Integral() );
+     printf( "* Events - Data:%.1f\n", hO_data->Integral() );
+    fprintf( outTxt, "* Events - BkgMC:%.1f, EstBkg:%.1f, wrt:%.3f\n", evtBkgMCMean, evtBkgFitMean, bkgWrt);
+     printf( "* Events - BkgMC:%.1f, EstBkg:%.1f, wrt:%.3f\n", evtBkgMCMean, evtBkgFitMean, bkgWrt);
+
+    fprintf( outTxt, "* ACP(%s) - Data:%.2f(%.2f) n:%.1f, p:%.1f\n", oName.c_str(), caculateACP(hO_data)*100., caculateACPerrorWrt(hO_data)*100., hO_data->GetBinContent(1), hO_data->GetBinContent(2));
+     printf( "* ACP(%s) - Data:%.2f(%.2f) n:%.1f, p:%.1f\n", oName.c_str(), caculateACP(hO_data)*100., caculateACPerrorWrt(hO_data)*100., hO_data->GetBinContent(1), hO_data->GetBinContent(2));
+    fprintf( outTxt, "* ACP(%s) - BkgMC:%.2f(%.2f) n:%.1f, p:%.1f\n", oName.c_str(), caculateACP(hO_bkg)*100., caculateACPerrorWrt(hO_bkg)*100., hO_bkg->GetBinContent(1), hO_bkg->GetBinContent(2));
+     printf( "* ACP(%s) - BkgMC:%.2f(%.2f) n:%.1f, p:%.1f\n", oName.c_str(), caculateACP(hO_bkg)*100., caculateACPerrorWrt(hO_bkg)*100., hO_bkg->GetBinContent(1), hO_bkg->GetBinContent(2));
+
+    hO_bkg->Scale(bkgWrt);
+    fprintf( outTxt, "* ACP(%s) - EstBkg:%.2f(%.2f) n:%.1f, p:%.1f\n", oName.c_str(), caculateACP(hO_bkg)*100., caculateACPerrorWrt(hO_bkg)*100., hO_bkg->GetBinContent(1), hO_bkg->GetBinContent(2));
+     printf( "* ACP(%s) - EstBkg:%.2f(%.2f) n:%.1f, p:%.1f\n", oName.c_str(), caculateACP(hO_bkg)*100., caculateACPerrorWrt(hO_bkg)*100., hO_bkg->GetBinContent(1), hO_bkg->GetBinContent(2));
+
+    hO_data->Add(hO_bkg,-1);
+
+    fprintf( outTxt, "* Events - DataSig:%.1f (n:%.1f, p:%.1f)\n", hO_data->Integral(), hO_data->GetBinContent(1), hO_data->GetBinContent(2));
+     printf( "* Events - DataSig:%.1f (n:%.1f, p:%.1f)\n", hO_data->Integral(), hO_data->GetBinContent(1), hO_data->GetBinContent(2));
+
+    Acp = caculateACP( hO_data, 1 );
+    eAcp = caculateACPerrorWrt( hO_data );
+    // * Systmatic uncs.
+    for( int s=0; s<systN; s++){
+        for( int t=0; t<2; t++ ){
+            hT_bkgSyst[t][s] = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName+"_"+systName[s]+tuneName[t]).c_str()))->Clone();   
+            bkgWrtSyst[t][s] = hT_bkgSyst[t][s]->Integral()/evtBkgMCMean; 
+            hO_bkgSyst[t][s] = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName).c_str()))->Clone();
+            hO_bkgSyst[t][s]->Scale(bkgWrtSyst[t][s]); 
+            hO_dataSyst[t][s] = (TH1D*)((TH1D*)f->Get((dataName+"_"+oName+chName).c_str()))->Clone();
+            hO_dataSyst[t][s]->Add(hO_bkgSyst[t][s],-1);
+             AcpSyst[t][s] = caculateACP(hO_dataSyst[t][s]);
+            eAcpSyst[t][s] = (AcpSyst[t][s]-Acp);
+        }
+    }
+    // * Get data ACP
+    fillFinalAcpText( outTxt, oName, chFullName, Acp, eAcp, systN, systName, eAcpSyst[0], eAcpSyst[1] );
+    fprintf( outTxt, "\n" );
+    printf( "\n" );
+}
+
+//void getSubtractBkgResults( TFile* f, FILE* outTxt, std::string output=".", std::string oName="O2", std::string* systNameEl, std::string* systNameMu, int systNel, int systNmu, bool unBlind=false )
+//{
+//    std::string tuneName[2]={"up","down"};
+//    std::string chName[3]={"_El","_Mu",""};
+//    std::string chFullName[3]={"Electron channel","Muon channel","Combined channel"};
+//    std::string dataName="DATA";
+//    if( !unBlind ) dataName="MC";
+//
+//    float evtBkgMCMean[3];
+//    float evtBkgFitMean[3];
+//    float bkgWrt[3];
+//    double  Acp[3];
+//    double eAcp[3];
+//    double  AcpSyst[3][2][systN];
+//    double eAcpSyst[3][2][systN];
+//
+//    TH1D* hO_data[3];
+//    TH1D* hO_bkg[3]; 
+//    TH1D* hT_bkg[3];
+//    TH1D* hO_dataSyst[3][2][systN];
+//    TH1D* hO_bkgSyst[3][2][systN];
+//    TH1D* hT_bkgSyst[3][2][systN];   
+//    float bkgWrtSyst[3][2][systN];
+//    for( int ch=0; ch<3; ch++ )
+//    {
+//        hO_data[ch] = (TH1D*)((TH1D*)f->Get(dataName+"_"+oName+chName[ch]).c_str())->Clone();
+//        hO_bkg[ch]  = (TH1D*)((TH1D*)f->Get("BkgMC_"+oName+chName[ch]).c_str())->Clone();
+//        if( ch != 2 ){
+//            hT_bkg[ch] = (TH1D*)((TH1D*)f->Get("BkgFitted_"+oName+chName[ch]).c_str())->Clone();
+//        }else{
+//            hT_bkg[2] = (TH1D*)((TH1D*)f->Get("BkgFitted_"+oName+chName[0]).c_str())->Clone();
+//            hT_bkg[2]->Add(hT_bkg[1]);
+//        }
+//
+//        evtBkgMCMean[ch]  = hO_bkg[ch]->Integral();
+//        evtBkgFitMean[ch] = hT_bkg[ch]->Integral();
+//        bkgWrt[ch] = evtBkgFitMean[ch]/evtBkgMCMean[ch];
+//        hO_bkg[ch]->Scale(bkgWrt[ch]);
+//        hO_data[ch]->Add(hO_bkg[ch],-1);
+//
+//         Acp[ch] = caculateACP( hO_data[ch] );
+//        eAcp[ch] = caculateACPerrorWrt( hO_data[ch] );
+//        // * Systmatic uncs.
+//        for( int s=0; s<systN; s++){
+//            for( int t=0; t<2; t++ ){
+//                hT_bkgSyst[ch][t][s] = (TH1D*)((TH1D*)f->Get("BkgFitted_"+chName[ch]+"_"+systName[s]+tuneName[t]).c_str())->Clone();   
+//                bkgWrtSyst[ch][t][s] = hT_bkgSyst[ch][t][s]->Integral()/evtBkgMCMean[ch]; 
+//                if( ch != 2 ){
+//                    hO_bkgSyst[ch][t][s] = (TH1D*)((TH1D*)f->Get("BkgMC_"+oName+chName[ch]).c_str())->Clone();
+//                    hO_bkgSyst[ch][t][s]->Scale(bkgWrtSyst[ch][t][s]); 
+//                }else{
+//                    hO_bkgSyst[ch][t][s] = (TH1D*)hO_bkgSyst[0][t][s]->Clone();
+//                    hO_bkgSyst[ch][t][s]->Add(hO_bkgSyst[1][t][s]);
+//                }
+//                hO_dataSyst[ch][t][s] = (TH1D*)((TH1D*)f->Get(dataName+"_"+oName+chName[ch]).c_str())->Clone();
+//                hO_dataSyst[ch][t][s]->Add(hO_bkgSyst[ch][t][s],-1);
+//                 AcpSyst[ch][t][s] = caculateACP(hO_dataSyst[ch][t][s]);
+//                eAcpSyst[ch][t][s] = (AcpSyst[ch][t][s]-Acp[ch]);
+//                // * Get data ACP
+//                fillFinalAcpText( outTxt, oName, chFullName[ch], Acp[ch], eAcp[ch], systN, systName, eAcpSyst[ch] );
+//            }
+//        }
+//    }
+//    fprintf( outTxt, "\n" );
+//     printf( "\n" );
+//
+//    
+//}
+
