@@ -46,11 +46,13 @@ void getHistStatUncNomalized( TH1D* h, TH1D* h_u, TH1D* h_d )
 }
 void mkTemplateSyst()
 {
-    const int nCh=3, nSyst=4+8, nMC=3, nTune=2;
+    const int nCh=3, nSyst=4+8, nMC=3, nTune=2, nObs=4;
     std::string mcName[nMC]={"TTJets", "BkgMC_TTJetsNonSemiLeptMGDecaysExcluded", "MC"}; // sig=0, bkg=1
+    std::string mcName0[nMC]={"SigMC", "BkgMC", "MC"}; // sig=0, bkg=1
     std::string chName[nCh]={"", "_El", "_Mu"};
     std::string tuneName[nTune]={"up", "down"};
     std::string systName[nSyst]={"", "Stat", "TopMatch", "TopScale", "TopPT", "PU", "JER", "JES", "BTagSF", "elID", "muID", "muISO"};
+    std::string oName[nObs]={"O2", "O3", "O4", "O7"}; 
     
     TFile* fin[nSyst][nTune];
     fin[0][0] = new TFile((fName+"/"+fileName).c_str()); //nominal hist
@@ -63,8 +65,39 @@ void mkTemplateSyst()
 
     TFile* fout  = new TFile((output+"/TemplateSyst_"+hName+".root").c_str(), "RECREATE");
 
+    //// * Copy the obs
+    TH1D *hAsym_data[nCh][nObs];
+    TH1D *hAsym_mc[nMC][nCh][nObs][nSyst][nTune];
+   
+    std::cout<<"[INFO] Copying data obs..."<<std::endl;
+    for( int o=0; o<nObs; o++ )
+    { 
+        hAsym_data[CoCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Electron__EvtChi2_"+oName[o]+"Asym_El").c_str()))->Clone(("DATA_"+oName[o]).c_str());
+        hAsym_data[ElCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Electron__EvtChi2_"+oName[o]+"Asym_El").c_str()))->Clone(("DATA_"+oName[o]+"_El").c_str());
+        hAsym_data[MuCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Muon__EvtChi2_"+oName[o]+"Asym_Mu").c_str()))->Clone(("DATA_"+oName[o]+"_Mu").c_str());
+        hAsym_data[CoCH][o]->Add(hAsym_data[MuCH][o]);
+    } 
+    std::cout<<"[INFO] Copying MC obs..."<<std::endl;
+    for( int mc=0; mc<nMC; mc++ ){
+        for( int o=0; o<nObs; o++ ){
+            for( int ch=0; ch<nCh; ch++ ){
+                std::string hname = mcName[mc]+"__EvtChi2_"+oName[o]+"Asym"+chName[ch];
+                std::string name1 = mcName0[mc]+"_"+oName[o]+chName[ch];
+                hAsym_mc[mc][ch][o][0][0] = (TH1D*)((TH1D*)fin[0][0]->Get(hname.c_str()))->Clone(name1.c_str());
+                for( int s=2; s<nSyst; s++ ){
+                    for( int t=2; t<nTune; t++ ){
+                        name1 = mcName0[mc]+"_"+oName[o]+chName[ch]+"_"+systName[s]+tuneName[t];
+                        hAsym_mc[mc][ch][o][s][t] = (TH1D*)((TH1D*)fin[s][t]->Get(hname.c_str()))->Clone(name1.c_str());
+                    }
+                }
+            }
+        }
+    }
+
+
+    //// * Create and copy templates 
     // Data
-    std::cout<<"[INFO] Copying data..."<<std::endl;
+    std::cout<<"[INFO] Copying data templates..."<<std::endl;
     TH1D *h_data[nCh];
     h_data[CoCH] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Electron__"+hName+"_El").c_str()))->Clone("DATA");
     h_data[ElCH] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Electron__"+hName+"_El").c_str()))->Clone("DATA_El");
@@ -77,14 +110,11 @@ void mkTemplateSyst()
     h_data[CoCH]->Add(h_data[MuCH]);
 
     // MC
-    std::cout<<"[INFO] Copying MC..."<<std::endl;
+    std::cout<<"[INFO] Copying MC templates..."<<std::endl;
     TH1D *h_mc[nMC][nCh][nSyst][nTune];
     for( int mc=0; mc<nMC; mc++ )
     {
-        std::string name0;
-        if( mc==sig )      name0="SigMC"; 
-        else if( mc==bkg ) name0="BkgMC"; 
-        else name0="MC"; 
+        std::string name0 = mcName0[mc];
         std::cout<<"       "<<name0<<"..."<<std::endl;
         for( int ch=0; ch<nCh; ch++ )
         {
