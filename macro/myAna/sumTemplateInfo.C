@@ -26,15 +26,23 @@
 using namespace std;
 void sumTemplateInfo( TFile* f, string name, string output=".", string xElTitle="", string xMuTitle="", string yTitle="Events", bool logy=true )
 {
-    const int nElSyst=9, nMuSyst=10;
+    //const int nElSyst=9, nMuSyst=10;
+    //string systNameEl[nElSyst]={"Stat", "TopMatch", "TopScale", "TopPT", "PU", "JER", "JES", "BTagSF", "elID"};
+    //string systNameMu[nMuSyst]={"Stat", "TopMatch", "TopScale", "TopPT", "PU", "JER", "JES", "BTagSF", "muID", "muISO"};
+    //const int nElSyst=8, nMuSyst=9;
+    //string systNameEl[nElSyst]={"TopMatch", "TopScale", "TopPT", "PU", "JER", "JES", "BTagSF", "elID"};
+    //string systNameMu[nMuSyst]={"TopMatch", "TopScale", "TopPT", "PU", "JER", "JES", "BTagSF", "muID", "muISO"};
+    const int nElSyst=10, nMuSyst=10, nSyst=10;
+    string systNameEl[nElSyst]={"TopMatch", "TopScale", "TopPT", "PU", "JER", "JES", "BTagSF", "elID", "muID", "muISO"};
+    string systNameMu[nMuSyst]={"TopMatch", "TopScale", "TopPT", "PU", "JER", "JES", "BTagSF", "elID", "muID", "muISO"};
+    string systName[nSyst]={"TopMatch", "TopScale", "TopPT", "PU", "JER", "JES", "BTagSF", "elID", "muID", "muISO"};
+
     float *mcEl[nElSyst], *sigEl[nElSyst], *bkgEl[nElSyst];
     float *mcMu[nMuSyst], *sigMu[nMuSyst], *bkgMu[nMuSyst];
     float sumw2El[2]={0,0}, sumw2sigEl[2]={0,0}, sumw2bkgEl[2]={0,0};
     float sumw2Mu[2]={0,0}, sumw2sigMu[2]={0,0}, sumw2bkgMu[2]={0,0};
-    string systNameEl[nElSyst]={"Stat", "TopMatch", "TopScale", "TopPT", "PU", "JER", "JES", "BTagSF", "elID"};
-    string systNameMu[nMuSyst]={"Stat", "TopMatch", "TopScale", "TopPT", "PU", "JER", "JES", "BTagSF", "muID", "muISO"};
+  
     FILE* outTxt;
-
     outTxt = fopen((output+"/SystUncertainties_MC.txt").c_str(),"w");
     fprintf( outTxt, "Electron channel\n" );
     fprintf( outTxt, "%9s", " ");
@@ -121,4 +129,26 @@ void sumTemplateInfo( TFile* f, string name, string output=".", string xElTitle=
     
     drawFittedStack( f, name, systNameEl, nElSyst, 1, output, xElTitle, yTitle );
     drawFittedStack( f, name, systNameMu, nMuSyst, 2, output, xMuTitle, yTitle );
+
+    bool unBlind=false;
+
+    FILE* outTxt1;
+    outTxt1 = fopen((output+"/FinalAcpResults.txt").c_str(),"w");
+    getSubtractBkgResults( f, outTxt1, "O2", nElSyst, systNameEl, 0 , unBlind );
+    getSubtractBkgResults( f, outTxt1, "O3", nElSyst, systNameEl, 0 , unBlind );
+    getSubtractBkgResults( f, outTxt1, "O4", nElSyst, systNameEl, 0 , unBlind );
+    getSubtractBkgResults( f, outTxt1, "O7", nElSyst, systNameEl, 0 , unBlind );
+    getSubtractBkgResults( f, outTxt1, "O2", nMuSyst, systNameMu, 1 , unBlind );
+    getSubtractBkgResults( f, outTxt1, "O3", nMuSyst, systNameMu, 1 , unBlind );
+    getSubtractBkgResults( f, outTxt1, "O4", nMuSyst, systNameMu, 1 , unBlind );
+    getSubtractBkgResults( f, outTxt1, "O7", nMuSyst, systNameMu, 1 , unBlind );
+    fclose( outTxt1 );
+
+    FILE* outTxt2;
+    outTxt2 = fopen((output+"/FinalAcpResultsCombined.txt").c_str(),"w");
+    getSubtractBkgResultsCombined( f, outTxt2, systName, nSyst, output, "O2", "O_{2}", unBlind );
+    getSubtractBkgResultsCombined( f, outTxt2, systName, nSyst, output, "O3", "O_{3}", unBlind );
+    getSubtractBkgResultsCombined( f, outTxt2, systName, nSyst, output, "O4", "O_{4}", unBlind );
+    getSubtractBkgResultsCombined( f, outTxt2, systName, nSyst, output, "O7", "O_{7}", unBlind );
+    fclose( outTxt2 );
 }
