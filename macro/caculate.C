@@ -19,8 +19,8 @@ double caculateACPerror( TH1* Oh, bool murmur=false)
     double n3  = (ObsPos+ObsNeg)*(ObsPos+ObsNeg)*(ObsPos+ObsNeg);
     double ACPe = 2*sqrt(ObsPos*ObsNeg/n3);
 
-    if ( murmur ) printf("O<0 : %.1f, O>0 : %.1f\n", ObsNeg, ObsPos);
-    //printf("Call caculateACPerror: %f\n", ACPe);
+    if ( murmur ){ printf("O<0 : %.1f, O>0 : %.1f\n", ObsNeg, ObsPos);
+    printf("Call caculateACPerror: %f\n", ACPe);}
     return ACPe;
 }
     template<class th1>
@@ -38,8 +38,10 @@ double caculateACPerrorWrt( th1* Oh, bool murmur=false)
     double t2 = 2*ObsPos/((ObsNeg+ObsPos)*(ObsNeg+ObsPos)); 
     double ACPe = sqrt( t1*t1*ObsPosUnc*ObsPosUnc + t2*t2*ObsNegUnc*ObsNegUnc ); 
 
-    if ( murmur ) printf("O<0 : %.1f, O>0 : %.1f\n", ObsNeg, ObsPos);
-    //printf("Call caculateACPerror: %f\n", ACPe);
+    if ( murmur ){ 
+    printf("O<0 : %.1f, O>0 : %.1f\n", ObsNeg, ObsPos);
+    printf("Call caculateACPerror: %f\n", ACPe);
+    }
     return ACPe;
 }
     template<class th1>

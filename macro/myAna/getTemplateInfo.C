@@ -645,7 +645,7 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
     //if( legX == 0 ) //Left 
     //    leg = new TLegend(0.173516,0.6726768,0.4310502,0.8363384,NULL,"brNDC");
     //else //right
-        leg = new TLegend(0.6081871,0.7859477,0.8502924,0.8970588,NULL,"brNDC");
+        leg = new TLegend(0.580117,0.6944444,0.8643275,0.9068627,NULL,"brNDC");
     leg->SetBorderSize(0);
     leg->SetTextSize(0.06535948);
     leg->SetLineStyle(0);
