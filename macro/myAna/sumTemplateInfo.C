@@ -151,4 +151,20 @@ void sumTemplateInfo( TFile* f, string name, string output=".", string xElTitle=
     getSubtractBkgResultsCombined( f, outTxt2, systName, nSyst, output, "O4", "O_{4}", unBlind );
     getSubtractBkgResultsCombined( f, outTxt2, systName, nSyst, output, "O7", "O_{7}", unBlind );
     fclose( outTxt2 );
+
+    FILE* outTxt3;
+    outTxt3 = fopen((output+"/FinalAcpResultsCombined_Assume5.txt").c_str(),"w");
+    getSubtractBkgResultsCombined( f, outTxt3, systName, nSyst, output, "O2", "O_{2}", false, 0.05 );
+    getSubtractBkgResultsCombined( f, outTxt3, systName, nSyst, output, "O3", "O_{3}", false, 0.05 );
+    getSubtractBkgResultsCombined( f, outTxt3, systName, nSyst, output, "O4", "O_{4}", false, 0.05 );
+    getSubtractBkgResultsCombined( f, outTxt3, systName, nSyst, output, "O7", "O_{7}", false, 0.05 );
+    fclose( outTxt3 );
+
+    FILE* outTxt4;
+    outTxt4 = fopen((output+"/FinalAcpResultsCombined_Assume-5.txt").c_str(),"w");
+    getSubtractBkgResultsCombined( f, outTxt4, systName, nSyst, output, "O2", "O_{2}", false, -0.05 );
+    getSubtractBkgResultsCombined( f, outTxt4, systName, nSyst, output, "O3", "O_{3}", false, -0.05 );
+    getSubtractBkgResultsCombined( f, outTxt4, systName, nSyst, output, "O4", "O_{4}", false, -0.05 );
+    getSubtractBkgResultsCombined( f, outTxt4, systName, nSyst, output, "O7", "O_{7}", false, -0.05 );
+    fclose( outTxt4 );
 }

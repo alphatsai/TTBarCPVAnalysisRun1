@@ -396,6 +396,16 @@ void getSubtractBkgResults( TFile* f, FILE* outTxt, std::string oName, int systN
     hO_bkg  = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName).c_str()))->Clone();
     hT_bkg  = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName).c_str()))->Clone();
 
+    if( !unBlind )
+    {
+        // Make fake data base on MC 
+        TH1D* tmpData = (TH1D*)f->Get(("DATA_"+oName+chName).c_str());
+        hO_data->Scale(tmpData->Integral()/hO_data->Integral());
+        hO_data->SetBinError( 1, sqrt(hO_data->GetBinContent(1)));
+        hO_data->SetBinError( 2, sqrt(hO_data->GetBinContent(2)));
+        delete tmpData;
+    }
+
     evtBkgMCMean  = hO_bkg->Integral();
     evtBkgFitMean = hT_bkg->Integral();
     bkgWrt = evtBkgFitMean/evtBkgMCMean;
@@ -442,7 +452,7 @@ void getSubtractBkgResults( TFile* f, FILE* outTxt, std::string oName, int systN
     printf( "\n" );
 }
 
-void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systName, int systN, std::string output=".", std::string oName="O2", std::string xTitle="O_{2}", bool unBlind=false )
+void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systName, int systN, std::string output=".", std::string oName="O2", std::string xTitle="O_{2}", bool unBlind=false, float assumpAcp=0 )
 {
     std::string tuneName[2]={"up","down"};
     std::string chName[3]={"_El","_Mu",""};
@@ -470,7 +480,22 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
     for( int ch=0; ch<3; ch++ )
     {
         hO_data[ch] = (TH1D*)((TH1D*)f->Get((dataName+"_"+oName+chName[ch]).c_str()))->Clone();
-        if( ch != 2 )
+        if( !unBlind )
+        {
+            // Make fake data base on MC 
+            TH1D* tmpData = (TH1D*)f->Get(("DATA_"+oName+chName[ch]).c_str());
+            float total = tmpData->Integral();
+            hO_data[ch]->Scale(total/hO_data[ch]->Integral());
+            if( assumpAcp != 0 )
+            {
+                hO_data[ch]->SetBinContent( 1, (1-assumpAcp)*total/2 );
+                hO_data[ch]->SetBinContent( 2, (1+assumpAcp)*total/2 );
+            }
+            hO_data[ch]->SetBinError( 1, sqrt(hO_data[ch]->GetBinContent(1)));
+            hO_data[ch]->SetBinError( 2, sqrt(hO_data[ch]->GetBinContent(2)));
+            delete tmpData;
+        }
+        if( ch != 2 ) // Electron or muon channel
         {
             hO_bkg[ch]  = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName[ch]).c_str()))->Clone();
             hT_bkg[ch] = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName[ch]).c_str()))->Clone();
@@ -478,8 +503,8 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
             evtBkgMCMean[ch]  = hO_bkg[ch]->Integral();
             evtBkgFitMean[ch] = hT_bkg[ch]->Integral();
             bkgWrt[ch] = evtBkgFitMean[ch]/evtBkgMCMean[ch];
-            hO_bkg[ch]->Scale(bkgWrt[ch]);
-            hO_data[ch]->Add(hO_bkg[ch],-1);
+            hO_bkg[ch]->Scale(bkgWrt[ch]);   // weight bkg with fitted bkg
+            hO_data[ch]->Add(hO_bkg[ch],-1); // subtract bkg
 
              Acp[ch] = caculateACP( hO_data[ch] );
             eAcp[ch] = caculateACPerrorWrt( hO_data[ch] );
@@ -491,17 +516,31 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
                     hO_bkgSyst[ch][t][s] = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName[ch]).c_str()))->Clone();
                     hO_bkgSyst[ch][t][s]->Scale(bkgWrtSyst[ch][t][s]); 
                     hO_dataSyst[ch][t][s] = (TH1D*)((TH1D*)f->Get((dataName+"_"+oName+chName[ch]).c_str()))->Clone();
+                    if( !unBlind )
+                    {
+                        // Make fake data base on MC 
+                        TH1D* tmpData = (TH1D*)f->Get(("DATA_"+oName+chName[ch]).c_str());
+                        float total = tmpData->Integral();
+                        hO_dataSyst[ch][t][s]->Scale(total/hO_dataSyst[ch][t][s]->Integral());
+                        if( assumpAcp != 0 )
+                        {
+                            hO_dataSyst[ch][t][s]->SetBinContent( 1, (1-assumpAcp)*total/2 );
+                            hO_dataSyst[ch][t][s]->SetBinContent( 2, (1+assumpAcp)*total/2 );
+                        }
+                        delete tmpData;
+                    }
                     hO_dataSyst[ch][t][s]->Add(hO_bkgSyst[ch][t][s],-1);
-                     AcpSyst[ch][t][s] = caculateACP(hO_dataSyst[ch][t][s]);
+                    AcpSyst[ch][t][s] = caculateACP(hO_dataSyst[ch][t][s]);
                     eAcpSyst[ch][t][s] = (AcpSyst[ch][t][s]-Acp[ch]);
                 }
             }
         }
+        // Combined channel
         else
         {
             hO_bkg[ch] = (TH1D*)hO_bkg[0]->Clone();
-            hO_bkg[ch] ->Add(hO_bkg[1]);
-            hO_data[ch]->Add(hO_bkg[ch],-1);
+            hO_bkg[ch] ->Add(hO_bkg[1]);     // Combined electron and muon
+            hO_data[ch]->Add(hO_bkg[ch],-1); // subtract bkg
              Acp[ch] = caculateACP( hO_data[ch] );
             eAcp[ch] = caculateACPerrorWrt( hO_data[ch] );
             // * Systmatic uncs.
@@ -510,6 +549,19 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
                     hO_bkgSyst[ch][t][s] = (TH1D*)hO_bkgSyst[0][t][s]->Clone();
                     hO_bkgSyst[ch][t][s] ->Add(hO_bkgSyst[1][t][s]); 
                     hO_dataSyst[ch][t][s] = (TH1D*)((TH1D*)f->Get((dataName+"_"+oName+chName[ch]).c_str()))->Clone();
+                    if( !unBlind )
+                    {
+                        // Make fake data base on MC 
+                        TH1D* tmpData = (TH1D*)f->Get(("DATA_"+oName+chName[ch]).c_str());
+                        float total = tmpData->Integral();
+                        hO_dataSyst[ch][t][s]->Scale(total/hO_dataSyst[ch][t][s]->Integral());
+                        if( assumpAcp != 0 )
+                        {
+                            hO_dataSyst[ch][t][s]->SetBinContent( 1, (1-assumpAcp)*total/2 );
+                            hO_dataSyst[ch][t][s]->SetBinContent( 2, (1+assumpAcp)*total/2 );
+                        }
+                        delete tmpData;
+                    }
                     hO_dataSyst[ch][t][s]->Add(hO_bkgSyst[ch][t][s],-1);
                      AcpSyst[ch][t][s] = caculateACP(hO_dataSyst[ch][t][s]);
                     eAcpSyst[ch][t][s] = (AcpSyst[ch][t][s]-Acp[ch]);
@@ -619,7 +671,7 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
     h0->GetXaxis()->SetLabelSize(0.12);
     h0->GetXaxis()->SetLabelFont(62);
     h0->GetXaxis()->SetTitleSize(0.035);
-    h0->GetYaxis()->SetTitle("ACP [%]");
+    h0->GetYaxis()->SetTitle("A'_{CP} [%]");
     h0->GetYaxis()->SetLabelOffset(0.01);
     h0->GetYaxis()->SetLabelSize(0.06);
     h0->GetYaxis()->SetTitleSize(0.07);
@@ -645,7 +697,10 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
     //if( legX == 0 ) //Left 
     //    leg = new TLegend(0.173516,0.6726768,0.4310502,0.8363384,NULL,"brNDC");
     //else //right
+    if( assumpAcp <= 0 )
         leg = new TLegend(0.580117,0.6944444,0.8643275,0.9068627,NULL,"brNDC");
+    else
+        leg = new TLegend(0.580117,0.1944444,0.8643275,0.4068627,NULL,"brNDC");
     leg->SetBorderSize(0);
     leg->SetTextSize(0.06535948);
     leg->SetLineStyle(0);
@@ -670,7 +725,13 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
     t_title->SetTextSize(0.04);
     t_title->Draw();
 
-    c1->SaveAs((output+"/FinalACP_"+oName+".pdf").c_str());
-
+    if( assumpAcp == 0 ){
+        c1->SaveAs((output+"/FinalACP_"+oName+".pdf").c_str());
+    }else{
+        char text[100];
+        sprintf( text, "%s/FinalACP_%s_Assumed%.0f.pdf", output.c_str(), oName.c_str(), assumpAcp*100 );
+        c1->SaveAs(text);
+    }
+    delete h0;
 }
 
