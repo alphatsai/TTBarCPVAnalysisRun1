@@ -15,7 +15,12 @@ def process_input_dir(input_dir, match, filelist):
     input_dir = input_dir.rstrip('/')+'/'
     filenamelist = make_filenamelist(input_dir)
 
-    path = input_dir;
+    #path = input_dir;
+    if input_dir.find("eos/uscms/store/user") > -1 :
+       path = input_dir.replace("eos/uscms/", "")
+    else:
+       path = input_dir;
+
     name = ''
     jobdict = {}
 
@@ -91,7 +96,9 @@ EOSPATH="EOS_PATH"
 if [ ! -z $EOSPATH -a $EOSPATH!=" " ]
 then
 	echo "Copying file  OUTPUT_FILENAME.root to " ${EOSPATH}"/OUTPUT_FILENAME_JOB_NUMBER.root"
-	mv OUTPUT_FILENAME.root ${EOSPATH}/OUTPUT_FILENAME_JOB_NUMBER.root
+	NEWEOSPATH=`echo ${EOSPATH} | sed 's/^\///g' | sed 's/eos\/uscms\//root:\/\/cmseos.fnal.gov\/\//g'`
+	xrdcp -f -s OUTPUT_FILENAME.root ${NEWEOSPATH}/OUTPUT_FILENAME_JOB_NUMBER.root
+        rm -f OUTPUT_FILENAME.root
 else
 	echo "Moving file  OUTPUT_FILENAME.root to DATASET_WORKDIR/output/OUTPUT_FILENAME_JOB_NUMBER.root"
 	mv OUTPUT_FILENAME.root OUTPUT_FILENAME_JOB_NUMBER.root
@@ -237,12 +244,14 @@ def main():
     ifile = 0
     for ijob in range(ijobmax):
        # prepare the list of input files
-       input_files = '    \'file:' + filelist[ifile] + '\''
+       #input_files = '    \'file:' + filelist[ifile] + '\''
+       input_files = '    \'root://cmsxrootd.fnal.gov//' + filelist[ifile] + '\''
        for i in range(filesperjob-1):
            if ifile>(numfiles-2):
                break
            ifile = ifile + 1
-           input_files += (',\n    \'file:' + filelist[ifile] + '\'')
+           #input_files += (',\n    \'file:' + filelist[ifile] + '\'')
+           input_files += (',\n    \'root://cmsxrootd.fnal.gov//' + filelist[ifile] + '\'')
        ifile = ifile + 1
 
        #jobName = dataset_workdir.split('/')[len(dataset_workdir.split('/'))-1]+'.'+str(ijob)
