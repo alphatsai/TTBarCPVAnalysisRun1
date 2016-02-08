@@ -63,6 +63,7 @@ SemiLeptanicResultsCheckObs::SemiLeptanicResultsCheckObs(const edm::ParameterSet
     maxChi2Cut_(  iConfig.getParameter<double>("MaxChi2Cut")),
     minChi2Cut_(  iConfig.getParameter<double>("MinChi2Cut")),
     Owrt_(        iConfig.getParameter<double>("Owrt")),
+    GenACP_(      iConfig.getParameter<double>("GenACP")),
     doWrtEvt_(    iConfig.getParameter<bool>("DoWrtEvt")),
     Debug_(       iConfig.getParameter<bool>("Debug"))
 {}
@@ -86,51 +87,51 @@ void SemiLeptanicResultsCheckObs::beginJob()
     // Create TH1D
     h1 = TH1InfoClass<TH1D>(Debug_);
     h1.ClearTH1Info();
-    h1.addNewTH1( "Evt_O7",                  "O7",                      "O_{7}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O7_Mu",               "O7",                      "O_{7}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O7_El",               "O7",                      "O_{7}",             "Events", "", "", 40,  -2,   2   );
+    h1.addNewTH1( "Evt_O7",                  "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Evt_O7_Mu",               "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Evt_O7_El",               "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
     h1.addNewTH1( "Evt_O7Asym",              "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O7Asym_Mu",           "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O7Asym_El",           "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
-    h1.addNewTH1( "Evt_O4",                  "O4",                      "O_{4}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O4_Mu",               "O4",                      "O_{4}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O4_El",               "O4",                      "O_{4}",             "Events", "", "", 40,  -2,   2   );
+    h1.addNewTH1( "Evt_O4",                  "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Evt_O4_Mu",               "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Evt_O4_El",               "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
     h1.addNewTH1( "Evt_O4Asym",              "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O4Asym_Mu",           "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O4Asym_El",           "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
-    h1.addNewTH1( "Evt_O3",                  "O3",                      "O_{3}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O3_Mu",               "O3",                      "O_{3}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O3_El",               "O3",                      "O_{3}",             "Events", "", "", 40,  -2,   2   );
+    h1.addNewTH1( "Evt_O3",                  "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Evt_O3_Mu",               "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Evt_O3_El",               "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
     h1.addNewTH1( "Evt_O3Asym",              "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O3Asym_Mu",           "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O3Asym_El",           "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
-    h1.addNewTH1( "Evt_O2",                  "O2",                      "O_{2}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O2_Mu",               "O2",                      "O_{2}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "Evt_O2_El",               "O2",                      "O_{2}",             "Events", "", "", 40,  -2,   2   );
+    h1.addNewTH1( "Evt_O2",                  "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Evt_O2_Mu",               "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Evt_O2_El",               "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
     h1.addNewTH1( "Evt_O2Asym",              "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O2Asym_Mu",           "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O2Asym_El",           "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
-    h1.addNewTH1( "EvtChi2_O7",              "O7",                      "O_{7}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "EvtChi2_O7_Mu",           "O7",                      "O_{7}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "EvtChi2_O7_El",           "O7",                      "O_{7}",             "Events", "", "", 40,  -2,   2   );
+    h1.addNewTH1( "EvtChi2_O7",              "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtChi2_O7_Mu",           "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtChi2_O7_El",           "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
     h1.addNewTH1( "EvtChi2_O7Asym",          "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "EvtChi2_O7Asym_Mu",       "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "EvtChi2_O7Asym_El",       "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
-    h1.addNewTH1( "EvtChi2_O4",              "O4",                      "O_{4}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "EvtChi2_O4_Mu",           "O4",                      "O_{4}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "EvtChi2_O4_El",           "O4",                      "O_{4}",             "Events", "", "", 40,  -2,   2   );
+    h1.addNewTH1( "EvtChi2_O4",              "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtChi2_O4_Mu",           "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtChi2_O4_El",           "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
     h1.addNewTH1( "EvtChi2_O4Asym",          "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "EvtChi2_O4Asym_Mu",       "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "EvtChi2_O4Asym_El",       "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
-    h1.addNewTH1( "EvtChi2_O3",              "O3",                      "O_{3}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "EvtChi2_O3_Mu",           "O3",                      "O_{3}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "EvtChi2_O3_El",           "O3",                      "O_{3}",             "Events", "", "", 40,  -2,   2   );
+    h1.addNewTH1( "EvtChi2_O3",              "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtChi2_O3_Mu",           "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtChi2_O3_El",           "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
     h1.addNewTH1( "EvtChi2_O3Asym",          "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "EvtChi2_O3Asym_Mu",       "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "EvtChi2_O3Asym_El",       "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
-    h1.addNewTH1( "EvtChi2_O2",              "O2",                      "O_{2}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "EvtChi2_O2_Mu",           "O2",                      "O_{2}",             "Events", "", "", 40,  -2,   2   );
-    h1.addNewTH1( "EvtChi2_O2_El",           "O2",                      "O_{2}",             "Events", "", "", 40,  -2,   2   );
+    h1.addNewTH1( "EvtChi2_O2",              "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtChi2_O2_Mu",           "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtChi2_O2_El",           "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
     h1.addNewTH1( "EvtChi2_O2Asym",          "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "EvtChi2_O2Asym_Mu",       "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
     h1.addNewTH1( "EvtChi2_O2Asym_El",       "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
@@ -168,6 +169,8 @@ void SemiLeptanicResultsCheckObs::beginJob()
     h1.addNewTH1( "EvtChi2_ChangeO4_Mu",     "",                        "",                  "Events", "", "",  4,   0,   4   );
     h1.addNewTH1( "EvtChi2_ChangeO7_Mu",     "",                        "",                  "Events", "", "",  4,   0,   4   );
 
+    h1.addNewTH1( "Gen_Top_Mass",            "",                    "Mass",                  "Events", "", "", 500,  0,   500 );
+    h1.addNewTH1( "Gen_W_Mass",              "",                    "Mass",                  "Events", "", "", 500,  0,   500 );
     h1.addNewTH1( "Gen_PID_DiffLep_El",      "",                        "",                  "Evetns", "", "", 60, -30,   30 );
     h1.addNewTH1( "Gen_PID_DiffLep_Mu",      "",                        "",                  "Evetns", "", "", 60, -30,   30 );
     h1.addNewTH1( "Num_wJets",               "",                        "",                  "Events", "", "",  10,   0,   10   );
@@ -191,51 +194,51 @@ void SemiLeptanicResultsCheckObs::beginJob()
     h1.addNewTH1( "Gen_PID_wmDa2",           "",                        "",                  "Evetns", "", "", 60, -30,   30 );
     h1.addNewTH1( "Gen_PID_wJets",           "",                        "",                  "Evetns", "", "", 60, -30,   30 );
     h1.addNewTH1( "Gen_PID_wLeps",           "",                        "",                  "Evetns", "", "", 60, -30,   30 );
-    h1.addNewTH1( "Gen_O2",                  "O2",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "Gen_O2_Mu",               "O2",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "Gen_O2_El",               "O2",                      "",                  "Events", "", "", 40,  -2,   2  );
+    h1.addNewTH1( "Gen_O2",                  "O2",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "Gen_O2_Mu",               "O2",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "Gen_O2_El",               "O2",                      "",                  "Events", "", "", 100,  -5,   5  );
     h1.addNewTH1( "Gen_O2Asym",              "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "Gen_O2Asym_Mu",           "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "Gen_O2Asym_El",           "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1  );
-    h1.addNewTH1( "Gen_O3",                  "O3",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "Gen_O3_Mu",               "O3",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "Gen_O3_El",               "O3",                      "",                  "Events", "", "", 40,  -2,   2  );
+    h1.addNewTH1( "Gen_O3",                  "O3",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "Gen_O3_Mu",               "O3",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "Gen_O3_El",               "O3",                      "",                  "Events", "", "", 100,  -5,   5  );
     h1.addNewTH1( "Gen_O3Asym",              "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "Gen_O3Asym_Mu",           "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "Gen_O3Asym_El",           "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1  );
-    h1.addNewTH1( "Gen_O4",                  "O4",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "Gen_O4_Mu",               "O4",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "Gen_O4_El",               "O4",                      "",                  "Events", "", "", 40,  -2,   2  );
+    h1.addNewTH1( "Gen_O4",                  "O4",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "Gen_O4_Mu",               "O4",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "Gen_O4_El",               "O4",                      "",                  "Events", "", "", 100,  -5,   5  );
     h1.addNewTH1( "Gen_O4Asym",              "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "Gen_O4Asym_Mu",           "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "Gen_O4Asym_El",           "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1  );
-    h1.addNewTH1( "Gen_O7",                  "O7",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "Gen_O7_Mu",               "O7",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "Gen_O7_El",               "O7",                      "",                  "Events", "", "", 40,  -2,   2  );
+    h1.addNewTH1( "Gen_O7",                  "O7",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "Gen_O7_Mu",               "O7",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "Gen_O7_El",               "O7",                      "",                  "Events", "", "", 100,  -5,   5  );
     h1.addNewTH1( "Gen_O7Asym",              "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "Gen_O7Asym_Mu",           "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "Gen_O7Asym_El",           "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1  );
-    h1.addNewTH1( "GenChi2_O2",              "O2",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "GenChi2_O2_Mu",           "O2",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "GenChi2_O2_El",           "O2",                      "",                  "Events", "", "", 40,  -2,   2  );
+    h1.addNewTH1( "GenChi2_O2",              "O2",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "GenChi2_O2_Mu",           "O2",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "GenChi2_O2_El",           "O2",                      "",                  "Events", "", "", 100,  -5,   5  );
     h1.addNewTH1( "GenChi2_O2Asym",          "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "GenChi2_O2Asym_Mu",       "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "GenChi2_O2Asym_El",       "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1  );
-    h1.addNewTH1( "GenChi2_O3",              "O3",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "GenChi2_O3_Mu",           "O3",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "GenChi2_O3_El",           "O3",                      "",                  "Events", "", "", 40,  -2,   2  );
+    h1.addNewTH1( "GenChi2_O3",              "O3",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "GenChi2_O3_Mu",           "O3",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "GenChi2_O3_El",           "O3",                      "",                  "Events", "", "", 100,  -5,   5  );
     h1.addNewTH1( "GenChi2_O3Asym",          "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "GenChi2_O3Asym_Mu",       "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "GenChi2_O3Asym_El",       "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1  );
-    h1.addNewTH1( "GenChi2_O4",              "O4",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "GenChi2_O4_Mu",           "O4",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "GenChi2_O4_El",           "O4",                      "",                  "Events", "", "", 40,  -2,   2  );
+    h1.addNewTH1( "GenChi2_O4",              "O4",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "GenChi2_O4_Mu",           "O4",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "GenChi2_O4_El",           "O4",                      "",                  "Events", "", "", 100,  -5,   5  );
     h1.addNewTH1( "GenChi2_O4Asym",          "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "GenChi2_O4Asym_Mu",       "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "GenChi2_O4Asym_El",       "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1  );
-    h1.addNewTH1( "GenChi2_O7",              "O7",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "GenChi2_O7_Mu",           "O7",                      "",                  "Events", "", "", 40,  -2,   2  );
-    h1.addNewTH1( "GenChi2_O7_El",           "O7",                      "",                  "Events", "", "", 40,  -2,   2  );
+    h1.addNewTH1( "GenChi2_O7",              "O7",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "GenChi2_O7_Mu",           "O7",                      "",                  "Events", "", "", 100,  -5,   5  );
+    h1.addNewTH1( "GenChi2_O7_El",           "O7",                      "",                  "Events", "", "", 100,  -5,   5  );
     h1.addNewTH1( "GenChi2_O7Asym",          "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "GenChi2_O7Asym_Mu",       "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "GenChi2_O7Asym_El",       "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1  );
@@ -246,6 +249,30 @@ void SemiLeptanicResultsCheckObs::beginJob()
     // Create TH2D
     h2 = TH2InfoClass<TH2D>(Debug_);
     h2.ClearTH2Info();
+    h2.addNewTH2("TH2_Gen_vs_RECO_O2",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Gen_vs_RECO_O2_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Gen_vs_RECO_O2_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Gen_vs_RECO_O3",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Gen_vs_RECO_O3_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Gen_vs_RECO_O3_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Gen_vs_RECO_O4",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Gen_vs_RECO_O4_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Gen_vs_RECO_O4_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Gen_vs_RECO_O7",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Gen_vs_RECO_O7_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Gen_vs_RECO_O7_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O2",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O2_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O2_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O3",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O3_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O3_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O4",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O4_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O4_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O7",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O7_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O7_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
     h2.CreateTH2( fs );
     h2.Sumw2();
 
@@ -259,7 +286,7 @@ void SemiLeptanicResultsCheckObs::beginJob()
     //VtxInfo.Register(chain_);
     EvtInfo.Register(chain_);
     GenInfo.Register(chain_);
-    //JetInfo.Register(chain_,"PFJetInfo");
+    JetInfo.Register(chain_,"PFJetInfo");
     //LepInfo.Register(chain_,"PFLepInfo");
     IsoLepInfo.Register(chain_,"isoLepton");
 
@@ -311,10 +338,11 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
         double wrtobs = WrtObs_;
         if( !doWrtEvt_ ){ wrtevt=1; };
         // ---- * Checking generator info
+        //int lepWpid=0;
         vector<GenParticle> particles;
         vector<GenParticle> wJets;
         vector<GenParticle> wLeps;
-        GenParticle  b_quark, bbar_quark, lepton, j1;
+        GenParticle  b_quark, bbar_quark, lepton, j1, t_quark, tbar_quark;
         for( int idx=0; idx < GenInfo.Size; idx++ )
         {
             GenParticle particle( GenInfo, idx );
@@ -324,13 +352,22 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
                 h1.GetTH1("Gen_PID")->Fill( particle.PdgID );  
                 if( particle.PdgID == -24 )
                 {
+                    
+                    h1.GetTH1("Gen_W_Mass")->Fill( particle.Mass );   
                     h1.GetTH1("Gen_PID_wpDa1")->Fill( particle.Da1PdgID );   
                     h1.GetTH1("Gen_PID_wpDa2")->Fill( particle.Da2PdgID );   
                 }
                 if( particle.PdgID == 24 )
                 {
+                    h1.GetTH1("Gen_W_Mass")->Fill( particle.Mass );   
                     h1.GetTH1("Gen_PID_wmDa1")->Fill( particle.Da1PdgID );   
                     h1.GetTH1("Gen_PID_wmDa2")->Fill( particle.Da2PdgID );   
+                }
+                if( abs(particle.PdgID) == 6 )
+                {
+                    if( particle.PdgID > 0 ) t_quark    = particle; 
+                    if( particle.PdgID < 0 ) tbar_quark = particle; 
+                    h1.GetTH1("Gen_Top_Mass")->Fill( particle.Mass );   
                 }
                 if( abs(particle.PdgID) == 5 )
                 { 
@@ -353,6 +390,7 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
                 {
                     if( abs(particle.Mo1PdgID) == 24 || abs(particle.Mo2PdgID) == 24 )
                     {
+                        //lepWpid = (abs(particle.Mo1PdgID)==24) ? particle.Mo1PdgID:particle.Mo2PdgID; 
                         wLeps.push_back(particle);        
                         h1.GetTH1("Gen_PID_wLeps")->Fill( particle.PdgID );  
                     }
@@ -369,6 +407,31 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
         h1.GetTH1("Num_wJets")->Fill(wJets.size());
         h1.GetTH1("Num_wLeps")->Fill(wLeps.size());
 
+        //// * RECO - GEN Jet matching GEN Particle
+        //GenParticle  b_quark_Htop;
+        //if( lepWpid ==  24 ) b_quark_Htop = b_quark;
+        //if( lepWpid == -24 ) b_quark_Htop = bbar_quark;
+
+        //int ibj=-1;
+        //int ij1=-1;
+        //int ij2=-1;
+        //float dRbb=100000;
+        //for( int i=0; i<JetInfo.Size; i++ )
+        //{
+        //    TVector3 P3;
+        //    P3.SetPtEtaPhi( JetInfo.GenPt[i], JetInfo.GenEta[i], JetInfo.GenPhi[i] );
+        //    if( JetInfo.GenPdgID[i] == b_quark_Htop.PdgID )
+        //    {
+        //        float tmp=b_quark_Htop.P3.DeltaR(P3);
+        //        if( tmp < dRbb )
+        //        {
+        //            dRbb=tmp; 
+        //            ibj=i;
+        //        }
+        //    }
+        //}
+
+        // * GEN ACP
         int charge=0;
         if( wJets.size() == 2 )
         {   
@@ -398,170 +461,204 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
         GenO4 = Obs4( lepton.P3, j1.P3, b_quark.P3, bbar_quark.P3, charge );
         GenO7 = Obs7( az, b_quark.P3, bbar_quark.P3 );
 
-        // ---- * RECO INFO 
-        checkObsChange( h1.GetTH1("Evt_ChangeO2"), O2_, GenO2, wrtevt);
-        checkObsChange( h1.GetTH1("Evt_ChangeO3"), O3_, GenO3, wrtevt);
-        checkObsChange( h1.GetTH1("Evt_ChangeO4"), O4_, GenO4, wrtevt);
-        checkObsChange( h1.GetTH1("Evt_ChangeO7"), O7_, GenO7, wrtevt);
+        // ---- * ACP INFO
+        double acpWrtO2 = (GenO2>0)? (1+GenACP_):(1-GenACP_);  
+        double acpWrtO3 = (GenO3>0)? (1+GenACP_):(1-GenACP_);  
+        double acpWrtO4 = (GenO4>0)? (1+GenACP_):(1-GenACP_);  
+        double acpWrtO7 = (GenO7>0)? (1+GenACP_):(1-GenACP_); 
+
+        checkObsChange( h1.GetTH1("Evt_ChangeO2"), O2_, GenO2, wrtevt );
+        checkObsChange( h1.GetTH1("Evt_ChangeO3"), O3_, GenO3, wrtevt );
+        checkObsChange( h1.GetTH1("Evt_ChangeO4"), O4_, GenO4, wrtevt );
+        checkObsChange( h1.GetTH1("Evt_ChangeO7"), O7_, GenO7, wrtevt );
         h1.GetTH1("Evt_ChargeDiff")->Fill( IsoLepInfo.Charge*charge );
-        h1.GetTH1("Evt_O2")->Fill( O2_/wrtobs, wrtevt );
-        h1.GetTH1("Evt_O3")->Fill( O3_/wrtobs, wrtevt );
-        h1.GetTH1("Evt_O4")->Fill( O4_/wrtobs, wrtevt );
-        h1.GetTH1("Evt_O7")->Fill( O7_/wrtobs, wrtevt );
-        h1.GetTH1("Gen_O2")->Fill( GenO2/wrtobs, wrtevt );
-        h1.GetTH1("Gen_O3")->Fill( GenO3/wrtobs, wrtevt );
-        h1.GetTH1("Gen_O4")->Fill( GenO4/wrtobs, wrtevt );
-        h1.GetTH1("Gen_O7")->Fill( GenO7/wrtobs, wrtevt );
-        fillAsym( h1.GetTH1("Evt_O2Asym"), O2_, wrtevt );
-        fillAsym( h1.GetTH1("Evt_O3Asym"), O3_, wrtevt );
-        fillAsym( h1.GetTH1("Evt_O4Asym"), O4_, wrtevt );
-        fillAsym( h1.GetTH1("Evt_O7Asym"), O7_, wrtevt );
-        fillAsym( h1.GetTH1("Gen_O2Asym"), GenO2, wrtevt );
-        fillAsym( h1.GetTH1("Gen_O3Asym"), GenO3, wrtevt );
-        fillAsym( h1.GetTH1("Gen_O4Asym"), GenO4, wrtevt );
-        fillAsym( h1.GetTH1("Gen_O7Asym"), GenO7, wrtevt );
+        h1.GetTH1("Evt_O2")->Fill( O2_/wrtobs, wrtevt*acpWrtO2 );
+        h1.GetTH1("Evt_O3")->Fill( O3_/wrtobs, wrtevt*acpWrtO3 );
+        h1.GetTH1("Evt_O4")->Fill( O4_/wrtobs, wrtevt*acpWrtO4 );
+        h1.GetTH1("Evt_O7")->Fill( O7_/wrtobs, wrtevt*acpWrtO7 );
+        h1.GetTH1("Gen_O2")->Fill( GenO2/wrtobs, wrtevt*acpWrtO2 );
+        h1.GetTH1("Gen_O3")->Fill( GenO3/wrtobs, wrtevt*acpWrtO3 );
+        h1.GetTH1("Gen_O4")->Fill( GenO4/wrtobs, wrtevt*acpWrtO4 );
+        h1.GetTH1("Gen_O7")->Fill( GenO7/wrtobs, wrtevt*acpWrtO7 );
+        fillAsym( h1.GetTH1("Evt_O2Asym"), O2_, wrtevt*acpWrtO2 );
+        fillAsym( h1.GetTH1("Evt_O3Asym"), O3_, wrtevt*acpWrtO3 );
+        fillAsym( h1.GetTH1("Evt_O4Asym"), O4_, wrtevt*acpWrtO4 );
+        fillAsym( h1.GetTH1("Evt_O7Asym"), O7_, wrtevt*acpWrtO7 );
+        fillAsym( h1.GetTH1("Gen_O2Asym"), GenO2, wrtevt*acpWrtO2 );
+        fillAsym( h1.GetTH1("Gen_O3Asym"), GenO3, wrtevt*acpWrtO3 );
+        fillAsym( h1.GetTH1("Gen_O4Asym"), GenO4, wrtevt*acpWrtO4 );
+        fillAsym( h1.GetTH1("Gen_O7Asym"), GenO7, wrtevt*acpWrtO7 );
+        h2.GetTH2("TH2_Gen_vs_RECO_O2")->Fill(O2_/wrtobs,GenO2/wrtobs, wrtevt*acpWrtO2 );
+        h2.GetTH2("TH2_Gen_vs_RECO_O3")->Fill(O3_/wrtobs,GenO3/wrtobs, wrtevt*acpWrtO3 );
+        h2.GetTH2("TH2_Gen_vs_RECO_O4")->Fill(O4_/wrtobs,GenO4/wrtobs, wrtevt*acpWrtO4 );
+        h2.GetTH2("TH2_Gen_vs_RECO_O7")->Fill(O7_/wrtobs,GenO7/wrtobs, wrtevt*acpWrtO7 );
         if( isMuonEvt_ && !isEleEvt_ )
         {
             if( IsoLepInfo.Charge*charge < 0 ) h1.GetTH1("Gen_PID_DiffLep_Mu")->Fill(lepton.PdgID);
-            checkObsChange( h1.GetTH1("Evt_ChangeO2_Mu"), O2_, GenO2, wrtevt);
-            checkObsChange( h1.GetTH1("Evt_ChangeO3_Mu"), O3_, GenO3, wrtevt);
-            checkObsChange( h1.GetTH1("Evt_ChangeO4_Mu"), O4_, GenO4, wrtevt);
-            checkObsChange( h1.GetTH1("Evt_ChangeO7_Mu"), O7_, GenO7, wrtevt);
+            checkObsChange( h1.GetTH1("Evt_ChangeO2_Mu"), O2_, GenO2, wrtevt );
+            checkObsChange( h1.GetTH1("Evt_ChangeO3_Mu"), O3_, GenO3, wrtevt );
+            checkObsChange( h1.GetTH1("Evt_ChangeO4_Mu"), O4_, GenO4, wrtevt );
+            checkObsChange( h1.GetTH1("Evt_ChangeO7_Mu"), O7_, GenO7, wrtevt );
             h1.GetTH1("Evt_ChargeDiff_Mu")->Fill( IsoLepInfo.Charge*charge );
             h1.GetTH1("Gen_PID_Lep_Mu")->Fill( lepton.PdgID );   
-            h1.GetTH1("Evt_O2_Mu")->Fill( O2_/wrtobs, wrtevt );
-            h1.GetTH1("Evt_O3_Mu")->Fill( O3_/wrtobs, wrtevt );
-            h1.GetTH1("Evt_O4_Mu")->Fill( O4_/wrtobs, wrtevt );
-            h1.GetTH1("Evt_O7_Mu")->Fill( O7_/wrtobs, wrtevt );
-            h1.GetTH1("Gen_O2_Mu")->Fill( GenO2/wrtobs, wrtevt );
-            h1.GetTH1("Gen_O3_Mu")->Fill( GenO3/wrtobs, wrtevt );
-            h1.GetTH1("Gen_O4_Mu")->Fill( GenO4/wrtobs, wrtevt );
-            h1.GetTH1("Gen_O7_Mu")->Fill( GenO7/wrtobs, wrtevt );
-            fillAsym( h1.GetTH1("Evt_O2Asym_Mu"), O2_, wrtevt );
-            fillAsym( h1.GetTH1("Evt_O3Asym_Mu"), O3_, wrtevt );
-            fillAsym( h1.GetTH1("Evt_O4Asym_Mu"), O4_, wrtevt );
-            fillAsym( h1.GetTH1("Evt_O7Asym_Mu"), O7_, wrtevt );
-            fillAsym( h1.GetTH1("Gen_O2Asym_Mu"), GenO2, wrtevt );
-            fillAsym( h1.GetTH1("Gen_O3Asym_Mu"), GenO3, wrtevt );
-            fillAsym( h1.GetTH1("Gen_O4Asym_Mu"), GenO4, wrtevt );
-            fillAsym( h1.GetTH1("Gen_O7Asym_Mu"), GenO7, wrtevt );
+            h1.GetTH1("Evt_O2_Mu")->Fill( O2_/wrtobs, wrtevt*acpWrtO2 );
+            h1.GetTH1("Evt_O3_Mu")->Fill( O3_/wrtobs, wrtevt*acpWrtO3 );
+            h1.GetTH1("Evt_O4_Mu")->Fill( O4_/wrtobs, wrtevt*acpWrtO4 );
+            h1.GetTH1("Evt_O7_Mu")->Fill( O7_/wrtobs, wrtevt*acpWrtO7 );
+            h1.GetTH1("Gen_O2_Mu")->Fill( GenO2/wrtobs, wrtevt*acpWrtO2 );
+            h1.GetTH1("Gen_O3_Mu")->Fill( GenO3/wrtobs, wrtevt*acpWrtO3 );
+            h1.GetTH1("Gen_O4_Mu")->Fill( GenO4/wrtobs, wrtevt*acpWrtO4 );
+            h1.GetTH1("Gen_O7_Mu")->Fill( GenO7/wrtobs, wrtevt*acpWrtO7 );
+            fillAsym( h1.GetTH1("Evt_O2Asym_Mu"), O2_, wrtevt*acpWrtO2 );
+            fillAsym( h1.GetTH1("Evt_O3Asym_Mu"), O3_, wrtevt*acpWrtO3 );
+            fillAsym( h1.GetTH1("Evt_O4Asym_Mu"), O4_, wrtevt*acpWrtO4 );
+            fillAsym( h1.GetTH1("Evt_O7Asym_Mu"), O7_, wrtevt*acpWrtO7 );
+            fillAsym( h1.GetTH1("Gen_O2Asym_Mu"), GenO2, wrtevt*acpWrtO2 );
+            fillAsym( h1.GetTH1("Gen_O3Asym_Mu"), GenO3, wrtevt*acpWrtO3 );
+            fillAsym( h1.GetTH1("Gen_O4Asym_Mu"), GenO4, wrtevt*acpWrtO4 );
+            fillAsym( h1.GetTH1("Gen_O7Asym_Mu"), GenO7, wrtevt*acpWrtO7 );
+            h2.GetTH2("TH2_Gen_vs_RECO_O2_Mu")->Fill(O2_/wrtobs,GenO2/wrtobs, wrtevt*acpWrtO2 );
+            h2.GetTH2("TH2_Gen_vs_RECO_O3_Mu")->Fill(O3_/wrtobs,GenO3/wrtobs, wrtevt*acpWrtO3 );
+            h2.GetTH2("TH2_Gen_vs_RECO_O4_Mu")->Fill(O4_/wrtobs,GenO4/wrtobs, wrtevt*acpWrtO4 );
+            h2.GetTH2("TH2_Gen_vs_RECO_O7_Mu")->Fill(O7_/wrtobs,GenO7/wrtobs, wrtevt*acpWrtO7 );
+          
             if( maxChi2Cut_ > minChi2_ && minChi2Cut_ <= minChi2_ )
             {
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO2"),    O2_, GenO2, wrtevt);
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO3"),    O3_, GenO3, wrtevt);
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO4"),    O4_, GenO4, wrtevt);
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO7"),    O7_, GenO7, wrtevt);
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO2_Mu"), O2_, GenO2, wrtevt);
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO3_Mu"), O3_, GenO3, wrtevt);
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO4_Mu"), O4_, GenO4, wrtevt);
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO7_Mu"), O7_, GenO7, wrtevt);
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO2"),    O2_, GenO2, wrtevt );
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO3"),    O3_, GenO3, wrtevt );
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO4"),    O4_, GenO4, wrtevt );
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO7"),    O7_, GenO7, wrtevt );
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO2_Mu"), O2_, GenO2, wrtevt );
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO3_Mu"), O3_, GenO3, wrtevt );
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO4_Mu"), O4_, GenO4, wrtevt );
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO7_Mu"), O7_, GenO7, wrtevt );
                 h1.GetTH1("EvtChi2_ChargeDiff")->Fill( IsoLepInfo.Charge*charge );
                 h1.GetTH1("EvtChi2_ChargeDiff_Mu")->Fill( IsoLepInfo.Charge*charge );
                 h1.GetTH1("GenChi2_PID_Lep_Mu")->Fill( lepton.PdgID );   
-                h1.GetTH1("EvtChi2_O2")->Fill( O2_/wrtobs, wrtevt );
-                h1.GetTH1("EvtChi2_O3")->Fill( O3_/wrtobs, wrtevt );
-                h1.GetTH1("EvtChi2_O4")->Fill( O4_/wrtobs, wrtevt );
-                h1.GetTH1("EvtChi2_O7")->Fill( O7_/wrtobs, wrtevt );
-                h1.GetTH1("GenChi2_O2")->Fill( GenO2/wrtobs, wrtevt );
-                h1.GetTH1("GenChi2_O3")->Fill( GenO3/wrtobs, wrtevt );
-                h1.GetTH1("GenChi2_O4")->Fill( GenO4/wrtobs, wrtevt );
-                h1.GetTH1("GenChi2_O7")->Fill( GenO7/wrtobs, wrtevt );
-                h1.GetTH1("EvtChi2_O2_Mu")->Fill( O2_/wrtobs, wrtevt );
-                h1.GetTH1("EvtChi2_O3_Mu")->Fill( O3_/wrtobs, wrtevt );
-                h1.GetTH1("EvtChi2_O4_Mu")->Fill( O4_/wrtobs, wrtevt );
-                h1.GetTH1("EvtChi2_O7_Mu")->Fill( O7_/wrtobs, wrtevt );
-                h1.GetTH1("GenChi2_O2_Mu")->Fill( GenO2/wrtobs, wrtevt );
-                h1.GetTH1("GenChi2_O3_Mu")->Fill( GenO3/wrtobs, wrtevt );
-                h1.GetTH1("GenChi2_O4_Mu")->Fill( GenO4/wrtobs, wrtevt );
-                h1.GetTH1("GenChi2_O7_Mu")->Fill( GenO7/wrtobs, wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O2Asym_Mu"), O2_, wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O3Asym_Mu"), O3_, wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O4Asym_Mu"), O4_, wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O7Asym_Mu"), O7_, wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O2Asym"),    O2_, wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O3Asym"),    O3_, wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O4Asym"),    O4_, wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O7Asym"),    O7_, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O2Asym_Mu"), GenO2, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O3Asym_Mu"), GenO3, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O4Asym_Mu"), GenO4, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O7Asym_Mu"), GenO7, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O2Asym"),    GenO2, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O3Asym"),    GenO3, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O4Asym"),    GenO4, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O7Asym"),    GenO7, wrtevt );
+                h1.GetTH1("EvtChi2_O2")->Fill( O2_/wrtobs, wrtevt*acpWrtO2 );
+                h1.GetTH1("EvtChi2_O3")->Fill( O3_/wrtobs, wrtevt*acpWrtO3 );
+                h1.GetTH1("EvtChi2_O4")->Fill( O4_/wrtobs, wrtevt*acpWrtO4 );
+                h1.GetTH1("EvtChi2_O7")->Fill( O7_/wrtobs, wrtevt*acpWrtO7 );
+                h1.GetTH1("GenChi2_O2")->Fill( GenO2/wrtobs, wrtevt*acpWrtO2 );
+                h1.GetTH1("GenChi2_O3")->Fill( GenO3/wrtobs, wrtevt*acpWrtO3 );
+                h1.GetTH1("GenChi2_O4")->Fill( GenO4/wrtobs, wrtevt*acpWrtO4 );
+                h1.GetTH1("GenChi2_O7")->Fill( GenO7/wrtobs, wrtevt*acpWrtO7 );
+                h1.GetTH1("EvtChi2_O2_Mu")->Fill( O2_/wrtobs, wrtevt*acpWrtO2 );
+                h1.GetTH1("EvtChi2_O3_Mu")->Fill( O3_/wrtobs, wrtevt*acpWrtO3 );
+                h1.GetTH1("EvtChi2_O4_Mu")->Fill( O4_/wrtobs, wrtevt*acpWrtO4 );
+                h1.GetTH1("EvtChi2_O7_Mu")->Fill( O7_/wrtobs, wrtevt*acpWrtO7 );
+                h1.GetTH1("GenChi2_O2_Mu")->Fill( GenO2/wrtobs, wrtevt*acpWrtO2 );
+                h1.GetTH1("GenChi2_O3_Mu")->Fill( GenO3/wrtobs, wrtevt*acpWrtO3 );
+                h1.GetTH1("GenChi2_O4_Mu")->Fill( GenO4/wrtobs, wrtevt*acpWrtO4 );
+                h1.GetTH1("GenChi2_O7_Mu")->Fill( GenO7/wrtobs, wrtevt*acpWrtO7 );
+                fillAsym( h1.GetTH1("EvtChi2_O2Asym_Mu"), O2_, wrtevt*acpWrtO2 );
+                fillAsym( h1.GetTH1("EvtChi2_O3Asym_Mu"), O3_, wrtevt*acpWrtO3 );
+                fillAsym( h1.GetTH1("EvtChi2_O4Asym_Mu"), O4_, wrtevt*acpWrtO4 );
+                fillAsym( h1.GetTH1("EvtChi2_O7Asym_Mu"), O7_, wrtevt*acpWrtO7 );
+                fillAsym( h1.GetTH1("EvtChi2_O2Asym"),    O2_, wrtevt*acpWrtO2 );
+                fillAsym( h1.GetTH1("EvtChi2_O3Asym"),    O3_, wrtevt*acpWrtO3 );
+                fillAsym( h1.GetTH1("EvtChi2_O4Asym"),    O4_, wrtevt*acpWrtO4 );
+                fillAsym( h1.GetTH1("EvtChi2_O7Asym"),    O7_, wrtevt*acpWrtO7 );
+                fillAsym( h1.GetTH1("GenChi2_O2Asym_Mu"), GenO2, wrtevt*acpWrtO2 );
+                fillAsym( h1.GetTH1("GenChi2_O3Asym_Mu"), GenO3, wrtevt*acpWrtO3 );
+                fillAsym( h1.GetTH1("GenChi2_O4Asym_Mu"), GenO4, wrtevt*acpWrtO4 );
+                fillAsym( h1.GetTH1("GenChi2_O7Asym_Mu"), GenO7, wrtevt*acpWrtO7 );
+                fillAsym( h1.GetTH1("GenChi2_O2Asym"),    GenO2, wrtevt*acpWrtO2 );
+                fillAsym( h1.GetTH1("GenChi2_O3Asym"),    GenO3, wrtevt*acpWrtO3 );
+                fillAsym( h1.GetTH1("GenChi2_O4Asym"),    GenO4, wrtevt*acpWrtO4 );
+                fillAsym( h1.GetTH1("GenChi2_O7Asym"),    GenO7, wrtevt*acpWrtO7 );
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O2_Mu")->Fill(O2_/wrtobs,GenO2/wrtobs, wrtevt*acpWrtO2);
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O3_Mu")->Fill(O3_/wrtobs,GenO3/wrtobs, wrtevt*acpWrtO3);
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O4_Mu")->Fill(O4_/wrtobs,GenO4/wrtobs, wrtevt*acpWrtO4);
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O7_Mu")->Fill(O7_/wrtobs,GenO7/wrtobs, wrtevt*acpWrtO7);
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O2")->Fill(O2_/wrtobs,GenO2/wrtobs, wrtevt*acpWrtO2);
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O3")->Fill(O3_/wrtobs,GenO3/wrtobs, wrtevt*acpWrtO3);
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O4")->Fill(O4_/wrtobs,GenO4/wrtobs, wrtevt*acpWrtO4);
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O7")->Fill(O7_/wrtobs,GenO7/wrtobs, wrtevt*acpWrtO7);
             }
         }
         else if( !isMuonEvt_ &&  isEleEvt_ )
         {
             if( IsoLepInfo.Charge*charge < 0 ) h1.GetTH1("Gen_PID_DiffLep_El")->Fill(lepton.PdgID);
-            checkObsChange( h1.GetTH1("Evt_ChangeO2_El"), O2_, GenO2, wrtevt);
-            checkObsChange( h1.GetTH1("Evt_ChangeO3_El"), O3_, GenO3, wrtevt);
-            checkObsChange( h1.GetTH1("Evt_ChangeO4_El"), O4_, GenO4, wrtevt);
-            checkObsChange( h1.GetTH1("Evt_ChangeO7_El"), O7_, GenO7, wrtevt);
+            checkObsChange( h1.GetTH1("Evt_ChangeO2_El"), O2_, GenO2, wrtevt );
+            checkObsChange( h1.GetTH1("Evt_ChangeO3_El"), O3_, GenO3, wrtevt );
+            checkObsChange( h1.GetTH1("Evt_ChangeO4_El"), O4_, GenO4, wrtevt );
+            checkObsChange( h1.GetTH1("Evt_ChangeO7_El"), O7_, GenO7, wrtevt );
             h1.GetTH1("Evt_ChargeDiff_El")->Fill( IsoLepInfo.Charge*charge );
             h1.GetTH1("Gen_PID_Lep_El")->Fill( lepton.PdgID );   
-            h1.GetTH1("Evt_O2_El")->Fill( O2_/wrtobs,    wrtevt );
-            h1.GetTH1("Evt_O3_El")->Fill( O3_/wrtobs,    wrtevt );
-            h1.GetTH1("Evt_O4_El")->Fill( O4_/wrtobs,    wrtevt );
-            h1.GetTH1("Evt_O7_El")->Fill( O7_/wrtobs,    wrtevt );
-            h1.GetTH1("Gen_O2_El")->Fill( GenO2/wrtobs,  wrtevt );
-            h1.GetTH1("Gen_O3_El")->Fill( GenO3/wrtobs,  wrtevt );
-            h1.GetTH1("Gen_O4_El")->Fill( GenO4/wrtobs,  wrtevt );
-            h1.GetTH1("Gen_O7_El")->Fill( GenO7/wrtobs,  wrtevt );
-            fillAsym( h1.GetTH1("Evt_O2Asym_El"), O2_,   wrtevt );
-            fillAsym( h1.GetTH1("Evt_O3Asym_El"), O3_,   wrtevt );
-            fillAsym( h1.GetTH1("Evt_O4Asym_El"), O4_,   wrtevt );
-            fillAsym( h1.GetTH1("Evt_O7Asym_El"), O7_,   wrtevt );
-            fillAsym( h1.GetTH1("Gen_O2Asym_El"), GenO2, wrtevt );
-            fillAsym( h1.GetTH1("Gen_O3Asym_El"), GenO3, wrtevt );
-            fillAsym( h1.GetTH1("Gen_O4Asym_El"), GenO4, wrtevt );
-            fillAsym( h1.GetTH1("Gen_O7Asym_El"), GenO7, wrtevt );
+            h1.GetTH1("Evt_O2_El")->Fill( O2_/wrtobs,    wrtevt*acpWrtO2 );
+            h1.GetTH1("Evt_O3_El")->Fill( O3_/wrtobs,    wrtevt*acpWrtO3 );
+            h1.GetTH1("Evt_O4_El")->Fill( O4_/wrtobs,    wrtevt*acpWrtO4 );
+            h1.GetTH1("Evt_O7_El")->Fill( O7_/wrtobs,    wrtevt*acpWrtO7 );
+            h1.GetTH1("Gen_O2_El")->Fill( GenO2/wrtobs,  wrtevt*acpWrtO2 );
+            h1.GetTH1("Gen_O3_El")->Fill( GenO3/wrtobs,  wrtevt*acpWrtO3 );
+            h1.GetTH1("Gen_O4_El")->Fill( GenO4/wrtobs,  wrtevt*acpWrtO4 );
+            h1.GetTH1("Gen_O7_El")->Fill( GenO7/wrtobs,  wrtevt*acpWrtO7 );
+            fillAsym( h1.GetTH1("Evt_O2Asym_El"), O2_,   wrtevt*acpWrtO2 );
+            fillAsym( h1.GetTH1("Evt_O3Asym_El"), O3_,   wrtevt*acpWrtO3 );
+            fillAsym( h1.GetTH1("Evt_O4Asym_El"), O4_,   wrtevt*acpWrtO4 );
+            fillAsym( h1.GetTH1("Evt_O7Asym_El"), O7_,   wrtevt*acpWrtO7 );
+            fillAsym( h1.GetTH1("Gen_O2Asym_El"), GenO2, wrtevt*acpWrtO2 );
+            fillAsym( h1.GetTH1("Gen_O3Asym_El"), GenO3, wrtevt*acpWrtO3 );
+            fillAsym( h1.GetTH1("Gen_O4Asym_El"), GenO4, wrtevt*acpWrtO4 );
+            fillAsym( h1.GetTH1("Gen_O7Asym_El"), GenO7, wrtevt*acpWrtO7 );
+            h2.GetTH2("TH2_Gen_vs_RECO_O2_El")->Fill(O2_/wrtobs,GenO2/wrtobs, wrtevt*acpWrtO2 );
+            h2.GetTH2("TH2_Gen_vs_RECO_O3_El")->Fill(O3_/wrtobs,GenO3/wrtobs, wrtevt*acpWrtO3 );
+            h2.GetTH2("TH2_Gen_vs_RECO_O4_El")->Fill(O4_/wrtobs,GenO4/wrtobs, wrtevt*acpWrtO4 );
+            h2.GetTH2("TH2_Gen_vs_RECO_O7_El")->Fill(O7_/wrtobs,GenO7/wrtobs, wrtevt*acpWrtO7 );
             if( maxChi2Cut_ > minChi2_ && minChi2Cut_ <= minChi2_ )
             {
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO2"),    O2_, GenO2, wrtevt);
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO3"),    O3_, GenO3, wrtevt);
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO4"),    O4_, GenO4, wrtevt);
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO7"),    O7_, GenO7, wrtevt);
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO2_El"), O2_, GenO2, wrtevt);
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO3_El"), O3_, GenO3, wrtevt);
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO4_El"), O4_, GenO4, wrtevt);
-                checkObsChange( h1.GetTH1("EvtChi2_ChangeO7_El"), O7_, GenO7, wrtevt);
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO2"),    O2_, GenO2, wrtevt );
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO3"),    O3_, GenO3, wrtevt );
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO4"),    O4_, GenO4, wrtevt );
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO7"),    O7_, GenO7, wrtevt );
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO2_El"), O2_, GenO2, wrtevt );
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO3_El"), O3_, GenO3, wrtevt );
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO4_El"), O4_, GenO4, wrtevt );
+                checkObsChange( h1.GetTH1("EvtChi2_ChangeO7_El"), O7_, GenO7, wrtevt );
                 h1.GetTH1("EvtChi2_ChargeDiff")->Fill( IsoLepInfo.Charge*charge );
                 h1.GetTH1("EvtChi2_ChargeDiff_El")->Fill( IsoLepInfo.Charge*charge );
                 h1.GetTH1("GenChi2_PID_Lep_El")->Fill( lepton.PdgID );   
-                h1.GetTH1("EvtChi2_O2")->Fill( O2_/wrtobs,      wrtevt );
-                h1.GetTH1("EvtChi2_O3")->Fill( O3_/wrtobs,      wrtevt );
-                h1.GetTH1("EvtChi2_O4")->Fill( O4_/wrtobs,      wrtevt );
-                h1.GetTH1("EvtChi2_O7")->Fill( O7_/wrtobs,      wrtevt );
-                h1.GetTH1("GenChi2_O2")->Fill( GenO2/wrtobs,    wrtevt );
-                h1.GetTH1("GenChi2_O3")->Fill( GenO3/wrtobs,    wrtevt );
-                h1.GetTH1("GenChi2_O4")->Fill( GenO4/wrtobs,    wrtevt );
-                h1.GetTH1("GenChi2_O7")->Fill( GenO7/wrtobs,    wrtevt );
-                h1.GetTH1("EvtChi2_O2_El")->Fill( O2_/wrtobs,   wrtevt );
-                h1.GetTH1("EvtChi2_O3_El")->Fill( O3_/wrtobs,   wrtevt );
-                h1.GetTH1("EvtChi2_O4_El")->Fill( O4_/wrtobs,   wrtevt );
-                h1.GetTH1("EvtChi2_O7_El")->Fill( O7_/wrtobs,   wrtevt );
-                h1.GetTH1("GenChi2_O2_El")->Fill( GenO2/wrtobs, wrtevt );
-                h1.GetTH1("GenChi2_O3_El")->Fill( GenO3/wrtobs, wrtevt );
-                h1.GetTH1("GenChi2_O4_El")->Fill( GenO4/wrtobs, wrtevt );
-                h1.GetTH1("GenChi2_O7_El")->Fill( GenO7/wrtobs, wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O2Asym_El"), O2_,   wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O3Asym_El"), O3_,   wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O4Asym_El"), O4_,   wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O7Asym_El"), O7_,   wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O2Asym"),    O2_,   wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O3Asym"),    O3_,   wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O4Asym"),    O4_,   wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O7Asym"),    O7_,   wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O2Asym_El"), GenO2, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O3Asym_El"), GenO3, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O4Asym_El"), GenO4, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O7Asym_El"), GenO7, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O2Asym"),    GenO2, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O3Asym"),    GenO3, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O4Asym"),    GenO4, wrtevt );
-                fillAsym( h1.GetTH1("GenChi2_O7Asym"),    GenO7, wrtevt );
+                h1.GetTH1("EvtChi2_O2")->Fill( O2_/wrtobs,      wrtevt*acpWrtO2 );
+                h1.GetTH1("EvtChi2_O3")->Fill( O3_/wrtobs,      wrtevt*acpWrtO3 );
+                h1.GetTH1("EvtChi2_O4")->Fill( O4_/wrtobs,      wrtevt*acpWrtO4 );
+                h1.GetTH1("EvtChi2_O7")->Fill( O7_/wrtobs,      wrtevt*acpWrtO7 );
+                h1.GetTH1("GenChi2_O2")->Fill( GenO2/wrtobs,    wrtevt*acpWrtO2 );
+                h1.GetTH1("GenChi2_O3")->Fill( GenO3/wrtobs,    wrtevt*acpWrtO3 );
+                h1.GetTH1("GenChi2_O4")->Fill( GenO4/wrtobs,    wrtevt*acpWrtO4 );
+                h1.GetTH1("GenChi2_O7")->Fill( GenO7/wrtobs,    wrtevt*acpWrtO7 );
+                h1.GetTH1("EvtChi2_O2_El")->Fill( O2_/wrtobs,   wrtevt*acpWrtO2 );
+                h1.GetTH1("EvtChi2_O3_El")->Fill( O3_/wrtobs,   wrtevt*acpWrtO3 );
+                h1.GetTH1("EvtChi2_O4_El")->Fill( O4_/wrtobs,   wrtevt*acpWrtO4 );
+                h1.GetTH1("EvtChi2_O7_El")->Fill( O7_/wrtobs,   wrtevt*acpWrtO7 );
+                h1.GetTH1("GenChi2_O2_El")->Fill( GenO2/wrtobs, wrtevt*acpWrtO2 );
+                h1.GetTH1("GenChi2_O3_El")->Fill( GenO3/wrtobs, wrtevt*acpWrtO3 );
+                h1.GetTH1("GenChi2_O4_El")->Fill( GenO4/wrtobs, wrtevt*acpWrtO4 );
+                h1.GetTH1("GenChi2_O7_El")->Fill( GenO7/wrtobs, wrtevt*acpWrtO7 );
+                fillAsym( h1.GetTH1("EvtChi2_O2Asym_El"), O2_,   wrtevt*acpWrtO2 );
+                fillAsym( h1.GetTH1("EvtChi2_O3Asym_El"), O3_,   wrtevt*acpWrtO3 );
+                fillAsym( h1.GetTH1("EvtChi2_O4Asym_El"), O4_,   wrtevt*acpWrtO4 );
+                fillAsym( h1.GetTH1("EvtChi2_O7Asym_El"), O7_,   wrtevt*acpWrtO7 );
+                fillAsym( h1.GetTH1("EvtChi2_O2Asym"),    O2_,   wrtevt*acpWrtO2 );
+                fillAsym( h1.GetTH1("EvtChi2_O3Asym"),    O3_,   wrtevt*acpWrtO3 );
+                fillAsym( h1.GetTH1("EvtChi2_O4Asym"),    O4_,   wrtevt*acpWrtO4 );
+                fillAsym( h1.GetTH1("EvtChi2_O7Asym"),    O7_,   wrtevt*acpWrtO7 );
+                fillAsym( h1.GetTH1("GenChi2_O2Asym_El"), GenO2, wrtevt*acpWrtO2 );
+                fillAsym( h1.GetTH1("GenChi2_O3Asym_El"), GenO3, wrtevt*acpWrtO3 );
+                fillAsym( h1.GetTH1("GenChi2_O4Asym_El"), GenO4, wrtevt*acpWrtO4 );
+                fillAsym( h1.GetTH1("GenChi2_O7Asym_El"), GenO7, wrtevt*acpWrtO7 );
+                fillAsym( h1.GetTH1("GenChi2_O2Asym"),    GenO2, wrtevt*acpWrtO2 );
+                fillAsym( h1.GetTH1("GenChi2_O3Asym"),    GenO3, wrtevt*acpWrtO3 );
+                fillAsym( h1.GetTH1("GenChi2_O4Asym"),    GenO4, wrtevt*acpWrtO4 );
+                fillAsym( h1.GetTH1("GenChi2_O7Asym"),    GenO7, wrtevt*acpWrtO7 );
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O2_El")->Fill(O2_/wrtobs,GenO2/wrtobs, wrtevt*acpWrtO2);
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O3_El")->Fill(O3_/wrtobs,GenO3/wrtobs, wrtevt*acpWrtO3);
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O4_El")->Fill(O4_/wrtobs,GenO4/wrtobs, wrtevt*acpWrtO4);
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O7_El")->Fill(O7_/wrtobs,GenO7/wrtobs, wrtevt*acpWrtO7);
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O2")->Fill(O2_/wrtobs,GenO2/wrtobs, wrtevt*acpWrtO2);
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O3")->Fill(O3_/wrtobs,GenO3/wrtobs, wrtevt*acpWrtO3);
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O4")->Fill(O4_/wrtobs,GenO4/wrtobs, wrtevt*acpWrtO4);
+                h2.GetTH2("TH2Chi2_Gen_vs_RECO_O7")->Fill(O7_/wrtobs,GenO7/wrtobs, wrtevt*acpWrtO7);
             }
         }
 

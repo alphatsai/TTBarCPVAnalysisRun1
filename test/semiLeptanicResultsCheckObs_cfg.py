@@ -41,6 +41,11 @@ options.register('Owrt', 'MT:3',
     VarParsing.varType.string,
     "Weight the obseverble in top mass"
     )
+options.register('GenACP', 0,
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.string,
+    "Assumption of ACP"
+    )
 options.register('DoWrtEvt', True,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
@@ -82,6 +87,7 @@ process.CheckEventsOfLepJets = cms.EDAnalyzer('SemiLeptanicResultsCheckObs',
     MaxChi2Cut            = cms.double(options.MaxChi2Cut),
     MinChi2Cut            = cms.double(options.MinChi2Cut),
     Owrt                  = cms.double(Oweight), 
+    GenACP                = cms.double(options.GenACP), 
     DoWrtEvt              = cms.bool(options.DoWrtEvt),
     Debug                 = cms.bool(options.Debug),
 ) 

@@ -55,6 +55,7 @@ class SemiLeptanicResultsCheckObs : public edm::EDAnalyzer{
         const double maxChi2Cut_;
         const double minChi2Cut_;
         const double Owrt_;
+        const double GenACP_;
         bool doWrtEvt_;
         bool Debug_;
 
