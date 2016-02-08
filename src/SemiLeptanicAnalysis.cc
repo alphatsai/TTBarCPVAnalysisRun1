@@ -675,6 +675,7 @@ void SemiLeptanicAnalysis::beginJob()
         pdftree_ -> Branch("EvtInfo.WrtEvt"   , &b_WrtEvt_       , "EvtInfo.WrtEvt/D"   ); 
         pdftree_ -> Branch("EvtInfo.isMuonEvt", &b_isMuonEvt_    , "EvtInfo.isMuonEvt/I");
         pdftree_ -> Branch("EvtInfo.isEleEvt" , &b_isEleEvt_     , "EvtInfo.isEleEvt/I" );
+        pdftree_ -> Branch("EvtInfo.isSignal" , &b_isSignal_     , "EvtInfo.isSignal/I" );
     }
 
     // Do analysis tree
@@ -1751,6 +1752,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                 b_isMuonEvt_ = 0;
                 b_isEleEvt_  = 0;
             }
+            if( !isdata && genTopPt>=0. && genAntiTopPt>=0. ) b_isSignal_=1;
+            else b_isSignal_=0;
             b_O2_ = O2;
             b_O3_ = O3;
             b_O4_ = O4;
