@@ -45,7 +45,9 @@ class PDFUncertaintyAna : public edm::EDAnalyzer{
         ~PDFUncertaintyAna();
 
         static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-        void checkObsChange( TH1D* h, double recoO, double genO, double wrt=1 );
+        void CreateTH1Number(   int numberPDF, TH1InfoClass<TH1D> &h1, std::string hName, std::string title, std::string xtitle, std::string ytitle, std::string xunit, std::string yunit, int bin, double min, double max );
+        void FillTH1Number(     int numberPDF, double value, TH1InfoClass<TH1D> &h1, std::string hName, double wrt=1. );
+        double IntegralTH1Number( int numberPDF, double value, TH1InfoClass<TH1D> &h1, std::string hName );
 
     private:
         virtual void beginJob();
@@ -69,6 +71,14 @@ class PDFUncertaintyAna : public edm::EDAnalyzer{
         std::vector<double> pdf_weights_sum_ ; 
         double passed_pdf_weight0_sum_ ; 
         std::vector<double> passed_pdf_weights_sum_ ; 
+
+        int numberPDF_;
+        //double selectedEvts_;
+        //double selectedEvts_El_;
+        //double selectedEvts_Mu_;
+        double nselectedEvts_;
+        double nselectedEvts_El_;
+        double nselectedEvts_Mu_;
 
         long long int EvtNo_;
         int BxNo_;
