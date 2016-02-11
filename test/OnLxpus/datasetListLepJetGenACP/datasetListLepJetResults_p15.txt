@@ -1,0 +1,2 @@
+## Dataset_name    Number_of_jobs    EOS_location    PyCfg_parameters (optional)
+TTJets_SemiLeptMGDecays 10  /eos/cms/store/user/jtsai/TTBarCPV/results/TTJets_SemiLeptMGDecays outFilename=SemiLeptanicResultsCheck.root GenACP=0.15

@@ -84,6 +84,7 @@ EOSPATH="EOS_PATH"
 export SCRAM_ARCH=slc6_amd64_gcc481
 cd MAIN_WORKDIR
 eval `scram runtime -sh`
+scram setup lhapdffull
 
 cp -v MAIN_WORKDIR/CMSSW_cfg.py $BATCHDIR/CMSSW_cfg.py
 cp -v MAIN_WORKDIR/inputJsons_cfi.py $BATCHDIR/
