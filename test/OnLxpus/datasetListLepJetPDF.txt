@@ -18,7 +18,7 @@ T_s-channel  1 /eos/cms/store/user/jtsai/TTBarCPV/results/09Feb_PDFTree/T_s-chan
 T_tW-channel 1 /eos/cms/store/user/jtsai/TTBarCPV/results/09Feb_PDFTree/T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=PDFUncertaintyAna.root   
 ##
 Tbar_s-channel  1 /eos/cms/store/user/jtsai/TTBarCPV/results/09Feb_PDFTree/Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1     outFilename=PDFUncertaintyAna.root   
-Tbar_t-channel  2 /eos/cms/store/user/jtsai/TTBarCPV/results/09Feb_PDFTree/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1     outFilename=PDFUncertaintyAna.root   
+Tbar_t-channel  1 /eos/cms/store/user/jtsai/TTBarCPV/results/09Feb_PDFTree/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1     outFilename=PDFUncertaintyAna.root   
 Tbar_tW-channel 1 /eos/cms/store/user/jtsai/TTBarCPV/results/09Feb_PDFTree/Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=PDFUncertaintyAna.root   
 ##
 DYJetsToLL 1 /eos/cms/store/user/jtsai/TTBarCPV/results/09Feb_PDFTree/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=PDFUncertaintyAna.root   

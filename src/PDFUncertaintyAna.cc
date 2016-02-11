@@ -206,6 +206,7 @@ void PDFUncertaintyAna::analyze(const edm::Event& iEvent, const edm::EventSetup&
         if( maxChi2Cut_ > minChi2_ && minChi2Cut_ <= minChi2_ ) passChi2Cut=true;
 
         std::vector<double> pdf_weights;
+        LHAPDF::usePDFMember(1,0);
         double xpdf1 = LHAPDF::xfx( 1, PDFx1_, PDFscale_, PDFid1_);
         double xpdf2 = LHAPDF::xfx( 1, PDFx2_, PDFscale_, PDFid2_);
         double w0 = xpdf1 * xpdf2;
@@ -273,6 +274,7 @@ void PDFUncertaintyAna::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
             double wrtevt = WrtEvt_;
 
+            LHAPDF::usePDFMember(1,0);
             double xpdf1 = LHAPDF::xfx( 1, PDFx1_, PDFscale_, PDFid1_ );
             double xpdf2 = LHAPDF::xfx( 1, PDFx2_, PDFscale_, PDFid2_ );
             double w0 = xpdf1 * xpdf2;
