@@ -8,7 +8,7 @@ from optparse import OptionParser
 # usage description
 usage = """
  Usage: """+sys.argv[0]+""" [options]
- Example: """+sys.argv[0]+""" --write results --input delphes.root --channel LepJets
+ Example: """+sys.argv[0]+""" --input FinalBlindAcpResults.txt 
  For more help: """+sys.argv[0]+""" --help 
 """
 
@@ -75,30 +75,42 @@ latexSig={"+1Sigma":"+1", "-1Sigma":"-1"}
 
 def outputElInfo( obsName, sigmaName ):
     if sigmaName.find("+1") > -1:
-        print  "\multirow{2}{*}{%s} & \multirow{2}{*}{%s} & $%s \sigma$  & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s && %s & %s \\\\"%( 
-        latexObs[obsName], obsEl[obsName], latexSig[sigmaName], systEl[obsName][sigmaName][1], systEl[obsName][sigmaName][2],systEl[obsName][sigmaName][3],systEl[obsName][sigmaName][4],systEl[obsName][sigmaName][5],systEl[obsName][sigmaName][6],systEl[obsName][sigmaName][7],systEl[obsName][sigmaName][8],systEl[obsName][sigmaName][9],systEl[obsName][sigmaName][10],systEl[obsName][sigmaName][11], sumSystEl[obsName][sigmaName], sumEl[obsName][sigmaName] 
+        #print  "\multirow{2}{*}{%s} & \multirow{2}{*}{$%s$} & $%s \sigma$  & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
+        #latexObs[obsName], obsEl[obsName], latexSig[sigmaName], systEl[obsName][sigmaName][1], systEl[obsName][sigmaName][2],systEl[obsName][sigmaName][3],systEl[obsName][sigmaName][4],systEl[obsName][sigmaName][5],systEl[obsName][sigmaName][6],systEl[obsName][sigmaName][7],systEl[obsName][sigmaName][8],systEl[obsName][sigmaName][9],  systEl[obsName][sigmaName][10], systEl[obsName][sigmaName][11], "-" , "-", sumSystEl[obsName][sigmaName], sumEl[obsName][sigmaName] 
+        print  "\multirow{2}{*}{%s} & \multirow{2}{*}{$%s$} & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
+        latexObs[obsName], obsEl[obsName], systEl[obsName][sigmaName][1], systEl[obsName][sigmaName][2],systEl[obsName][sigmaName][3],systEl[obsName][sigmaName][4],systEl[obsName][sigmaName][5],systEl[obsName][sigmaName][6],systEl[obsName][sigmaName][7],systEl[obsName][sigmaName][8],systEl[obsName][sigmaName][9],  systEl[obsName][sigmaName][10], systEl[obsName][sigmaName][11], "-" , "-", systEl[obsName][sigmaName][14], sumSystEl[obsName][sigmaName], sumEl[obsName][sigmaName] 
         )
     else:
-        print  " & & $%s \sigma$  & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s && %s & %s \\\\"%( 
-        latexSig[sigmaName], systEl[obsName][sigmaName][1], systEl[obsName][sigmaName][2],systEl[obsName][sigmaName][3],systEl[obsName][sigmaName][4],systEl[obsName][sigmaName][5],systEl[obsName][sigmaName][6],systEl[obsName][sigmaName][7],systEl[obsName][sigmaName][8],systEl[obsName][sigmaName][9],systEl[obsName][sigmaName][10],systEl[obsName][sigmaName][11], sumSystEl[obsName][sigmaName], sumEl[obsName][sigmaName] 
+        #print  " & & $%s \sigma$  & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
+        #latexSig[sigmaName], systEl[obsName][sigmaName][1], systEl[obsName][sigmaName][2],systEl[obsName][sigmaName][3],systEl[obsName][sigmaName][4],systEl[obsName][sigmaName][5],systEl[obsName][sigmaName][6],systEl[obsName][sigmaName][7],systEl[obsName][sigmaName][8],systEl[obsName][sigmaName][9], systEl[obsName][sigmaName][10], systEl[obsName][sigmaName][11], "-", "-", sumSystEl[obsName][sigmaName], sumEl[obsName][sigmaName] 
+        print  " & & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
+        systEl[obsName][sigmaName][1], systEl[obsName][sigmaName][2],systEl[obsName][sigmaName][3],systEl[obsName][sigmaName][4],systEl[obsName][sigmaName][5],systEl[obsName][sigmaName][6],systEl[obsName][sigmaName][7],systEl[obsName][sigmaName][8],systEl[obsName][sigmaName][9], systEl[obsName][sigmaName][10], systEl[obsName][sigmaName][11], "-", "-", systEl[obsName][sigmaName][14], sumSystEl[obsName][sigmaName], sumEl[obsName][sigmaName] 
         )
 def outputMuInfo( obsName, sigmaName ):
     if sigmaName.find("+1") > -1:
-        print  "\multirow{2}{*}{%s} & \multirow{2}{*}{%s} & $%s \sigma$  & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s && %s & %s \\\\"%( 
-        latexObs[obsName], obsMu[obsName], latexSig[sigmaName], systMu[obsName][sigmaName][1], systMu[obsName][sigmaName][2],systMu[obsName][sigmaName][3],systMu[obsName][sigmaName][4],systMu[obsName][sigmaName][5],systMu[obsName][sigmaName][6],systMu[obsName][sigmaName][7],systMu[obsName][sigmaName][8],systMu[obsName][sigmaName][9],systMu[obsName][sigmaName][10],systMu[obsName][sigmaName][11], sumSystMu[obsName][sigmaName], sumMu[obsName][sigmaName] 
+        #print  "\multirow{2}{*}{%s} & \multirow{2}{*}{$%s$} & $%s \sigma$  & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
+        #latexObs[obsName], obsMu[obsName], latexSig[sigmaName], systMu[obsName][sigmaName][1], systMu[obsName][sigmaName][2],systMu[obsName][sigmaName][3],systMu[obsName][sigmaName][4],systMu[obsName][sigmaName][5],systMu[obsName][sigmaName][6],systMu[obsName][sigmaName][7],systMu[obsName][sigmaName][8] ,systMu[obsName][sigmaName][9],systMu[obsName][sigmaName][10], "-",systMu[obsName][sigmaName][12],systMu[obsName][sigmaName][13], sumSystMu[obsName][sigmaName], sumMu[obsName][sigmaName] 
+        print  "\multirow{2}{*}{%s} & \multirow{2}{*}{$%s$} &  $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
+        latexObs[obsName], obsMu[obsName], systMu[obsName][sigmaName][1], systMu[obsName][sigmaName][2],systMu[obsName][sigmaName][3],systMu[obsName][sigmaName][4],systMu[obsName][sigmaName][5],systMu[obsName][sigmaName][6],systMu[obsName][sigmaName][7],systMu[obsName][sigmaName][8] ,systMu[obsName][sigmaName][9],systMu[obsName][sigmaName][10], "-",systMu[obsName][sigmaName][12],systMu[obsName][sigmaName][13], systMu[obsName][sigmaName][14], sumSystMu[obsName][sigmaName], sumMu[obsName][sigmaName] 
         )
     else:
-        print  " & & $%s \sigma$  & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s && %s & %s \\\\"%( 
-        latexSig[sigmaName], systMu[obsName][sigmaName][1], systMu[obsName][sigmaName][2],systMu[obsName][sigmaName][3],systMu[obsName][sigmaName][4],systMu[obsName][sigmaName][5],systMu[obsName][sigmaName][6],systMu[obsName][sigmaName][7],systMu[obsName][sigmaName][8],systMu[obsName][sigmaName][9],systMu[obsName][sigmaName][10],systMu[obsName][sigmaName][11], sumSystMu[obsName][sigmaName], sumMu[obsName][sigmaName] 
+        #print  " & & $%s \sigma$  & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
+        #latexSig[sigmaName], systMu[obsName][sigmaName][1], systMu[obsName][sigmaName][2],systMu[obsName][sigmaName][3],systMu[obsName][sigmaName][4],systMu[obsName][sigmaName][5],systMu[obsName][sigmaName][6],systMu[obsName][sigmaName][7],systMu[obsName][sigmaName][8], systMu[obsName][sigmaName][9],systMu[obsName][sigmaName][10], "-",systMu[obsName][sigmaName][12],systMu[obsName][sigmaName][13], sumSystMu[obsName][sigmaName], sumMu[obsName][sigmaName] 
+        print  " & & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
+        systMu[obsName][sigmaName][1], systMu[obsName][sigmaName][2],systMu[obsName][sigmaName][3],systMu[obsName][sigmaName][4],systMu[obsName][sigmaName][5],systMu[obsName][sigmaName][6],systMu[obsName][sigmaName][7],systMu[obsName][sigmaName][8], systMu[obsName][sigmaName][9],systMu[obsName][sigmaName][10], "-",systMu[obsName][sigmaName][12],systMu[obsName][sigmaName][13], systMu[obsName][sigmaName][14], sumSystMu[obsName][sigmaName], sumMu[obsName][sigmaName] 
         )
 def outputCoInfo( obsName, sigmaName ):
     if sigmaName.find("+1") > -1:
-        print  "\multirow{2}{*}{%s} & \multirow{2}{*}{%s} & $%s \sigma$  & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s && %s & %s \\\\"%( 
-        latexObs[obsName], obsCo[obsName], latexSig[sigmaName], systCo[obsName][sigmaName][1], systCo[obsName][sigmaName][2],systCo[obsName][sigmaName][3],systCo[obsName][sigmaName][4],systCo[obsName][sigmaName][5],systCo[obsName][sigmaName][6],systCo[obsName][sigmaName][7],systCo[obsName][sigmaName][8],systCo[obsName][sigmaName][9],systCo[obsName][sigmaName][10],systCo[obsName][sigmaName][11], sumSystCo[obsName][sigmaName], sumCo[obsName][sigmaName] 
+        #print  "\multirow{2}{*}{%s} & \multirow{2}{*}{%s} & $$%s$ \sigma$  & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
+        #latexObs[obsName], obsCo[obsName], latexSig[sigmaName], systCo[obsName][sigmaName][1], systCo[obsName][sigmaName][2],systCo[obsName][sigmaName][3],systCo[obsName][sigmaName][4],systCo[obsName][sigmaName][5],systCo[obsName][sigmaName][6],systCo[obsName][sigmaName][7],systCo[obsName][sigmaName][8],systCo[obsName][sigmaName][9],systCo[obsName][sigmaName][10],systCo[obsName][sigmaName][11],systCo[obsName][sigmaName][12],systCo[obsName][sigmaName][13], sumSystCo[obsName][sigmaName], sumCo[obsName][sigmaName] 
+        print  "\multirow{2}{*}{%s} & \multirow{2}{*}{%s}  & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
+        latexObs[obsName], obsCo[obsName], systCo[obsName][sigmaName][1], systCo[obsName][sigmaName][2],systCo[obsName][sigmaName][3],systCo[obsName][sigmaName][4],systCo[obsName][sigmaName][5],systCo[obsName][sigmaName][6],systCo[obsName][sigmaName][7],systCo[obsName][sigmaName][8],systCo[obsName][sigmaName][9],systCo[obsName][sigmaName][10],systCo[obsName][sigmaName][11],systCo[obsName][sigmaName][12],systCo[obsName][sigmaName][13], systCo[obsName][sigmaName][14], sumSystCo[obsName][sigmaName], sumCo[obsName][sigmaName] 
         )
     else:
-        print  " & & $%s \sigma$  & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s && %s & %s \\\\"%( 
-        latexSig[sigmaName], systCo[obsName][sigmaName][1], systCo[obsName][sigmaName][2],systCo[obsName][sigmaName][3],systCo[obsName][sigmaName][4],systCo[obsName][sigmaName][5],systCo[obsName][sigmaName][6],systCo[obsName][sigmaName][7],systCo[obsName][sigmaName][8],systCo[obsName][sigmaName][9],systCo[obsName][sigmaName][10],systCo[obsName][sigmaName][11], sumSystCo[obsName][sigmaName], sumCo[obsName][sigmaName] 
+        #print  " & & $%s \sigma$  & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
+        #latexSig[sigmaName], systCo[obsName][sigmaName][1], systCo[obsName][sigmaName][2],systCo[obsName][sigmaName][3],systCo[obsName][sigmaName][4],systCo[obsName][sigmaName][5],systCo[obsName][sigmaName][6],systCo[obsName][sigmaName][7],systCo[obsName][sigmaName][8],systCo[obsName][sigmaName][9],systCo[obsName][sigmaName][10],systCo[obsName][sigmaName][11],systCo[obsName][sigmaName][12],systCo[obsName][sigmaName][13], sumSystCo[obsName][sigmaName], sumCo[obsName][sigmaName] 
+        print  " & & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
+        systCo[obsName][sigmaName][1], systCo[obsName][sigmaName][2],systCo[obsName][sigmaName][3],systCo[obsName][sigmaName][4],systCo[obsName][sigmaName][5],systCo[obsName][sigmaName][6],systCo[obsName][sigmaName][7],systCo[obsName][sigmaName][8],systCo[obsName][sigmaName][9],systCo[obsName][sigmaName][10],systCo[obsName][sigmaName][11],systCo[obsName][sigmaName][12],systCo[obsName][sigmaName][13], systCo[obsName][sigmaName][14], sumSystCo[obsName][sigmaName], sumCo[obsName][sigmaName] 
         )
 
 i=0
@@ -134,7 +146,7 @@ for line in lines2:
 
 #print systMu
  
-print  "\multicolumn{17}{|c|}{Electron channel} \\\\"
+print  "\multicolumn{18}{|c|}{Electron channel} \\\\"
 print  "\hline"
 outputElInfo( "O2", "+1Sigma")
 outputElInfo( "O2", "-1Sigma")
@@ -148,7 +160,7 @@ print  "\hline"
 outputElInfo( "O7", "+1Sigma")
 outputElInfo( "O7", "-1Sigma")
 print  "\hline"
-print  "\multicolumn{17}{|c|}{Muon channel} \\\\"
+print  "\multicolumn{18}{|c|}{Muon channel} \\\\"
 print  "\hline"
 outputMuInfo( "O2", "+1Sigma")
 outputMuInfo( "O2", "-1Sigma")
@@ -162,7 +174,7 @@ print  "\hline"
 outputMuInfo( "O7", "+1Sigma")
 outputMuInfo( "O7", "-1Sigma")
 print  "\hline"
-print  "\multicolumn{17}{|c|}{Combined channel} \\\\"
+print  "\multicolumn{18}{|c|}{Combined channel} \\\\"
 print  "\hline"
 outputCoInfo( "O2", "+1Sigma")
 outputCoInfo( "O2", "-1Sigma")

@@ -1,6 +1,16 @@
 #include <sstream>
 #include <string>
+#include "TFile.h"
+#include "TH1D.h"
+using namespace std;
 std::string double2str( double i )
+{
+    std::string s;
+    stringstream ss(s);
+    ss << i;
+    return ss.str();
+}
+std::string int2str( int i )
 {
     std::string s;
     stringstream ss(s);

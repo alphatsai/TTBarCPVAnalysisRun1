@@ -1,5 +1,6 @@
 #include <string>
 #include "../help.C"
+#include "../caculate.C"
 #include "templateLFit.C"
 #define NPAR 2
 
@@ -9,7 +10,7 @@ std::string fName="../results/11Jan_LepJet_MCDATA";
 std::string hName="EvtChi2_Top_Leptonic_Mbl";
 //std::string hName="EvtChi2_Top_Hadronic_Mass";
 //std::string hName="EvtChi2_Ht";
-std::string output=fName+"/FitResults";
+std::string output=fName+"/FitResults4";
 std::string xTitle="M(lepton+bjet) [GeV]";
 //std::string xTitle="M_{top}(bjj) [GeV]";
 bool doFit=true;
@@ -46,23 +47,25 @@ void getHistStatUncNomalized( TH1D* h, TH1D* h_u, TH1D* h_d )
 }
 void mkTemplateSyst()
 {
-    const int nCh=3, nSyst=4+8, nMC=3, nTune=2, nObs=4;
+    const int nPDF=50;
+    const int nSyst0=6;
+    const int nCh=3, nSyst=nSyst0+8, nMC=3, nTune=2, nObs=4;
     std::string mcName[nMC]={"TTJets", "BkgMC_TTJetsNonSemiLeptMGDecaysExcluded", "MC"}; // sig=0, bkg=1
     std::string mcName0[nMC]={"SigMC", "BkgMC", "MC"}; // sig=0, bkg=1
     std::string chName[nCh]={"", "_El", "_Mu"};
     std::string tuneName[nTune]={"up", "down"};
-    std::string systName[nSyst]={"", "Stat", "TopMatch", "TopScale", "TopPT", "PU", "JER", "JES", "BTagSF", "elID", "muID", "muISO"};
+    std::string systName[nSyst]={"", "Stat", "TopMatch", "TopScale", "TopGen", "TopMass", "TopPT", "PU", "JER", "JES", "BTagSF", "elID", "muID", "muISO"};
     std::string oName[nObs]={"O2", "O3", "O4", "O7"}; 
     
     TFile* fin[nSyst][nTune];
     fin[0][0] = new TFile((fName+"/"+fileName).c_str()); //nominal hist
-    for( int s=4; s<nSyst; s++ ){
+    for( int s=nSyst0; s<nSyst; s++ ){
         for( int t=0; t<nTune; t++ ){
             std::string fname=fName+"/"+systDir+"/"+systName[s]+tuneName[t]+"/"+fileName;
             fin[s][t] = new TFile(fname.c_str());
         } 
     }
-
+    TFile* finPDF = new TFile((fName+"/"+systDir+"/PDF/"+fileName).c_str());
     TFile* fout  = new TFile((output+"/TemplateSyst_"+hName+".root").c_str(), "RECREATE");
 
     //// * Copy the obs
@@ -112,6 +115,7 @@ void mkTemplateSyst()
     // MC
     std::cout<<"[INFO] Copying MC templates..."<<std::endl;
     TH1D *h_mc[nMC][nCh][nSyst][nTune];
+    TH1D *h_PDF[nMC][nCh][nPDF];
     for( int mc=0; mc<nMC; mc++ )
     {
         std::string name0 = mcName0[mc];
@@ -137,7 +141,7 @@ void mkTemplateSyst()
                     getHistStatUncNomalized( h_mc[mc][ch][0][0], h_mc[mc][ch][s][0], h_mc[mc][ch][s][1] );
                     //getHistStatUnc( h_mc[mc][ch][0][0], h_mc[mc][ch][s][0], h_mc[mc][ch][s][1] );
                 }
-                else if( s==2 || s==3 )
+                else if( s > 1 && s < nSyst0 )
                 {
                     // top scale and matching are stored in nominal file
                     std::string hnameTopU;
@@ -146,6 +150,8 @@ void mkTemplateSyst()
                         std::string systname="";
                         if( s==2 ) systname="Matching";
                         else if( s==3 ) systname="Scale";
+                        else if( s==4 ) systname="Gen";
+                        else if( s==5 ) systname="Mass";
                         hnameTopU = mcName[mc]+"_"+systname+"Up__"+hName+chName[ch];
                         hnameTopD = mcName[mc]+"_"+systname+"Down__"+hName+chName[ch];
                     }else if( mc== bkg ){
@@ -155,7 +161,6 @@ void mkTemplateSyst()
                         hnameTopU = mcName[mc]+"_"+systName[s]+"Up__"+hName+chName[ch];
                         hnameTopD = mcName[mc]+"_"+systName[s]+"Down__"+hName+chName[ch];
                     }
-                    //cout<<hnameTopU<<" "<<hnameTopD<<endl;
                     std::string nameTopU = name2+tuneName[0];
                     std::string nameTopD = name2+tuneName[1];
                     h_mc[mc][ch][s][0] = (TH1D*)((TH1D*)fin[0][0]->Get(hnameTopU.c_str()))->Clone(nameTopU.c_str());;
@@ -176,9 +181,19 @@ void mkTemplateSyst()
                     } 
                 }
             }
-            std::cout<<std::endl;
-        }
-    }
+
+            // MC PDF
+            std::cout<<" PDF"<<std::endl;
+            for( int i=0; i<nPDF; i++ )
+            {
+                std::string namePDF = name1+"_PDF"+int2str(i+1);
+                std::string hnamePDF = hname+"_PDF"+int2str(i+1);
+                h_PDF[mc][ch][i] = (TH1D*)((TH1D*)finPDF->Get(hnamePDF.c_str()))->Clone(namePDF.c_str());
+                h_PDF[mc][ch][i]->Rebin(rebin);
+                fix(h_PDF[mc][ch][i]);
+            }
+        }// [end] channel
+    }// [end] mc
 
     // Fitting
     if( doFit )
@@ -187,6 +202,7 @@ void mkTemplateSyst()
         std::string nameBkg0 = "BkgFitted";
         std::cout<<"[INFO] Fitting MC..."<<std::endl;
         TH1D *h_fittedMC[nMC][nCh][nSyst][nTune];
+        TH1D *h_fittedPDF[nMC][nCh][nPDF];
 
         for( int ch=0; ch<nCh; ch++ )
         {
@@ -211,6 +227,17 @@ void mkTemplateSyst()
                     //fitter_LH( h_fittedMC[sig][ch][s][t], h_fittedMC[bkg][ch][s][t], h_data[ch] );
                     fitter_LH_Plot( h_fittedMC[sig][ch][s][t], h_fittedMC[bkg][ch][s][t], h_data[ch], hName+name_, ch, output, xTitle );
                 } 
+            }
+
+            // MC PDF
+            std::cout<<" PDF"<<std::endl;
+            for( int i=0; i<nPDF; i++ )
+            {
+                std::string nameSigPDF = nameSig1+"_PDF"+int2str(i+1);
+                std::string nameBkgPDF = nameBkg1+"_PDF"+int2str(i+1);
+                h_fittedPDF[sig][ch][i] = (TH1D*)h_PDF[sig][ch][i]->Clone(nameSigPDF.c_str());
+                h_fittedPDF[bkg][ch][i] = (TH1D*)h_PDF[bkg][ch][i]->Clone(nameBkgPDF.c_str());
+                fitter_LH_Plot( h_fittedPDF[sig][ch][i], h_fittedPDF[bkg][ch][i], h_data[ch], hName+"_PDF"+int2str(i+1), ch, output, xTitle );
             }
             std::cout<<std::endl;
         }

@@ -9,6 +9,7 @@ void drawACP2Ch( TFile* f,
             std::string output=".",
             std::string ytitle="ACP",
             std::string xtitle="O_{2}",
+            std::string legHead="Signal region",
             double wrt=1,
             int legX=1,
             std::string nQCDEl="",
@@ -138,7 +139,8 @@ void drawACP2Ch( TFile* f,
 
     TH1D* h0 = (TH1D*)h1s->Clone("Original");
     //h0->SetMarkerStyle(21);
-    h0->SetMarkerStyle(22);
+    //h0->SetMarkerStyle(22);
+    h0->SetMarkerStyle(8);
     h0->SetMarkerSize(2);
     h0->Draw("psame");
     TLine* line = new TLine(0,0,allh,0);
@@ -150,13 +152,15 @@ void drawACP2Ch( TFile* f,
     if( legX == 0 ) //Left 
         leg = new TLegend(0.173516,0.6726768,0.4310502,0.8363384,NULL,"brNDC");
     else //right
-        leg = new TLegend(0.6081871,0.7859477,0.8502924,0.8970588,NULL,"brNDC");
-   leg->SetTextSize(0.06535948);
+        leg = new TLegend(0.6327485,0.6764706,0.8748538,0.9150327,NULL,"brNDC");
+    leg->SetHeader(legHead.c_str());
+    leg->SetTextSize(0.05718954);
     leg->SetBorderSize(0);
     leg->SetLineStyle(0);
     leg->SetLineWidth(0);
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
+    leg->AddEntry(h0, "Nominal value",      "lep");
     leg->AddEntry(h1s,"1#sigma stat. error","f");
     leg->AddEntry(h2s,"2#sigma stat. error","f");
     leg->Draw();
@@ -164,8 +168,8 @@ void drawACP2Ch( TFile* f,
     TPaveText* t_title;
     //t_title = new TPaveText(0.09842845,0.9387755,0.7278743,0.9843014,"brNDC");
     t_title = new TPaveText(0.1134503,0.9393443,0.7426901,0.9852459,"brNDC");
-    if( !isData ) t_title->AddText("CMS Simulation, L = 19.7/fb, #sqrt{s} = 8TeV");
-    if(  isData ) t_title->AddText("CMS, L = 19.7/fb, #sqrt{s} = 8TeV");
+    if( !isData ) t_title->AddText("CMS Simulation #sqrt{s} = 8TeV, L = 19.7fb^{-1}");
+    if(  isData ) t_title->AddText("CMS #sqrt{s} = 8TeV, L = 19.7fb^{-1}");
     t_title->SetTextColor(kBlack);
     t_title->SetFillColor(kWhite);
     t_title->SetFillStyle(0);
@@ -184,6 +188,7 @@ void drawACP( TFile* f,
             std::string output=".",
             std::string ytitle="ACP",
             std::string xtitle="O_{2}",
+            std::string legHead="Signal region",
             double wrt=1,
             int legX=1,
             std::string nQCDEl="",
@@ -240,6 +245,7 @@ void drawACP( TFile* f,
     out.close();
 
     TH1D* h1s = new TH1D(("all"+evtcat+"_"+obs).c_str(), "", allh, 0, allh);
+    h1s->Sumw2();
 
     h1s->GetXaxis()->SetBinLabel(1, (xtitle+"^{e+#mu}").c_str());
     h1s->GetXaxis()->SetBinLabel(2, (xtitle+"^{e}").c_str()    );
@@ -257,11 +263,13 @@ void drawACP( TFile* f,
         eObsMu = (wrtError)? caculateACPerrorWrt( hObs_mu ):caculateACPerror( hObs_mu );
         eObsEl = (wrtError)? caculateACPerrorWrt( hObs_el ):caculateACPerror( hObs_el );
 
+    TH1D* h0 = (TH1D*)h1s->Clone();
+
     h1s->SetBinError( 1, eObs*percent   );
     h1s->SetBinError( 2, eObsEl*percent );
     h1s->SetBinError( 3, eObsMu*percent );
 
-    TH1D* h2s = (TH1D*)h1s->Clone("h_2sigma");
+    TH1D* h2s = (TH1D*)h1s->Clone();
     h2s->SetBinError( 1, 2*eObs*percent   );
     h2s->SetBinError( 2, 2*eObsEl*percent );
     h2s->SetBinError( 3, 2*eObsMu*percent );
@@ -300,11 +308,16 @@ void drawACP( TFile* f,
     h1s->SetFillColor(kGreen);
     h1s->Draw("E2SAME");
 
-    TH1D* h0 = (TH1D*)h1s->Clone("Original");
+    //TH1D* h0 = (TH1D*)h1s->Clone();
     //h0->SetMarkerStyle(21);
-    h0->SetMarkerStyle(22);
-    h0->SetMarkerSize(2);
-    h0->Draw("psame");
+    //h0->SetMarkerStyle(22);
+    //h0->SetMarkerStyle(8);
+    //h0->SetMarkerSize(2);
+    h0->SetBinError(1,0);
+    h0->SetBinError(2,0);
+    h0->SetBinError(3,0);
+    h0->Draw("same");
+
     TLine* line = new TLine(0,0,allh,0);
     line->SetLineColor(2);
     line->SetLineWidth(3);
@@ -314,13 +327,18 @@ void drawACP( TFile* f,
     if( legX == 0 ) //Left 
         leg = new TLegend(0.173516,0.6726768,0.4310502,0.8363384,NULL,"brNDC");
     else //right
-        leg = new TLegend(0.6081871,0.7859477,0.8502924,0.8970588,NULL,"brNDC");
+        //leg = new TLegend(0.5894737,0.7026144,0.8315789,0.8937908,NULL,"brNDC");
+        leg = new TLegend(0.6327485,0.6764706,0.8748538,0.9150327,NULL,"brNDC");
+        //leg = new TLegend(0.5894737,0.6764706,0.8315789,0.9150327,NULL,"brNDC");
+    leg->SetHeader(legHead.c_str());
     leg->SetBorderSize(0);
-   leg->SetTextSize(0.06535948);
+    leg->SetTextSize(0.05718954);
+   //leg->SetTextSize(0.06535948);
     leg->SetLineStyle(0);
     leg->SetLineWidth(0);
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
+    leg->AddEntry(h0, "Nominal value","l");
     leg->AddEntry(h1s,"1#sigma stat. error","f");
     leg->AddEntry(h2s,"2#sigma stat. error","f");
     leg->Draw();
@@ -328,7 +346,7 @@ void drawACP( TFile* f,
     TPaveText* t_title;
     //t_title = new TPaveText(0.09842845,0.9387755,0.7278743,0.9843014,"brNDC");
     t_title = new TPaveText(0.1134503,0.9393443,0.7426901,0.9852459,"brNDC");
-    t_title->AddText("CMS Simulation, L = 19.7/fb, #sqrt{s} = 8TeV");
+    t_title->AddText("CMS Simulation #sqrt{s} = 8TeV, L = 19.7fb^{-1}");
     t_title->SetTextColor(kBlack);
     t_title->SetFillColor(kWhite);
     t_title->SetFillStyle(0);
@@ -338,7 +356,9 @@ void drawACP( TFile* f,
     t_title->Draw();
 
     c1->SaveAs((output+"/ACP_"+evtcat+"_"+obs+".pdf").c_str());
+    delete h1s;
 }
+/*
 void drawACPLepJet( TFile* f, 
         bool wrtError=true,
         std::string evtcat="Evt",
@@ -467,6 +487,7 @@ void drawACPLepJet( TFile* f,
     if( legX == 0 ) //Left 
         leg = new TLegend(0.173516,0.6726768,0.4310502,0.8363384,NULL,"brNDC");
     else //right
+        //leg = new TLegend(0.580117,0.6944444,0.8643275,0.9068627,NULL,"brNDC");
         leg = new TLegend(0.7237386,0.7739403,0.9652605,0.8854003,NULL,"brNDC");
     leg->SetBorderSize(0);
     leg->SetLineStyle(0);
@@ -652,3 +673,4 @@ void drawACP2Channel( std::string pathLepJets="../results/TTtoLepJet/result.root
 
     c1->SaveAs((output+"/ACP_"+evtcat+".pdf").c_str());
 }
+*/
