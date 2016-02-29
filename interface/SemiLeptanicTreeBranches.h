@@ -23,18 +23,28 @@ class newBranchesJet
         float Mass;
         float Energy;
         float bTag;
+        float GenPt;
+        float GenEta;
+        float GenPhi;
+        int GenPdgID;
+        int GenFlavor;
         void RegisterTree( TTree *root, std::string name="JetInfo")
         {
-            root->Branch((name+".Et").c_str(),     &Et,     (name+".Et/F").c_str()     );
-            root->Branch((name+".Pt").c_str(),     &Pt,     (name+".Pt/F").c_str()     );
-            root->Branch((name+".Px").c_str(),     &Px,     (name+".Px/F").c_str()     );
-            root->Branch((name+".Py").c_str(),     &Py,     (name+".Py/F").c_str()     );
-            root->Branch((name+".Pz").c_str(),     &Pz,     (name+".Pz/F").c_str()     );
-            root->Branch((name+".Eta").c_str(),    &Eta,    (name+".Eta/F").c_str()    );
-            root->Branch((name+".Phi").c_str(),    &Phi,    (name+".Phi/F").c_str()    );
-            root->Branch((name+".Mass").c_str(),   &Mass,   (name+".Mass/F").c_str()   );
-            root->Branch((name+".Energy").c_str(), &Energy, (name+".Energy/F").c_str() );
-            root->Branch((name+".bTag").c_str(),   &bTag,   (name+".bTag/F").c_str()   );
+            root->Branch((name+".Et").c_str(),        &Et,        (name+".Et/F").c_str()     );
+            root->Branch((name+".Pt").c_str(),        &Pt,        (name+".Pt/F").c_str()     );
+            root->Branch((name+".Px").c_str(),        &Px,        (name+".Px/F").c_str()     );
+            root->Branch((name+".Py").c_str(),        &Py,        (name+".Py/F").c_str()     );
+            root->Branch((name+".Pz").c_str(),        &Pz,        (name+".Pz/F").c_str()     );
+            root->Branch((name+".Eta").c_str(),       &Eta,       (name+".Eta/F").c_str()    );
+            root->Branch((name+".Phi").c_str(),       &Phi,       (name+".Phi/F").c_str()    );
+            root->Branch((name+".Mass").c_str(),      &Mass,      (name+".Mass/F").c_str()   );
+            root->Branch((name+".Energy").c_str(),    &Energy,    (name+".Energy/F").c_str() );
+            root->Branch((name+".bTag").c_str(),      &bTag,      (name+".bTag/F").c_str()   );
+            root->Branch((name+".GenPt").c_str(),     &GenPt,     (name+".GenPt/F").c_str()   );
+            root->Branch((name+".GenEta").c_str(),    &GenEta,    (name+".GenEta/F").c_str()   );
+            root->Branch((name+".GenPhi").c_str(),    &GenPhi,    (name+".GenPhi/F").c_str()   );
+            root->Branch((name+".GenPdgID").c_str(),  &GenPdgID,  (name+".GenPdgID/I").c_str() );
+            root->Branch((name+".GenFlavor").c_str(), &GenFlavor, (name+".GenFlavor/I").c_str());
         }
         void Register( TTree *root, std::string name="JetInfo")
         {
@@ -48,6 +58,11 @@ class newBranchesJet
             root->SetBranchAddress((name+".Mass").c_str(),   &Mass   );
             root->SetBranchAddress((name+".Energy").c_str(), &Energy );
             root->SetBranchAddress((name+".bTag").c_str(),   &bTag   );
+            root->SetBranchAddress((name+".GenPt").c_str(),     &GenPt    );
+            root->SetBranchAddress((name+".GenEta").c_str(),    &GenEta   );
+            root->SetBranchAddress((name+".GenPhi").c_str(),    &GenPhi   );
+            root->SetBranchAddress((name+".GenPdgID").c_str(),  &GenPdgID);
+            root->SetBranchAddress((name+".GenFlavor").c_str(), &GenFlavor);
         }
 
 };
@@ -65,33 +80,48 @@ class newBranchesJetCol
         float Mass[MAX_JETCOL];
         float Energy[MAX_JETCOL];
         float bTag[MAX_JETCOL];
+        float GenPt[MAX_JETCOL];
+        float GenEta[MAX_JETCOL];
+        float GenPhi[MAX_JETCOL];
+        int GenPdgID[MAX_JETCOL];
+        int GenFlavor[MAX_JETCOL];
         void RegisterTree( TTree *root, std::string name="JetColInfo")
         {
-            root->Branch((name+".Size").c_str(),   &Size,      (name+".Size/I").c_str()                  );
-            root->Branch((name+".Et").c_str(),     &Et[0],     (name+".Et["+name+".Size]/F").c_str()     );
-            root->Branch((name+".Pt").c_str(),     &Pt[0],     (name+".Pt["+name+".Size]/F").c_str()     );
-            root->Branch((name+".Px").c_str(),     &Px[0],     (name+".Px["+name+".Size]/F").c_str()     );
-            root->Branch((name+".Py").c_str(),     &Py[0],     (name+".Py["+name+".Size]/F").c_str()     );
-            root->Branch((name+".Pz").c_str(),     &Pz[0],     (name+".Pz["+name+".Size]/F").c_str()     );
-            root->Branch((name+".Eta").c_str(),    &Eta[0],    (name+".Eta["+name+".Size]/F").c_str()    );
-            root->Branch((name+".Phi").c_str(),    &Phi[0],    (name+".Phi["+name+".Size]/F").c_str()    );
-            root->Branch((name+".Mass").c_str(),   &Mass[0],   (name+".Mass["+name+".Size]/F").c_str()   );
-            root->Branch((name+".Energy").c_str(), &Energy[0], (name+".Energy["+name+".Size]/F").c_str() );
-            root->Branch((name+".bTag").c_str(),   &bTag[0],   (name+".bTag["+name+".Size]/F").c_str()   );
+            root->Branch((name+".Size").c_str(),      &Size,         (name+".Size/I").c_str()                  );
+            root->Branch((name+".Et").c_str(),        &Et[0],        (name+".Et["+name+".Size]/F").c_str()     );
+            root->Branch((name+".Pt").c_str(),        &Pt[0],        (name+".Pt["+name+".Size]/F").c_str()     );
+            root->Branch((name+".Px").c_str(),        &Px[0],        (name+".Px["+name+".Size]/F").c_str()     );
+            root->Branch((name+".Py").c_str(),        &Py[0],        (name+".Py["+name+".Size]/F").c_str()     );
+            root->Branch((name+".Pz").c_str(),        &Pz[0],        (name+".Pz["+name+".Size]/F").c_str()     );
+            root->Branch((name+".Eta").c_str(),       &Eta[0],       (name+".Eta["+name+".Size]/F").c_str()    );
+            root->Branch((name+".Phi").c_str(),       &Phi[0],       (name+".Phi["+name+".Size]/F").c_str()    );
+            root->Branch((name+".Mass").c_str(),      &Mass[0],      (name+".Mass["+name+".Size]/F").c_str()   );
+            root->Branch((name+".Energy").c_str(),    &Energy[0],    (name+".Energy["+name+".Size]/F").c_str() );
+            root->Branch((name+".bTag").c_str(),      &bTag[0],      (name+".bTag["+name+".Size]/F").c_str()   );
+            root->Branch((name+".GenPt").c_str(),     &GenPt[0],     (name+".GenPt["+name+".Size]/F").c_str()   );
+            root->Branch((name+".GenEta").c_str(),    &GenEta[0],    (name+".GenEta["+name+".Size]/F").c_str()   );
+            root->Branch((name+".GenPhi").c_str(),    &GenPhi[0],    (name+".GenPhi["+name+".Size]/F").c_str()   );
+            root->Branch((name+".GenPdgID").c_str(),  &GenPdgID[0],  (name+".GenPdgID["+name+".Size]/I").c_str()   );
+            root->Branch((name+".GenFlavor").c_str(), &GenFlavor[0], (name+".GenFlavor["+name+".Size]/I").c_str()   );
         }
         void Register( TTree *root, std::string name="JetColInfo")
         {
-            root->SetBranchAddress((name+".Size").c_str(),   &Size      );
-            root->SetBranchAddress((name+".Et").c_str(),     &Et[0]     );
-            root->SetBranchAddress((name+".Pt").c_str(),     &Pt[0]     );
-            root->SetBranchAddress((name+".Px").c_str(),     &Px[0]     );
-            root->SetBranchAddress((name+".Py").c_str(),     &Py[0]     );
-            root->SetBranchAddress((name+".Pz").c_str(),     &Pz[0]     );
-            root->SetBranchAddress((name+".Eta").c_str(),    &Eta[0]    );
-            root->SetBranchAddress((name+".Phi").c_str(),    &Phi[0]    );
-            root->SetBranchAddress((name+".Mass").c_str(),   &Mass[0]   );
-            root->SetBranchAddress((name+".Energy").c_str(), &Energy[0] );
-            root->SetBranchAddress((name+".bTag").c_str(),   &bTag[0]   );
+            root->SetBranchAddress((name+".Size").c_str(),      &Size      );
+            root->SetBranchAddress((name+".Et").c_str(),        &Et[0]     );
+            root->SetBranchAddress((name+".Pt").c_str(),        &Pt[0]     );
+            root->SetBranchAddress((name+".Px").c_str(),        &Px[0]     );
+            root->SetBranchAddress((name+".Py").c_str(),        &Py[0]     );
+            root->SetBranchAddress((name+".Pz").c_str(),        &Pz[0]     );
+            root->SetBranchAddress((name+".Eta").c_str(),       &Eta[0]    );
+            root->SetBranchAddress((name+".Phi").c_str(),       &Phi[0]    );
+            root->SetBranchAddress((name+".Mass").c_str(),      &Mass[0]   );
+            root->SetBranchAddress((name+".Energy").c_str(),    &Energy[0] );
+            root->SetBranchAddress((name+".bTag").c_str(),      &bTag[0]   );
+            root->SetBranchAddress((name+".GenPt").c_str(),     &GenPt[0]    );
+            root->SetBranchAddress((name+".GenEta").c_str(),    &GenEta[0]   );
+            root->SetBranchAddress((name+".GenPhi").c_str(),    &GenPhi[0]   );
+            root->SetBranchAddress((name+".GenPdgID").c_str(), &GenPdgID[0]);
+            root->SetBranchAddress((name+".GenFlavor").c_str(), &GenFlavor[0]);
         }
 
 };
@@ -107,6 +137,7 @@ class newBranchesLep
         float Pz;
         float Eta;
         float Phi;
+        float Energy;
         int Charge;
         int LeptonType;
         void RegisterTree( TTree *root, std::string name="LepInfo")
@@ -118,6 +149,7 @@ class newBranchesLep
             root->Branch((name+".Pz").c_str(),         &Pz,         (name+".Pz/F").c_str()         );
             root->Branch((name+".Eta").c_str(),        &Eta,        (name+".Eta/F").c_str()        );
             root->Branch((name+".Phi").c_str(),        &Phi,        (name+".Phi/F").c_str()        );
+            root->Branch((name+".Energy").c_str(),     &Energy,     (name+".Energy/F").c_str()     );
             root->Branch((name+".Charge").c_str(),     &Charge,     (name+".Charge/I").c_str()     );
             root->Branch((name+".LeptonType").c_str(), &LeptonType, (name+".LeptonType/I").c_str() );
         }
@@ -130,6 +162,7 @@ class newBranchesLep
             root->SetBranchAddress((name+".Pz").c_str(),         &Pz         );
             root->SetBranchAddress((name+".Eta").c_str(),        &Eta        );
             root->SetBranchAddress((name+".Phi").c_str(),        &Phi        );
+            root->SetBranchAddress((name+".Energy").c_str(),     &Energy     );
             root->SetBranchAddress((name+".Charge").c_str(),     &Charge     );
             root->SetBranchAddress((name+".LeptonType").c_str(), &LeptonType );
         }
@@ -145,6 +178,7 @@ class newBranchesLepCol
         float Pz[MAX_LEPCOL];
         float Eta[MAX_LEPCOL];
         float Phi[MAX_LEPCOL];
+        float Energy[MAX_LEPCOL];
         int Charge[MAX_LEPCOL];
         int LeptonType[MAX_LEPCOL];
         void RegisterTree( TTree *root, std::string name="LepColInfo")
@@ -157,6 +191,7 @@ class newBranchesLepCol
             root->Branch((name+".Pz").c_str(),         &Pz[0],         (name+".Pz["+name+".Size]/F").c_str()         );
             root->Branch((name+".Eta").c_str(),        &Eta[0],        (name+".Eta["+name+".Size]/F").c_str()        );
             root->Branch((name+".Phi").c_str(),        &Phi[0],        (name+".Phi["+name+".Size]/F").c_str()        );
+            root->Branch((name+".Energy").c_str(),     &Energy[0],     (name+".Energy["+name+".Size]/F").c_str()        );
             root->Branch((name+".Charge").c_str(),     &Charge[0],     (name+".Charge["+name+".Size]/I").c_str()     );
             root->Branch((name+".LeptonType").c_str(), &LeptonType[0], (name+".LeptonType["+name+".Size]/I").c_str() );
         }
@@ -170,6 +205,7 @@ class newBranchesLepCol
             root->SetBranchAddress((name+".Pz").c_str(),         &Pz[0]         );
             root->SetBranchAddress((name+".Eta").c_str(),        &Eta[0]        );
             root->SetBranchAddress((name+".Phi").c_str(),        &Phi[0]        );
+            root->SetBranchAddress((name+".Energy").c_str(),     &Energy[0]     );
             root->SetBranchAddress((name+".Charge").c_str(),     &Charge[0]     );
             root->SetBranchAddress((name+".LeptonType").c_str(), &LeptonType[0] );
         }
@@ -266,6 +302,10 @@ class SemiLeptanicTreeBranches
             BJetNewBranches.Mass = bjet.Mass;
             BJetNewBranches.Energy = bjet.Energy;
             BJetNewBranches.bTag   = bjet.CombinedSVBJetTags;
+            BJetNewBranches.GenPt  = bjet.GenPt;
+            BJetNewBranches.GenEta = bjet.GenEta;
+            BJetNewBranches.GenPhi = bjet.GenPhi;
+            BJetNewBranches.GenFlavor = bjet.GenFlavor;
         }
         void fill_BbarJetNewBranches( Jet bbarjet )
         {
@@ -279,6 +319,10 @@ class SemiLeptanicTreeBranches
             BbarJetNewBranches.Mass = bbarjet.Mass;
             BbarJetNewBranches.Energy = bbarjet.Energy;
             BbarJetNewBranches.bTag   = bbarjet.CombinedSVBJetTags;
+            BbarJetNewBranches.GenPt  = bbarjet.GenPt;
+            BbarJetNewBranches.GenEta = bbarjet.GenEta;
+            BbarJetNewBranches.GenPhi = bbarjet.GenPhi;
+            BbarJetNewBranches.GenFlavor = bbarjet.GenFlavor;
         }
         void fill_nonBJetColNewBranches( vector<Jet> nonBJetCol )
         {
@@ -296,6 +340,10 @@ class SemiLeptanicTreeBranches
                 nonBJetColNewBranches.Mass[i] = nonBJetCol[i].Mass;
                 nonBJetColNewBranches.Energy[i] = nonBJetCol[i].Energy;
                 nonBJetColNewBranches.bTag[i]   = nonBJetCol[i].CombinedSVBJetTags;
+                nonBJetColNewBranches.GenPt[i]  = nonBJetCol[i].GenPt;
+                nonBJetColNewBranches.GenEta[i] = nonBJetCol[i].GenEta;
+                nonBJetColNewBranches.GenPhi[i] = nonBJetCol[i].GenPhi;
+                nonBJetColNewBranches.GenFlavor[i] = nonBJetCol[i].GenFlavor;
             }
         } 
         void fill_isoLepNewBranches( Lepton lep )
@@ -307,6 +355,7 @@ class SemiLeptanicTreeBranches
             isoLepNewBranches.Pz = lep.Pz;
             isoLepNewBranches.Eta = lep.Eta;
             isoLepNewBranches.Phi = lep.Phi;
+            isoLepNewBranches.Energy = lep.Energy;
             isoLepNewBranches.Charge = lep.Charge;
             isoLepNewBranches.LeptonType = lep.LeptonType;
         }

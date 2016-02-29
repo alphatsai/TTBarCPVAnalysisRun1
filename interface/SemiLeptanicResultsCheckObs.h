@@ -37,7 +37,7 @@ class SemiLeptanicResultsCheckObs : public edm::EDAnalyzer{
         ~SemiLeptanicResultsCheckObs();
 
         static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-        void checkObsChange( TH1D* h, double recoO, double genO, double wrt=1 );
+        bool checkObsChange( TH1D* h, double recoO, double genO, double wrt=1, std::string name="O" );
 
     private:
         virtual void beginJob();
@@ -77,12 +77,13 @@ class SemiLeptanicResultsCheckObs : public edm::EDAnalyzer{
         TChain* chain_;
         TTree*  newtree_;
 
-        EvtInfoBranches    EvtInfo;
-        GenInfoBranches    GenInfo;
-        //VertexInfoBranches VtxInfo;
-        JetInfoBranches    JetInfo;
-        LepInfoBranches    LepInfo;
-        newBranchesLep     IsoLepInfo; 
+        EvtInfoBranches EvtInfo;
+        GenInfoBranches GenInfo;
+        JetInfoBranches JetInfo;
+        newBranchesLep  IsoLepInfo; 
+        newBranchesJet  BJetInfo; 
+        newBranchesJet  BbarJetInfo;
+        newBranchesJetCol nonBJetColInfo; 
 
         TH1InfoClass<TH1D> h1;
         TH2InfoClass<TH2D> h2;

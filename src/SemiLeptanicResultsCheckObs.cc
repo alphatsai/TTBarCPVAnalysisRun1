@@ -74,12 +74,15 @@ SemiLeptanicResultsCheckObs::~SemiLeptanicResultsCheckObs()
 }
 
 // ------------ Other function -------------
-void SemiLeptanicResultsCheckObs::checkObsChange( TH1D* h, double recoO, double genO, double wrt )
+bool SemiLeptanicResultsCheckObs::checkObsChange( TH1D* h, double recoO, double genO, double wrt, std::string name )
 {
-    if( recoO > 0 && genO > 0 ) h->Fill(0.,wrt);
-    if( recoO < 0 && genO < 0 ) h->Fill(1.,wrt);
-    if( recoO > 0 && genO < 0 ) h->Fill(2.,wrt);
-    if( recoO < 0 && genO > 0 ) h->Fill(3.,wrt);
+    bool isGot=true; 
+    if( recoO > 0 && genO > 0 ){ h->Fill(0.,wrt); }
+    else if( recoO < 0 && genO < 0 ){ h->Fill(1.,wrt); }
+    else if( recoO > 0 && genO < 0 ){ h->Fill(2.,wrt); }
+    else if( recoO < 0 && genO > 0 ){ h->Fill(3.,wrt); }
+    else{ isGot=false; std::cout<<">>[WARNING] No match "<<name<<", RECO "<<recoO<<", GEN "<<genO<<", wrt "<<wrt<<endl; }
+    return isGot; 
 }
 // ------------ method called once each job just before starting event loop  ------------
 void SemiLeptanicResultsCheckObs::beginJob()
@@ -243,6 +246,129 @@ void SemiLeptanicResultsCheckObs::beginJob()
     h1.addNewTH1( "GenChi2_O7Asym_Mu",       "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1  );
     h1.addNewTH1( "GenChi2_O7Asym_El",       "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1  );
 
+    h1.addNewTH1( "EvtBB_O7",                  "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBB_O7_Mu",               "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBB_O7_El",               "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBB_O7Asym",              "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBB_O7Asym_Mu",           "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBB_O7Asym_El",           "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBB_O4",                  "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBB_O4_Mu",               "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBB_O4_El",               "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBB_O4Asym",              "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBB_O4Asym_Mu",           "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBB_O4Asym_El",           "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBB_O3",                  "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBB_O3_Mu",               "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBB_O3_El",               "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBB_O3Asym",              "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBB_O3Asym_Mu",           "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBB_O3Asym_El",           "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBB_O2",                  "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBB_O2_Mu",               "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBB_O2_El",               "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBB_O2Asym",              "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBB_O2Asym_Mu",           "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBB_O2Asym_El",           "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBBChi2_O7",              "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBBChi2_O7_Mu",           "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBBChi2_O7_El",           "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBBChi2_O7Asym",          "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBBChi2_O7Asym_Mu",       "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBBChi2_O7Asym_El",       "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBBChi2_O4",              "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBBChi2_O4_Mu",           "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBBChi2_O4_El",           "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBBChi2_O4Asym",          "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBBChi2_O4Asym_Mu",       "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBBChi2_O4Asym_El",       "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBBChi2_O3",              "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBBChi2_O3_Mu",           "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBBChi2_O3_El",           "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBBChi2_O3Asym",          "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBBChi2_O3Asym_Mu",       "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBBChi2_O3Asym_El",       "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBBChi2_O2",              "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBBChi2_O2_Mu",           "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBBChi2_O2_El",           "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "EvtBBChi2_O2Asym",          "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBBChi2_O2Asym_Mu",       "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtBBChi2_O2Asym_El",       "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Par_PID_b",                 "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Par_PID_bbar",              "",                        "",                  "Evetns", "", "", 60, -30,   30 );
+    h1.addNewTH1( "Par_O7",                  "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Par_O7_Mu",               "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Par_O7_El",               "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Par_O7Asym",              "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Par_O7Asym_Mu",           "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Par_O7Asym_El",           "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Par_O4",                  "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Par_O4_Mu",               "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Par_O4_El",               "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Par_O4Asym",              "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Par_O4Asym_Mu",           "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Par_O4Asym_El",           "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Par_O3",                  "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Par_O3_Mu",               "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Par_O3_El",               "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Par_O3Asym",              "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Par_O3Asym_Mu",           "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Par_O3Asym_El",           "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Par_O2",                  "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Par_O2_Mu",               "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Par_O2_El",               "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "Par_O2Asym",              "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Par_O2Asym_Mu",           "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Par_O2Asym_El",           "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "ParChi2_O7",              "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "ParChi2_O7_Mu",           "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "ParChi2_O7_El",           "O7",                      "O_{7}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "ParChi2_O7Asym",          "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "ParChi2_O7Asym_Mu",       "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "ParChi2_O7Asym_El",       "A_{O7}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "ParChi2_O4",              "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "ParChi2_O4_Mu",           "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "ParChi2_O4_El",           "O4",                      "O_{4}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "ParChi2_O4Asym",          "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "ParChi2_O4Asym_Mu",       "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "ParChi2_O4Asym_El",       "A_{O4}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "ParChi2_O3",              "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "ParChi2_O3_Mu",           "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "ParChi2_O3_El",           "O3",                      "O_{3}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "ParChi2_O3Asym",          "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "ParChi2_O3Asym_Mu",       "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "ParChi2_O3Asym_El",       "A_{O3}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "ParChi2_O2",              "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "ParChi2_O2_Mu",           "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "ParChi2_O2_El",           "O2",                      "O_{2}",             "Events", "", "", 100,  -5,   5   );
+    h1.addNewTH1( "ParChi2_O2Asym",          "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "ParChi2_O2Asym_Mu",       "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "ParChi2_O2Asym_El",       "A_{O2}",                  "",                  "Events", "", "",  2,  -1,   1   );
+    h1.addNewTH1( "Par_ChangeO2",            "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "Par_ChangeO3",            "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "Par_ChangeO4",            "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "Par_ChangeO7",            "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "Par_ChangeO2_El",         "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "Par_ChangeO3_El",         "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "Par_ChangeO4_El",         "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "Par_ChangeO7_El",         "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "Par_ChangeO2_Mu",         "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "Par_ChangeO3_Mu",         "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "Par_ChangeO4_Mu",         "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "Par_ChangeO7_Mu",         "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "ParChi2_ChangeO2",        "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "ParChi2_ChangeO3",        "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "ParChi2_ChangeO4",        "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "ParChi2_ChangeO7",        "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "ParChi2_ChangeO2_El",     "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "ParChi2_ChangeO3_El",     "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "ParChi2_ChangeO4_El",     "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "ParChi2_ChangeO7_El",     "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "ParChi2_ChangeO2_Mu",     "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "ParChi2_ChangeO3_Mu",     "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "ParChi2_ChangeO4_Mu",     "",                        "",                  "Events", "", "",  4,   0,   4   );
+    h1.addNewTH1( "ParChi2_ChangeO7_Mu",     "",                        "",                  "Events", "", "",  4,   0,   4   );
+
     h1.CreateTH1( fs );
     h1.Sumw2();
 
@@ -273,6 +399,30 @@ void SemiLeptanicResultsCheckObs::beginJob()
     h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O7",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
     h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O7_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
     h2.addNewTH2("TH2Chi2_Gen_vs_RECO_O7_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Par_vs_RECO_O2",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Par_vs_RECO_O2_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Par_vs_RECO_O2_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Par_vs_RECO_O3",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Par_vs_RECO_O3_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Par_vs_RECO_O3_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Par_vs_RECO_O4",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Par_vs_RECO_O4_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Par_vs_RECO_O4_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Par_vs_RECO_O7",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Par_vs_RECO_O7_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2_Par_vs_RECO_O7_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Par_vs_RECO_O2",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Par_vs_RECO_O2_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Par_vs_RECO_O2_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Par_vs_RECO_O3",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Par_vs_RECO_O3_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Par_vs_RECO_O3_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Par_vs_RECO_O4",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Par_vs_RECO_O4_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Par_vs_RECO_O4_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Par_vs_RECO_O7",     "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Par_vs_RECO_O7_El",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
+    h2.addNewTH2("TH2Chi2_Par_vs_RECO_O7_Mu",  "",  "", "", "", "",  100,  -5,   5, 100,  -5,   5 );
     h2.CreateTH2( fs );
     h2.Sumw2();
 
@@ -283,12 +433,13 @@ void SemiLeptanicResultsCheckObs::beginJob()
         chain_->Add(inputFiles_.at(i).c_str());
     }
 
-    //VtxInfo.Register(chain_);
     EvtInfo.Register(chain_);
     GenInfo.Register(chain_);
-    JetInfo.Register(chain_,"PFJetInfo");
-    //LepInfo.Register(chain_,"PFLepInfo");
-    IsoLepInfo.Register(chain_,"isoLepton");
+    //JetInfo.Register(chain_,"PFJetInfo");
+    IsoLepInfo.Register( chain_, "isoLepton");
+    BJetInfo.Register(   chain_, "bJet"     );
+    BbarJetInfo.Register(chain_, "bbarJet"  );
+    nonBJetColInfo.Register( chain_, "nonBJetCol");
 
     chain_->SetBranchAddress("EvtInfo.O2",        &O2_        );
     chain_->SetBranchAddress("EvtInfo.O3",        &O3_        );
@@ -460,7 +611,48 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
         GenO3 = Obs3( lepton.P4, j1.P4, b_quark.P4, bbar_quark.P4, charge );
         GenO4 = Obs4( lepton.P3, j1.P3, b_quark.P3, bbar_quark.P3, charge );
         GenO7 = Obs7( az, b_quark.P3, bbar_quark.P3 );
+        
+        // * Paeton ACP
+        int ijet=-1;
+        float ipt=-1;
+        for( int i=0; i<nonBJetColInfo.Size; i++ )
+        {
+            if( nonBJetColInfo.Pt[i] > ipt ) 
+            {
+                ijet=i;
+                ipt = nonBJetColInfo.Pt[i];
+            }
+        }
+        //bool hasParton=false;
+        bool isGoodBB=false;
+        double ParO2(0), ParO3(0), ParO4(0), ParO7(0);
+        TLorentzVector  bPar, bbarPar, jet1, isoL;
+        isoL.SetPtEtaPhiE( IsoLepInfo.Pt, IsoLepInfo.Eta, IsoLepInfo.Phi, IsoLepInfo.Energy );
+        jet1.SetPtEtaPhiE( nonBJetColInfo.Pt[ijet], nonBJetColInfo.Eta[ijet], nonBJetColInfo.Phi[ijet], nonBJetColInfo.Energy[ijet] );
+        bPar.SetPtEtaPhiE(    BJetInfo.GenPt,    BJetInfo.GenEta,     BJetInfo.GenPhi,    BJetInfo.Energy    );
+        bbarPar.SetPtEtaPhiE( BbarJetInfo.GenPt, BbarJetInfo.GenEta,  BbarJetInfo.GenPhi, BbarJetInfo.Energy );
+        ParO2 = Obs2( isoL.Vect(), jet1.Vect(), bPar.Vect(), bbarPar.Vect() );
+        ParO3 = Obs3( isoL, jet1, bPar, bbarPar, IsoLepInfo.Charge ); 
+        ParO4 = Obs4( isoL.Vect(), jet1.Vect(), bPar.Vect(), bbarPar.Vect(), IsoLepInfo.Charge );
+        ParO7 = Obs7( az, bPar.Vect(), bbarPar.Vect() );
+        h1.GetTH1("Par_PID_b"   )->Fill( BJetInfo.GenFlavor    );
+        h1.GetTH1("Par_PID_bbar")->Fill( BbarJetInfo.GenFlavor );
+        //if( BJetInfo.GenFlavor != 0 && BbarJetInfo.GenFlavor !=  0 ) hasParton=true;
+        if( BJetInfo.GenFlavor == 5 && BbarJetInfo.GenFlavor == -5 && fabs(ParO3) >= 0 ) isGoodBB=true;
 
+        if( ParO3 == 0 && isGoodBB ) 
+        {
+            std::cout<<">> [WARING] Parton O3 == "<<ParO3<<", REOC: "<<O3_<<std::endl;
+            isoL.Print();
+            jet1.Print();
+            bPar.Print();
+            bbarPar.Print();
+            std::cout<<">>          BJetInfo.GenPt "<<BJetInfo.GenPt<<", BbarJetInfo.GenPt "<<BbarJetInfo.GenPt<<std::endl;
+            std::cout<<">>          BJetInfo.GenEta "<<BJetInfo.GenEta<<", BbarJetInfo.GenEta "<<BbarJetInfo.GenEta<<std::endl;
+            std::cout<<">>          BJetInfo.GenPhi "<<BJetInfo.GenPhi<<", BbarJetInfo.GenPhi "<<BbarJetInfo.GenPhi<<std::endl;
+            std::cout<<">>          BJetInfo.Energy "<<BJetInfo.Energy<<", BbarJetInfo.Energy "<<BbarJetInfo.Energy<<std::endl;
+            std::cout<<">>          BJetInfo.GenFlavor "<<BJetInfo.GenFlavor<<", BbarJetInfo.GenFlavor "<<BbarJetInfo.GenFlavor<<std::endl;
+        }
         // ---- * ACP INFO
         double acpWrtO2 = (GenO2>0)? (1+GenACP_):(1-GenACP_);  
         double acpWrtO3 = (GenO3>0)? (1+GenACP_):(1-GenACP_);  
@@ -492,6 +684,48 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
         h2.GetTH2("TH2_Gen_vs_RECO_O3")->Fill(O3_/wrtobs,GenO3/wrtobs, wrtevt*acpWrtO3 );
         h2.GetTH2("TH2_Gen_vs_RECO_O4")->Fill(O4_/wrtobs,GenO4/wrtobs, wrtevt*acpWrtO4 );
         h2.GetTH2("TH2_Gen_vs_RECO_O7")->Fill(O7_/wrtobs,GenO7/wrtobs, wrtevt*acpWrtO7 );
+        if( isGoodBB )
+        {
+            checkObsChange( h1.GetTH1("Par_ChangeO2"), O2_, ParO2, wrtevt );
+            checkObsChange( h1.GetTH1("Par_ChangeO3"), O3_, ParO3, wrtevt );
+            checkObsChange( h1.GetTH1("Par_ChangeO4"), O4_, ParO4, wrtevt );
+            checkObsChange( h1.GetTH1("Par_ChangeO7"), O7_, ParO7, wrtevt );
+            h1.GetTH1("EvtBB_O2")->Fill( O2_/wrtobs, wrtevt*acpWrtO2 );
+            h1.GetTH1("EvtBB_O3")->Fill( O3_/wrtobs, wrtevt*acpWrtO3 );
+            h1.GetTH1("EvtBB_O4")->Fill( O4_/wrtobs, wrtevt*acpWrtO4 );
+            h1.GetTH1("EvtBB_O7")->Fill( O7_/wrtobs, wrtevt*acpWrtO7 );
+            h1.GetTH1("Par_O2")->Fill( ParO2/wrtobs, wrtevt*acpWrtO2 );
+            h1.GetTH1("Par_O3")->Fill( ParO3/wrtobs, wrtevt*acpWrtO3 );
+            h1.GetTH1("Par_O4")->Fill( ParO4/wrtobs, wrtevt*acpWrtO4 );
+            h1.GetTH1("Par_O7")->Fill( ParO7/wrtobs, wrtevt*acpWrtO7 );
+            fillAsym( h1.GetTH1("EvtBB_O2Asym"), O2_, wrtevt*acpWrtO2 );
+            fillAsym( h1.GetTH1("EvtBB_O3Asym"), O3_, wrtevt*acpWrtO3 );
+            fillAsym( h1.GetTH1("EvtBB_O4Asym"), O4_, wrtevt*acpWrtO4 );
+            fillAsym( h1.GetTH1("EvtBB_O7Asym"), O7_, wrtevt*acpWrtO7 );
+            fillAsym( h1.GetTH1("Par_O2Asym"), ParO2, wrtevt*acpWrtO2 );
+            fillAsym( h1.GetTH1("Par_O3Asym"), ParO3, wrtevt*acpWrtO3 );
+            fillAsym( h1.GetTH1("Par_O4Asym"), ParO4, wrtevt*acpWrtO4 );
+            fillAsym( h1.GetTH1("Par_O7Asym"), ParO7, wrtevt*acpWrtO7 );
+            h2.GetTH2("TH2_Par_vs_RECO_O2")->Fill(O2_/wrtobs,ParO2/wrtobs, wrtevt*acpWrtO2 );
+            h2.GetTH2("TH2_Par_vs_RECO_O3")->Fill(O3_/wrtobs,ParO3/wrtobs, wrtevt*acpWrtO3 );
+            h2.GetTH2("TH2_Par_vs_RECO_O4")->Fill(O4_/wrtobs,ParO4/wrtobs, wrtevt*acpWrtO4 );
+            h2.GetTH2("TH2_Par_vs_RECO_O7")->Fill(O7_/wrtobs,ParO7/wrtobs, wrtevt*acpWrtO7 );
+            //if( !test  ) 
+            //{
+            //    std::cout<<">> [WARING] Parton O3 == "<<Obs3( isoL, jet1, bPar, bbarPar, IsoLepInfo.Charge, true )<<", REOC: "<<O3_<<std::endl;
+            //    isoL.Print();
+            //    jet1.Print();
+            //    std::cout<<">>          BJet: "<<endl;
+            //    bPar.Print();
+            //    std::cout<<">>          BbarJet: "<<endl;
+            //    bbarPar.Print();
+            //    std::cout<<">>          BJetInfo.GenPt "<<BJetInfo.GenPt<<", BbarJetInfo.GenPt "<<BbarJetInfo.GenPt<<std::endl;
+            //    std::cout<<">>          BJetInfo.GenEta "<<BJetInfo.GenEta<<", BbarJetInfo.GenEta "<<BbarJetInfo.GenEta<<std::endl;
+            //    std::cout<<">>          BJetInfo.GenPhi "<<BJetInfo.GenPhi<<", BbarJetInfo.GenPhi "<<BbarJetInfo.GenPhi<<std::endl;
+            //    std::cout<<">>          BJetInfo.Energy "<<BJetInfo.Energy<<", BbarJetInfo.Energy "<<BbarJetInfo.Energy<<std::endl;
+            //    std::cout<<">>          BJetInfo.GenFlavor "<<BJetInfo.GenFlavor<<", BbarJetInfo.GenFlavor "<<BbarJetInfo.GenFlavor<<std::endl;
+            //}
+        }
         if( isMuonEvt_ && !isEleEvt_ )
         {
             if( IsoLepInfo.Charge*charge < 0 ) h1.GetTH1("Gen_PID_DiffLep_Mu")->Fill(lepton.PdgID);
@@ -521,7 +755,34 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
             h2.GetTH2("TH2_Gen_vs_RECO_O3_Mu")->Fill(O3_/wrtobs,GenO3/wrtobs, wrtevt*acpWrtO3 );
             h2.GetTH2("TH2_Gen_vs_RECO_O4_Mu")->Fill(O4_/wrtobs,GenO4/wrtobs, wrtevt*acpWrtO4 );
             h2.GetTH2("TH2_Gen_vs_RECO_O7_Mu")->Fill(O7_/wrtobs,GenO7/wrtobs, wrtevt*acpWrtO7 );
-          
+            if( isGoodBB )
+            {
+                checkObsChange( h1.GetTH1("Par_ChangeO2_Mu"), O2_, ParO2, wrtevt );
+                checkObsChange( h1.GetTH1("Par_ChangeO3_Mu"), O3_, ParO3, wrtevt );
+                checkObsChange( h1.GetTH1("Par_ChangeO4_Mu"), O4_, ParO4, wrtevt );
+                checkObsChange( h1.GetTH1("Par_ChangeO7_Mu"), O7_, ParO7, wrtevt );
+                h1.GetTH1("EvtBB_O2_Mu")->Fill( O2_/wrtobs, wrtevt*acpWrtO2 );
+                h1.GetTH1("EvtBB_O3_Mu")->Fill( O3_/wrtobs, wrtevt*acpWrtO3 );
+                h1.GetTH1("EvtBB_O4_Mu")->Fill( O4_/wrtobs, wrtevt*acpWrtO4 );
+                h1.GetTH1("EvtBB_O7_Mu")->Fill( O7_/wrtobs, wrtevt*acpWrtO7 );
+                h1.GetTH1("Par_O2_Mu")->Fill( ParO2/wrtobs, wrtevt*acpWrtO2 );
+                h1.GetTH1("Par_O3_Mu")->Fill( ParO3/wrtobs, wrtevt*acpWrtO3 );
+                h1.GetTH1("Par_O4_Mu")->Fill( ParO4/wrtobs, wrtevt*acpWrtO4 );
+                h1.GetTH1("Par_O7_Mu")->Fill( ParO7/wrtobs, wrtevt*acpWrtO7 );
+                fillAsym( h1.GetTH1("EvtBB_O2Asym_Mu"), O2_, wrtevt*acpWrtO2 );
+                fillAsym( h1.GetTH1("EvtBB_O3Asym_Mu"), O3_, wrtevt*acpWrtO3 );
+                fillAsym( h1.GetTH1("EvtBB_O4Asym_Mu"), O4_, wrtevt*acpWrtO4 );
+                fillAsym( h1.GetTH1("EvtBB_O7Asym_Mu"), O7_, wrtevt*acpWrtO7 );
+                fillAsym( h1.GetTH1("Par_O2Asym_Mu"), ParO2, wrtevt*acpWrtO2 );
+                fillAsym( h1.GetTH1("Par_O3Asym_Mu"), ParO3, wrtevt*acpWrtO3 );
+                fillAsym( h1.GetTH1("Par_O4Asym_Mu"), ParO4, wrtevt*acpWrtO4 );
+                fillAsym( h1.GetTH1("Par_O7Asym_Mu"), ParO7, wrtevt*acpWrtO7 );
+                h2.GetTH2("TH2_Par_vs_RECO_O2_Mu")->Fill(O2_/wrtobs,ParO2/wrtobs, wrtevt*acpWrtO2 );
+                h2.GetTH2("TH2_Par_vs_RECO_O3_Mu")->Fill(O3_/wrtobs,ParO3/wrtobs, wrtevt*acpWrtO3 );
+                h2.GetTH2("TH2_Par_vs_RECO_O4_Mu")->Fill(O4_/wrtobs,ParO4/wrtobs, wrtevt*acpWrtO4 );
+                h2.GetTH2("TH2_Par_vs_RECO_O7_Mu")->Fill(O7_/wrtobs,ParO7/wrtobs, wrtevt*acpWrtO7 );
+            }
+
             if( maxChi2Cut_ > minChi2_ && minChi2Cut_ <= minChi2_ )
             {
                 checkObsChange( h1.GetTH1("EvtChi2_ChangeO2"),    O2_, GenO2, wrtevt );
@@ -575,6 +836,57 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
                 h2.GetTH2("TH2Chi2_Gen_vs_RECO_O3")->Fill(O3_/wrtobs,GenO3/wrtobs, wrtevt*acpWrtO3);
                 h2.GetTH2("TH2Chi2_Gen_vs_RECO_O4")->Fill(O4_/wrtobs,GenO4/wrtobs, wrtevt*acpWrtO4);
                 h2.GetTH2("TH2Chi2_Gen_vs_RECO_O7")->Fill(O7_/wrtobs,GenO7/wrtobs, wrtevt*acpWrtO7);
+                if( isGoodBB )
+                {
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO2"), O2_, ParO2, wrtevt );
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO3"), O3_, ParO3, wrtevt );
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO4"), O4_, ParO4, wrtevt );
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO7"), O7_, ParO7, wrtevt );
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO2_Mu"), O2_, ParO2, wrtevt );
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO3_Mu"), O3_, ParO3, wrtevt );
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO4_Mu"), O4_, ParO4, wrtevt );
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO7_Mu"), O7_, ParO7, wrtevt );
+                    h1.GetTH1("EvtBBChi2_O2")->Fill( O2_/wrtobs, wrtevt*acpWrtO2 );
+                    h1.GetTH1("EvtBBChi2_O3")->Fill( O3_/wrtobs, wrtevt*acpWrtO3 );
+                    h1.GetTH1("EvtBBChi2_O4")->Fill( O4_/wrtobs, wrtevt*acpWrtO4 );
+                    h1.GetTH1("EvtBBChi2_O7")->Fill( O7_/wrtobs, wrtevt*acpWrtO7 );
+                    h1.GetTH1("EvtBBChi2_O2_Mu")->Fill( O2_/wrtobs, wrtevt*acpWrtO2 );
+                    h1.GetTH1("EvtBBChi2_O3_Mu")->Fill( O3_/wrtobs, wrtevt*acpWrtO3 );
+                    h1.GetTH1("EvtBBChi2_O4_Mu")->Fill( O4_/wrtobs, wrtevt*acpWrtO4 );
+                    h1.GetTH1("EvtBBChi2_O7_Mu")->Fill( O7_/wrtobs, wrtevt*acpWrtO7 );
+                    h1.GetTH1("ParChi2_O2")->Fill( ParO2/wrtobs, wrtevt*acpWrtO2 );
+                    h1.GetTH1("ParChi2_O3")->Fill( ParO3/wrtobs, wrtevt*acpWrtO3 );
+                    h1.GetTH1("ParChi2_O4")->Fill( ParO4/wrtobs, wrtevt*acpWrtO4 );
+                    h1.GetTH1("ParChi2_O7")->Fill( ParO7/wrtobs, wrtevt*acpWrtO7 );
+                    h1.GetTH1("ParChi2_O2_Mu")->Fill( ParO2/wrtobs, wrtevt*acpWrtO2 );
+                    h1.GetTH1("ParChi2_O3_Mu")->Fill( ParO3/wrtobs, wrtevt*acpWrtO3 );
+                    h1.GetTH1("ParChi2_O4_Mu")->Fill( ParO4/wrtobs, wrtevt*acpWrtO4 );
+                    h1.GetTH1("ParChi2_O7_Mu")->Fill( ParO7/wrtobs, wrtevt*acpWrtO7 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O2Asym"), O2_, wrtevt*acpWrtO2 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O3Asym"), O3_, wrtevt*acpWrtO3 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O4Asym"), O4_, wrtevt*acpWrtO4 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O7Asym"), O7_, wrtevt*acpWrtO7 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O2Asym_Mu"), O2_, wrtevt*acpWrtO2 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O3Asym_Mu"), O3_, wrtevt*acpWrtO3 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O4Asym_Mu"), O4_, wrtevt*acpWrtO4 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O7Asym_Mu"), O7_, wrtevt*acpWrtO7 );
+                    fillAsym( h1.GetTH1("ParChi2_O2Asym"), ParO2, wrtevt*acpWrtO2 );
+                    fillAsym( h1.GetTH1("ParChi2_O3Asym"), ParO3, wrtevt*acpWrtO3 );
+                    fillAsym( h1.GetTH1("ParChi2_O4Asym"), ParO4, wrtevt*acpWrtO4 );
+                    fillAsym( h1.GetTH1("ParChi2_O7Asym"), ParO7, wrtevt*acpWrtO7 );
+                    fillAsym( h1.GetTH1("ParChi2_O2Asym_Mu"), ParO2, wrtevt*acpWrtO2 );
+                    fillAsym( h1.GetTH1("ParChi2_O3Asym_Mu"), ParO3, wrtevt*acpWrtO3 );
+                    fillAsym( h1.GetTH1("ParChi2_O4Asym_Mu"), ParO4, wrtevt*acpWrtO4 );
+                    fillAsym( h1.GetTH1("ParChi2_O7Asym_Mu"), ParO7, wrtevt*acpWrtO7 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O2")->Fill(O2_/wrtobs,ParO2/wrtobs, wrtevt*acpWrtO2 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O3")->Fill(O3_/wrtobs,ParO3/wrtobs, wrtevt*acpWrtO3 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O4")->Fill(O4_/wrtobs,ParO4/wrtobs, wrtevt*acpWrtO4 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O7")->Fill(O7_/wrtobs,ParO7/wrtobs, wrtevt*acpWrtO7 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O2_Mu")->Fill(O2_/wrtobs,ParO2/wrtobs, wrtevt*acpWrtO2 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O3_Mu")->Fill(O3_/wrtobs,ParO3/wrtobs, wrtevt*acpWrtO3 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O4_Mu")->Fill(O4_/wrtobs,ParO4/wrtobs, wrtevt*acpWrtO4 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O7_Mu")->Fill(O7_/wrtobs,ParO7/wrtobs, wrtevt*acpWrtO7 );
+                }
             }
         }
         else if( !isMuonEvt_ &&  isEleEvt_ )
@@ -606,6 +918,33 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
             h2.GetTH2("TH2_Gen_vs_RECO_O3_El")->Fill(O3_/wrtobs,GenO3/wrtobs, wrtevt*acpWrtO3 );
             h2.GetTH2("TH2_Gen_vs_RECO_O4_El")->Fill(O4_/wrtobs,GenO4/wrtobs, wrtevt*acpWrtO4 );
             h2.GetTH2("TH2_Gen_vs_RECO_O7_El")->Fill(O7_/wrtobs,GenO7/wrtobs, wrtevt*acpWrtO7 );
+            if( isGoodBB )
+            {
+                checkObsChange( h1.GetTH1("Par_ChangeO2_El"), O2_, ParO2, wrtevt );
+                checkObsChange( h1.GetTH1("Par_ChangeO3_El"), O3_, ParO3, wrtevt );
+                checkObsChange( h1.GetTH1("Par_ChangeO4_El"), O4_, ParO4, wrtevt );
+                checkObsChange( h1.GetTH1("Par_ChangeO7_El"), O7_, ParO7, wrtevt );
+                h1.GetTH1("EvtBB_O2_El")->Fill( O2_/wrtobs, wrtevt*acpWrtO2 );
+                h1.GetTH1("EvtBB_O3_El")->Fill( O3_/wrtobs, wrtevt*acpWrtO3 );
+                h1.GetTH1("EvtBB_O4_El")->Fill( O4_/wrtobs, wrtevt*acpWrtO4 );
+                h1.GetTH1("EvtBB_O7_El")->Fill( O7_/wrtobs, wrtevt*acpWrtO7 );
+                h1.GetTH1("Par_O2_El")->Fill( ParO2/wrtobs, wrtevt*acpWrtO2 );
+                h1.GetTH1("Par_O3_El")->Fill( ParO3/wrtobs, wrtevt*acpWrtO3 );
+                h1.GetTH1("Par_O4_El")->Fill( ParO4/wrtobs, wrtevt*acpWrtO4 );
+                h1.GetTH1("Par_O7_El")->Fill( ParO7/wrtobs, wrtevt*acpWrtO7 );
+                fillAsym( h1.GetTH1("EvtBB_O2Asym_El"), O2_, wrtevt*acpWrtO2 );
+                fillAsym( h1.GetTH1("EvtBB_O3Asym_El"), O3_, wrtevt*acpWrtO3 );
+                fillAsym( h1.GetTH1("EvtBB_O4Asym_El"), O4_, wrtevt*acpWrtO4 );
+                fillAsym( h1.GetTH1("EvtBB_O7Asym_El"), O7_, wrtevt*acpWrtO7 );
+                fillAsym( h1.GetTH1("Par_O2Asym_El"), ParO2, wrtevt*acpWrtO2 );
+                fillAsym( h1.GetTH1("Par_O3Asym_El"), ParO3, wrtevt*acpWrtO3 );
+                fillAsym( h1.GetTH1("Par_O4Asym_El"), ParO4, wrtevt*acpWrtO4 );
+                fillAsym( h1.GetTH1("Par_O7Asym_El"), ParO7, wrtevt*acpWrtO7 );
+                h2.GetTH2("TH2_Par_vs_RECO_O2_El")->Fill(O2_/wrtobs,ParO2/wrtobs, wrtevt*acpWrtO2 );
+                h2.GetTH2("TH2_Par_vs_RECO_O3_El")->Fill(O3_/wrtobs,ParO3/wrtobs, wrtevt*acpWrtO3 );
+                h2.GetTH2("TH2_Par_vs_RECO_O4_El")->Fill(O4_/wrtobs,ParO4/wrtobs, wrtevt*acpWrtO4 );
+                h2.GetTH2("TH2_Par_vs_RECO_O7_El")->Fill(O7_/wrtobs,ParO7/wrtobs, wrtevt*acpWrtO7 );
+            }
             if( maxChi2Cut_ > minChi2_ && minChi2Cut_ <= minChi2_ )
             {
                 checkObsChange( h1.GetTH1("EvtChi2_ChangeO2"),    O2_, GenO2, wrtevt );
@@ -659,6 +998,57 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
                 h2.GetTH2("TH2Chi2_Gen_vs_RECO_O3")->Fill(O3_/wrtobs,GenO3/wrtobs, wrtevt*acpWrtO3);
                 h2.GetTH2("TH2Chi2_Gen_vs_RECO_O4")->Fill(O4_/wrtobs,GenO4/wrtobs, wrtevt*acpWrtO4);
                 h2.GetTH2("TH2Chi2_Gen_vs_RECO_O7")->Fill(O7_/wrtobs,GenO7/wrtobs, wrtevt*acpWrtO7);
+                if( isGoodBB )
+                {
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO2"), O2_, ParO2, wrtevt );
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO3"), O3_, ParO3, wrtevt );
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO4"), O4_, ParO4, wrtevt );
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO7"), O7_, ParO7, wrtevt );
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO2_El"), O2_, ParO2, wrtevt );
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO3_El"), O3_, ParO3, wrtevt );
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO4_El"), O4_, ParO4, wrtevt );
+                    checkObsChange( h1.GetTH1("ParChi2_ChangeO7_El"), O7_, ParO7, wrtevt );
+                    h1.GetTH1("EvtBBChi2_O2")->Fill( O2_/wrtobs, wrtevt*acpWrtO2 );
+                    h1.GetTH1("EvtBBChi2_O3")->Fill( O3_/wrtobs, wrtevt*acpWrtO3 );
+                    h1.GetTH1("EvtBBChi2_O4")->Fill( O4_/wrtobs, wrtevt*acpWrtO4 );
+                    h1.GetTH1("EvtBBChi2_O7")->Fill( O7_/wrtobs, wrtevt*acpWrtO7 );
+                    h1.GetTH1("EvtBBChi2_O2_El")->Fill( O2_/wrtobs, wrtevt*acpWrtO2 );
+                    h1.GetTH1("EvtBBChi2_O3_El")->Fill( O3_/wrtobs, wrtevt*acpWrtO3 );
+                    h1.GetTH1("EvtBBChi2_O4_El")->Fill( O4_/wrtobs, wrtevt*acpWrtO4 );
+                    h1.GetTH1("EvtBBChi2_O7_El")->Fill( O7_/wrtobs, wrtevt*acpWrtO7 );
+                    h1.GetTH1("ParChi2_O2")->Fill( ParO2/wrtobs, wrtevt*acpWrtO2 );
+                    h1.GetTH1("ParChi2_O3")->Fill( ParO3/wrtobs, wrtevt*acpWrtO3 );
+                    h1.GetTH1("ParChi2_O4")->Fill( ParO4/wrtobs, wrtevt*acpWrtO4 );
+                    h1.GetTH1("ParChi2_O7")->Fill( ParO7/wrtobs, wrtevt*acpWrtO7 );
+                    h1.GetTH1("ParChi2_O2_El")->Fill( ParO2/wrtobs, wrtevt*acpWrtO2 );
+                    h1.GetTH1("ParChi2_O3_El")->Fill( ParO3/wrtobs, wrtevt*acpWrtO3 );
+                    h1.GetTH1("ParChi2_O4_El")->Fill( ParO4/wrtobs, wrtevt*acpWrtO4 );
+                    h1.GetTH1("ParChi2_O7_El")->Fill( ParO7/wrtobs, wrtevt*acpWrtO7 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O2Asym"), O2_, wrtevt*acpWrtO2 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O3Asym"), O3_, wrtevt*acpWrtO3 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O4Asym"), O4_, wrtevt*acpWrtO4 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O7Asym"), O7_, wrtevt*acpWrtO7 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O2Asym_El"), O2_, wrtevt*acpWrtO2 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O3Asym_El"), O3_, wrtevt*acpWrtO3 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O4Asym_El"), O4_, wrtevt*acpWrtO4 );
+                    fillAsym( h1.GetTH1("EvtBBChi2_O7Asym_El"), O7_, wrtevt*acpWrtO7 );
+                    fillAsym( h1.GetTH1("ParChi2_O2Asym"), ParO2, wrtevt*acpWrtO2 );
+                    fillAsym( h1.GetTH1("ParChi2_O3Asym"), ParO3, wrtevt*acpWrtO3 );
+                    fillAsym( h1.GetTH1("ParChi2_O4Asym"), ParO4, wrtevt*acpWrtO4 );
+                    fillAsym( h1.GetTH1("ParChi2_O7Asym"), ParO7, wrtevt*acpWrtO7 );
+                    fillAsym( h1.GetTH1("ParChi2_O2Asym_El"), ParO2, wrtevt*acpWrtO2 );
+                    fillAsym( h1.GetTH1("ParChi2_O3Asym_El"), ParO3, wrtevt*acpWrtO3 );
+                    fillAsym( h1.GetTH1("ParChi2_O4Asym_El"), ParO4, wrtevt*acpWrtO4 );
+                    fillAsym( h1.GetTH1("ParChi2_O7Asym_El"), ParO7, wrtevt*acpWrtO7 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O2")->Fill(O2_/wrtobs,ParO2/wrtobs, wrtevt*acpWrtO2 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O3")->Fill(O3_/wrtobs,ParO3/wrtobs, wrtevt*acpWrtO3 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O4")->Fill(O4_/wrtobs,ParO4/wrtobs, wrtevt*acpWrtO4 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O7")->Fill(O7_/wrtobs,ParO7/wrtobs, wrtevt*acpWrtO7 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O2_El")->Fill(O2_/wrtobs,ParO2/wrtobs, wrtevt*acpWrtO2 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O3_El")->Fill(O3_/wrtobs,ParO3/wrtobs, wrtevt*acpWrtO3 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O4_El")->Fill(O4_/wrtobs,ParO4/wrtobs, wrtevt*acpWrtO4 );
+                    h2.GetTH2("TH2Chi2_Par_vs_RECO_O7_El")->Fill(O7_/wrtobs,ParO7/wrtobs, wrtevt*acpWrtO7 );
+                }
             }
         }
 
