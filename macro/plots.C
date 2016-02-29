@@ -1,4 +1,113 @@
 #include "TColor.h"
+#include "help.C"
+// For semi-lepton case
+void drawObservableData( TFile* f, std::string output=".", std::string oName="O2", std::string eName="EvtChi2", std::string headName="0 b-jet CR", std::string xtitle="O_{2}/m_{top}^{3}", std::string ytitle="Events (k)", float scaleY=0.001, float xmin=-1, float xmax=1, int rebin=1 )
+{
+    //TCanvas *c1 = new TCanvas(("c1_obdist_"+eName+oName).c_str(), "c1",1394,85,881,747);
+    TCanvas *c1 = new TCanvas(("c1_obdist_"+eName+oName).c_str(), "c1", 1394, 85, W, H);
+    gStyle->SetOptStat(0);
+    //c1->Range(-1.432161,-5.570236,1.234506,28.3845);
+    c1->SetFillColor(0);
+    c1->SetBorderMode(0);
+    c1->SetBorderSize(2);
+    c1->SetLeftMargin(0.1620603);
+    c1->SetRightMargin(0.0879397);
+    c1->SetTopMargin(0.07329843);
+    c1->SetBottomMargin(0.1640489);
+    //c1->SetLeftMargin( L/W );
+    //c1->SetRightMargin( R/W );
+    //c1->SetTopMargin( T/H );
+    //c1->SetBottomMargin( B/H );
+    c1->SetFrameBorderMode(0);
+    c1->SetFrameBorderMode(0);
+
+    TH1D* Oh_el = (TH1D*)((TH1D*)f->Get(("DATA_Electron__"+eName+"_"+oName+"_El").c_str()))->Clone();
+    TH1D* Oh_mu = (TH1D*)((TH1D*)f->Get(("DATA_Muon__"+eName+"_"+oName+"_Mu").c_str()))->Clone();
+    fix(Oh_el); Oh_el->Rebin(rebin);
+    fix(Oh_mu); Oh_mu->Rebin(rebin);
+    
+    fixNewRange(Oh_el, xmin, xmax );
+    fixNewRange(Oh_mu, xmin, xmax );
+
+    Oh_el->Scale(scaleY);
+    Oh_mu->Scale(scaleY);
+
+    TH1D* Oh = (TH1D*)Oh_el->Clone();
+    Oh->Add(Oh_mu);
+
+    Oh->SetLineColor(4);
+    Oh->SetLineWidth(3);
+    Oh->GetXaxis()->SetTitle(xtitle.c_str());
+    Oh->GetXaxis()->SetNdivisions(509);
+    Oh->GetXaxis()->SetLabelSize(0.06);
+    Oh->GetXaxis()->SetTitleSize(0.07);
+    Oh->GetYaxis()->SetTitle(ytitle.c_str());
+    Oh->GetYaxis()->SetNdivisions(505);
+    Oh->GetYaxis()->SetLabelSize(0.06);
+    Oh->GetYaxis()->SetTitleSize(0.07);
+    Oh->GetYaxis()->SetTitleOffset(0.79);
+    Oh->GetYaxis()->SetTitleFont(42);
+    Oh->Draw("HISTE");
+
+    //Oh_mu->SetLineColor(kOrange+4);
+    //Oh_el->SetLineColor(kGreen+3);
+    Oh_mu->SetLineColor(kRed);
+    Oh_el->SetLineColor(8);
+    Oh_mu->SetLineWidth(3);
+    Oh_el->SetLineWidth(3);
+    Oh_mu->Draw("SAMEHISTE");
+    Oh_el->Draw("SAMEHISTE");
+
+    TLegend *leg;
+    leg = new TLegend(0.6319095,0.6684119,0.9208543,0.8813264,NULL,"brNDC");
+    leg->SetTextSize(0.04861111);
+    leg->SetHeader(headName.c_str());
+    leg->SetBorderSize(0);
+    leg->SetLineStyle(0);
+    leg->SetLineWidth(0);
+    leg->SetFillColor(0);
+    leg->SetFillStyle(0);
+    leg->AddEntry(Oh_mu,"Muon",    "le");
+    leg->AddEntry(Oh_el,"Electron","le");
+    leg->AddEntry(Oh,   "Combined","le");
+    leg->Draw();
+
+    TPaveText* t_title;
+    t_title = new TPaveText(0.6595477,0.938918,0.9396985,0.9842932,"brNDC");
+    t_title->AddText("19.7 fb^{-1} (8TeV)");
+    t_title->SetFillColor(0);
+    t_title->SetFillStyle(0);
+    t_title->SetBorderSize(0);
+    t_title->SetTextAlign(12);
+    t_title->SetTextFont(42);
+    t_title->SetTextSize(0.05235602);
+    t_title->Draw();
+
+    TPaveText* t_CMS;
+    t_CMS = new TPaveText(0.2022613,0.8481675,0.2952261,0.8935428,"brNDC");
+    t_CMS->AddText("CMS");
+    t_CMS->SetFillColor(0);
+    t_CMS->SetFillStyle(0);
+    t_CMS->SetBorderSize(0);
+    t_CMS->SetTextAlign(12);
+    t_CMS->SetTextSize(0.06108203);
+    t_CMS->Draw();
+
+    TPaveText* t_perliminary;
+    t_perliminary = new TPaveText(0.2022613,0.7853403,0.2952261,0.8307155,"brNDC");
+    t_perliminary->AddText("Perliminary");
+    t_perliminary->SetFillColor(0);
+    t_perliminary->SetFillStyle(0);
+    t_perliminary->SetBorderSize(0);
+    t_perliminary->SetTextAlign(12);
+    t_perliminary->SetTextFont(52);
+    t_perliminary->SetTextSize(0.05235602);
+    t_perliminary->Draw();
+
+    c1->SaveAs((output+"/ObsDistribution_DATA_"+eName+oName+".pdf").c_str());
+}
+
+// For delphes case
 void drawObservableDist( TFile* f, std::string output=".", std::string histName="Evt_O", std::string unit="O/M_{top}^{3}", std::string CHname="LepJets", bool legX=1 )
 {
     bool isLepJets=false;
@@ -109,7 +218,6 @@ void drawObservableDist( TFile* f, std::string output=".", std::string histName=
 
     c1->SaveAs((output+"/"+histName+".pdf").c_str());
 }
-
 void drawObservable( TFile* f, std::string histName, std::string output=".", std::string Oname="O", std::string CHname="", float range=0.1, bool legX=0 )
 {
     TCanvas *c1 = new TCanvas(("c1_ob_"+histName).c_str(), "c1",113,93,1099,750);

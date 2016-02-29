@@ -2,6 +2,10 @@
 #include "TPaveText.h"
 #include "TColor.h"
 #include "../caculate.C"
+#include "../CMS_lumi.C"
+#include "../help.C"
+const int cmslumi=0;
+const float topMassUncRescale=6;
 float* getEvtPDF( TFile* fin, std::string hName, int nPDF )
 {
     float *values = new float[2];
@@ -119,7 +123,7 @@ float* drawSyst( TFile* fin, std::string hName, std::string systName, std::strin
     return values;
 }
 
-void drawFittedStack( TFile* f, std::string hName, std::string* systName, int systNi, int nPDFup=0, int nPDFdown=0, int chN=0, std::string output=".", std::string xTitle="", std::string yTitle="Events", bool logy=false )
+void drawFittedStack( TFile* f, std::string hName, std::string* systName, int systNi, int nPDFup=0, int nPDFdown=0, int chN=0, std::string output=".", std::string xTitle="", std::string yTitle="Events", bool logy=false, bool doTopMassUncRescale=true )
 {
     int nCh=2;
     int lineWidth=3;
@@ -158,6 +162,7 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
     h_all->Add(h_sig);
     meanAll = h_all->Integral();
 
+    int iTopMass=-1;
     std::string tune[2] = {"up", "down"};
     for( int i=0; i<systN; i++ )
     {   
@@ -165,6 +170,7 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
         TH1D* h_sigUnc[2];
         if( i != systN-1 )
         {
+            if( systName[i].find("TopMass")!=std::string::npos && doTopMassUncRescale ) iTopMass=i;
             for( int t=0; t<2; t++)
             {
                 std::string name = systName[i]+tune[t];
@@ -174,6 +180,12 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
                 uncSig[i][t]=h_sigUnc[t]->Integral();
                 uncBkg[i][t]=h_allUnc[i][t]->Integral(); h_allUnc[i][t]->Add(h_sigUnc[t]);
                 uncAll[i][t]=h_allUnc[i][t]->Integral();
+                if( iTopMass == i )
+                {
+                    uncSig[i][t]=(uncSig[i][t]+(topMassUncRescale-1)*meanSig)/topMassUncRescale;
+                    uncBkg[i][t]=(uncBkg[i][t]+(topMassUncRescale-1)*meanBkg)/topMassUncRescale;
+                    uncAll[i][t]=(uncAll[i][t]+(topMassUncRescale-1)*meanAll)/topMassUncRescale;
+                }
             }
         }
         else
@@ -207,6 +219,7 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
             for( int t=0; t<2; t++ )
             {
                 float err = h_allUnc[i][t]->GetBinContent(b) - nomV;
+                if( iTopMass == i ) err = err/topMassUncRescale;
                 if( err > 0. ) sigUp +=err*err;
                 else sigDown += err*err;
             }
@@ -263,18 +276,18 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
     TCanvas* c1;
     TPad *p1, *p2; 
     if( logy ){
-        c1 = new TCanvas( ("C_Log_"+hName).c_str(), "",59,72,1076,826);
+        c1 = new TCanvas( ("C_Log_"+hName).c_str(), "",59,72,W,H);
     }else{
-        c1 = new TCanvas( ("C_Linear_"+hName).c_str(), "",59,72,1076,826);
+        c1 = new TCanvas( ("C_Linear_"+hName).c_str(), "",59,72,W,H);
     }
     c1->Range(-123.0964,-841.8412,557.1066,3883.14);
     c1->SetFillColor(0);
     c1->SetBorderMode(0);
     c1->SetBorderSize(2);
-    c1->SetLeftMargin(0.1809701);
-    c1->SetRightMargin(0.08395522);
-    c1->SetTopMargin(0.06148055);
-    c1->SetBottomMargin(0.1781681);
+    c1->SetLeftMargin(0.1997487);
+    c1->SetRightMargin(0.06909548);
+    c1->SetTopMargin(0.08900524);
+    c1->SetBottomMargin(0.1797557);
     c1->SetFrameBorderMode(0);
     c1->SetFrameBorderMode(0);
 
@@ -285,7 +298,7 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
     else c1->SetLogy(0);
 
     TLegend *leg;
-    leg = new TLegend(0.6091418,0.6398996,0.9085821,0.9259724,NULL,"brNDC");
+    leg = new TLegend(0.6256281,0.617801,0.9258794,0.904014,NULL,"brNDC");
     leg->SetBorderSize(0);
     leg->SetLineStyle(0);
     leg->SetLineWidth(0);
@@ -297,22 +310,25 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
     leg->AddEntry(h_allAsymErr, "1#sigma, Stat.+Syst.", "f");
     //leg->AddEntry(h_allAsymErr, "1#sigma, Syst.", "f");
 
-    TPaveText* t_title;
-    t_title = new TPaveText(0.1455224,0.9134253,0.7751866,0.9974906,"brNDC");
-    //t_title = new TPaveText(0.07088487,0.9153846,0.7007612,1,"brNDC");
-    t_title->AddText("CMS #sqrt{s} = 8TeV, L = 19.7/fb");
-    t_title->SetTextColor(kBlack);
-    t_title->SetFillColor(kWhite);
-    t_title->SetFillStyle(0);
-    t_title->SetBorderSize(0);
-    t_title->SetTextAlign(11);
-    t_title->SetTextSize(0.04805273);
+    //TPaveText* t_title;
+    //t_title = new TPaveText(0.1455224,0.9134253,0.7751866,0.9974906,"brNDC");
+    ////t_title = new TPaveText(0.07088487,0.9153846,0.7007612,1,"brNDC");
+    //t_title->AddText("CMS #sqrt{s} = 8TeV, L = 19.7/fb");
+    //t_title->SetTextColor(kBlack);
+    //t_title->SetFillColor(kWhite);
+    //t_title->SetFillStyle(0);
+    //t_title->SetBorderSize(0);
+    //t_title->SetTextAlign(11);
+    //t_title->SetTextSize(0.04805273);
 
     h_stack->Draw("HIST");
     h_allAsymErr->Draw("E2SAME");
     h_data->Draw("ESAME");
     leg->Draw();
-    t_title->Draw();
+    //t_title->Draw();
+
+    writeExtraText=true;
+    CMS_lumi( c1, 2, cmslumi, true );
 
     if( logy )
         c1->SaveAs((output+"/StackFitted_Log_"+hName+ch+".pdf").c_str());
@@ -395,7 +411,7 @@ void fillFinalAcpText( FILE* outTxt, std::string oName, std::string chName, doub
      printf( "\n" );
 }
 
-void getSubtractBkgResults( TFile* f, FILE* outTxt, std::string oName, int systNi, std::string* systName, int nPDFup=0, int nPDFdown=0, int channel=0, bool unBlind=false )
+void getSubtractBkgResults( TFile* f, FILE* outTxt, std::string oName, int systNi, std::string* systName, int nPDFup=0, int nPDFdown=0, int channel=0, bool unBlind=false, bool doTopMassUncRescale=true, TFile* fCR=NULL )
 {
     std::string chName="";
     std::string chFullName="Combined channel";
@@ -405,8 +421,10 @@ void getSubtractBkgResults( TFile* f, FILE* outTxt, std::string oName, int systN
     std::string dataName="DATA";
     if( !unBlind ){ dataName="MC"; std::cout<<"[INFO] Blinding! Using MC"<<std::endl;}
 
+    bool usingCR = (fCR==NULL)? false:true;
+
     const int systN = systNi+1;
-    float evtBkgMCMean;
+    float evtBkgMean;
     float evtBkgFitMean;
     float bkgWrt;
     double  Acp;
@@ -416,6 +434,7 @@ void getSubtractBkgResults( TFile* f, FILE* outTxt, std::string oName, int systN
 
     TH1D* hO_data;
     TH1D* hO_bkg; 
+    TH1D* hO_bkgEst; 
     TH1D* hT_bkg;
     TH1D* hO_dataSyst[2][systN];
     TH1D* hO_bkgSyst[2][systN];
@@ -423,8 +442,21 @@ void getSubtractBkgResults( TFile* f, FILE* outTxt, std::string oName, int systN
     float bkgWrtSyst[2][systN];
     
     hO_data = (TH1D*)((TH1D*)f->Get((dataName+"_"+oName+chName).c_str()))->Clone();
-    hO_bkg  = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName).c_str()))->Clone();
     hT_bkg  = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName).c_str()))->Clone();
+    if( usingCR )
+    {
+        // Subtract O from CR
+        std::cout<<"[INFO] Bkg O from data CR..."<<std::endl;
+        if( channel == 0 ){      hO_bkg  = (TH1D*)((TH1D*)fCR->Get(("DATA_Electron__EvtChi2_"+oName+"Asym_El").c_str()))->Clone(); }
+        else if( channel == 1 ){ hO_bkg  = (TH1D*)((TH1D*)fCR->Get(("DATA_Muon__EvtChi2_"+oName+"Asym_Mu").c_str()))->Clone();     }
+        else{
+            TH1D* hO_tmp = (TH1D*)fCR->Get(("DATA_Electron__EvtChi2_"+oName+"Asym_El").c_str()); 
+            hO_bkg  = (TH1D*)((TH1D*)fCR->Get(("DATA_Electron__EvtChi2_"+oName+"Asym_Mu").c_str()))->Clone();
+            hO_bkg->Add(hO_tmp);
+            delete hO_tmp; 
+        }
+    }
+    else{ hO_bkg  = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName).c_str()))->Clone(); } // Subtract O from bkg MC
 
     if( !unBlind )
     {
@@ -436,27 +468,30 @@ void getSubtractBkgResults( TFile* f, FILE* outTxt, std::string oName, int systN
         delete tmpData;
     }
 
-    evtBkgMCMean  = hO_bkg->Integral();
+    // Weight bkg O to estimated bkg events 
+    evtBkgMean  = hO_bkg->Integral();
     evtBkgFitMean = hT_bkg->Integral();
-    bkgWrt = evtBkgFitMean/evtBkgMCMean;
+    bkgWrt = evtBkgFitMean/evtBkgMean;
+    hO_bkgEst = (TH1D*)hO_bkg->Clone();
+    hO_bkgEst->Scale(bkgWrt);
 
     fprintf( outTxt, "* %s (%%)\n", chFullName.c_str() );
      printf( "* %s (%%)\n", chFullName.c_str() );
     fprintf( outTxt, "* Events - Data:%.1f\n", hO_data->Integral() );
      printf( "* Events - Data:%.1f\n", hO_data->Integral() );
-    fprintf( outTxt, "* Events - BkgMC:%.1f, EstBkg:%.1f, wrt:%.3f\n", evtBkgMCMean, evtBkgFitMean, bkgWrt);
-     printf( "* Events - BkgMC:%.1f, EstBkg:%.1f, wrt:%.3f\n", evtBkgMCMean, evtBkgFitMean, bkgWrt);
+    fprintf( outTxt, "* Events - BkgMC:%.1f, EstBkg:%.1f, wrt:%.3f\n", evtBkgMean, evtBkgFitMean, bkgWrt);
+     printf( "* Events - BkgMC:%.1f, EstBkg:%.1f, wrt:%.3f\n", evtBkgMean, evtBkgFitMean, bkgWrt);
 
     fprintf( outTxt, "* ACP(%s) - Data:%.2f(%.2f) n:%.1f, p:%.1f\n", oName.c_str(), caculateACP(hO_data)*100., caculateACPerrorWrt(hO_data)*100., hO_data->GetBinContent(1), hO_data->GetBinContent(2));
      printf( "* ACP(%s) - Data:%.2f(%.2f) n:%.1f, p:%.1f\n", oName.c_str(), caculateACP(hO_data)*100., caculateACPerrorWrt(hO_data)*100., hO_data->GetBinContent(1), hO_data->GetBinContent(2));
     fprintf( outTxt, "* ACP(%s) - BkgMC:%.2f(%.2f) n:%.1f, p:%.1f\n", oName.c_str(), caculateACP(hO_bkg)*100., caculateACPerrorWrt(hO_bkg)*100., hO_bkg->GetBinContent(1), hO_bkg->GetBinContent(2));
      printf( "* ACP(%s) - BkgMC:%.2f(%.2f) n:%.1f, p:%.1f\n", oName.c_str(), caculateACP(hO_bkg)*100., caculateACPerrorWrt(hO_bkg)*100., hO_bkg->GetBinContent(1), hO_bkg->GetBinContent(2));
 
-    hO_bkg->Scale(bkgWrt);
-    fprintf( outTxt, "* ACP(%s) - EstBkg:%.2f(%.2f) n:%.1f, p:%.1f\n", oName.c_str(), caculateACP(hO_bkg)*100., caculateACPerrorWrt(hO_bkg)*100., hO_bkg->GetBinContent(1), hO_bkg->GetBinContent(2));
-     printf( "* ACP(%s) - EstBkg:%.2f(%.2f) n:%.1f, p:%.1f\n", oName.c_str(), caculateACP(hO_bkg)*100., caculateACPerrorWrt(hO_bkg)*100., hO_bkg->GetBinContent(1), hO_bkg->GetBinContent(2));
+    fprintf( outTxt, "* ACP(%s) - EstBkg:%.2f(%.2f) n:%.1f, p:%.1f\n", oName.c_str(), caculateACP(hO_bkgEst)*100., caculateACPerrorWrt(hO_bkgEst)*100., hO_bkgEst->GetBinContent(1), hO_bkgEst->GetBinContent(2));
+     printf( "* ACP(%s) - EstBkg:%.2f(%.2f) n:%.1f, p:%.1f\n", oName.c_str(), caculateACP(hO_bkgEst)*100., caculateACPerrorWrt(hO_bkgEst)*100., hO_bkgEst->GetBinContent(1), hO_bkgEst->GetBinContent(2));
 
-    hO_data->Add(hO_bkg,-1);
+    // Subtract bkg
+    hO_data->Add(hO_bkgEst,-1);
 
     fprintf( outTxt, "* Events - DataSig:%.1f (n:%.1f, p:%.1f)\n", hO_data->Integral(), hO_data->GetBinContent(1), hO_data->GetBinContent(2));
      printf( "* Events - DataSig:%.1f (n:%.1f, p:%.1f)\n", hO_data->Integral(), hO_data->GetBinContent(1), hO_data->GetBinContent(2));
@@ -464,15 +499,19 @@ void getSubtractBkgResults( TFile* f, FILE* outTxt, std::string oName, int systN
     Acp = caculateACP( hO_data, 1 );
     eAcp = caculateACPerrorWrt( hO_data );
     // * Systmatic uncs.
+    int iTopMass=-1;
     string *systName1 = new string[systN];
-    for( int s=0; s<systN; s++){
+    for( int s=0; s<systN; s++)
+    {
         if( s != systN-1 )
         {
+            if( systName[s].find("TopMass")!=std::string::npos && doTopMassUncRescale ) iTopMass=s;
             systName1[s] = systName[s];
             for( int t=0; t<2; t++ ){
-                hT_bkgSyst[t][s] = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName+"_"+systName[s]+tuneName[t]).c_str()))->Clone();   
-                bkgWrtSyst[t][s] = hT_bkgSyst[t][s]->Integral()/evtBkgMCMean; 
-                hO_bkgSyst[t][s] = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName).c_str()))->Clone();
+                hT_bkgSyst[t][s] = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName+"_"+systName[s]+tuneName[t]).c_str()))->Clone();  
+                bkgWrtSyst[t][s] = hT_bkgSyst[t][s]->Integral()/evtBkgMean; 
+                if( iTopMass == s ){ bkgWrtSyst[t][s] = (bkgWrtSyst[t][s]+(topMassUncRescale-1)*bkgWrt)/topMassUncRescale; }
+                hO_bkgSyst[t][s] = (TH1D*)hO_bkg->Clone();
                 hO_bkgSyst[t][s]->Scale(bkgWrtSyst[t][s]); 
                 hO_dataSyst[t][s] = (TH1D*)((TH1D*)f->Get((dataName+"_"+oName+chName).c_str()))->Clone();
                 hO_dataSyst[t][s]->Add(hO_bkgSyst[t][s],-1);
@@ -486,10 +525,10 @@ void getSubtractBkgResults( TFile* f, FILE* outTxt, std::string oName, int systN
             systName1[s]="PDF";
             hT_bkgSyst[0][s] = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName+"_PDF"+int2str(nPDFup)).c_str()))->Clone();   
             hT_bkgSyst[1][s] = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName+"_PDF"+int2str(nPDFdown)).c_str()))->Clone();   
-            bkgWrtSyst[0][s] = hT_bkgSyst[0][s]->Integral()/evtBkgMCMean; 
-            bkgWrtSyst[1][s] = hT_bkgSyst[1][s]->Integral()/evtBkgMCMean; 
-            hO_bkgSyst[0][s] = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName).c_str()))->Clone();
-            hO_bkgSyst[1][s] = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName).c_str()))->Clone();
+            bkgWrtSyst[0][s] = hT_bkgSyst[0][s]->Integral()/evtBkgMean; 
+            bkgWrtSyst[1][s] = hT_bkgSyst[1][s]->Integral()/evtBkgMean; 
+            hO_bkgSyst[0][s] = (TH1D*)hO_bkg->Clone();
+            hO_bkgSyst[1][s] = (TH1D*)hO_bkg->Clone();
             hO_bkgSyst[0][s]->Scale(bkgWrtSyst[0][s]); 
             hO_bkgSyst[1][s]->Scale(bkgWrtSyst[1][s]); 
             hO_dataSyst[0][s] = (TH1D*)((TH1D*)f->Get((dataName+"_"+oName+chName).c_str()))->Clone();
@@ -509,7 +548,7 @@ void getSubtractBkgResults( TFile* f, FILE* outTxt, std::string oName, int systN
     delete [] systName1;
 }
 
-void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systName, int systNi, int nPDFup=0, int nPDFdown=0, std::string output=".", std::string oName="O2", std::string xTitle="O_{2}", bool unBlind=false, float assumpAcp=0 )
+void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systName, int systNi, int nPDFup=0, int nPDFdown=0, std::string output=".", std::string oName="O2", std::string xTitle="O_{2}", bool unBlind=false, float assumpAcp=0, bool doTopMassUncRescale=true, TFile* fCR=NULL )
 {
     std::string tuneName[2]={"up","down"};
     std::string chName[3]={"_El","_Mu",""};
@@ -517,6 +556,7 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
     std::string dataName="DATA";
     if( !unBlind ) dataName="MC";
 
+    bool usingCR = (fCR==NULL)? false:true;
     const int systN = systNi + 1;
     string *systName1 = new string[systN];
     for( int s=0; s<systN; s++){
@@ -524,9 +564,11 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
         else systName1[s] = "PDF";
     }
 
-    float evtBkgMCMean[3];
+    float evtBkgMean[3];
     float evtBkgFitMean[3];
     float bkgWrt[3];
+    double  Acp0[3];
+    double eAcp0[3];
     double  Acp[3];
     double eAcp[3];
     double  AcpSyst[3][2][systN];
@@ -536,6 +578,7 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
 
     TH1D* hO_data[3];
     TH1D* hO_bkg[3]; 
+    TH1D* hO_bkgEst[3]; 
     TH1D* hT_bkg[3];
     TH1D* hO_dataSyst[3][2][systN];
     TH1D* hO_bkgSyst[3][2][systN];
@@ -559,31 +602,46 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
             hO_data[ch]->SetBinError( 2, sqrt(hO_data[ch]->GetBinContent(2)));
             delete tmpData;
         }
+        Acp0[ch] = caculateACP( hO_data[ch] );
+        eAcp0[ch] = caculateACPerrorWrt( hO_data[ch] );
+
         if( ch != 2 ) // Electron or muon channel
         {
-            hO_bkg[ch]  = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName[ch]).c_str()))->Clone();
+            if( usingCR )
+            {
+                // Subtract O from CR
+                std::cout<<"[INFO] Bkg O from data CR..."<<std::endl;
+                if( ch == 0 ){      hO_bkg[ch] = (TH1D*)((TH1D*)fCR->Get(("DATA_Electron__EvtChi2_"+oName+"Asym_El").c_str()))->Clone(); }
+                else if( ch == 1 ){ hO_bkg[ch] = (TH1D*)((TH1D*)fCR->Get(("DATA_Muon__EvtChi2_"+oName+"Asym_Mu").c_str()))->Clone();     }
+            }
+            else{ hO_bkg[ch]  = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName[ch]).c_str()))->Clone(); } // Subtract O from bkg MC
+
             hT_bkg[ch] = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName[ch]).c_str()))->Clone();
 
-            evtBkgMCMean[ch]  = hO_bkg[ch]->Integral();
+            evtBkgMean[ch]  = hO_bkg[ch]->Integral();
             evtBkgFitMean[ch] = hT_bkg[ch]->Integral();
-            bkgWrt[ch] = evtBkgFitMean[ch]/evtBkgMCMean[ch];
-            hO_bkg[ch]->Scale(bkgWrt[ch]);   // weight bkg with fitted bkg
-            hO_data[ch]->Add(hO_bkg[ch],-1); // subtract bkg
+            bkgWrt[ch] = evtBkgFitMean[ch]/evtBkgMean[ch];
+            hO_bkgEst[ch] = (TH1D*)hO_bkg[ch]->Clone();  
+            hO_bkgEst[ch]->Scale(bkgWrt[ch]);   // weight bkg with fitted bkg
+            hO_data[ch]->Add(hO_bkgEst[ch],-1); // subtract bkg
 
             Acp[ch] = caculateACP( hO_data[ch] );
             eAcp[ch] = caculateACPerrorWrt( hO_data[ch] );
             // * Systmatic uncs.
+            int iTopMass=-1;
             for( int s=0; s<systN; s++)
             {
                 int pdft[2]={nPDFup, nPDFdown};
                 for( int t=0; t<2; t++ ){
                     if( s != systN-1 ){
+                        if( systName[s].find("TopMass")!=std::string::npos && doTopMassUncRescale ) iTopMass=s;
                         hT_bkgSyst[ch][t][s] = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName[ch]+"_"+systName[s]+tuneName[t]).c_str()))->Clone();   
                     }else{
                         hT_bkgSyst[ch][t][s] = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName[ch]+"_PDF"+int2str(pdft[t])).c_str()))->Clone();   
                     }
-                    bkgWrtSyst[ch][t][s] = hT_bkgSyst[ch][t][s]->Integral()/evtBkgMCMean[ch]; 
-                    hO_bkgSyst[ch][t][s] = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName[ch]).c_str()))->Clone();
+                    bkgWrtSyst[ch][t][s] = hT_bkgSyst[ch][t][s]->Integral()/evtBkgMean[ch]; 
+                    if( iTopMass == s ){ bkgWrtSyst[ch][t][s] = (bkgWrtSyst[ch][t][s]+(topMassUncRescale-1)*bkgWrt[ch])/topMassUncRescale; }
+                    hO_bkgSyst[ch][t][s] = (TH1D*)hO_bkg[ch]->Clone();
                     hO_bkgSyst[ch][t][s]->Scale(bkgWrtSyst[ch][t][s]); 
                     hO_dataSyst[ch][t][s] = (TH1D*)((TH1D*)f->Get((dataName+"_"+oName+chName[ch]).c_str()))->Clone();
                     if( !unBlind )
@@ -608,9 +666,9 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
         // Combined channel
         else
         {
-            hO_bkg[ch] = (TH1D*)hO_bkg[0]->Clone();
-            hO_bkg[ch] ->Add(hO_bkg[1]);     // Combined electron and muon
-            hO_data[ch]->Add(hO_bkg[ch],-1); // subtract bkg
+            hO_bkgEst[ch] = (TH1D*)hO_bkgEst[0]->Clone();
+            hO_bkgEst[ch] ->Add(hO_bkgEst[1]);     // Combined electron and muon
+            hO_data[ch]->Add(hO_bkgEst[ch],-1); // subtract bkg
              Acp[ch] = caculateACP( hO_data[ch] );
             eAcp[ch] = caculateACPerrorWrt( hO_data[ch] );
             // * Systmatic uncs.
@@ -675,6 +733,7 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
         eAcpTotalUnc[ch][1] = sqrt(eAcpSumw2Syst[ch][1]+eAcp[ch]*eAcp[ch]);
 
         // * Get data ACP
+        fprintf( outTxt, "Before subtracting: %+.2f (%.2f)\n", Acp0[ch]*100, eAcp0[ch]*100 );
         fillFinalAcpText( outTxt, oName, chFullName[ch], Acp[ch], eAcp[ch], systN, systName1, eAcpSyst[ch][0], eAcpSyst[ch][1] );
         fprintf( outTxt, "%9s %+9.2f %+9.2f\n", "Sum Syst.", sqrt(eAcpSumw2Syst[ch][0])*100., -1*sqrt(eAcpSumw2Syst[ch][1])*100. );
          printf( "%9s %+9.2f %+9.2f\n", "Sum Syst.", sqrt(eAcpSumw2Syst[ch][0])*100., -1*sqrt(eAcpSumw2Syst[ch][1])*100. );
@@ -811,7 +870,7 @@ void getSubtractBkgResultsCombined( TFile* f, FILE* outTxt, std::string* systNam
     delete [] systName1;
 }
 
-void drawSubtractBkgResultsCombined( TFile* f, std::string* systName, int systNi, int nPDFup=0, int nPDFdown=0, std::string output=".", std::string oName="O2", std::string xTitle="O_{2}", bool unBlind=false, float assumpAcp=0 )
+void drawSubtractBkgResultsCombined( TFile* f, std::string* systName, int systNi, int nPDFup=0, int nPDFdown=0, std::string output=".", std::string oName="O2", std::string xTitle="O_{2}", bool unBlind=false, float assumpAcp=0, bool doTopMassUncRescale=true, TFile* fCR=NULL )
 {
     std::string tuneName[2]={"up","down"};
     std::string chName[3]={"_El","_Mu",""};
@@ -819,6 +878,7 @@ void drawSubtractBkgResultsCombined( TFile* f, std::string* systName, int systNi
     std::string dataName="DATA";
     if( !unBlind ) dataName="MC";
 
+    bool usingCR = (fCR==NULL)? false:true;
     const int systN = systNi + 1;
     string *systName1 = new string[systN];
     for( int s=0; s<systN; s++){
@@ -826,7 +886,7 @@ void drawSubtractBkgResultsCombined( TFile* f, std::string* systName, int systNi
         else systName1[s] = "PDF";
     }
 
-    float evtBkgMCMean[3];
+    float evtBkgMean[3];
     float evtBkgFitMean[3];
     float bkgWrt[3];
     double  Acp[3];
@@ -842,6 +902,7 @@ void drawSubtractBkgResultsCombined( TFile* f, std::string* systName, int systNi
 
     TH1D* hO_data[3];
     TH1D* hO_bkg[3]; 
+    TH1D* hO_bkgEst[3]; 
     TH1D* hT_bkg[3];
     TH1D* hO_dataSyst[3][2][systN];
     TH1D* hO_bkgSyst[3][2][systN];
@@ -870,31 +931,43 @@ void drawSubtractBkgResultsCombined( TFile* f, std::string* systName, int systNi
 
         if( ch != 2 ) // Electron or muon channel
         {
-            hO_bkg[ch]  = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName[ch]).c_str()))->Clone();
+            if( usingCR )
+            {
+                // Subtract O from CR
+                std::cout<<"[INFO] Bkg O from data CR..."<<std::endl;
+                if( ch == 0 ){      hO_bkg[ch] = (TH1D*)((TH1D*)fCR->Get(("DATA_Electron__EvtChi2_"+oName+"Asym_El").c_str()))->Clone(); }
+                else if( ch == 1 ){ hO_bkg[ch] = (TH1D*)((TH1D*)fCR->Get(("DATA_Muon__EvtChi2_"+oName+"Asym_Mu").c_str()))->Clone();     }
+            }
+            else{ hO_bkg[ch]  = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName[ch]).c_str()))->Clone(); } // Subtract O from bkg MC
+
             hT_bkg[ch] = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName[ch]).c_str()))->Clone();
 
-            evtBkgMCMean[ch]  = hO_bkg[ch]->Integral();
+            evtBkgMean[ch]  = hO_bkg[ch]->Integral();
             evtBkgFitMean[ch] = hT_bkg[ch]->Integral();
-            bkgWrt[ch] = evtBkgFitMean[ch]/evtBkgMCMean[ch];
-            hO_bkg[ch]->Scale(bkgWrt[ch]);   // weight bkg with fitted bkg
-            hO_data[ch]->Add(hO_bkg[ch],-1); // subtract bkg
+            bkgWrt[ch] = evtBkgFitMean[ch]/evtBkgMean[ch];
+            hO_bkgEst[ch] = (TH1D*)hO_bkg[ch]->Clone();  
+            hO_bkgEst[ch]->Scale(bkgWrt[ch]);   // weight bkg with fitted bkg
+            hO_data[ch]->Add(hO_bkgEst[ch],-1); // subtract bkg
 
              Acp[ch] = caculateACP( hO_data[ch] );
             eAcp[ch] = caculateACPerrorWrt( hO_data[ch] );
              AcpBkg[ch] = caculateACP( hO_bkg[ch] );
             eAcpBkg[ch] = caculateACPerrorWrt( hO_bkg[ch] );
             // * Systmatic uncs.
+            int iTopMass=-1;
             for( int s=0; s<systN; s++)
             {
                 int pdft[2]={nPDFup, nPDFdown};
                 for( int t=0; t<2; t++ ){
                     if( s != systN-1 ){
+                        if( systName[s].find("TopMass")!=std::string::npos && doTopMassUncRescale ) iTopMass=s;
                         hT_bkgSyst[ch][t][s] = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName[ch]+"_"+systName[s]+tuneName[t]).c_str()))->Clone();   
                     }else{
                         hT_bkgSyst[ch][t][s] = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName[ch]+"_PDF"+int2str(pdft[t])).c_str()))->Clone();   
                     }
-                    bkgWrtSyst[ch][t][s] = hT_bkgSyst[ch][t][s]->Integral()/evtBkgMCMean[ch]; 
-                    hO_bkgSyst[ch][t][s] = (TH1D*)((TH1D*)f->Get(("BkgMC_"+oName+chName[ch]).c_str()))->Clone();
+                    bkgWrtSyst[ch][t][s] = hT_bkgSyst[ch][t][s]->Integral()/evtBkgMean[ch]; 
+                    if( iTopMass == s ){ bkgWrtSyst[ch][t][s] = (bkgWrtSyst[ch][t][s]+(topMassUncRescale-1)*bkgWrt[ch])/topMassUncRescale; }
+                    hO_bkgSyst[ch][t][s] = (TH1D*)hO_bkg[ch]->Clone();
                     hO_bkgSyst[ch][t][s]->Scale(bkgWrtSyst[ch][t][s]); 
                     hO_dataSyst[ch][t][s] = (TH1D*)((TH1D*)f->Get((dataName+"_"+oName+chName[ch]).c_str()))->Clone();
                     if( !unBlind )
@@ -919,13 +992,14 @@ void drawSubtractBkgResultsCombined( TFile* f, std::string* systName, int systNi
         // Combined channel
         else
         {
-            hO_bkg[ch] = (TH1D*)hO_bkg[0]->Clone();
-            hO_bkg[ch] ->Add(hO_bkg[1]);     // Combined electron and muon
-            hO_data[ch]->Add(hO_bkg[ch],-1); // subtract bkg
+            std::cout<<">> Combined channel"<<std::endl;
+            hO_bkgEst[ch] = (TH1D*)hO_bkgEst[0]->Clone();
+            hO_bkgEst[ch] ->Add(hO_bkgEst[1]);     // Combined electron and muon
+            hO_data[ch]->Add(hO_bkgEst[ch],-1); // subtract bkg
              Acp[ch] = caculateACP( hO_data[ch] );
             eAcp[ch] = caculateACPerrorWrt( hO_data[ch] );
-             AcpBkg[ch] = caculateACP( hO_bkg[ch] );
-            eAcpBkg[ch] = caculateACPerrorWrt( hO_bkg[ch] );
+             AcpBkg[ch] = caculateACP( hO_bkgEst[ch] );
+            eAcpBkg[ch] = caculateACPerrorWrt( hO_bkgEst[ch] );
             // * Systmatic uncs.
             for( int s=0; s<systN; s++)
             {
@@ -1031,19 +1105,20 @@ void drawSubtractBkgResultsCombined( TFile* f, std::string* systName, int systNi
     h1s->SetPointEYlow(  2, eAcpTotalUnc[1][1]*percent );
     //h1s->SetFillColor(kGreen);
 
-    TCanvas *c1 = new TCanvas(("CAcp_"+oName).c_str(), "c1", 41,133,859,639); c1->Clear();
+    TCanvas *c1 = new TCanvas(("CAcp_"+oName).c_str(), "c1", 41,133,W,H); c1->Clear();
     gStyle->SetOptStat(0);
     c1->Range(-0.5518248,-13.80753,3.192701,11.71548);
     c1->SetFillColor(0);
     c1->SetBorderMode(0);
     c1->SetBorderSize(2);
-    c1->SetLeftMargin(0.1473684);
-    c1->SetRightMargin(0.05146199);
-    c1->SetTopMargin(0.06721312);
-    c1->SetBottomMargin(0.1491803);
+
+    c1->SetLeftMargin(0.1520101);
+    c1->SetRightMargin(0.03015076);
+    c1->SetTopMargin(0.08726004);
+    c1->SetBottomMargin(0.1291448);
     c1->SetFrameBorderMode(0);
     c1->SetFrameBorderMode(0);
-    
+
     double wrt=1;
     hbkg->SetMaximum( 0.1*percent*wrt);
     hbkg->SetMinimum(-0.1*percent*wrt);
@@ -1092,11 +1167,11 @@ void drawSubtractBkgResultsCombined( TFile* f, std::string* systName, int systNi
 
     TLegend *leg;
     if( assumpAcp == 0 ){
-        leg = new TLegend(0.4187135,0.7075163,0.702924,0.9199346,NULL,"brNDC");
-        if( hbkg->GetBinContent(maxBin) > 0 )
-            leg = new TLegend(0.1695906,0.1748366,0.4538012,0.3872549,NULL,"brNDC");
+        leg = new TLegend(0.4145729,0.6701571,0.6984925,0.8830716,NULL,"brNDC");
+        //if( hbkg->GetBinContent(maxBin) > 0 ) // Only for big error band case
+        //    leg = new TLegend(0.1695906,0.1748366,0.4538012,0.3872549,NULL,"brNDC");
     }else if( assumpAcp < 0 ){
-        leg = new TLegend(0.4187135,0.7075163,0.702924,0.9199346,NULL,"brNDC");
+        leg = new TLegend(0.4145729,0.6701571,0.6984925,0.8830716,NULL,"brNDC");
     }else{
         leg = new TLegend(0.1695906,0.1748366,0.4538012,0.3872549,NULL,"brNDC");
     }
@@ -1111,19 +1186,25 @@ void drawSubtractBkgResultsCombined( TFile* f, std::string* systName, int systNi
     leg->AddEntry(hbkg, "Estimated background",                "fl");
     leg->Draw();
 
-    TPaveText* t_title;
-    t_title = new TPaveText(0.1134503,0.9393443,0.7426901,0.9852459,"brNDC");
-    if( unBlind )
-        t_title->AddText("CMS #sqrt{s} = 8TeV, L = 19.7fb^{-1}");
-    else
-        t_title->AddText("CMS Simulation #sqrt{s} = 8TeV, L = 19.7fb^{-1}");
-    t_title->SetTextColor(kBlack);
-    t_title->SetFillColor(kWhite);
-    t_title->SetFillStyle(0);
-    t_title->SetBorderSize(0);
-    t_title->SetTextAlign(12);
-    t_title->SetTextSize(0.04);
-    t_title->Draw();
+    //TPaveText* t_title;
+    //t_title = new TPaveText(0.1134503,0.9393443,0.7426901,0.9852459,"brNDC");
+    //if( unBlind )
+    //    t_title->AddText("CMS #sqrt{s} = 8TeV, L = 19.7fb^{-1}");
+    //else
+    //    t_title->AddText("CMS Simulation #sqrt{s} = 8TeV, L = 19.7fb^{-1}");
+    //t_title->SetTextColor(kBlack);
+    //t_title->SetFillColor(kWhite);
+    //t_title->SetFillStyle(0);
+    //t_title->SetBorderSize(0);
+    //t_title->SetTextAlign(12);
+    //t_title->SetTextSize(0.04);
+    //t_title->Draw();
+
+    writeExtraText=true;
+    if( !unBlind ) extraText="Simulation";
+
+    writeExtraText=true;
+    CMS_lumi( c1, 2, cmslumi, true );
 
     if( assumpAcp == 0 ){
         if( unBlind )

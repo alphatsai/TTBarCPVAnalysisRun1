@@ -1,4 +1,5 @@
 #include "help.C"
+#include "CMS_lumi.C"
 void newRangeWithOverflow( TH1D* h, float xMin, float xMax)
 {
     int b1_0 = h->GetXaxis()->GetFirst();
@@ -227,7 +228,7 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
     else
         c1->SaveAs((output+"/Stack_Linear_"+hName+".pdf").c_str());
 }
-void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std::string ytitle="Events", std::string output=".", int rebin=1, bool logy=false, bool unity=false, float xMin=0, float xMax=0  )
+void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std::string ytitle="Events", std::string output=".", int rebin=1, bool logy=false, bool unity=false, float xMin=0, float xMax=0, int cmslumi=0  )
 {
 
     int lineWidth=3;
@@ -377,8 +378,9 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     TPad *p1, *p2; 
     if( logy ) 
     {
-        c1 = new TCanvas( ("C_Log_"+hName).c_str(), "",1437,67,1076,828);
-        p1 = new TPad( ("P1_Log_"+hName).c_str(), "", 0.01725746,0.3165195,0.9976679,0.9735183);
+        //c1 = new TCanvas( ("C_Log_"+hName).c_str(), "",1437,67,1076,828);
+        c1 = new TCanvas( ("C_Log_"+hName).c_str(), "",1437,67,W,H);
+        p1 = new TPad( ("P1_Log_"+hName).c_str(), "", 0.01633166,0.3176265,0.9974874,0.982548);
         p2 = new TPad( ("P2_Log_"+hName).c_str(), "", 0.01399254,0.03136763,0.9981343,0.3186951);
         //c1 = new TCanvas( ("C_Log_"+hName).c_str(), "",59,67,1076,824);
         //p1 = new TPad( ("P1_Log_"+hName).c_str(), "", 0.01725746,0.3165195,0.9976679,0.9735183);
@@ -386,8 +388,9 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     }
     else
     {
-        c1 = new TCanvas( ("C_Linear_"+hName).c_str(), "",1437,45,1076,826);
-        p1 = new TPad( ("P1_Linear_"+hName).c_str(), "", 0.01725746,0.3165195,0.9976679,0.9735183);
+        //c1 = new TCanvas( ("C_Linear_"+hName).c_str(), "",1437,45,1076,826);
+        c1 = new TCanvas( ("C_Linear_"+hName).c_str(), "",1437,45,W,H);
+        p1 = new TPad( ("P1_Linear_"+hName).c_str(), "", 0.01633166,0.3176265,0.9974874,0.982548);
         p2 = new TPad( ("P2_Linear_"+hName).c_str(), "", 0.01399254,0.03136763,0.9981343,0.3186951);
         //c1 = new TCanvas( ("C_Linear_"+hName).c_str(), "",59,67,1076,824);
         //p1 = new TPad( ("P1_Linear_"+hName).c_str(), "", 0.01725746,0.3165195,0.9976679,0.9735183);
@@ -413,14 +416,13 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     p1->SetFillColor(0);
     p1->SetBorderMode(0);
     p1->SetBorderSize(2);
-   p1->SetLeftMargin(0.1508088);
-   p1->SetRightMargin(0.04995242);
-   p1->SetTopMargin(0.07399125);
-   p1->SetBottomMargin(0.005907165);
-    //p1->SetLeftMargin(0.1175071);
-    //p1->SetRightMargin(0.04234062);
-    //p1->SetTopMargin(0.0532708);
-    //p1->SetBottomMargin(0.005221184);
+   //p1->SetLeftMargin(0.1508088);
+   //p1->SetRightMargin(0.04995242);
+   //p1->SetTopMargin(0.07399125);
+   //p1->SetBottomMargin(0.005907165);
+   p1->SetLeftMargin(0.1498079);
+   p1->SetRightMargin(0.05121639);
+   p1->SetBottomMargin(0.007874016);
     p1->SetFrameBorderMode(0);
     p1->SetFrameBorderMode(0);
 
@@ -428,8 +430,7 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     else p1->SetLogy(0);
 
     TLegend *leg;
-    //leg = new TLegend(0.6979068,0.63162,0.9976213,0.9180829,NULL,"brNDC");
-    leg = new TLegend(0.6084681,0.4769301,0.9081827,0.9066244,NULL,"brNDC");
+    leg = new TLegend(0.5837298,0.3145127,0.8834443,0.9031491,NULL,"brNDC");
     leg->SetBorderSize(0);
     leg->SetTextSize(0.06684134);
     leg->SetLineStyle(0);
@@ -444,23 +445,14 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     //leg->AddEntry(h_bkg, "1#sigma non t#bar{t}+jet stat.", "f");
     leg->AddEntry(h_all, "1#sigma Total stat.", "f");
 
-    TPaveText* t_title;
-    t_title = new TPaveText(0.1222645,0.8955292,0.7521408,0.979348,"brNDC");
-    //t_title = new TPaveText(0.07088487,0.9153846,0.7007612,1,"brNDC");
-    t_title->AddText("CMS #sqrt{s} = 8TeV, L = 19.7fb^{-1}");
-    t_title->SetTextColor(kBlack);
-    t_title->SetFillColor(kWhite);
-    t_title->SetFillStyle(0);
-    t_title->SetBorderSize(0);
-    t_title->SetTextAlign(11);
-    t_title->SetTextSize(0.07619889);
-
     h_stack->Draw("HIST");
     h_all->Draw("SAMEE2");
     //h_bkg->Draw("SAMEE2");
     h_data->Draw("ESAME");
     leg->Draw();
-    t_title->Draw();
+
+    writeExtraText=true;
+    CMS_lumi( p1, 2, cmslumi, true );
 
     p1->Modified();
     c1->cd();
@@ -710,7 +702,7 @@ void drawStackWithQCD( TFile* f, std::string hName, std::string xtitle="", std::
 
     TLegend *leg;
     //leg = new TLegend(0.6998097,0.6230769,0.9995243,0.9096154,NULL,"brNDC");
-    leg = new TLegend(0.6979068,0.63162,0.9976213,0.9180829,NULL,"brNDC");
+    leg = new TLegend(0.5979513,0.2677165,0.8975672,0.8608924,NULL,"brNDC");
     leg->SetBorderSize(0);
     leg->SetLineStyle(0);
     leg->SetLineWidth(0);

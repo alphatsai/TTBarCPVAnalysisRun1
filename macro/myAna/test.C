@@ -26,13 +26,13 @@
 using namespace std;
 void test()
 {
-    //const int nElSyst=6;
-    //const int nMuSyst=7;
-    string input="/Users/Alpha/myAna/TTBarCPV/TTBarCPVAnalysisRun1/macro/results/11Jan_LepJet_MCDATA/FitResults2/TemplateSyst_EvtChi2_Top_Leptonic_Mbl.root";
-    //string systNameEl[nElSyst]={"Stat", "PU", "JER", "BTagSF", "TopPT", "elID"};
-    //string systNameMu[nMuSyst]={"Stat", "PU", "JER", "BTagSF", "TopPT", "muID", "muISO"};
-    TFile* f = new TFile(input.c_str());
-    //drawFittedStack( f, "EvtChi2_Top_Leptonic_Mbl", systNameEl, nElSyst, 1 );
-    sumTemplateInfo(f, "EvtChi2_Top_Leptonic_Mbl", "../results/11Jan_LepJet_MCDATA/FitResults2/Syst/", "M(e+j) [GeV]", "M(#mu+j) [GeV]", "Events", 1);
-
+    bool unblind=true;
+    string input="/Users/Alpha/myAna/TTBarCPV/TTBarCPVAnalysisRun1/macro/results/11Jan_LepJet_MCDATA/FitResults4/TemplateSyst_EvtChi2_Top_Leptonic_Mbl.root";
+    string inputCR="/Users/Alpha/myAna/TTBarCPV/TTBarCPVAnalysisRun1/macro/results/11Jan_LepJet_MCDATA/0bCR/Final_histograms_SemiLeptanic.root";
+    TFile* f   = new TFile(input.c_str());
+    TFile* fCR = new TFile(inputCR.c_str());
+    sumTemplateInfo(f, "EvtChi2_Top_Leptonic_Mbl", "../results/11Jan_LepJet_MCDATA/FitResults4/Syst/Unblind_CR0b", "M_{eb} [GeV]", "M_{#mub} [GeV]", "Events", fCR, unblind );
+    //sumTemplateInfo(f, "EvtChi2_Top_Leptonic_Mbl", "../results/11Jan_LepJet_MCDATA/FitResults4/Syst/CR0b_topMassReScale", "M_{eb} [GeV]", "M_{#mub} [GeV]", "Events", fCR );
+    //sumTemplateInfo(f, "EvtChi2_Top_Leptonic_Mbl", "../results/11Jan_LepJet_MCDATA/FitResults4/Syst/CR0b", "M_{eb} [GeV]", "M_{#mub} [GeV]", "Events", fCR );
+    //sumTemplateInfo(f, "EvtChi2_Top_Leptonic_Mbl", "../results/11Jan_LepJet_MCDATA/FitResults4/Syst/topMassReScale", "M_{eb} [GeV]", "M_{#mub} [GeV]", "Events");
 }

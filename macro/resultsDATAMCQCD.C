@@ -47,6 +47,11 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "O3", output, "A'_{CP} [%]", "O_{3}", legHead);
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "O4", output, "A'_{CP} [%]", "O_{4}", legHead);
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "O7", output, "A'_{CP} [%]", "O_{7}", legHead);
+        float scaleY=0.001;
+        drawObservableData(f, output, "O2", "EvtChi2", legHead, "O_{2}/m_{t}^{3}", "Events (k)", scaleY, -1, 1, 1 );
+        drawObservableData(f, output, "O3", "EvtChi2", legHead, "O_{3}/m_{t}^{3}", "Events (k)", scaleY, -1, 1, 1 );
+        drawObservableData(f, output, "O4", "EvtChi2", legHead, "O_{4}/m_{t}^{3}", "Events (k)", scaleY, -1, 1, 1 );
+        drawObservableData(f, output, "O7", "EvtChi2", legHead, "O_{7}/m_{t}^{3}", "Events (k)", scaleY, -1, 1, 1 );
     }
 
     drawACP( f, 1, "", "MC__Evt",                          "O2", output, "A'_{CP} [%]", "O_{2}",legHead, 1, 1, "QCDEM__Evt", "QCDMu__Evt");
