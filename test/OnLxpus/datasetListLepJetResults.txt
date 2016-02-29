@@ -1,47 +1,50 @@
-# Dataset_name    Number_of_jobs    EOS_location    PyCfg_parameters (optional)
-TTJets_SemiLeptMGDecays 5 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/TTJets_SemiLeptMGDecays 
-TTJets_FullLeptMGDecays 2 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/TTJets_FullLeptMGDecays 
-TTJets_HadronicMGDecays 1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/TTJets_HadronicMGDecays 
-#
-T_t-channel  1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/T_t-channel
-T_s-channel  1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/T_s-channel
-T_tW-channel 1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/T_tW-channel
-#
-Tbar_s-channel 1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/Tbar_s-channel
-Tbar_t-channel 1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/Tbar_t-channel
-Tbar_tW-channel 1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/Tbar_tW-channel
-#
-DYJetsToLL 1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/DYJetsToLL
-WJetsToLNu 1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/WJetsToLNu
-#
-WW 1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/WW
-ZZ 1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/ZZ
-WZ 1 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/WZ
-#ZZJetsTo2L2Q 5 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/ZZJetsTo2L2Q
-#WZJetsTo2L2Q 5 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/WZJetsTo2L2Q
+## Dataset_name    Number_of_jobs    EOS_location    PyCfg_parameters (optional)
+TTJets_SemiLeptMGDecays 10  /eos/cms/store/user/jtsai/TTBarCPV/results/25Feb_2015_Tree2/TTJets_SemiLeptMGDecays outFilename=SemiLeptanicResultsCheck.root 
+#TTJets_SemiLeptMGDecays 10  /eos/cms/store/user/jtsai/TTBarCPV/results/TTJets_SemiLeptMGDecays outFilename=SemiLeptanicResultsCheck.root 
+#TTJets_SemiLeptMGDecays 10  /eos/cms/store/user/jtsai/TTBarCPV/results/TTJets_SemiLeptMGDecays outFilename=SemiLeptanicResultsCheck.root  DoWrtEvt=False
+
+#TTJets_FullLeptMGDecays 15 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+#TTJets_HadronicMGDecays 15 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_HadronicMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v1     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
 ##
-#SingleElectron_Run2012A-22Jan2013-v1_190645-193621 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleElectron_Run2012A-22Jan2013-v1_190645-193621 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleElectron_Run2012B-22Jan2013-v1_193834-194833 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleElectron_Run2012B-22Jan2013-v1_193834-194833 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleElectron_Run2012B-22Jan2013-v1_194834-195833 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleElectron_Run2012B-22Jan2013-v1_194834-195833 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleElectron_Run2012B-22Jan2013-v1_195834-196531 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleElectron_Run2012B-22Jan2013-v1_195834-196531 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleElectron_Run2012C-22Jan2013-v1_198049-199649 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleElectron_Run2012C-22Jan2013-v1_198049-199649 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleElectron_Run2012C-22Jan2013-v1_199650-200649 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleElectron_Run2012C-22Jan2013-v1_199650-200649 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleElectron_Run2012C-22Jan2013-v1_200650-201949 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleElectron_Run2012C-22Jan2013-v1_200650-201949 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleElectron_Run2012C-22Jan2013-v1_201950-203002 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleElectron_Run2012C-22Jan2013-v1_201950-203002 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleElectron_Run2012D-22Jan2013-v1_206510-207409 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleElectron_Run2012D-22Jan2013-v1_206510-207409 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleElectron_Run2012D-22Jan2013-v1_207410-208686 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleElectron_Run2012D-22Jan2013-v1_207410-208686 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleElectron_Run2012D-22Jan2013-v1_205510-206509 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleElectron_Run2012D-22Jan2013-v1_205510-206509 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleElectron_Run2012D-22Jan2013-v1_203709-205509 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleElectron_Run2012D-22Jan2013-v1_203709-205509 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+#T_t-channel  1 /eos/cms/store/user/jtsai/TTBarCPV/skim/T_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+#T_s-channel  1 /eos/cms/store/user/jtsai/TTBarCPV/skim/T_s-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+#T_tW-channel 1 /eos/cms/store/user/jtsai/TTBarCPV/skim/T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+##
+#Tbar_s-channel  1 /eos/cms/store/user/jtsai/TTBarCPV/skim/Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+#Tbar_t-channel  2 /eos/cms/store/user/jtsai/TTBarCPV/skim/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+#Tbar_tW-channel 1 /eos/cms/store/user/jtsai/TTBarCPV/skim/Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+##
+#DYJetsToLL 20 /eos/cms/store/user/jtsai/TTBarCPV/skim/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+#WJetsToLNu 20 /eos/cms/store/user/jtsai/TTBarCPV/skim/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v2      outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+##
+#WW 5 /eos/cms/store/user/jtsai/TTBarCPV/skim/WW_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+#ZZ 5 /eos/cms/store/user/jtsai/TTBarCPV/skim/ZZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+#WZ 5 /eos/cms/store/user/jtsai/TTBarCPV/skim/WZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+##ZZJetsTo2L2Q 5 /eos/cms/store/user/jtsai/TTBarCPV/skim/ZZJetsTo2L2Q_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+##WZJetsTo2L2Q 5 /eos/cms/store/user/jtsai/TTBarCPV/skim/WZJetsTo2L2Q_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+##
+#SingleElectron_Run2012A-22Jan2013-v1_190645-193621 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleElectron_Run2012A-22Jan2013-v1_190645-193621 outFilename=SemiLeptanicAnalysis.root 
+#SingleElectron_Run2012B-22Jan2013-v1_193834-194833 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleElectron_Run2012B-22Jan2013-v1_193834-194833 outFilename=SemiLeptanicAnalysis.root 
+#SingleElectron_Run2012B-22Jan2013-v1_194834-195833 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleElectron_Run2012B-22Jan2013-v1_194834-195833 outFilename=SemiLeptanicAnalysis.root 
+#SingleElectron_Run2012B-22Jan2013-v1_195834-196531 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleElectron_Run2012B-22Jan2013-v1_195834-196531 outFilename=SemiLeptanicAnalysis.root 
+#SingleElectron_Run2012C-22Jan2013-v1_198049-199649 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleElectron_Run2012C-22Jan2013-v1_198049-199649 outFilename=SemiLeptanicAnalysis.root 
+#SingleElectron_Run2012C-22Jan2013-v1_199650-200649 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleElectron_Run2012C-22Jan2013-v1_199650-200649 outFilename=SemiLeptanicAnalysis.root 
+#SingleElectron_Run2012C-22Jan2013-v1_200650-201949 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleElectron_Run2012C-22Jan2013-v1_200650-201949 outFilename=SemiLeptanicAnalysis.root 
+#SingleElectron_Run2012C-22Jan2013-v1_201950-203002 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleElectron_Run2012C-22Jan2013-v1_201950-203002 outFilename=SemiLeptanicAnalysis.root 
+#SingleElectron_Run2012D-22Jan2013-v1_203709-205509 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleElectron_Run2012D-22Jan2013-v1_203709-205509 outFilename=SemiLeptanicAnalysis.root 
+#SingleElectron_Run2012D-22Jan2013-v1_205510-206509 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleElectron_Run2012D-22Jan2013-v1_205510-206509 outFilename=SemiLeptanicAnalysis.root 
+#SingleElectron_Run2012D-22Jan2013-v1_206510-207409 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleElectron_Run2012D-22Jan2013-v1_206510-207409 outFilename=SemiLeptanicAnalysis.root 
+#SingleElectron_Run2012D-22Jan2013-v1_207410-208686 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleElectron_Run2012D-22Jan2013-v1_207410-208686 outFilename=SemiLeptanicAnalysis.root 
 ## 
-#SingleMu_Run2012B-22Jan2013-v1_193834-194833 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleMu_Run2012B-22Jan2013-v1_193834-194833 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleMu_Run2012A-22Jan2013-v1_190645-193621 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleMu_Run2012A-22Jan2013-v1_190645-193621 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleMu_Run2012B-22Jan2013-v1_194834-195833 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleMu_Run2012B-22Jan2013-v1_194834-195833 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleMu_Run2012B-22Jan2013-v1_195834-196531 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleMu_Run2012B-22Jan2013-v1_195834-196531 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleMu_Run2012C-22Jan2013-v1_198049-199649 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleMu_Run2012C-22Jan2013-v1_198049-199649 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleMu_Run2012C-22Jan2013-v1_200650-201949 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleMu_Run2012C-22Jan2013-v1_200650-201949 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleMu_Run2012D-22Jan2013-v1_207410-208686 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleMu_Run2012D-22Jan2013-v1_207410-208686 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleMu_Run2012D-22Jan2013-v1_203709-205509 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleMu_Run2012D-22Jan2013-v1_203709-205509 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleMu_Run2012C-22Jan2013-v1_199650-200649 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleMu_Run2012C-22Jan2013-v1_199650-200649 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleMu_Run2012D-22Jan2013-v1_206510-207409 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleMu_Run2012D-22Jan2013-v1_206510-207409 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleMu_Run2012D-22Jan2013-v1_205510-206509 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleMu_Run2012D-22Jan2013-v1_205510-206509 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
-#SingleMu_Run2012C-22Jan2013-v1_201950-203002 10 /eos/cms/store/user/jtsai/TTBarCPV/results/08Sep_MC_NoChi2Cut_Tree/SingleMu_Run2012C-22Jan2013-v1_201950-203002 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim
+#SingleMu_Run2012A-22Jan2013-v1_190645-193621 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleMu_Run2012A-22Jan2013-v1_190645-193621 outFilename=SemiLeptanicAnalysis.root 
+#SingleMu_Run2012B-22Jan2013-v1_193834-194833 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleMu_Run2012B-22Jan2013-v1_193834-194833 outFilename=SemiLeptanicAnalysis.root 
+#SingleMu_Run2012B-22Jan2013-v1_194834-195833 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleMu_Run2012B-22Jan2013-v1_194834-195833 outFilename=SemiLeptanicAnalysis.root 
+#SingleMu_Run2012B-22Jan2013-v1_195834-196531 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleMu_Run2012B-22Jan2013-v1_195834-196531 outFilename=SemiLeptanicAnalysis.root 
+#SingleMu_Run2012C-22Jan2013-v1_198049-199649 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleMu_Run2012C-22Jan2013-v1_198049-199649 outFilename=SemiLeptanicAnalysis.root 
+#SingleMu_Run2012C-22Jan2013-v1_199650-200649 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleMu_Run2012C-22Jan2013-v1_199650-200649 outFilename=SemiLeptanicAnalysis.root 
+#SingleMu_Run2012C-22Jan2013-v1_200650-201949 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleMu_Run2012C-22Jan2013-v1_200650-201949 outFilename=SemiLeptanicAnalysis.root 
+#SingleMu_Run2012C-22Jan2013-v1_201950-203002 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleMu_Run2012C-22Jan2013-v1_201950-203002 outFilename=SemiLeptanicAnalysis.root 
+#SingleMu_Run2012D-22Jan2013-v1_203709-205509 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleMu_Run2012D-22Jan2013-v1_203709-205509 outFilename=SemiLeptanicAnalysis.root 
+#SingleMu_Run2012D-22Jan2013-v1_206510-207409 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleMu_Run2012D-22Jan2013-v1_206510-207409 outFilename=SemiLeptanicAnalysis.root 
+#SingleMu_Run2012D-22Jan2013-v1_205510-206509 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleMu_Run2012D-22Jan2013-v1_205510-206509 outFilename=SemiLeptanicAnalysis.root 
+#SingleMu_Run2012D-22Jan2013-v1_207410-208686 50 /eos/cms/store/group/phys_b2g/BprimeKit_Ntuples_Data/CMSSW_5_3_11_data_8TeV_22Jan2013ReReco_AOD/SingleMu_Run2012D-22Jan2013-v1_207410-208686 outFilename=SemiLeptanicAnalysis.root 
