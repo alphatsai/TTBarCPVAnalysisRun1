@@ -84,7 +84,8 @@ def outputElInfo( obsName, sigmaName ):
         #print  " & & $%s \sigma$  & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
         #latexSig[sigmaName], systEl[obsName][sigmaName][1], systEl[obsName][sigmaName][2],systEl[obsName][sigmaName][3],systEl[obsName][sigmaName][4],systEl[obsName][sigmaName][5],systEl[obsName][sigmaName][6],systEl[obsName][sigmaName][7],systEl[obsName][sigmaName][8],systEl[obsName][sigmaName][9], systEl[obsName][sigmaName][10], systEl[obsName][sigmaName][11], "-", "-", sumSystEl[obsName][sigmaName], sumEl[obsName][sigmaName] 
         print  " & & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
-        systEl[obsName][sigmaName][1], systEl[obsName][sigmaName][2],systEl[obsName][sigmaName][3],systEl[obsName][sigmaName][4],systEl[obsName][sigmaName][5],systEl[obsName][sigmaName][6],systEl[obsName][sigmaName][7],systEl[obsName][sigmaName][8],systEl[obsName][sigmaName][9], systEl[obsName][sigmaName][10], systEl[obsName][sigmaName][11], "-", "-", systEl[obsName][sigmaName][14], sumSystEl[obsName][sigmaName], sumEl[obsName][sigmaName] 
+        systEl[obsName][sigmaName][1], systEl[obsName][sigmaName][2],systEl[obsName][sigmaName][3],systEl[obsName][sigmaName][4],"-",systEl[obsName][sigmaName][6],systEl[obsName][sigmaName][7],systEl[obsName][sigmaName][8],systEl[obsName][sigmaName][9], systEl[obsName][sigmaName][10], systEl[obsName][sigmaName][11], "-", "-", systEl[obsName][sigmaName][14], sumSystEl[obsName][sigmaName], sumEl[obsName][sigmaName] 
+        #systEl[obsName][sigmaName][1], systEl[obsName][sigmaName][2],systEl[obsName][sigmaName][3],systEl[obsName][sigmaName][4],systEl[obsName][sigmaName][5],systEl[obsName][sigmaName][6],systEl[obsName][sigmaName][7],systEl[obsName][sigmaName][8],systEl[obsName][sigmaName][9], systEl[obsName][sigmaName][10], systEl[obsName][sigmaName][11], "-", "-", systEl[obsName][sigmaName][14], sumSystEl[obsName][sigmaName], sumEl[obsName][sigmaName] 
         )
 def outputMuInfo( obsName, sigmaName ):
     if sigmaName.find("+1") > -1:
@@ -97,7 +98,8 @@ def outputMuInfo( obsName, sigmaName ):
         #print  " & & $%s \sigma$  & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
         #latexSig[sigmaName], systMu[obsName][sigmaName][1], systMu[obsName][sigmaName][2],systMu[obsName][sigmaName][3],systMu[obsName][sigmaName][4],systMu[obsName][sigmaName][5],systMu[obsName][sigmaName][6],systMu[obsName][sigmaName][7],systMu[obsName][sigmaName][8], systMu[obsName][sigmaName][9],systMu[obsName][sigmaName][10], "-",systMu[obsName][sigmaName][12],systMu[obsName][sigmaName][13], sumSystMu[obsName][sigmaName], sumMu[obsName][sigmaName] 
         print  " & & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
-        systMu[obsName][sigmaName][1], systMu[obsName][sigmaName][2],systMu[obsName][sigmaName][3],systMu[obsName][sigmaName][4],systMu[obsName][sigmaName][5],systMu[obsName][sigmaName][6],systMu[obsName][sigmaName][7],systMu[obsName][sigmaName][8], systMu[obsName][sigmaName][9],systMu[obsName][sigmaName][10], "-",systMu[obsName][sigmaName][12],systMu[obsName][sigmaName][13], systMu[obsName][sigmaName][14], sumSystMu[obsName][sigmaName], sumMu[obsName][sigmaName] 
+        systMu[obsName][sigmaName][1], systMu[obsName][sigmaName][2],systMu[obsName][sigmaName][3],systMu[obsName][sigmaName][4],"-",systMu[obsName][sigmaName][6],systMu[obsName][sigmaName][7],systMu[obsName][sigmaName][8], systMu[obsName][sigmaName][9],systMu[obsName][sigmaName][10], "-",systMu[obsName][sigmaName][12],systMu[obsName][sigmaName][13], systMu[obsName][sigmaName][14], sumSystMu[obsName][sigmaName], sumMu[obsName][sigmaName] 
+        #systMu[obsName][sigmaName][1], systMu[obsName][sigmaName][2],systMu[obsName][sigmaName][3],systMu[obsName][sigmaName][4],systMu[obsName][sigmaName][5],systMu[obsName][sigmaName][6],systMu[obsName][sigmaName][7],systMu[obsName][sigmaName][8], systMu[obsName][sigmaName][9],systMu[obsName][sigmaName][10], "-",systMu[obsName][sigmaName][12],systMu[obsName][sigmaName][13], systMu[obsName][sigmaName][14], sumSystMu[obsName][sigmaName], sumMu[obsName][sigmaName] 
         )
 def outputCoInfo( obsName, sigmaName ):
     if sigmaName.find("+1") > -1:
@@ -110,38 +112,40 @@ def outputCoInfo( obsName, sigmaName ):
         #print  " & & $%s \sigma$  & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
         #latexSig[sigmaName], systCo[obsName][sigmaName][1], systCo[obsName][sigmaName][2],systCo[obsName][sigmaName][3],systCo[obsName][sigmaName][4],systCo[obsName][sigmaName][5],systCo[obsName][sigmaName][6],systCo[obsName][sigmaName][7],systCo[obsName][sigmaName][8],systCo[obsName][sigmaName][9],systCo[obsName][sigmaName][10],systCo[obsName][sigmaName][11],systCo[obsName][sigmaName][12],systCo[obsName][sigmaName][13], sumSystCo[obsName][sigmaName], sumCo[obsName][sigmaName] 
         print  " & & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ & $%s$ \\\\"%( 
-        systCo[obsName][sigmaName][1], systCo[obsName][sigmaName][2],systCo[obsName][sigmaName][3],systCo[obsName][sigmaName][4],systCo[obsName][sigmaName][5],systCo[obsName][sigmaName][6],systCo[obsName][sigmaName][7],systCo[obsName][sigmaName][8],systCo[obsName][sigmaName][9],systCo[obsName][sigmaName][10],systCo[obsName][sigmaName][11],systCo[obsName][sigmaName][12],systCo[obsName][sigmaName][13], systCo[obsName][sigmaName][14], sumSystCo[obsName][sigmaName], sumCo[obsName][sigmaName] 
+        systCo[obsName][sigmaName][1], systCo[obsName][sigmaName][2],systCo[obsName][sigmaName][3],systCo[obsName][sigmaName][4],"-",systCo[obsName][sigmaName][6],systCo[obsName][sigmaName][7],systCo[obsName][sigmaName][8],systCo[obsName][sigmaName][9],systCo[obsName][sigmaName][10],systCo[obsName][sigmaName][11],systCo[obsName][sigmaName][12],systCo[obsName][sigmaName][13], systCo[obsName][sigmaName][14], sumSystCo[obsName][sigmaName], sumCo[obsName][sigmaName] 
+        #systCo[obsName][sigmaName][1], systCo[obsName][sigmaName][2],systCo[obsName][sigmaName][3],systCo[obsName][sigmaName][4],systCo[obsName][sigmaName][5],systCo[obsName][sigmaName][6],systCo[obsName][sigmaName][7],systCo[obsName][sigmaName][8],systCo[obsName][sigmaName][9],systCo[obsName][sigmaName][10],systCo[obsName][sigmaName][11],systCo[obsName][sigmaName][12],systCo[obsName][sigmaName][13], systCo[obsName][sigmaName][14], sumSystCo[obsName][sigmaName], sumCo[obsName][sigmaName] 
         )
 
+lBs=1
 i=0
 for line in lines2:
     if line.find('Electron channel') > -1 :
-        obsName=lines2[i+1].split("(")[1].split(")")[0] #"Nominal Acp(O2) = -0.36"
-        obsEl[obsName]=lines2[i+1].split()[3]
-        systEl[obsName]["+1Sigma"]=lines2[i+3].split()
-        systEl[obsName]["-1Sigma"]=lines2[i+4].split()
-        sumSystEl[obsName]["+1Sigma"]=lines2[i+5].split()[2]
-        sumSystEl[obsName]["-1Sigma"]=lines2[i+5].split()[3]
-        sumEl[obsName]["+1Sigma"]=lines2[i+6].split()[2]
-        sumEl[obsName]["-1Sigma"]=lines2[i+6].split()[3]
+        obsName=lines2[i+lBs+1].split("(")[1].split(")")[0] #"Nominal Acp(O2) = -0.36"
+        obsEl[obsName]=lines2[i+lBs+1].split()[3]
+        systEl[obsName]["+1Sigma"]=lines2[i+lBs+3].split()
+        systEl[obsName]["-1Sigma"]=lines2[i+lBs+4].split()
+        sumSystEl[obsName]["+1Sigma"]=lines2[i+lBs+5].split()[2]
+        sumSystEl[obsName]["-1Sigma"]=lines2[i+lBs+5].split()[3]
+        sumEl[obsName]["+1Sigma"]=lines2[i+lBs+6].split()[2]
+        sumEl[obsName]["-1Sigma"]=lines2[i+lBs+6].split()[3]
     elif line.find('Muon channel') > -1 :
-        obsName=lines2[i+1].split("(")[1].split(")")[0] #"Nominal Acp(O2) = -0.36"
-        obsMu[obsName]=lines2[i+1].split()[3]
-        systMu[obsName]["+1Sigma"]=lines2[i+3].split()
-        systMu[obsName]["-1Sigma"]=lines2[i+4].split()
-        sumSystMu[obsName]["+1Sigma"]=lines2[i+5].split()[2]
-        sumSystMu[obsName]["-1Sigma"]=lines2[i+5].split()[3]
-        sumMu[obsName]["+1Sigma"]=lines2[i+6].split()[2]
-        sumMu[obsName]["-1Sigma"]=lines2[i+6].split()[3]
+        obsName=lines2[i+lBs+1].split("(")[1].split(")")[0] #"Nominal Acp(O2) = -0.36"
+        obsMu[obsName]=lines2[i+lBs+1].split()[3]
+        systMu[obsName]["+1Sigma"]=lines2[i+lBs+3].split()
+        systMu[obsName]["-1Sigma"]=lines2[i+lBs+4].split()
+        sumSystMu[obsName]["+1Sigma"]=lines2[i+lBs+5].split()[2]
+        sumSystMu[obsName]["-1Sigma"]=lines2[i+lBs+5].split()[3]
+        sumMu[obsName]["+1Sigma"]=lines2[i+lBs+6].split()[2]
+        sumMu[obsName]["-1Sigma"]=lines2[i+lBs+6].split()[3]
     elif line.find('Combined channel') > -1 :
-        obsName=lines2[i+1].split("(")[1].split(")")[0] #"Nominal Acp(O2) = -0.36"
-        obsCo[obsName]=lines2[i+1].split()[3]
-        systCo[obsName]["+1Sigma"]=lines2[i+3].split()
-        systCo[obsName]["-1Sigma"]=lines2[i+4].split()
-        sumSystCo[obsName]["+1Sigma"]=lines2[i+5].split()[2]
-        sumSystCo[obsName]["-1Sigma"]=lines2[i+5].split()[3]
-        sumCo[obsName]["+1Sigma"]=lines2[i+6].split()[2]
-        sumCo[obsName]["-1Sigma"]=lines2[i+6].split()[3]
+        obsName=lines2[i+lBs+1].split("(")[1].split(")")[0] #"Nominal Acp(O2) = -0.36"
+        obsCo[obsName]=lines2[i+lBs+1].split()[3]
+        systCo[obsName]["+1Sigma"]=lines2[i+lBs+3].split()
+        systCo[obsName]["-1Sigma"]=lines2[i+lBs+4].split()
+        sumSystCo[obsName]["+1Sigma"]=lines2[i+lBs+5].split()[2]
+        sumSystCo[obsName]["-1Sigma"]=lines2[i+lBs+5].split()[3]
+        sumCo[obsName]["+1Sigma"]=lines2[i+lBs+6].split()[2]
+        sumCo[obsName]["-1Sigma"]=lines2[i+lBs+6].split()[3]
     i+=1   
 
 #print systMu
