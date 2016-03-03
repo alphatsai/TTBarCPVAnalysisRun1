@@ -34,6 +34,11 @@ def main():
                     default='SemiLeptanic',
                     metavar="ANALYZER_MODULE")
 
+  parser.add_option("-e", "--evt_histo", dest="evt_histo",
+                    help="Event histogram",
+                    default='Evt_CutFlow',
+                    metavar="EVT_HISTO")
+
   (options, args) = parser.parse_args()
 
   # make sure all necessary input parameters are provided
@@ -109,7 +114,8 @@ def main():
 
       # open input ROOT file
       root_file = TFile(input_root_file)
-      htemp = root_file.Get(os.path.join(options.analyzer_module,'Evt_CutFlow'))
+      #htemp = root_file.Get(os.path.join(options.analyzer_module,'Evt_CutFlow'))
+      htemp = root_file.Get(os.path.join(options.analyzer_module,options.evt_histo))
       nEventsAll = htemp.GetBinContent(1)
       nEventsStored = htemp.GetBinContent(1)
       scale = 1.
