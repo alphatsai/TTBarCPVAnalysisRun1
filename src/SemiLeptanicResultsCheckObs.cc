@@ -607,7 +607,8 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
         }else{ std::cout<<"[WARNING] More or less than 1 jets from W: "<<wLeps.size()<<std::endl; }
 
         double GenO2(0), GenO3(0), GenO4(0), GenO7(0); 
-        GenO2 = Obs2( lepton.P3, j1.P3, b_quark.P3, bbar_quark.P3 );
+        //GenO2 = Obs2( lepton.P3, j1.P3, b_quark.P3, bbar_quark.P3 );
+        GenO2 = Obs2( lepton.P3, j1.P3, b_quark.P3, bbar_quark.P3, charge );
         GenO3 = Obs3( lepton.P4, j1.P4, b_quark.P4, bbar_quark.P4, charge );
         GenO4 = Obs4( lepton.P3, j1.P3, b_quark.P3, bbar_quark.P3, charge );
         GenO7 = Obs7( az, b_quark.P3, bbar_quark.P3 );
@@ -631,7 +632,8 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
         jet1.SetPtEtaPhiE( nonBJetColInfo.Pt[ijet], nonBJetColInfo.Eta[ijet], nonBJetColInfo.Phi[ijet], nonBJetColInfo.Energy[ijet] );
         bPar.SetPtEtaPhiE(    BJetInfo.GenPt,    BJetInfo.GenEta,     BJetInfo.GenPhi,    BJetInfo.Energy    );
         bbarPar.SetPtEtaPhiE( BbarJetInfo.GenPt, BbarJetInfo.GenEta,  BbarJetInfo.GenPhi, BbarJetInfo.Energy );
-        ParO2 = Obs2( isoL.Vect(), jet1.Vect(), bPar.Vect(), bbarPar.Vect() );
+        //ParO2 = Obs2( isoL.Vect(), jet1.Vect(), bPar.Vect(), bbarPar.Vect() );
+        ParO2 = Obs2( isoL.Vect(), jet1.Vect(), bPar.Vect(), bbarPar.Vect(), IsoLepInfo.Charge );
         ParO3 = Obs3( isoL, jet1, bPar, bbarPar, IsoLepInfo.Charge ); 
         ParO4 = Obs4( isoL.Vect(), jet1.Vect(), bPar.Vect(), bbarPar.Vect(), IsoLepInfo.Charge );
         ParO7 = Obs7( az, bPar.Vect(), bbarPar.Vect() );

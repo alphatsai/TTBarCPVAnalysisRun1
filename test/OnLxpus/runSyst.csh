@@ -10,12 +10,12 @@ if ( -e $1 ) then
 endif
 
 set qName="cmscaf1nd"
-set systName="JES JER BTagSF MuonIDSF MuonIsoSF ElectronIDSF PU"
+set systName="JES JER BTagSF MuonIDSF MuonIsoSF ElectronIDSF PU TopPt"
 set shifts="Up Down"
 set dataset="datasetListLepJetSystUnc/datasetListLepJetSkimedSamples"
 foreach syst($systName)
     foreach shift($shifts)
         echo "[INFO] Sumitting $syst $shift..."
-        #./createAndSubmitJobs.py -w $1 -d datasetListLepJetSystUnc/datasetListLepJetSkimedSamples$systName$shift.txt -c ../semiLeptanicAnalysis_cfg.py -q $qName
+        ./createAndSubmitJobs.py -w $1_"$syst""$shift" -d datasetListLepJetSystUnc/datasetListLepJetSkimedSamples"$syst""$shift".txt -c ../semiLeptanicAnalysis_cfg.py -q $qName
     end
 end

@@ -1266,7 +1266,8 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
             newAnaBranches_.fill_topHadronicNewBranches( top_hadronic, TopNonBJet1.Index, TopNonBJet2.Index );
             newAnaBranches_.fill_isoLepNewBranches( isoLep ); 
 
-            double O2 = Obs2( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3 );
+            //double O2 = Obs2( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3 );
+            double O2 = Obs2( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3, isoLep.Charge );
             double O3 = Obs3( isoLep.P4, TopNonBJet1.P4, b_jet.P4, bbar_jet.P4, isoLep.Charge );
             double O4 = Obs4( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3, isoLep.Charge );
             double O7 = Obs7( az, b_jet.P3, bbar_jet.P3 );

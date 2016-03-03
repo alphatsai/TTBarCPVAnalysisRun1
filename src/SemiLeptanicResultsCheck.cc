@@ -434,7 +434,7 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
             get2HighPtObject( bquarks,    b1, b2 );
             getHighPtObject ( lquarks,    lq     );
             getHighPtObject ( chargeLeps, lep    );
-            double O2 = Obs2( lep.P3, lq.P3, b1.P3, b2.P3 );
+            double O2 = Obs2( lep.P3, lq.P3, b1.P3, b2.P3  );
 
             fillAsym( h1.GetTH1("Gen_O2Asym_highPt"), O2 );
             h1.GetTH1("Gen_O2_highPt"    )->Fill(  O2/Owrt_    );
