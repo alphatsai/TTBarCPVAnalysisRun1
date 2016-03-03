@@ -6,7 +6,7 @@ defaultElectronSelectionParameters = defaultLeptonSelectionParameters.clone(
     # Lepton general selections
     lepType                       = cms.string('TightElectron'),
     lepEtMin                      = cms.double(30),
-    lepAbsEtaMax                  = cms.double(2.1),
+    lepAbsEtaMax                  = cms.double(2.5),
     lepRelIsoR03Max               = cms.double(0.1),
 
     # Electron special

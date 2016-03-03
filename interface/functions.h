@@ -50,7 +50,8 @@ namespace{
 
     float getChi2( Jet jet1, Jet jet2, Jet bjet, float M_top=mass_t, float Wth_top=width_t, float M_W=mass_W, float Wth_W=width_W );
 
-    double Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 b,   TVector3 bbar );
+    //double Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 b,   TVector3 bbar );
+    double Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 b,   TVector3 bbar, int charge=1 );
     double Obs4( TVector3 isoLep, TVector3 hardJet, TVector3 b,   TVector3 bbar, int charge );
     double Obs7( TVector3 beam,   TVector3 b,       TVector3 bbar               );
     double Obs3( TLorentzVector isoLep, TLorentzVector hardJet, TLorentzVector b, TLorentzVector bbar, int charge ); // need boost to bb~ CM
@@ -288,11 +289,13 @@ namespace{
     }
 
     //* Observable 2
-    double Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 b, TVector3 bbar )
+    //double Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 b, TVector3 bbar )
+    double Obs2( TVector3 isoLep, TVector3 hardJet, TVector3 b, TVector3 bbar, int charge )
     {
         TVector3 O2_1v = b + bbar;
         TVector3 O2_2v = isoLep.Cross( hardJet );
-        double O2 = O2_1v.Dot( O2_2v );
+        double O2 = double(charge)*(O2_1v.Dot( O2_2v ));
+        //double O2 = O2_1v.Dot( O2_2v );
         return O2;
     }
 
