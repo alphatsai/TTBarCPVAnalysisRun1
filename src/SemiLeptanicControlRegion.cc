@@ -77,6 +77,8 @@ SemiLeptanicControlRegion::SemiLeptanicControlRegion(const edm::ParameterSet& iC
     dR_rmElelectronOverlapeMuon_( iConfig.getParameter<double>("dR_rmElelectronOverlapeMuon")),
     maxChi2_(                     iConfig.getParameter<double>("MaxChi2")),
     minChi2_(                     iConfig.getParameter<double>("MinChi2")),
+    maxMlb_(                      iConfig.getParameter<double>("MaxMlb")),
+    minMlb_(                      iConfig.getParameter<double>("MinMlb")),
     Owrt_(                        iConfig.getParameter<double>("Owrt")),
     NJets_(                       iConfig.getParameter<int>("NJets")),
     NbJetsCSVM_(                  iConfig.getParameter<int>("NbJetsCSVM")),
@@ -122,6 +124,7 @@ void SemiLeptanicControlRegion::setCutFlow( TH1* h )
             h->GetXaxis()->SetBinLabel(13, ("#chi^{2}<"+num2str(maxChi2_)).c_str() );
         else
             h->GetXaxis()->SetBinLabel(13, ("#chi^{2}>"+num2str(minChi2_)).c_str() );
+        h->GetXaxis()->SetBinLabel(14, ("M_{lb}<"+num2str(maxMlb_)).c_str() );
     }else{
         h->GetXaxis()->SetBinLabel(1,  "All"                                       );
         h->GetXaxis()->SetBinLabel(2,  "#geq1 goodVtx"                             );
@@ -138,6 +141,7 @@ void SemiLeptanicControlRegion::setCutFlow( TH1* h )
             h->GetXaxis()->SetBinLabel(12, ("#chi^{2}<"+num2str(maxChi2_)).c_str() );
         else
             h->GetXaxis()->SetBinLabel(12, ("#chi^{2}>"+num2str(minChi2_)).c_str() );
+        h->GetXaxis()->SetBinLabel(13, ("M_{lb}<"+num2str(maxMlb_)).c_str() );
     }
     return ;
 }
@@ -595,8 +599,8 @@ void SemiLeptanicControlRegion::beginJob()
     h1.addNewTH1( "EvtChi2_NnonBJets",        "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "EvtChi2_NnonBJets_Mu",     "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
     h1.addNewTH1( "EvtChi2_NnonBJets_El",     "Num. of b-jets",            "N(B-tagged j)",     "Events", "",    "", 20,   0,   20  );
-    h1.addNewTH1( "Evt_CutFlow_Mu",           "",                          "",                  "Evetns", "",    "", 13,   0,   13  );
-    h1.addNewTH1( "Evt_CutFlow_El",           "",                          "",                  "Evetns", "",    "", 13,   0,   13  );
+    h1.addNewTH1( "Evt_CutFlow_Mu",           "",                          "",                  "Evetns", "",    "", 14,   0,   14  );
+    h1.addNewTH1( "Evt_CutFlow_El",           "",                          "",                  "Evetns", "",    "", 14,   0,   14  );
     h1.addNewTH1( "Evt_MuCut",                "isoMu:looseMu:looseEl",     "",                  "Evetns", "",    "", 7,    0,   7   );
     h1.addNewTH1( "Evt_ElCut",                "isoEl:looseMu:looseEl",     "",                  "Evetns", "",    "", 7,    0,   7   );
     h1.addNewTH1( "Evt_Wrtevt_TopPt",         "",                          "",                  "Evetns", "",    "", 200,  0,   2   );
@@ -899,7 +903,7 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
         TopCandidate top_hadronic, top_leptonic;         
         Jet hardJet, hardNonBJet1, hardNonBJet2, TopNonBJet1, TopNonBJet2, b_jet, bbar_jet;
         Lepton isoLep;
-        bool isGoodMuonEvt(false), isGoodElectronEvt(false), passChi2Cut(false);
+        bool isGoodMuonEvt(false), isGoodElectronEvt(false), passChi2Cut(false), passMlbCut(false);
         
         if( isSkim_ )
         {
@@ -1203,6 +1207,16 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                                     if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("#chi^{2}>"+num2str(minChi2_)).c_str(), wrtevt);
                                 }
                             } //// [END] Chi^2 cut
+
+                            ////// * Mlb cut
+                            if( passChi2Cut ){
+                                if( maxMlb_ > top_leptonic.Massbl && minMlb_ <= top_leptonic.Massbl )
+                                {
+                                    passMlbCut=true;
+                                    if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("M_{lb}<"+num2str(maxMlb_)).c_str(), wrtevt);
+                                    if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("M_{lb}<"+num2str(maxMlb_)).c_str(), wrtevt);
+                                } //// [END] Mlb cut
+                            } //// [END] Chi^2 cut
                         } //// [END] Number of CSVL b-jets cuts, 2
                     } //// [END] Number of CSVM b-jets cuts
                 } //// [END] Number of jets cut
@@ -1361,7 +1375,7 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
             fillAsym( h1.GetTH1("Evt_O3Asym"), O3, wrtevt );
             fillAsym( h1.GetTH1("Evt_O4Asym"), O4, wrtevt );
             fillAsym( h1.GetTH1("Evt_O7Asym"), O7, wrtevt );
-            if( passChi2Cut )
+            if( passChi2Cut && passMlbCut )
             {
                 h2.GetTH2("TH2Chi2_Chi2_vs_TopHadronicMass")->Fill( top_hadronic.Mass, minChi2,           wrtevt );
                 h2.GetTH2("TH2Chi2_Chi2_vs_Ht"             )->Fill( Ht,                minChi2,           wrtevt );
@@ -1518,7 +1532,7 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                 fillAsym( h1.GetTH1("Evt_O3Asym_Mu"), O3, wrtevt );
                 fillAsym( h1.GetTH1("Evt_O4Asym_Mu"), O4, wrtevt );
                 fillAsym( h1.GetTH1("Evt_O7Asym_Mu"), O7, wrtevt );
-                if( passChi2Cut )
+                if( passChi2Cut && passMlbCut )
                 {
                     h2.GetTH2("TH2Chi2_Chi2_vs_TopHadronicMass_Mu")->Fill( top_hadronic.Mass, minChi2,           wrtevt );
                     h2.GetTH2("TH2Chi2_Chi2_vs_Ht_Mu"             )->Fill( Ht,                minChi2,           wrtevt );
@@ -1677,7 +1691,7 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                 fillAsym( h1.GetTH1("Evt_O3Asym_El"), O3, wrtevt );
                 fillAsym( h1.GetTH1("Evt_O4Asym_El"), O4, wrtevt );
                 fillAsym( h1.GetTH1("Evt_O7Asym_El"), O7, wrtevt );
-                if( passChi2Cut )
+                if( passChi2Cut && passMlbCut )
                 {
                     h2.GetTH2("TH2Chi2_Chi2_vs_TopHadronicMass_El")->Fill( top_hadronic.Mass, minChi2,           wrtevt );
                     h2.GetTH2("TH2Chi2_Chi2_vs_Ht_El"             )->Fill( Ht,                minChi2,           wrtevt );

@@ -56,6 +56,16 @@ options.register('MaxChi2', 40,
     VarParsing.varType.float,
     "Event selection for hadronic top max of max_chi2"
     )
+options.register('MinMlb',  0,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.float,
+    "Event selection for leptonic top"
+    )
+options.register('MaxMlb', 200,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.float,
+    "Event selection for leptonic top"
+    )
 options.register('NJets', 4,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.int,
@@ -192,6 +202,8 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicAnalysis',
     dR_rmElelectronOverlapeMuon = cms.double(options.dRrmElelectronOverlapeMuon),
     MaxChi2                     = cms.double(options.MaxChi2),
     MinChi2                     = cms.double(options.MinChi2),
+    MaxMlb                      = cms.double(options.MaxMlb),
+    MinMlb                      = cms.double(options.MinMlb),
     Owrt                        = cms.double(Oweight), 
     NJets                       = cms.int32(options.NJets),
     Shift_JER                   = cms.int32(options.ShiftJER),

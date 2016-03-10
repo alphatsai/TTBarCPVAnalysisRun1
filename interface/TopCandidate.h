@@ -33,7 +33,10 @@ class TopCandidate{
             Phi    = P4.Phi(); 
             Mass   = P4.M(); 
             MassT  = P4.Mt(); 
+            MassW  = P4_W.M(); 
             Energy = P4.Energy();
+
+            dRj1j2 = jet1.P4.DeltaR(jet2.P4);
 
             bJet = &bjet; 
             Jet1 = &jet1; 
@@ -66,6 +69,8 @@ class TopCandidate{
             //MassT  = P4.Mt(); 
             MassT  = TMath::Sqrt( lep.Et*lep.Et + met*met - 2*lep.Et*met*TMath::Cos(lep.Phi-metPhi));
             Energy = P4.Energy();
+            
+            dRbl = lep.P4.DeltaR(bjet.P4);
 
             Lept = &lep;
             MET    = met;
@@ -88,7 +93,11 @@ class TopCandidate{
         float Mass;
         float Massbl;
         float MassT;
+        float MassW;
         float Energy;
+
+        float dRj1j2;
+        float dRbl;
 
         float MET;
         float METPhi;

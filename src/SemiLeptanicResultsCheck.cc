@@ -211,6 +211,11 @@ void SemiLeptanicResultsCheck::beginJob()
     h1.addNewTH1( "Evt_isoLep_dRGen_Mu",     "",                        "",                  "Evetns", "", "", 300,  0,   3 );
     h1.addNewTH1( "Evt_isoLep_dRGen_El",     "",                        "",                  "Evetns", "", "", 300,  0,   3 );
 
+    h1.addNewTH1( "Gen_W_mass",              "",                        "",                  "Evetns", "", "", 500,  0,   500 );
+    h1.addNewTH1( "Gen_t_mass",              "",                        "",                  "Evetns", "", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_W_mass",              "",                        "",                  "Evetns", "", "", 500,  0,   500 );
+    h1.addNewTH1( "Evt_t_mass",              "",                        "",                  "Evetns", "", "", 500,  0,   500 );
+
     h1.addNewTH1( "Gen_PID",                 "",                        "",                  "Evetns", "", "", 60, -30,   30 );
     h1.addNewTH1( "Gen_PID_bMo1",            "",                        "",                  "Evetns", "", "", 60, -30,   30 );
     h1.addNewTH1( "Gen_PID_bMo2",            "",                        "",                  "Evetns", "", "", 60, -30,   30 );
@@ -374,13 +379,19 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                 h1.GetTH1("Gen_PID")->Fill( particle.PdgID );  
                 if( particle.PdgID == -24 )
                 {
+                    h1.GetTH1("Gen_W_mass")->Fill( particle.Mass );   
                     h1.GetTH1("Gen_PID_wpDa1")->Fill( particle.Da1PdgID );   
                     h1.GetTH1("Gen_PID_wpDa2")->Fill( particle.Da2PdgID );   
                 }
                 if( particle.PdgID == 24 )
                 {
+                    h1.GetTH1("Gen_W_mass")->Fill( particle.Mass );   
                     h1.GetTH1("Gen_PID_wmDa1")->Fill( particle.Da1PdgID );   
                     h1.GetTH1("Gen_PID_wmDa2")->Fill( particle.Da2PdgID );   
+                }
+                if( abs(particle.PdgID) == 6 )
+                {
+                    h1.GetTH1("Gen_t_mass")->Fill( particle.Mass );   
                 }
                 if( abs(particle.PdgID) == 5 )
                 { 
@@ -507,7 +518,7 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
             if( BJetSelection.isPass(jet)   ) BJetCol.push_back(jet);
             if( NonBJetSelection.isPass(jet)) nonBJetCol.push_back(jet);
         }
-        if( JetColSelected.size() != ( nonBJetCol.size()+BJetCol.size()) ) std::cout<<">> [WARNING] JetColSelected.size() "<<JetColSelected.size()<<" != ( nonBJetCol.size() "<<nonBJetCol.size()<<" + BJetCol.size() "<<BJetCol.size()<<" )"<<std::endl;
+        //if( JetColSelected.size() != ( nonBJetCol.size()+BJetCol.size()) ) std::cout<<">> [WARNING] JetColSelected.size() "<<JetColSelected.size()<<" != ( nonBJetCol.size() "<<nonBJetCol.size()<<" + BJetCol.size() "<<BJetCol.size()<<" )"<<std::endl;
 
         //* Lepton selection
         vector<Lepton> MuColTight, MuColLoose_MuChannel, ElColLoose_MuChannel;
@@ -548,6 +559,7 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                 }
             }
         }
+        if( ElColTight.size() > 0 && MuColTight.size() > 0 ) rmElelectronOverlapeMuon( ElColTight, MuColTight );
 
         h1.GetTH1("Evt_NJets"          )->Fill( JetInfo.Size               );
         h1.GetTH1("Evt_NSelJets"       )->Fill( JetColSelected.size()      );
@@ -562,14 +574,14 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
         h1.GetTH1("Evt_NLooseElIsoMu"  )->Fill( ElColLoose_MuChannel.size());
 
         //* Reconstructed object O2
-        Jet hardJet, bjet1, bjet2;
-        if( nonBJetCol.size() > 0 ) getHighPtObject( nonBJetCol, hardJet );
-        else std::cout<<">> [WARNING] non-BJets not > 0, size = "<<nonBJetCol.size()<<std::endl;
+        Jet hardJet, subJet, bjet1, bjet2;
+        if( nonBJetCol.size() > 1 ) get2HighPtObject( nonBJetCol, hardJet, subJet );
+        //else std::cout<<">> [WARNING] non-BJets not > 1, size = "<<nonBJetCol.size()<<std::endl;
         if( BJetCol.size() == 2 )  get2HighPtObject( BJetCol, bjet1, bjet2 );
-        else std::cout<<">> [WARNING] BJets not == 2, size = "<<BJetCol.size()<<std::endl;
+        //else std::cout<<">> [WARNING] BJets not == 2, size = "<<BJetCol.size()<<std::endl;
 
         // electron channel
-        if( isEleEvt_ )
+        if( isEleEvt_ && !isMuonEvt_)
         {
             if( ElColTight.size() != 1 ){ std::cout<<">> [WARNING] Tight electron size = "<<ElColTight.size()<<" in electron channel"<<std::endl; }
             else
@@ -589,6 +601,7 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                 GenParticle isoLepGen;
                 vector<Jet> selectedJet;
                 selectedJet.push_back(hardJet);
+                selectedJet.push_back(subJet);
                 selectedJet.push_back(bjet1);
                 selectedJet.push_back(bjet2);
                 vector<GenParticle> matchedGenParticle;
@@ -607,10 +620,11 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                     //    std::cout<<"( "<<quarks[q].Index<<", "<<quarks[q].PdgID<<" ) ";
                     //}
                     //std::cout<<endl;
-                    GenParticle hardJetGen, bjet1Gen, bjet2Gen;
+                    GenParticle hardJetGen, subJetGen, bjet1Gen, bjet2Gen;
                     hardJetGen = matchedGenParticle[0];
-                    bjet1Gen   = matchedGenParticle[1];
-                    bjet2Gen   = matchedGenParticle[2];
+                    subJetGen  = matchedGenParticle[1];
+                    bjet1Gen   = matchedGenParticle[2];
+                    bjet2Gen   = matchedGenParticle[3];
                     matchedGenParticle.clear();
                     
                     h1.GetTH1("Evt_HardJet_PID"        )->Fill( hardJetGen.PdgID    );
@@ -649,6 +663,18 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                     if( hardJetGen.Index == bjet1Gen.Index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet1Gen.Index<<", PID "<<bjet1Gen.PdgID<<", between 'hardJet' and 'bjet1' in Electron channel"<<std::endl;
                     if( hardJetGen.Index == bjet2Gen.Index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.Index<<", PID "<<bjet2Gen.PdgID<<", between 'hardJet' and 'bjet2' in Electron channel"<<std::endl;
                     if(   bjet1Gen.Index == bjet2Gen.Index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.Index<<", PID "<<bjet2Gen.PdgID<<", between   'bjet1' and 'bjet2' in Electron channel"<<std::endl;
+
+                    if( ( abs(hardJetGen.Mo1PdgID) == 24 || abs(hardJetGen.Mo2PdgID) == 24 ) &&
+                        ( abs(subJetGen.Mo1PdgID)  == 24 || abs(subJetGen.Mo2PdgID)  == 24 ))
+                    {
+                        h1.GetTH1("Evt_W_mass")->Fill((hardJet.P4+subJet.P4).M());
+                        if( isoLepGen.PdgID > 0 && bjet1Gen.PdgID == 5 ) h1.GetTH1("Evt_t_mass")->Fill((hardJet.P4+subJet.P4+bjet1.P4).M());
+                        else if( isoLepGen.PdgID > 0 && bjet2Gen.PdgID ==  5 ) h1.GetTH1("Evt_t_mass")->Fill((hardJet.P4+subJet.P4+bjet2.P4).M());
+                        else if( isoLepGen.PdgID < 0 && bjet2Gen.PdgID == -5 ) h1.GetTH1("Evt_t_mass")->Fill((hardJet.P4+subJet.P4+bjet2.P4).M());
+                        else if( isoLepGen.PdgID < 0 && bjet1Gen.PdgID == -5 ) h1.GetTH1("Evt_t_mass")->Fill((hardJet.P4+subJet.P4+bjet1.P4).M());
+                    } 
+     
+
                 }else{
                     h1.GetTH1("Evt_noMatched")->Fill(0);
                     h1.GetTH1("Evt_noMatched")->Fill(1);
@@ -656,7 +682,7 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
             }
         }
         // Muon channel
-        if( isMuonEvt_ )
+        if( isMuonEvt_ && !isEleEvt_ )
         {
             if( MuColTight.size() != 1 ){ std::cout<<">> [WARNING] Tight muon size = "<<MuColTight.size()<<" in muon channel"<<std::endl; }
             else
@@ -678,6 +704,7 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                 GenParticle isoLepGen;
                 vector<Jet> selectedJet;
                 selectedJet.push_back(hardJet);
+                selectedJet.push_back(subJet);
                 selectedJet.push_back(bjet1);
                 selectedJet.push_back(bjet2);
                 vector<GenParticle> matchedGenParticle;              
@@ -696,10 +723,11 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                     //    std::cout<<"( "<<quarks[q].Index<<", "<<quarks[q].PdgID<<" ) ";
                     //}
                     //std::cout<<endl;
-                    GenParticle hardJetGen, bjet1Gen, bjet2Gen;
+                    GenParticle hardJetGen, subJetGen, bjet1Gen, bjet2Gen;
                     hardJetGen = matchedGenParticle[0];
-                    bjet1Gen   = matchedGenParticle[1];
-                    bjet2Gen   = matchedGenParticle[2];
+                    subJetGen  = matchedGenParticle[1];
+                    bjet1Gen   = matchedGenParticle[2];
+                    bjet2Gen   = matchedGenParticle[3];
                     matchedGenParticle.clear();
                     h1.GetTH1("Evt_HardJet_PID"        )->Fill( hardJetGen.PdgID    );
                     h1.GetTH1("Evt_HardJet_PID_Mu"     )->Fill( hardJetGen.PdgID    );
@@ -737,6 +765,17 @@ void SemiLeptanicResultsCheck::analyze(const edm::Event& iEvent, const edm::Even
                     if( hardJetGen.Index == bjet1Gen.Index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet1Gen.Index<<", PID "<<bjet1Gen.PdgID<<", between 'hardJet' and 'bjet1' in Muon channel"<<std::endl;
                     if( hardJetGen.Index == bjet2Gen.Index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.Index<<", PID "<<bjet2Gen.PdgID<<", between 'hardJet' and 'bjet2' in Muon channel"<<std::endl;
                     if(   bjet1Gen.Index == bjet2Gen.Index ) std::cout<<">> [WARING] Matched same gen-particle: "<<bjet2Gen.Index<<", PID "<<bjet2Gen.PdgID<<", between   'bjet1' and 'bjet2' in Muon channel"<<std::endl;
+
+                    if( ( abs(hardJetGen.Mo1PdgID) == 24 || abs(hardJetGen.Mo2PdgID) == 24 ) &&
+                        ( abs(subJetGen.Mo1PdgID)  == 24 || abs(subJetGen.Mo2PdgID)  == 24 ))
+                    {
+                        h1.GetTH1("Evt_W_mass")->Fill((hardJet.P4+subJet.P4).M());
+                        if( isoLepGen.PdgID > 0 && bjet1Gen.PdgID == 5 ) h1.GetTH1("Evt_t_mass")->Fill((hardJet.P4+subJet.P4+bjet1.P4).M());
+                        else if( isoLepGen.PdgID > 0 && bjet2Gen.PdgID ==  5 ) h1.GetTH1("Evt_t_mass")->Fill((hardJet.P4+subJet.P4+bjet2.P4).M());
+                        else if( isoLepGen.PdgID < 0 && bjet2Gen.PdgID == -5 ) h1.GetTH1("Evt_t_mass")->Fill((hardJet.P4+subJet.P4+bjet2.P4).M());
+                        else if( isoLepGen.PdgID < 0 && bjet1Gen.PdgID == -5 ) h1.GetTH1("Evt_t_mass")->Fill((hardJet.P4+subJet.P4+bjet1.P4).M());
+                    } 
+
                 }else{
                     h1.GetTH1("Evt_noMatched")->Fill(0);
                     h1.GetTH1("Evt_noMatched")->Fill(2);

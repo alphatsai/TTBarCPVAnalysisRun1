@@ -36,6 +36,16 @@ options.register('MaxChi2Cut', 40,
     VarParsing.varType.float,
     "Event selection for hadronic top max of max_chi2"
     )
+options.register('MinMlbCut',  0,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.float,
+    "Event selection for leptonic top"
+    )
+options.register('MaxMlbCut', 200,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.float,
+    "Event selection for leptonic top max"
+    )
 options.register('Owrt', 'MT:3',
     VarParsing.multiplicity.singleton,
     VarParsing.varType.string,
@@ -86,6 +96,8 @@ process.CheckEventsOfLepJets = cms.EDAnalyzer('SemiLeptanicResultsCheckObs',
     #InputFiles            = cms.vstring(FileNames_SemiLeptAnaTopResults), 
     MaxChi2Cut            = cms.double(options.MaxChi2Cut),
     MinChi2Cut            = cms.double(options.MinChi2Cut),
+    MaxMlbCut             = cms.double(options.MaxMlbCut),
+    MinMlbCut             = cms.double(options.MinMlbCut),
     Owrt                  = cms.double(Oweight), 
     GenACP                = cms.double(options.GenACP), 
     DoWrtEvt              = cms.bool(options.DoWrtEvt),

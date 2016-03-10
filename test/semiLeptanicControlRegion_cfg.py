@@ -56,6 +56,17 @@ options.register('MinChi2',  0,
     VarParsing.varType.float,
     "Event selection for hadronic top min of min_chi2"
     )
+#options.register('MaxMlb', 200,
+options.register('MaxMlb', 1000000,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.float,
+    "Event selection for leptonic top"
+    )
+options.register('MinMlb',  0,
+    VarParsing.multiplicity.singleton,    
+    VarParsing.varType.float,
+    "Event selection for leptonic top"
+    )
 options.register('NJets', 4,
     VarParsing.multiplicity.singleton,    
     VarParsing.varType.int,
@@ -174,13 +185,20 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicControlRegion',
     SelPars_NonBJet             = defaultNonBJetSelectionParameters.clone( 
                                 jetCombinedSVBJetTagsMax = cms.double(0.244)
                                 ),
-    SelPars_LooseLepton         = defaultLeptonSelectionParameters.clone(), 
+    SelPars_LooseLepton         = defaultLeptonSelectionParameters.clone(  # ARC asked...
+                                lepRelIsoR03Max = cms.double(infiniteMax),
+                                lepRelIsoR04Max = cms.double(infiniteMax),
+                                #EgammaMVATrigMin = cms.double(infiniteMax),
+                                #EgammaMVATrigMax = cms.double(infiniteMin),
+                                ), 
     SelPars_TightMuon           = defaultMounSelectionParameters.clone(), 
     SelPars_TightElectron       = defaultElectronSelectionParameters.clone(),
     dR_IsoLeptonFromJets        = cms.double(options.dRIsoLeptonFromJets),
     dR_rmElelectronOverlapeMuon = cms.double(options.dRrmElelectronOverlapeMuon),
     MaxChi2                     = cms.double(options.MaxChi2),
     MinChi2                     = cms.double(options.MinChi2),
+    MaxMlb                      = cms.double(options.MaxMlb),
+    MinMlb                      = cms.double(options.MinMlb),
     Owrt                        = cms.double(Oweight), 
     NJets                       = cms.int32(options.NJets),
     NbJetsCSVM                  = cms.int32(options.NbJetsCSVM),

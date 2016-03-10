@@ -79,6 +79,8 @@ class SemiLeptanicControlRegion : public edm::EDAnalyzer{
         const double dR_rmElelectronOverlapeMuon_;
         const double maxChi2_;
         const double minChi2_;
+        const double maxMlb_;
+        const double minMlb_;
         const double Owrt_;
         const unsigned int NJets_;
         const unsigned int NbJetsCSVM_;

@@ -227,7 +227,9 @@ class newBranchesTopHadronic
         float Eta;
         float Phi;
         float Mass;
+        float MassW;
         float Energy;
+        float dRj1j2;
         void RegisterTree( TTree *root, std::string name="TopInfo")
         {
             root->Branch((name+".isHadronicTop").c_str(), &isHadronicTop, (name+".isHadronicTop/I").c_str()   );
@@ -242,7 +244,9 @@ class newBranchesTopHadronic
             root->Branch((name+".Eta").c_str(),           &Eta,           (name+".Eta/F").c_str()             );
             root->Branch((name+".Phi").c_str(),           &Phi,           (name+".Phi/F").c_str()             );
             root->Branch((name+".Mass").c_str(),          &Mass,          (name+".Mass/F").c_str()            );
+            root->Branch((name+".MassW").c_str(),         &MassW,         (name+".MassW/F").c_str()            );
             root->Branch((name+".Energy").c_str(),        &Energy,        (name+".Energy/F").c_str()          );
+            root->Branch((name+".dRj1j2").c_str(),        &dRj1j2,        (name+".dRj1j2/F").c_str()          );
         }
         void Register( TTree *root, std::string name="TopInfo")
         {
@@ -258,7 +262,9 @@ class newBranchesTopHadronic
             root->SetBranchAddress((name+".Eta").c_str(),           &Eta           );
             root->SetBranchAddress((name+".Phi").c_str(),           &Phi           );
             root->SetBranchAddress((name+".Mass").c_str(),          &Mass          );
+            root->SetBranchAddress((name+".MassW").c_str(),         &MassW         );
             root->SetBranchAddress((name+".Energy").c_str(),        &Energy        );
+            root->SetBranchAddress((name+".dRj1j2").c_str(),        &dRj1j2        );
         }
 };
 
@@ -374,7 +380,9 @@ class SemiLeptanicTreeBranches
             topHadronicNewBranches.Eta = topHadronic.P4.Eta();
             topHadronicNewBranches.Phi = topHadronic.P4.Phi();
             topHadronicNewBranches.Mass   = topHadronic.P4.M();
+            topHadronicNewBranches.MassW  = topHadronic.MassW;
             topHadronicNewBranches.Energy = topHadronic.P4.Energy();
+            topHadronicNewBranches.dRj1j2 = topHadronic.dRj1j2;
         } 
 };
 

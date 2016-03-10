@@ -54,6 +54,8 @@ class SemiLeptanicResultsCheckObs : public edm::EDAnalyzer{
         const std::vector<std::string>  inputFiles_;
         const double maxChi2Cut_;
         const double minChi2Cut_;
+        const double maxMlbCut_;
+        const double minMlbCut_;
         const double Owrt_;
         const double GenACP_;
         bool doWrtEvt_;
@@ -84,6 +86,7 @@ class SemiLeptanicResultsCheckObs : public edm::EDAnalyzer{
         newBranchesJet  BJetInfo; 
         newBranchesJet  BbarJetInfo;
         newBranchesJetCol nonBJetColInfo; 
+        newBranchesTopHadronic topHadronicInfo;
 
         TH1InfoClass<TH1D> h1;
         TH2InfoClass<TH2D> h2;
