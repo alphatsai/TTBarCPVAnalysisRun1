@@ -46,7 +46,9 @@ void fcn( Int_t &npar, Double_t *gin, Double_t &f, Double_t *par, Int_t iflag )
 Double_t* fitter_LH( TH1D* hSig, TH1D* hBkg, TH1D* hData )
 {
     Double_t *fitted = new Double_t[8];
-    int nData = hData->GetEntries();
+    if( hData->GetEntries() != hData->Integral() ) printf(">> [WARNING] hData->Integral() = %.0f != hData->GetEntries() = %.0f\n", hData->Integral(), hData->GetEntries() );
+    //int nData = hData->GetEntries();
+    int nData = hData->Integral();
     int nbins = hData->GetNbinsX();
 
     dataColl.clear();
@@ -141,8 +143,7 @@ Double_t* fitter_LH( TH1D* hSig, TH1D* hBkg, TH1D* hData )
     return fitted;
 }
 
-Double_t* fitter_LH_Plot( TH1D* hSig_, TH1D* hBkg_, TH1D* hData_, std::string name, int chN=0, std::string output=".", std::string xTitle="", std::string yTitle="Events" )
-//Double_t* fitter_LH_Plot( TH1D* hSig, TH1D* hBkg, TH1D* hData_, std::string name, int chN=0, std::string output=".", std::string xTitle="", std::string yTitle="Events" )
+Double_t* fitter_LH_Plot( TH1D* hSig_, TH1D* hBkg_, TH1D* hData_, std::string name, int chN=0, std::string output=".", std::string xTitle="", std::string yTitle="Events", bool rmmemery=true )
 {
     double count=0;
     dataColl.clear();
@@ -164,7 +165,6 @@ Double_t* fitter_LH_Plot( TH1D* hSig_, TH1D* hBkg_, TH1D* hData_, std::string na
         channel="Combined channel";
     }
 
-    //Double_t* fitted = fitter_LH( hSig, hBkg, hData_ );
     Double_t* fitted = fitter_LH( hSig_, hBkg_, hData_ );
     TH1D* hData = (TH1D*)hData_->Clone();
     TH1D* hSig  = (TH1D*)hSig_->Clone();
@@ -275,10 +275,13 @@ Double_t* fitter_LH_Plot( TH1D* hSig_, TH1D* hBkg_, TH1D* hData_, std::string na
     hData->Chi2Test( hFitted, "P");
     c1->SaveAs((output+"/FittingResults_"+name+ch+".pdf").c_str());
 
-    delete hData; 
-    delete hSig; 
-    delete hBkg; 
-    delete hFitted;
+    if( rmmemery )
+    {
+        delete hData; 
+        delete hSig; 
+        delete hBkg; 
+        delete hFitted;
+    }
     return fitted;
 }
 Double_t* fitter_LH_Plot( TFile* fin, std::string name, int chN=0, std::string output=".", std::string xTitle="", std::string yTitle="Events" )

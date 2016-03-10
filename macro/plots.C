@@ -302,3 +302,48 @@ void drawObservable( TFile* f, std::string histName, std::string output=".", std
 
     c1->SaveAs((output+"/"+histName+".pdf").c_str());
 }
+
+void fitQaussian( TH1D* h1, double xmin=0, double xmax=0, double times=1, Color_t color=2 )
+{
+    if( xmin != xmax )
+    {
+        xmin = h1->GetXaxis()->GetBinLowEdge(1);
+        xmax = h1->GetXaxis()->GetBinUpEdge(h1->GetXaxis()->GetLast());
+    }
+    TF1* gaus1_ = new TF1("gaus1_","gaus", xmin, xmax);
+    gaus1_->SetLineColor(color); 
+    h1->Fit("gaus1_","WR"); cout<<endl;
+    double Mean = gaus1_->GetParameter(1);
+    double Width = gaus1_->GetParameter(2);
+    gaus1_->SetRange(Mean-times*Width,Mean+times*Width);
+    h1->Fit("gaus1_", "WR");
+}
+
+void drawMassFit( TFile* f, std::string hName, double xmin=0, double xmax=0, double times=1, int rebin=1, std::string xtitle="RECO m_{W} [GeV]", std::string ytitle="Events", Color_t fitCol=2 )
+{
+    gStyle->SetOptStat(0);
+    gStyle->SetOptFit(101);
+    gStyle->SetFitFormat("3.3g");
+    TH1D* h = (TH1D*)((TH1D*)f->Get(hName.c_str()))->Clone();
+    h->Rebin(rebin);
+    h->Draw();
+    fitQaussian( h, xmin, xmax, times, fitCol );
+  
+    TCanvas* c1 = new TCanvas("c1", "", 800,600); 
+    c1->SetLeftMargin(0.1884422);
+    c1->SetBottomMargin(0.1727749);
+    if( xmin != xmax ) h->GetXaxis()->SetRangeUser(xmin,xmax);
+
+    h->GetXaxis()->SetTitle(xtitle.c_str());
+    h->GetXaxis()->SetLabelFont(42);
+    h->GetXaxis()->SetLabelSize(0.035);
+    h->GetXaxis()->SetLabelSize(0.05);
+    h->GetXaxis()->SetTitleSize(0.08);
+    h->GetXaxis()->SetTitleOffset(0.86);
+    h->GetXaxis()->SetTitleFont(42);
+    h->GetYaxis()->SetTitle(ytitle.c_str());
+    h->GetYaxis()->SetLabelFont(42);
+    h->GetYaxis()->SetTitleSize(0.08);
+    h->GetYaxis()->SetLabelSize(0.05);
+    h->Draw("pe");
+}

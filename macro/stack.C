@@ -200,11 +200,11 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
     leg->SetLineWidth(0);
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
-    leg->AddEntry(h_tt, "t#bar{t}+jet (lepton+jet)", "f");
-    leg->AddEntry(h_ttbkg, "t#bar{t}+jet (Other)", "f");
+    leg->AddEntry(h_tt, "t#bar{t}+jets (lepton+jets)", "f");
+    leg->AddEntry(h_ttbkg, "t#bar{t}+jets (Other)", "f");
     leg->AddEntry(h_t, "Single top", "f");
     leg->AddEntry(h_b, "Z/#gamma*/W/WW/WZ/ZZ", "f");
-    leg->AddEntry(h_bkg, "1#sigma non t#bar{t}+jet stat.", "f");
+    leg->AddEntry(h_bkg, "1#sigma non t#bar{t}+jets stat.", "f");
     leg->AddEntry(h_all, "1#sigma Total stat.", "f");
 
     TPaveText* t_title;
@@ -228,7 +228,7 @@ void drawStack( TFile* f, std::string hName, std::string xtitle="", std::string 
     else
         c1->SaveAs((output+"/Stack_Linear_"+hName+".pdf").c_str());
 }
-void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std::string ytitle="Events", std::string output=".", int rebin=1, bool logy=false, bool unity=false, float xMin=0, float xMax=0, int cmslumi=0  )
+void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std::string ytitle="Events", std::string output=".", int rebin=1, bool logy=false, bool unity=false, float xMin=0, float xMax=0, int cmslumi=0, int drawDecay=0, bool dohead=false, std::string header="1 e, #geq 4 jets")
 {
 
     int lineWidth=3;
@@ -411,18 +411,13 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
 
     p1->Draw();
     p1->cd();
-    //p1->Range(-69.93206,-11.83204,525.1982,2254.328);
     p1->Range(-94.34524,-23.74423,531.25,3995.82);
     p1->SetFillColor(0);
     p1->SetBorderMode(0);
     p1->SetBorderSize(2);
-   //p1->SetLeftMargin(0.1508088);
-   //p1->SetRightMargin(0.04995242);
-   //p1->SetTopMargin(0.07399125);
-   //p1->SetBottomMargin(0.005907165);
-   p1->SetLeftMargin(0.1498079);
-   p1->SetRightMargin(0.05121639);
-   p1->SetBottomMargin(0.007874016);
+    p1->SetLeftMargin(0.1498079);
+    p1->SetRightMargin(0.05121639);
+    p1->SetBottomMargin(0.007874016);
     p1->SetFrameBorderMode(0);
     p1->SetFrameBorderMode(0);
 
@@ -430,48 +425,61 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     else p1->SetLogy(0);
 
     TLegend *leg;
-    leg = new TLegend(0.5837298,0.3145127,0.8834443,0.9031491,NULL,"brNDC");
+    leg = new TLegend(0.5979514,0.2703412,0.8975673,0.8608924,NULL,"brNDC");
     leg->SetBorderSize(0);
     leg->SetTextSize(0.06684134);
     leg->SetLineStyle(0);
     leg->SetLineWidth(0);
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
+    if( dohead ) leg->SetHeader(header.c_str());
     leg->AddEntry(h_data, "Data", "lep");
-    leg->AddEntry(h_tt, "t#bar{t}+jet (lepton+jet)", "f");
-    leg->AddEntry(h_ttbkg, "t#bar{t}+jet (Other)", "f");
+    leg->AddEntry(h_tt, "t#bar{t}+jets (lepton+jets)", "f");
+    leg->AddEntry(h_ttbkg, "t#bar{t}+jets (Other)", "f");
     leg->AddEntry(h_t, "Single top", "f");
     leg->AddEntry(h_b, "Z/#gamma*/W/WW/WZ/ZZ", "f");
-    //leg->AddEntry(h_bkg, "1#sigma non t#bar{t}+jet stat.", "f");
+    //leg->AddEntry(h_bkg, "1#sigma non t#bar{t}+jets stat.", "f");
     leg->AddEntry(h_all, "1#sigma Total stat.", "f");
+
+    TPaveText* decay;
+    decay = new TPaveText(0.5979514,0.1627297,0.8975673,0.2125985,"brNDC");
+    decay->SetTextColor(kBlack);
+    decay->SetFillColor(kWhite);
+    decay->SetFillStyle(0);
+    decay->SetBorderSize(0);
+    decay->SetTextAlign(11);
+    decay->SetTextFont(42);
+    decay->SetTextSize(0.07874015);
+    if( drawDecay == 1 ) decay->AddText( "t(#bar{t}) #rightarrow bW #rightarrow jjb");
+    if( drawDecay == 2 ) decay->AddText( "t(#bar{t}) #rightarrow bW #rightarrow eb#nu_{e}");
+    if( drawDecay == 3 ) decay->AddText( "t(#bar{t}) #rightarrow bW #rightarrow #mub#nu_{#mu}");
 
     h_stack->Draw("HIST");
     h_all->Draw("SAMEE2");
     //h_bkg->Draw("SAMEE2");
     h_data->Draw("ESAME");
     leg->Draw();
+    if( drawDecay != 0 ) decay->Draw();
 
     writeExtraText=true;
-    CMS_lumi( p1, 2, cmslumi, true );
+    CMS_lumi( p1, 2, cmslumi, writeExtraText );
+    
+    reDrawFrame( p1 );
 
     p1->Modified();
     c1->cd();
 
     p2->Draw();
     p2->cd();
-    //p2->Range(-71.06455,-0.4118644,526.3307,0.156511);
     p2->Range(-95.12485,-1.660535,532.1046,0.6162385);
     p2->SetFillColor(0);
     p2->SetBorderMode(0);
     p2->SetBorderSize(0);
     p2->SetTickx(1);
-    //p2->SetRightMargin(0.06350711);
-    //p2->SetTopMargin(0.00896861);
-    //p2->SetBottomMargin(0.4618834);
-   p2->SetLeftMargin(0.1516588);
-   p2->SetRightMargin(0.0511848);
-   p2->SetTopMargin(0.007132255);
-   p2->SetBottomMargin(0.4658061);
+    p2->SetLeftMargin(0.1516588);
+    p2->SetRightMargin(0.0511848);
+    p2->SetTopMargin(0.007132255);
+    p2->SetBottomMargin(0.4658061);
     p2->SetFrameBorderMode(0);
     p2->SetFrameBorderMode(0);
     p2->SetFrameBorderMode(0);
@@ -479,7 +487,6 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     float x0 = h_ratio->GetXaxis()->GetBinLowEdge(h_ratio->GetXaxis()->GetFirst());
     float x1 = h_ratio->GetXaxis()->GetBinUpEdge(h_ratio->GetXaxis()->GetLast()); 
     TLine* l = new TLine( x0, 0., x1, 0.);
-    //TLine* l = new TLine( x0, 1., x1, 1.);
     l->SetLineColor(1);
     l->SetLineWidth(2);
  
@@ -509,11 +516,14 @@ void drawStackWithData( TFile* f, std::string hName, std::string xtitle="", std:
     h_mcunc->Draw("E2");
     h_ratio->Draw("esame");
     l->Draw("same");
+    reDrawFrame( p2 );
     p2->Modified();
+    p2->RedrawAxis();;
+    c1->RedrawAxis();
     c1->cd();
-    c1->Modified();
-    c1->cd();
-    c1->SetSelected(c1);
+    //c1->Modified();
+    //c1->cd();
+    //c1->SetSelected(c1);
 
     if( logy )
         c1->SaveAs((output+"/StackData_Log_"+hName+".pdf").c_str());
@@ -708,12 +718,12 @@ void drawStackWithQCD( TFile* f, std::string hName, std::string xtitle="", std::
     leg->SetLineWidth(0);
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
-    leg->AddEntry(h_tt, "t#bar{t}+jet (lepton+jet)", "f");
-    leg->AddEntry(h_ttbkg, "t#bar{t}+jet (Other)", "f");
+    leg->AddEntry(h_tt, "t#bar{t}+jets (lepton+jets)", "f");
+    leg->AddEntry(h_ttbkg, "t#bar{t}+jets (Other)", "f");
     leg->AddEntry(h_t, "Single top", "f");
     leg->AddEntry(h_b, "Z/#gamma*/W/WW/WZ/ZZ", "f");
     leg->AddEntry(h_QCD, "QCD", "f");
-    //leg->AddEntry(h_bkg, "1#sigma non t#bar{t}+jet stat.", "f");
+    //leg->AddEntry(h_bkg, "1#sigma non t#bar{t}+jets stat.", "f");
     leg->AddEntry(h_all, "1#sigma Total stat.", "f");
 
     TPaveText* t_title;
@@ -959,12 +969,12 @@ void drawStackWithDataQCD( TFile* f, std::string hName, std::string xtitle="", s
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
     leg->AddEntry(h_data, "Data", "lp");
-    leg->AddEntry(h_tt, "t#bar{t}+jet (lepton+jet)", "f");
-    leg->AddEntry(h_ttbkg, "t#bar{t}+jet (Other)", "f");
+    leg->AddEntry(h_tt, "t#bar{t}+jets (lepton+jets)", "f");
+    leg->AddEntry(h_ttbkg, "t#bar{t}+jets (Other)", "f");
     leg->AddEntry(h_t, "Single top", "f");
     leg->AddEntry(h_b, "Z/#gamma*/W/WW/WZ/ZZ", "f");
     leg->AddEntry(h_QCD, "QCD", "f");
-    //leg->AddEntry(h_bkg, "1#sigma non t#bar{t}+jet stat.", "f");
+    //leg->AddEntry(h_bkg, "1#sigma non t#bar{t}+jets stat.", "f");
     leg->AddEntry(h_all, "1#sigma Total stat.", "f");
 
     TPaveText* t_title;

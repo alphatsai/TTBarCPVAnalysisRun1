@@ -33,8 +33,10 @@ bool printTitle=false;
 const int NOBS=4; 
 const int NCH=3;
 
-std::string fin="../results/30Aug_LepJet_AddO3O4/Final_PredictionTree.root";
-std::string outpath="../results/30Aug_LepJet_AddO3O4";
+//std::string fin="../results/15Sep_LepJet_Chi2Cut40/Final_PredictionTree.root";
+//std::string outpath="../results/15Sep_LepJet_Chi2Cut40";
+std::string fin="../results/15Dec_LepJet_MCDATA/Final_PredictionTree.root";
+std::string outpath="../results/15Dec_LepJet_MCDATA";
 
 void toyResults()
 {

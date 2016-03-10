@@ -4,6 +4,7 @@
 #include <TPad.h>
 #include <TCanvas.h>
 #include <TMath.h>
+#include <TLine.h>
 const int wtopx=50;
 const int wtopy=50;
 const int W = 800;
@@ -101,6 +102,19 @@ void fixNewRange( TH1D* h, float xMin, float xMax)
     { xMax = upValue_0; }
     h->GetXaxis()->SetRangeUser(xMin, xMax); 
 }
+void reDrawFrame( TPad* p )
+{
+    p->Update();
+    TLine *lt = new TLine(p->GetUxmin(), p->GetUymax(), p->GetUxmax(), p->GetUymax());
+    TLine *lb = new TLine(p->GetUxmin(), p->GetUymin(), p->GetUxmax(), p->GetUymin());
+    TLine *ll = new TLine(p->GetUxmin(), p->GetUymin(), p->GetUxmin(), p->GetUymax());
+    TLine *lr = new TLine(p->GetUxmax(), p->GetUymin(), p->GetUxmax(), p->GetUymax());
+    lt->Draw();
+    lb->Draw();
+    ll->Draw();
+    lr->Draw();
+}
+
 void variableRebinMTW(TH1* hin,TH1* hrebin) {
 
     for (Int_t ii=1;ii<=50;++ii) {

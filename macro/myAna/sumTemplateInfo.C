@@ -195,22 +195,23 @@ void sumTemplateInfo( TFile* f, string name, string output=".", string xElTitle=
     fprintf( outTxt, "\n\n\n");
     fclose( outTxt );
 
-    drawFittedStack( f, name, systNameEl, nElSyst, nPDFup, nPDFdown, 1, output, xElTitle, yTitle, false, doTopMassUncRescale );
-    drawFittedStack( f, name, systNameMu, nMuSyst, nPDFup, nPDFdown, 2, output, xMuTitle, yTitle, false, doTopMassUncRescale );
+    float minMlb=0, maxMlb=200;
+    drawFittedStack( f, name, systNameEl, nElSyst, nPDFup, nPDFdown, 1, minMlb, maxMlb, output, xElTitle, yTitle, false, doTopMassUncRescale, false );
+    drawFittedStack( f, name, systNameMu, nMuSyst, nPDFup, nPDFdown, 2, minMlb, maxMlb, output, xMuTitle, yTitle, false, doTopMassUncRescale, false );
 
     FILE* outTxt1;
     if( unBlind )
         outTxt1 = fopen((output+"/FinalAcpResults.txt").c_str(),"w");
     else
         outTxt1 = fopen((output+"/FinalBlindAcpResults.txt").c_str(),"w");
-    getSubtractBkgResults( f, outTxt1, "O2", nElSyst, systNameEl, nPDFup, nPDFdown, 0 , unBlind, doTopMassUncRescale, fCR );
-    getSubtractBkgResults( f, outTxt1, "O3", nElSyst, systNameEl, nPDFup, nPDFdown, 0 , unBlind, doTopMassUncRescale, fCR );
-    getSubtractBkgResults( f, outTxt1, "O4", nElSyst, systNameEl, nPDFup, nPDFdown, 0 , unBlind, doTopMassUncRescale, fCR );
-    getSubtractBkgResults( f, outTxt1, "O7", nElSyst, systNameEl, nPDFup, nPDFdown, 0 , unBlind, doTopMassUncRescale, fCR );
-    getSubtractBkgResults( f, outTxt1, "O2", nMuSyst, systNameMu, nPDFup, nPDFdown, 1 , unBlind, doTopMassUncRescale, fCR );
-    getSubtractBkgResults( f, outTxt1, "O3", nMuSyst, systNameMu, nPDFup, nPDFdown, 1 , unBlind, doTopMassUncRescale, fCR );
-    getSubtractBkgResults( f, outTxt1, "O4", nMuSyst, systNameMu, nPDFup, nPDFdown, 1 , unBlind, doTopMassUncRescale, fCR );
-    getSubtractBkgResults( f, outTxt1, "O7", nMuSyst, systNameMu, nPDFup, nPDFdown, 1 , unBlind, doTopMassUncRescale, fCR );
+    getSubtractBkgResults( f, outTxt1, "O2", nElSyst, systNameEl, nPDFup, nPDFdown, 0, minMlb, maxMlb, unBlind, doTopMassUncRescale, fCR );
+    getSubtractBkgResults( f, outTxt1, "O3", nElSyst, systNameEl, nPDFup, nPDFdown, 0, minMlb, maxMlb, unBlind, doTopMassUncRescale, fCR );
+    getSubtractBkgResults( f, outTxt1, "O4", nElSyst, systNameEl, nPDFup, nPDFdown, 0, minMlb, maxMlb, unBlind, doTopMassUncRescale, fCR );
+    getSubtractBkgResults( f, outTxt1, "O7", nElSyst, systNameEl, nPDFup, nPDFdown, 0, minMlb, maxMlb, unBlind, doTopMassUncRescale, fCR );
+    getSubtractBkgResults( f, outTxt1, "O2", nMuSyst, systNameMu, nPDFup, nPDFdown, 1, minMlb, maxMlb, unBlind, doTopMassUncRescale, fCR );
+    getSubtractBkgResults( f, outTxt1, "O3", nMuSyst, systNameMu, nPDFup, nPDFdown, 1, minMlb, maxMlb, unBlind, doTopMassUncRescale, fCR );
+    getSubtractBkgResults( f, outTxt1, "O4", nMuSyst, systNameMu, nPDFup, nPDFdown, 1, minMlb, maxMlb, unBlind, doTopMassUncRescale, fCR );
+    getSubtractBkgResults( f, outTxt1, "O7", nMuSyst, systNameMu, nPDFup, nPDFdown, 1, minMlb, maxMlb, unBlind, doTopMassUncRescale, fCR );
     fclose( outTxt1 );
 
     FILE* outTxt2;
@@ -218,40 +219,40 @@ void sumTemplateInfo( TFile* f, string name, string output=".", string xElTitle=
         outTxt2 = fopen((output+"/FinalAcpResultsCombined.txt").c_str(),"w");
     else
         outTxt2 = fopen((output+"/FinalBlindAcpResultsCombined.txt").c_str(),"w");
-    getSubtractBkgResultsCombined( f, outTxt2, systName, nSyst, nPDFup, nPDFdown,  output, "O2", "O_{2}", unBlind, 0, doTopMassUncRescale, fCR );
-    getSubtractBkgResultsCombined( f, outTxt2, systName, nSyst, nPDFup, nPDFdown,  output, "O3", "O_{3}", unBlind, 0, doTopMassUncRescale, fCR );
-    getSubtractBkgResultsCombined( f, outTxt2, systName, nSyst, nPDFup, nPDFdown,  output, "O4", "O_{4}", unBlind, 0, doTopMassUncRescale, fCR );
-    getSubtractBkgResultsCombined( f, outTxt2, systName, nSyst, nPDFup, nPDFdown,  output, "O7", "O_{7}", unBlind, 0, doTopMassUncRescale, fCR );
-    drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, output, "O2", "O_{2}", unBlind, 0, doTopMassUncRescale, fCR );
-    drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, output, "O3", "O_{3}", unBlind, 0, doTopMassUncRescale, fCR );
-    drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, output, "O4", "O_{4}", unBlind, 0, doTopMassUncRescale, fCR );
-    drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, output, "O7", "O_{7}", unBlind, 0, doTopMassUncRescale, fCR );
+    getSubtractBkgResultsCombined( f, outTxt2, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb,  output, "O2", "O_{2}", unBlind, 0, doTopMassUncRescale, fCR );
+    getSubtractBkgResultsCombined( f, outTxt2, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb,  output, "O3", "O_{3}", unBlind, 0, doTopMassUncRescale, fCR );
+    getSubtractBkgResultsCombined( f, outTxt2, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb,  output, "O4", "O_{4}", unBlind, 0, doTopMassUncRescale, fCR );
+    getSubtractBkgResultsCombined( f, outTxt2, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb,  output, "O7", "O_{7}", unBlind, 0, doTopMassUncRescale, fCR );
+    drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb, output, "O2", "O_{2}", unBlind, 0, doTopMassUncRescale, fCR );
+    drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb, output, "O3", "O_{3}", unBlind, 0, doTopMassUncRescale, fCR );
+    drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb, output, "O4", "O_{4}", unBlind, 0, doTopMassUncRescale, fCR );
+    drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb, output, "O7", "O_{7}", unBlind, 0, doTopMassUncRescale, fCR );
     fclose( outTxt2 );
 
     if( !unBlind )
     {
         FILE* outTxt3;
         outTxt3 = fopen((output+"/FinalBlindAcpResultsCombined_Assume5.txt").c_str(),"w");
-        getSubtractBkgResultsCombined( f, outTxt3, systName, nSyst, nPDFup, nPDFdown,  output, "O2", "O_{2}", false, 0.05, doTopMassUncRescale, fCR  );
-        getSubtractBkgResultsCombined( f, outTxt3, systName, nSyst, nPDFup, nPDFdown,  output, "O3", "O_{3}", false, 0.05, doTopMassUncRescale, fCR  );
-        getSubtractBkgResultsCombined( f, outTxt3, systName, nSyst, nPDFup, nPDFdown,  output, "O4", "O_{4}", false, 0.05, doTopMassUncRescale, fCR  );
-        getSubtractBkgResultsCombined( f, outTxt3, systName, nSyst, nPDFup, nPDFdown,  output, "O7", "O_{7}", false, 0.05, doTopMassUncRescale, fCR  );
-        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, output, "O2", "O_{2}", false, 0.05, doTopMassUncRescale, fCR );
-        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, output, "O3", "O_{3}", false, 0.05, doTopMassUncRescale, fCR );
-        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, output, "O4", "O_{4}", false, 0.05, doTopMassUncRescale, fCR );
-        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, output, "O7", "O_{7}", false, 0.05, doTopMassUncRescale, fCR );
+        getSubtractBkgResultsCombined( f, outTxt3, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb,  output, "O2", "O_{2}", false, 0.05, doTopMassUncRescale, fCR  );
+        getSubtractBkgResultsCombined( f, outTxt3, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb,  output, "O3", "O_{3}", false, 0.05, doTopMassUncRescale, fCR  );
+        getSubtractBkgResultsCombined( f, outTxt3, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb,  output, "O4", "O_{4}", false, 0.05, doTopMassUncRescale, fCR  );
+        getSubtractBkgResultsCombined( f, outTxt3, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb,  output, "O7", "O_{7}", false, 0.05, doTopMassUncRescale, fCR  );
+        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb, output, "O2", "O_{2}", false, 0.05, doTopMassUncRescale, fCR );
+        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb, output, "O3", "O_{3}", false, 0.05, doTopMassUncRescale, fCR );
+        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb, output, "O4", "O_{4}", false, 0.05, doTopMassUncRescale, fCR );
+        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb, output, "O7", "O_{7}", false, 0.05, doTopMassUncRescale, fCR );
         fclose( outTxt3 );
 
         FILE* outTxt4;
         outTxt4 = fopen((output+"/FinalBlindAcpResultsCombined_Assume-5.txt").c_str(),"w");
-        getSubtractBkgResultsCombined( f, outTxt4, systName, nSyst, nPDFup, nPDFdown,  output, "O2", "O_{2}", false, -0.05, doTopMassUncRescale, fCR );
-        getSubtractBkgResultsCombined( f, outTxt4, systName, nSyst, nPDFup, nPDFdown,  output, "O3", "O_{3}", false, -0.05, doTopMassUncRescale, fCR );
-        getSubtractBkgResultsCombined( f, outTxt4, systName, nSyst, nPDFup, nPDFdown,  output, "O4", "O_{4}", false, -0.05, doTopMassUncRescale, fCR );
-        getSubtractBkgResultsCombined( f, outTxt4, systName, nSyst, nPDFup, nPDFdown,  output, "O7", "O_{7}", false, -0.05, doTopMassUncRescale, fCR );
-        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, output, "O2", "O_{2}", false, -0.05, doTopMassUncRescale, fCR );
-        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, output, "O3", "O_{3}", false, -0.05, doTopMassUncRescale, fCR );
-        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, output, "O4", "O_{4}", false, -0.05, doTopMassUncRescale, fCR );
-        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, output, "O7", "O_{7}", false, -0.05, doTopMassUncRescale, fCR );
+        getSubtractBkgResultsCombined( f, outTxt4, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb,  output, "O2", "O_{2}", false, -0.05, doTopMassUncRescale, fCR );
+        getSubtractBkgResultsCombined( f, outTxt4, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb,  output, "O3", "O_{3}", false, -0.05, doTopMassUncRescale, fCR );
+        getSubtractBkgResultsCombined( f, outTxt4, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb,  output, "O4", "O_{4}", false, -0.05, doTopMassUncRescale, fCR );
+        getSubtractBkgResultsCombined( f, outTxt4, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb,  output, "O7", "O_{7}", false, -0.05, doTopMassUncRescale, fCR );
+        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb, output, "O2", "O_{2}", false, -0.05, doTopMassUncRescale, fCR );
+        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb, output, "O3", "O_{3}", false, -0.05, doTopMassUncRescale, fCR );
+        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb, output, "O4", "O_{4}", false, -0.05, doTopMassUncRescale, fCR );
+        drawSubtractBkgResultsCombined( f, systName, nSyst, nPDFup, nPDFdown, minMlb, maxMlb, output, "O7", "O_{7}", false, -0.05, doTopMassUncRescale, fCR );
         fclose( outTxt4 );
     }
 }

@@ -48,10 +48,10 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "O4", output, "A'_{CP} [%]", "O_{4}", legHead);
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "O7", output, "A'_{CP} [%]", "O_{7}", legHead);
         float scaleY=0.001;
-        drawObservableData(f, output, "O2", "EvtChi2", legHead, "O_{2}/m_{t}^{3}", "Events (k)", scaleY, -1, 1, 1 );
-        drawObservableData(f, output, "O3", "EvtChi2", legHead, "O_{3}/m_{t}^{3}", "Events (k)", scaleY, -1, 1, 1 );
-        drawObservableData(f, output, "O4", "EvtChi2", legHead, "O_{4}/m_{t}^{3}", "Events (k)", scaleY, -1, 1, 1 );
-        drawObservableData(f, output, "O7", "EvtChi2", legHead, "O_{7}/m_{t}^{3}", "Events (k)", scaleY, -1, 1, 1 );
+        drawObservableData(f, output, "O2", "EvtChi2", legHead, "O_{2}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
+        drawObservableData(f, output, "O3", "EvtChi2", legHead, "O_{3}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
+        drawObservableData(f, output, "O4", "EvtChi2", legHead, "O_{4}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
+        drawObservableData(f, output, "O7", "EvtChi2", legHead, "O_{7}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
     }
 
     drawACP( f, 1, "", "MC__Evt",                          "O2", output, "A'_{CP} [%]", "O_{2}",legHead, 1, 1, "QCDEM__Evt", "QCDMu__Evt");
@@ -281,6 +281,8 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
     drawStackWithDataQCD(_file0, "Evt_Top_Hadronic_Chi2_Mu", "#chi^{2}_{min}(jjb) in #mu-channel",            "Events", output, 5 );
     drawStackWithDataQCD(_file0, "Evt_Top_Hadronic_Eta_El",  "#eta_{top}(jjb) in e-channel",                  "Events", output, 2  );
     drawStackWithDataQCD(_file0, "Evt_Top_Hadronic_Eta_Mu",  "#eta_{top}(jjb) in #mu-channel",                "Events", output, 2  );
+    drawStackWithDataQCD(_file0, "Evt_Top_Leptonic_Mbl_El",  "M_{eb} [GeV]",                                  "Events", output, 10 );
+    drawStackWithDataQCD(_file0, "Evt_Top_Leptonic_Mbl_Mu",  "M_{#mub} [GeV]",                                "Events", output, 10 ); 
     drawStackWithDataQCD(_file0, "Evt_isoLep_Pt_Mu",         "p_{T}(isolated #mu)",                           "Events", output, 10 ); 
     drawStackWithDataQCD(_file0, "Evt_isoLep_Pt_El",         "p_{T}(isolated e)",                             "Events", output, 10 ); 
     drawStackWithDataQCD(_file0, "Evt_isoLep_Eta_Mu",        "#eta(isolated #mu)",                            "Events", output, 2  ); 
@@ -346,6 +348,8 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
     drawStackWithDataQCD(_file0, "Evt_Top_Hadronic_Eta_Mu",  "#eta_{top}(jjb) in #mu-channel",                "Events", output, 2  ,1);
     drawStackWithDataQCD(_file0, "Evt_Top_Hadronic_Pt_El",   "p_{T, top}(jjb) in e-channel",                  "Events", output, 10 ,1);
     drawStackWithDataQCD(_file0, "Evt_Top_Hadronic_Pt_Mu",   "p_{T, top}(jjb) in #mu-channel",                "Events", output, 10 ,1); 
+    drawStackWithDataQCD(_file0, "Evt_Top_Leptonic_Mbl_El",  "M_{eb} [GeV]",                                  "Events", output, 10 ,1);
+    drawStackWithDataQCD(_file0, "Evt_Top_Leptonic_Mbl_Mu",  "M_{#mub} [GeV]",                                "Events", output, 10 ,1); 
     drawStackWithDataQCD(_file0, "Evt_isoLep_Pt_Mu",         "p_{T}(isolated #mu)",                           "Events", output, 10 ,1); 
     drawStackWithDataQCD(_file0, "Evt_isoLep_Pt_El",         "p_{T}(isolated e)",                             "Events", output, 10 ,1); 
     drawStackWithDataQCD(_file0, "Evt_isoLep_Eta_Mu",        "#eta(isolated #mu)",                            "Events", output, 2  ,1); 
@@ -411,6 +415,8 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
     drawStackWithDataQCD(_file0, "EvtChi2_Top_Hadronic_Eta_Mu",  "#eta_{top}(jjb) in #mu-channel",                "Events", output, 2  );
     drawStackWithDataQCD(_file0, "EvtChi2_Top_Hadronic_Pt_El",   "p_{T, top}(jjb) in e-channel",             "Events", output, 10 );
     drawStackWithDataQCD(_file0, "EvtChi2_Top_Hadronic_Pt_Mu",   "p_{T, top}(jjb) in #mu-channel",           "Events", output, 10 ); 
+    drawStackWithDataQCD(_file0, "EvtChi2_Top_Leptonic_Mbl_El",  "M_{eb} [GeV]",                                  "Events", output, 10 );
+    drawStackWithDataQCD(_file0, "EvtChi2_Top_Leptonic_Mbl_Mu",  "M_{#mub} [GeV]",                                "Events", output, 10 ); 
     drawStackWithDataQCD(_file0, "EvtChi2_isoLep_Pt_Mu",         "p_{T}(isolated #mu)",                           "Events", output, 10 ); 
     drawStackWithDataQCD(_file0, "EvtChi2_isoLep_Pt_El",         "p_{T}(isolated e)",                             "Events", output, 10 ); 
     drawStackWithDataQCD(_file0, "EvtChi2_isoLep_Eta_Mu",        "#eta(isolated #mu)",                            "Events", output, 2  ); 
@@ -476,6 +482,8 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
     drawStackWithDataQCD(_file0, "EvtChi2_Top_Hadronic_Eta_Mu",  "#eta_{top}(jjb) in #mu-channel",                "Events", output, 2  ,1);
     drawStackWithDataQCD(_file0, "EvtChi2_Top_Hadronic_Pt_El",   "p_{T, top}(jjb) in e-channel",                  "Events", output, 10 ,1);
     drawStackWithDataQCD(_file0, "EvtChi2_Top_Hadronic_Pt_Mu",   "p_{T, top}(jjb) in #mu-channel",                "Events", output, 10 ,1); 
+    drawStackWithDataQCD(_file0, "EvtChi2_Top_Leptonic_Mbl_El",  "M_{eb} [GeV]",                                  "Events", output, 10 ,1);
+    drawStackWithDataQCD(_file0, "EvtChi2_Top_Leptonic_Mbl_Mu",  "M_{#mub} [GeV]",                                "Events", output, 10 ,1); 
     drawStackWithDataQCD(_file0, "EvtChi2_isoLep_Pt_Mu",         "p_{T}(isolated #mu)",                           "Events", output, 10 ,1); 
     drawStackWithDataQCD(_file0, "EvtChi2_isoLep_Pt_El",         "p_{T}(isolated e)",                             "Events", output, 10 ,1); 
     drawStackWithDataQCD(_file0, "EvtChi2_isoLep_Eta_Mu",        "#eta(isolated #mu)",                            "Events", output, 2  ,1); 
@@ -543,6 +551,10 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
     getCutFlowNum( f, "TTJets_SemiLeptMGDecays__Evt_CutFlow_El",    true, output);
     getCutFlowNum( f, "TTJets_NonSemiLeptMGDecays__Evt_CutFlow_Mu", true, output);
     getCutFlowNum( f, "TTJets_NonSemiLeptMGDecays__Evt_CutFlow_El", true, output);
+    getCutFlowNum( f, "TTJets_FullLeptMGDecays__Evt_CutFlow_Mu",                 true, output);
+    getCutFlowNum( f, "TTJets_FullLeptMGDecays__Evt_CutFlow_El",                 true, output);
+    getCutFlowNum( f, "TTJets_HadronicMGDecays__Evt_CutFlow_Mu",                 true, output);
+    getCutFlowNum( f, "TTJets_HadronicMGDecays__Evt_CutFlow_El",                 true, output);
     getCutFlowNum( f, "SingleT__Evt_CutFlow_Mu",                    true, output);
     getCutFlowNum( f, "SingleT__Evt_CutFlow_El",                    true, output);
     getCutFlowNum( f, "DiBoson__Evt_CutFlow_Mu",                    true, output);

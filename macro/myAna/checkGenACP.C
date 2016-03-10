@@ -48,7 +48,7 @@ char* getChanges( TH1D* h_change )
     std::cout<<text<<std::endl;
     return text; 
 }
-void checkGenACP( TFile* f, std::string Obs="O2", bool chi2Cut=1, std::string output=".")
+void checkGenACP( TFile* f, std::string Obs="O2", bool chi2Cut=1, std::string output=".", std::string nreco="Evt", std::string ngen="Gen" )
 {
     cout<<"[INFO] checkGenACP "<<Obs<<endl;
     FILE* outTxt;
@@ -59,26 +59,26 @@ void checkGenACP( TFile* f, std::string Obs="O2", bool chi2Cut=1, std::string ou
     if( chi2Cut )
     {
         outTxt = fopen((output+"/CheckGenObsChi2_"+Obs+".txt").c_str(),"w");
-        h_reco_asym    = (TH1D*)f->Get((dirName+"EvtChi2_"+Obs+"Asym").c_str());  
-        h_reco_asym_el = (TH1D*)f->Get((dirName+"EvtChi2_"+Obs+"Asym_El").c_str()); 
-        h_reco_asym_mu = (TH1D*)f->Get((dirName+"EvtChi2_"+Obs+"Asym_Mu").c_str());
-        h_gen_asym     = (TH1D*)f->Get((dirName+"GenChi2_"+Obs+"Asym").c_str());
-        h_gen_asym_el  = (TH1D*)f->Get((dirName+"GenChi2_"+Obs+"Asym_El").c_str());
-        h_gen_asym_mu  = (TH1D*)f->Get((dirName+"GenChi2_"+Obs+"Asym_Mu").c_str());
-        h_change       = (TH1D*)f->Get((dirName+"EvtChi2_Change"+Obs).c_str());          
-        h_change_mu    = (TH1D*)f->Get((dirName+"EvtChi2_Change"+Obs+"_Mu").c_str());
-        h_change_el    = (TH1D*)f->Get((dirName+"EvtChi2_Change"+Obs+"_El").c_str());
+        h_reco_asym    = (TH1D*)f->Get((dirName+nreco+"Chi2_"+Obs+"Asym").c_str());  
+        h_reco_asym_el = (TH1D*)f->Get((dirName+nreco+"Chi2_"+Obs+"Asym_El").c_str()); 
+        h_reco_asym_mu = (TH1D*)f->Get((dirName+nreco+"Chi2_"+Obs+"Asym_Mu").c_str());
+        h_gen_asym     = (TH1D*)f->Get((dirName+ngen+"Chi2_"+Obs+"Asym").c_str());
+        h_gen_asym_el  = (TH1D*)f->Get((dirName+ngen+"Chi2_"+Obs+"Asym_El").c_str());
+        h_gen_asym_mu  = (TH1D*)f->Get((dirName+ngen+"Chi2_"+Obs+"Asym_Mu").c_str());
+        h_change       = (TH1D*)f->Get((dirName+nreco+"Chi2_Change"+Obs).c_str());          
+        h_change_mu    = (TH1D*)f->Get((dirName+nreco+"Chi2_Change"+Obs+"_Mu").c_str());
+        h_change_el    = (TH1D*)f->Get((dirName+nreco+"Chi2_Change"+Obs+"_El").c_str());
     }else{
         outTxt = fopen((output+"/CheckGenObs_"+Obs+".txt").c_str(),"w");
-        h_reco_asym    = (TH1D*)f->Get((dirName+"Evt_"+Obs+"Asym").c_str());
-        h_reco_asym_el = (TH1D*)f->Get((dirName+"Evt_"+Obs+"Asym_El").c_str());
-        h_reco_asym_mu = (TH1D*)f->Get((dirName+"Evt_"+Obs+"Asym_Mu").c_str());
-        h_gen_asym     = (TH1D*)f->Get((dirName+"Gen_"+Obs+"Asym").c_str());
-        h_gen_asym_el  = (TH1D*)f->Get((dirName+"Gen_"+Obs+"Asym_El").c_str());
-        h_gen_asym_mu  = (TH1D*)f->Get((dirName+"Gen_"+Obs+"Asym_Mu").c_str());
-        h_change       = (TH1D*)f->Get((dirName+"Evt_Change"+Obs).c_str());
-        h_change_mu    = (TH1D*)f->Get((dirName+"Evt_Change"+Obs+"_Mu").c_str());
-        h_change_el    = (TH1D*)f->Get((dirName+"Evt_Change"+Obs+"_El").c_str());
+        h_reco_asym    = (TH1D*)f->Get((dirName+nreco+"_"+Obs+"Asym").c_str());
+        h_reco_asym_el = (TH1D*)f->Get((dirName+nreco+"_"+Obs+"Asym_El").c_str());
+        h_reco_asym_mu = (TH1D*)f->Get((dirName+nreco+"_"+Obs+"Asym_Mu").c_str());
+        h_gen_asym     = (TH1D*)f->Get((dirName+ngen+"_"+Obs+"Asym").c_str());
+        h_gen_asym_el  = (TH1D*)f->Get((dirName+ngen+"_"+Obs+"Asym_El").c_str());
+        h_gen_asym_mu  = (TH1D*)f->Get((dirName+ngen+"_"+Obs+"Asym_Mu").c_str());
+        h_change       = (TH1D*)f->Get((dirName+nreco+"_Change"+Obs).c_str());
+        h_change_mu    = (TH1D*)f->Get((dirName+nreco+"_Change"+Obs+"_Mu").c_str());
+        h_change_el    = (TH1D*)f->Get((dirName+nreco+"_Change"+Obs+"_El").c_str());
     }
 
     // Get ACP number

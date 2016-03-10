@@ -26,11 +26,14 @@
 #include <cmath>
 
 using namespace std;
-const std::string fin_s  ="../results/15Sep_LepJet_Chi2Cut40/Final_histograms_SemiLeptanic.root";
-const std::string  out_s ="../results/15Sep_LepJet_Chi2Cut40/";
+//const std::string fin_s  ="../results/15Sep_LepJet_Chi2Cut40/Final_histograms_SemiLeptanic.root";
+//const std::string  out_s ="../results/15Sep_LepJet_Chi2Cut40/";
+const std::string fin_s  ="../results/15Dec_LepJet_MCDATA/Final_histograms_SemiLeptanic.root";
+const std::string  out_s ="../results/15Dec_LepJet_MCDATA/";
 const std::string fout_s = out_s + "Final_PredictionTree.root";
 const std::string tout_s ="tree";
 
+const int LASTBIN=12;
 const int NEXP=1000;
 const int NENTRY=13;
 const int NOBS=4; // O2=0, O7=1
@@ -67,33 +70,60 @@ void mkTreeForPredictedNonZeroACPScan()
 
     h_mcCutFlow[CH_Muon]           = (TH1D*)fin->Get("MC__Evt_CutFlow_Mu");
     h_mcCutFlow[CH_Electron]       = (TH1D*)fin->Get("MC__Evt_CutFlow_El");
-    h_sigCutFlow[CH_Muon]          = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_CutFlow_Mu");
-    h_sigCutFlow[CH_Electron]      = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_CutFlow_El");
-    h_SigAsym[OBS_O2][CH_Electron] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O2Asym_El");
-    h_SigAsym[OBS_O2][CH_Muon]     = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O2Asym_Mu");
-    h_SigAsym[OBS_O2][CH_Combined] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O2Asym"   );
-    h_SigAsym[OBS_O3][CH_Electron] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O3Asym_El");
-    h_SigAsym[OBS_O3][CH_Muon]     = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O3Asym_Mu");
-    h_SigAsym[OBS_O3][CH_Combined] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O3Asym"   );
-    h_SigAsym[OBS_O4][CH_Electron] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O4Asym_El");
-    h_SigAsym[OBS_O4][CH_Muon]     = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O4Asym_Mu");
-    h_SigAsym[OBS_O4][CH_Combined] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O4Asym"   );
-    h_SigAsym[OBS_O7][CH_Electron] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O7Asym_El");
-    h_SigAsym[OBS_O7][CH_Muon]     = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O7Asym_Mu");
-    h_SigAsym[OBS_O7][CH_Combined] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O7Asym"   );
+    //h_sigCutFlow[CH_Muon]          = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_CutFlow_Mu");
+    //h_sigCutFlow[CH_Electron]      = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_CutFlow_El");
+    //h_SigAsym[OBS_O2][CH_Electron] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O2Asym_El");
+    //h_SigAsym[OBS_O2][CH_Muon]     = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O2Asym_Mu");
+    //h_SigAsym[OBS_O2][CH_Combined] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O2Asym"   );
+    //h_SigAsym[OBS_O3][CH_Electron] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O3Asym_El");
+    //h_SigAsym[OBS_O3][CH_Muon]     = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O3Asym_Mu");
+    //h_SigAsym[OBS_O3][CH_Combined] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O3Asym"   );
+    //h_SigAsym[OBS_O4][CH_Electron] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O4Asym_El");
+    //h_SigAsym[OBS_O4][CH_Muon]     = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O4Asym_Mu");
+    //h_SigAsym[OBS_O4][CH_Combined] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O4Asym"   );
+    //h_SigAsym[OBS_O7][CH_Electron] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O7Asym_El");
+    //h_SigAsym[OBS_O7][CH_Muon]     = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O7Asym_Mu");
+    //h_SigAsym[OBS_O7][CH_Combined] = (TH1D*)fin->Get("TTJets_SemiLeptMGDecays__Evt_O7Asym"   );
 
-    h_bkgAsym[OBS_O2][CH_Electron] = (TH1D*)fin->Get("BkgMC__Evt_O2Asym_El");
-    h_bkgAsym[OBS_O2][CH_Muon]     = (TH1D*)fin->Get("BkgMC__Evt_O2Asym_Mu");
-    h_bkgAsym[OBS_O2][CH_Combined] = (TH1D*)fin->Get("BkgMC__Evt_O2Asym"   );
-    h_bkgAsym[OBS_O3][CH_Electron] = (TH1D*)fin->Get("BkgMC__Evt_O3Asym_El");
-    h_bkgAsym[OBS_O3][CH_Muon]     = (TH1D*)fin->Get("BkgMC__Evt_O3Asym_Mu");
-    h_bkgAsym[OBS_O3][CH_Combined] = (TH1D*)fin->Get("BkgMC__Evt_O3Asym"   );
-    h_bkgAsym[OBS_O4][CH_Electron] = (TH1D*)fin->Get("BkgMC__Evt_O4Asym_El");
-    h_bkgAsym[OBS_O4][CH_Muon]     = (TH1D*)fin->Get("BkgMC__Evt_O4Asym_Mu");
-    h_bkgAsym[OBS_O4][CH_Combined] = (TH1D*)fin->Get("BkgMC__Evt_O4Asym"   );
-    h_bkgAsym[OBS_O7][CH_Electron] = (TH1D*)fin->Get("BkgMC__Evt_O7Asym_El");
-    h_bkgAsym[OBS_O7][CH_Muon]     = (TH1D*)fin->Get("BkgMC__Evt_O7Asym_Mu");
-    h_bkgAsym[OBS_O7][CH_Combined] = (TH1D*)fin->Get("BkgMC__Evt_O7Asym"   );
+    //h_bkgAsym[OBS_O2][CH_Electron] = (TH1D*)fin->Get("BkgMC__Evt_O2Asym_El");
+    //h_bkgAsym[OBS_O2][CH_Muon]     = (TH1D*)fin->Get("BkgMC__Evt_O2Asym_Mu");
+    //h_bkgAsym[OBS_O2][CH_Combined] = (TH1D*)fin->Get("BkgMC__Evt_O2Asym"   );
+    //h_bkgAsym[OBS_O3][CH_Electron] = (TH1D*)fin->Get("BkgMC__Evt_O3Asym_El");
+    //h_bkgAsym[OBS_O3][CH_Muon]     = (TH1D*)fin->Get("BkgMC__Evt_O3Asym_Mu");
+    //h_bkgAsym[OBS_O3][CH_Combined] = (TH1D*)fin->Get("BkgMC__Evt_O3Asym"   );
+    //h_bkgAsym[OBS_O4][CH_Electron] = (TH1D*)fin->Get("BkgMC__Evt_O4Asym_El");
+    //h_bkgAsym[OBS_O4][CH_Muon]     = (TH1D*)fin->Get("BkgMC__Evt_O4Asym_Mu");
+    //h_bkgAsym[OBS_O4][CH_Combined] = (TH1D*)fin->Get("BkgMC__Evt_O4Asym"   );
+    //h_bkgAsym[OBS_O7][CH_Electron] = (TH1D*)fin->Get("BkgMC__Evt_O7Asym_El");
+    //h_bkgAsym[OBS_O7][CH_Muon]     = (TH1D*)fin->Get("BkgMC__Evt_O7Asym_Mu");
+    //h_bkgAsym[OBS_O7][CH_Combined] = (TH1D*)fin->Get("BkgMC__Evt_O7Asym"   );
+    h_sigCutFlow[CH_Muon]          = (TH1D*)fin->Get("TTJets__Evt_CutFlow_Mu");
+    h_sigCutFlow[CH_Electron]      = (TH1D*)fin->Get("TTJets__Evt_CutFlow_El");
+    h_SigAsym[OBS_O2][CH_Electron] = (TH1D*)fin->Get("TTJets__EvtChi2_O2Asym_El");
+    h_SigAsym[OBS_O2][CH_Muon]     = (TH1D*)fin->Get("TTJets__EvtChi2_O2Asym_Mu");
+    h_SigAsym[OBS_O2][CH_Combined] = (TH1D*)fin->Get("TTJets__EvtChi2_O2Asym"   );
+    h_SigAsym[OBS_O3][CH_Electron] = (TH1D*)fin->Get("TTJets__EvtChi2_O3Asym_El");
+    h_SigAsym[OBS_O3][CH_Muon]     = (TH1D*)fin->Get("TTJets__EvtChi2_O3Asym_Mu");
+    h_SigAsym[OBS_O3][CH_Combined] = (TH1D*)fin->Get("TTJets__EvtChi2_O3Asym"   );
+    h_SigAsym[OBS_O4][CH_Electron] = (TH1D*)fin->Get("TTJets__EvtChi2_O4Asym_El");
+    h_SigAsym[OBS_O4][CH_Muon]     = (TH1D*)fin->Get("TTJets__EvtChi2_O4Asym_Mu");
+    h_SigAsym[OBS_O4][CH_Combined] = (TH1D*)fin->Get("TTJets__EvtChi2_O4Asym"   );
+    h_SigAsym[OBS_O7][CH_Electron] = (TH1D*)fin->Get("TTJets__EvtChi2_O7Asym_El");
+    h_SigAsym[OBS_O7][CH_Muon]     = (TH1D*)fin->Get("TTJets__EvtChi2_O7Asym_Mu");
+    h_SigAsym[OBS_O7][CH_Combined] = (TH1D*)fin->Get("TTJets__EvtChi2_O7Asym"   );
+
+    h_bkgAsym[OBS_O2][CH_Electron] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__EvtChi2_O2Asym_El");
+    h_bkgAsym[OBS_O2][CH_Muon]     = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__EvtChi2_O2Asym_Mu");
+    h_bkgAsym[OBS_O2][CH_Combined] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__EvtChi2_O2Asym"   );
+    h_bkgAsym[OBS_O3][CH_Electron] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__EvtChi2_O3Asym_El");
+    h_bkgAsym[OBS_O3][CH_Muon]     = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__EvtChi2_O3Asym_Mu");
+    h_bkgAsym[OBS_O3][CH_Combined] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__EvtChi2_O3Asym"   );
+    h_bkgAsym[OBS_O4][CH_Electron] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__EvtChi2_O4Asym_El");
+    h_bkgAsym[OBS_O4][CH_Muon]     = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__EvtChi2_O4Asym_Mu");
+    h_bkgAsym[OBS_O4][CH_Combined] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__EvtChi2_O4Asym"   );
+    h_bkgAsym[OBS_O7][CH_Electron] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__EvtChi2_O7Asym_El");
+    h_bkgAsym[OBS_O7][CH_Muon]     = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__EvtChi2_O7Asym_Mu");
+    h_bkgAsym[OBS_O7][CH_Combined] = (TH1D*)fin->Get("BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__EvtChi2_O7Asym"   );
 
     TFile* fout = new TFile(fout_s.c_str(), "RECREATE");
     TTree* tout = new TTree(tout_s.c_str(), "");
@@ -104,7 +134,8 @@ void mkTreeForPredictedNonZeroACPScan()
     TH1D *h_sudoSigACPmean[NENTRY][NOBS][NCH];
     TH1D *h_sudoSigACPuncs[NENTRY][NOBS][NCH];
 
-    int lastBin = h_sigCutFlow[CH_Electron]->GetXaxis()->GetLast();
+    //int lastBin = h_sigCutFlow[CH_Electron]->GetXaxis()->GetLast();
+    int lastBin = LASTBIN;
     float nSig[NCH], eSig[NCH], nMC[NCH];
     nSig[CH_Muon]     = h_sigCutFlow[CH_Muon]    ->GetBinContent(lastBin);
     nSig[CH_Electron] = h_sigCutFlow[CH_Electron]->GetBinContent(lastBin);

@@ -6,13 +6,18 @@
 
 std::string fileName="Final_histograms_SemiLeptanic.root";
 std::string systDir="Syst";
-std::string fName="../results/11Jan_LepJet_MCDATA";
+//std::string fName="../results/11Jan_LepJet_MCDATA";
+//std::string fName="../results/02Mar_LepJet_eEta25";
+std::string fName="../results/09Mar_LepJet_Mlb200";
 std::string hName="EvtChi2_Top_Leptonic_Mbl";
 //std::string hName="EvtChi2_Top_Hadronic_Mass";
 //std::string hName="EvtChi2_Ht";
-std::string output=fName+"/FitResults4";
+std::string output=fName+"/FitResults";
+//std::string output=fName+"/FitResults4";
 std::string xTitle="M(lepton+bjet) [GeV]";
 //std::string xTitle="M_{top}(bjj) [GeV]";
+//std::string oEvtType="EvtChi2";
+std::string oEvtType="EvtMlb";
 bool doFit=true;
 int rebin=10;
 //int rebin=20;
@@ -75,16 +80,16 @@ void mkTemplateSyst()
     std::cout<<"[INFO] Copying data obs..."<<std::endl;
     for( int o=0; o<nObs; o++ )
     { 
-        hAsym_data[CoCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Electron__EvtChi2_"+oName[o]+"Asym_El").c_str()))->Clone(("DATA_"+oName[o]).c_str());
-        hAsym_data[ElCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Electron__EvtChi2_"+oName[o]+"Asym_El").c_str()))->Clone(("DATA_"+oName[o]+"_El").c_str());
-        hAsym_data[MuCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Muon__EvtChi2_"+oName[o]+"Asym_Mu").c_str()))->Clone(("DATA_"+oName[o]+"_Mu").c_str());
+        hAsym_data[CoCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Electron__"+oEvtType+"_"+oName[o]+"Asym_El").c_str()))->Clone(("DATA_"+oName[o]).c_str());
+        hAsym_data[ElCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Electron__"+oEvtType+"_"+oName[o]+"Asym_El").c_str()))->Clone(("DATA_"+oName[o]+"_El").c_str());
+        hAsym_data[MuCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Muon__"+oEvtType+"_"+oName[o]+"Asym_Mu").c_str()))->Clone(("DATA_"+oName[o]+"_Mu").c_str());
         hAsym_data[CoCH][o]->Add(hAsym_data[MuCH][o]);
     } 
     std::cout<<"[INFO] Copying MC obs..."<<std::endl;
     for( int mc=0; mc<nMC; mc++ ){
         for( int o=0; o<nObs; o++ ){
             for( int ch=0; ch<nCh; ch++ ){
-                std::string hname = mcName[mc]+"__EvtChi2_"+oName[o]+"Asym"+chName[ch];
+                std::string hname = mcName[mc]+"__"+oEvtType+"_"+oName[o]+"Asym"+chName[ch];
                 std::string name1 = mcName0[mc]+"_"+oName[o]+chName[ch];
                 hAsym_mc[mc][ch][o][0][0] = (TH1D*)((TH1D*)fin[0][0]->Get(hname.c_str()))->Clone(name1.c_str());
                 for( int s=2; s<nSyst; s++ ){
