@@ -102,6 +102,8 @@ class SemiLeptanicControlRegion : public edm::EDAnalyzer{
         int b_isMuonEvt_;
         int b_isEleEvt_;
         double b_O2_;
+        double b_Ob_;
+        double b_Oa_;
         double b_O3_;
         double b_O4_;
         double b_O7_;

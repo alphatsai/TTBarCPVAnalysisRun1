@@ -171,6 +171,18 @@ void SemiLeptanicControlRegion::beginJob()
     h1.addNewTH1( "Evt_O2Asym",              "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O2Asym_Mu",           "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O2Asym_El",           "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_Ob",                  "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_Ob_Mu",               "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_Ob_El",               "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_ObAsym",              "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_ObAsym_Mu",           "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_ObAsym_El",           "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_Oa",                  "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_Oa_Mu",               "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_Oa_El",               "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "Evt_OaAsym",              "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_OaAsym_Mu",           "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "Evt_OaAsym_El",           "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
     h1.addNewTH1( "Evt_O3",                  "O3",                        "O_{3}",              "Events", "",    "",100,  -5,   5   );
     h1.addNewTH1( "Evt_O3_Mu",               "O3",                        "O_{3}",              "Events", "",    "",100,  -5,   5   );
     h1.addNewTH1( "Evt_O3_El",               "O3",                        "O_{3}",              "Events", "",    "",100,  -5,   5   );
@@ -364,6 +376,18 @@ void SemiLeptanicControlRegion::beginJob()
     h1.addNewTH1( "EvtChi2_O2Asym",              "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
     h1.addNewTH1( "EvtChi2_O2Asym_Mu",           "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
     h1.addNewTH1( "EvtChi2_O2Asym_El",           "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtChi2_Ob",                  "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "EvtChi2_Ob_Mu",               "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "EvtChi2_Ob_El",               "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "EvtChi2_ObAsym",              "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtChi2_ObAsym_Mu",           "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtChi2_ObAsym_El",           "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtChi2_Oa",                  "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "EvtChi2_Oa_Mu",               "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "EvtChi2_Oa_El",               "O2",                        "O_{2}",              "Events", "",    "",100,  -5,   5   );
+    h1.addNewTH1( "EvtChi2_OaAsym",              "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtChi2_OaAsym_Mu",           "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
+    h1.addNewTH1( "EvtChi2_OaAsym_El",           "A_{O2}",                    "",                   "Events", "",    "",  2,  -1,   1   );
     h1.addNewTH1( "EvtChi2_O3",                  "O3",                        "O_{3}",              "Events", "",    "",100,  -5,   5   );
     h1.addNewTH1( "EvtChi2_O3_Mu",               "O3",                        "O_{3}",              "Events", "",    "",100,  -5,   5   );
     h1.addNewTH1( "EvtChi2_O3_El",               "O3",                        "O_{3}",              "Events", "",    "",100,  -5,   5   );
@@ -674,6 +698,8 @@ void SemiLeptanicControlRegion::beginJob()
         newtree_->Branch("EvtInfo.LumiNo", &b_LumiNo_, "EvtInfo.LumiNo/I" );
     }
     newtree_->Branch("EvtInfo.O2",        &b_O2_,        "EvtInfo.O2/D"        );
+    newtree_->Branch("EvtInfo.Ob",        &b_Ob_,        "EvtInfo.Ob/D"        );
+    newtree_->Branch("EvtInfo.Oa",        &b_Oa_,        "EvtInfo.Oa/D"        );
     newtree_->Branch("EvtInfo.O3",        &b_O3_,        "EvtInfo.O3/D"        );
     newtree_->Branch("EvtInfo.O4",        &b_O4_,        "EvtInfo.O4/D"        );
     newtree_->Branch("EvtInfo.O7",        &b_O7_,        "EvtInfo.O7/D"        );
@@ -1279,17 +1305,18 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
             newAnaBranches_.fill_nonBJetColNewBranches( nonBJetCol );
             newAnaBranches_.fill_topHadronicNewBranches( top_hadronic, TopNonBJet1.Index, TopNonBJet2.Index );
             newAnaBranches_.fill_isoLepNewBranches( isoLep ); 
-
-            //double O2 = Obs2( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3 );
-            double O2 = Obs2( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3, isoLep.Charge );
+            
+            // CP-Even
+            double Oa = Obs4( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3 );
+            double Ob = Obs2( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3, isoLep.Charge );
+            // CP-Odd
+            double O2 = Obs2( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3 );
             double O3 = Obs3( isoLep.P4, TopNonBJet1.P4, b_jet.P4, bbar_jet.P4, isoLep.Charge );
             double O4 = Obs4( isoLep.P3, TopNonBJet1.P3, b_jet.P3, bbar_jet.P3, isoLep.Charge );
             double O7 = Obs7( az, b_jet.P3, bbar_jet.P3 );
-            //double O2 = 0;
-            //double O3 = 0;
-            //double O4 = 0;
-            //double O7 = 0;
 
+            b_Oa_ = Oa;
+            b_Ob_ = Ob;
             b_O2_ = O2;
             b_O3_ = O3;
             b_O4_ = O4;
@@ -1368,13 +1395,17 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
             h1.GetTH1("Evt_Top_Leptonic_Mbl"  )->Fill( top_leptonic.Massbl            , wrtevt     );
             h1.GetTH1("Evt_Top_Leptonic_Phi"  )->Fill( top_leptonic.Phi               , wrtevt     );
             h1.GetTH1("Evt_O2"                )->Fill( O2/Owrt_                       , wrtevt     );
+            h1.GetTH1("Evt_Ob"               )->Fill( Ob/Owrt_                       , wrtevt     );
+            h1.GetTH1("Evt_Oa"               )->Fill( Oa/Owrt_                       , wrtevt     );
             h1.GetTH1("Evt_O3"                )->Fill( O3/Owrt_                       , wrtevt     );
             h1.GetTH1("Evt_O4"                )->Fill( O4/Owrt_                       , wrtevt     );
             h1.GetTH1("Evt_O7"                )->Fill( O7/Owrt_                       , wrtevt     );
-            fillAsym( h1.GetTH1("Evt_O2Asym"), O2, wrtevt );
-            fillAsym( h1.GetTH1("Evt_O3Asym"), O3, wrtevt );
-            fillAsym( h1.GetTH1("Evt_O4Asym"), O4, wrtevt );
-            fillAsym( h1.GetTH1("Evt_O7Asym"), O7, wrtevt );
+            fillAsym( h1.GetTH1("Evt_O2Asym" ), O2, wrtevt );
+            fillAsym( h1.GetTH1("Evt_ObAsym"), Ob, wrtevt );
+            fillAsym( h1.GetTH1("Evt_OaAsym"), Oa, wrtevt );
+            fillAsym( h1.GetTH1("Evt_O3Asym" ), O3, wrtevt );
+            fillAsym( h1.GetTH1("Evt_O4Asym" ), O4, wrtevt );
+            fillAsym( h1.GetTH1("Evt_O7Asym" ), O7, wrtevt );
             if( passChi2Cut && passMlbCut )
             {
                 h2.GetTH2("TH2Chi2_Chi2_vs_TopHadronicMass")->Fill( top_hadronic.Mass, minChi2,           wrtevt );
@@ -1443,13 +1474,17 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                 h1.GetTH1("EvtChi2_Top_Leptonic_Mbl"  )->Fill( top_leptonic.Massbl            , wrtevt     );
                 h1.GetTH1("EvtChi2_Top_Leptonic_Phi"  )->Fill( top_leptonic.Phi               , wrtevt     );
                 h1.GetTH1("EvtChi2_O2"                )->Fill( O2/Owrt_                       , wrtevt     );
+                h1.GetTH1("EvtChi2_Ob"                )->Fill( Ob/Owrt_                       , wrtevt     );
+                h1.GetTH1("EvtChi2_Oa"                )->Fill( Oa/Owrt_                       , wrtevt     );
                 h1.GetTH1("EvtChi2_O3"                )->Fill( O3/Owrt_                       , wrtevt     );
                 h1.GetTH1("EvtChi2_O4"                )->Fill( O4/Owrt_                       , wrtevt     );
                 h1.GetTH1("EvtChi2_O7"                )->Fill( O7/Owrt_                       , wrtevt     );
-                fillAsym( h1.GetTH1("EvtChi2_O2Asym"), O2, wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O3Asym"), O3, wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O4Asym"), O4, wrtevt );
-                fillAsym( h1.GetTH1("EvtChi2_O7Asym"), O7, wrtevt );
+                fillAsym( h1.GetTH1("EvtChi2_O2Asym" ), O2, wrtevt );
+                fillAsym( h1.GetTH1("EvtChi2_ObAsym" ), Ob, wrtevt );
+                fillAsym( h1.GetTH1("EvtChi2_OaAsym" ), Oa, wrtevt );
+                fillAsym( h1.GetTH1("EvtChi2_O3Asym" ), O3, wrtevt );
+                fillAsym( h1.GetTH1("EvtChi2_O4Asym" ), O4, wrtevt );
+                fillAsym( h1.GetTH1("EvtChi2_O7Asym" ), O7, wrtevt );
             }
             //// *** Muon channel
             if( isGoodMuonEvt )
@@ -1525,10 +1560,14 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                 h1.GetTH1("Evt_Top_Leptonic_Mbl_Mu" )->Fill( top_leptonic.Massbl            , wrtevt     );
                 h1.GetTH1("Evt_Top_Leptonic_Phi_Mu" )->Fill( top_leptonic.Phi               , wrtevt     );
                 h1.GetTH1("Evt_O2_Mu"               )->Fill( O2/Owrt_                       , wrtevt     );
+                h1.GetTH1("Evt_Oa_Mu"               )->Fill( Oa/Owrt_                       , wrtevt     );
+                h1.GetTH1("Evt_Ob_Mu"               )->Fill( Ob/Owrt_                       , wrtevt     );
                 h1.GetTH1("Evt_O3_Mu"               )->Fill( O3/Owrt_                       , wrtevt     );
                 h1.GetTH1("Evt_O4_Mu"               )->Fill( O4/Owrt_                       , wrtevt     );
                 h1.GetTH1("Evt_O7_Mu"               )->Fill( O7/Owrt_                       , wrtevt     );
                 fillAsym( h1.GetTH1("Evt_O2Asym_Mu"), O2, wrtevt );
+                fillAsym( h1.GetTH1("Evt_OaAsym_Mu"), Oa, wrtevt );
+                fillAsym( h1.GetTH1("Evt_ObAsym_Mu"), Ob, wrtevt );
                 fillAsym( h1.GetTH1("Evt_O3Asym_Mu"), O3, wrtevt );
                 fillAsym( h1.GetTH1("Evt_O4Asym_Mu"), O4, wrtevt );
                 fillAsym( h1.GetTH1("Evt_O7Asym_Mu"), O7, wrtevt );
@@ -1600,13 +1639,17 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                     h1.GetTH1("EvtChi2_Top_Leptonic_Mbl_Mu" )->Fill( top_leptonic.Massbl            , wrtevt     );
                     h1.GetTH1("EvtChi2_Top_Leptonic_Phi_Mu" )->Fill( top_leptonic.Phi               , wrtevt     );
                     h1.GetTH1("EvtChi2_O2_Mu"               )->Fill( O2/Owrt_                       , wrtevt     );
+                    h1.GetTH1("EvtChi2_Oa_Mu"              )->Fill( Oa/Owrt_                       , wrtevt     );
+                    h1.GetTH1("EvtChi2_Ob_Mu"              )->Fill( Ob/Owrt_                       , wrtevt     );
                     h1.GetTH1("EvtChi2_O3_Mu"               )->Fill( O3/Owrt_                       , wrtevt     );
                     h1.GetTH1("EvtChi2_O4_Mu"               )->Fill( O4/Owrt_                       , wrtevt     );
                     h1.GetTH1("EvtChi2_O7_Mu"               )->Fill( O7/Owrt_                       , wrtevt     );
-                    fillAsym( h1.GetTH1("EvtChi2_O2Asym_Mu"), O2, wrtevt );
-                    fillAsym( h1.GetTH1("EvtChi2_O3Asym_Mu"), O3, wrtevt );
-                    fillAsym( h1.GetTH1("EvtChi2_O4Asym_Mu"), O4, wrtevt );
-                    fillAsym( h1.GetTH1("EvtChi2_O7Asym_Mu"), O7, wrtevt );
+                    fillAsym( h1.GetTH1("EvtChi2_O2Asym_Mu" ), O2, wrtevt );
+                    fillAsym( h1.GetTH1("EvtChi2_OaAsym_Mu"), Oa, wrtevt );
+                    fillAsym( h1.GetTH1("EvtChi2_ObAsym_Mu"), Ob, wrtevt );
+                    fillAsym( h1.GetTH1("EvtChi2_O3Asym_Mu" ), O3, wrtevt );
+                    fillAsym( h1.GetTH1("EvtChi2_O4Asym_Mu" ), O4, wrtevt );
+                    fillAsym( h1.GetTH1("EvtChi2_O7Asym_Mu" ), O7, wrtevt );
                 }
             }
             //// *** Electron channel
@@ -1684,13 +1727,17 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                 h1.GetTH1("Evt_Top_Leptonic_Mbl_El" )->Fill( top_leptonic.Massbl            , wrtevt     );
                 h1.GetTH1("Evt_Top_Leptonic_Phi_El" )->Fill( top_leptonic.Phi               , wrtevt     );
                 h1.GetTH1("Evt_O2_El"               )->Fill( O2/Owrt_                       , wrtevt     );
+                h1.GetTH1("Evt_Oa_El"              )->Fill( Oa/Owrt_                      , wrtevt     );
+                h1.GetTH1("Evt_Ob_El"              )->Fill( Ob/Owrt_                      , wrtevt     );
                 h1.GetTH1("Evt_O3_El"               )->Fill( O3/Owrt_                       , wrtevt     );
                 h1.GetTH1("Evt_O4_El"               )->Fill( O4/Owrt_                       , wrtevt     );
                 h1.GetTH1("Evt_O7_El"               )->Fill( O7/Owrt_                       , wrtevt     );
-                fillAsym( h1.GetTH1("Evt_O2Asym_El"), O2, wrtevt );
-                fillAsym( h1.GetTH1("Evt_O3Asym_El"), O3, wrtevt );
-                fillAsym( h1.GetTH1("Evt_O4Asym_El"), O4, wrtevt );
-                fillAsym( h1.GetTH1("Evt_O7Asym_El"), O7, wrtevt );
+                fillAsym( h1.GetTH1("Evt_O2Asym_El" ), O2, wrtevt );
+                fillAsym( h1.GetTH1("Evt_OaAsym_El"), Oa, wrtevt );
+                fillAsym( h1.GetTH1("Evt_ObAsym_El"), Ob, wrtevt );
+                fillAsym( h1.GetTH1("Evt_O3Asym_El" ), O3, wrtevt );
+                fillAsym( h1.GetTH1("Evt_O4Asym_El" ), O4, wrtevt );
+                fillAsym( h1.GetTH1("Evt_O7Asym_El" ), O7, wrtevt );
                 if( passChi2Cut && passMlbCut )
                 {
                     h2.GetTH2("TH2Chi2_Chi2_vs_TopHadronicMass_El")->Fill( top_hadronic.Mass, minChi2,           wrtevt );
@@ -1759,10 +1806,14 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                     h1.GetTH1("EvtChi2_Top_Leptonic_Mbl_El" )->Fill( top_leptonic.Massbl            , wrtevt     );
                     h1.GetTH1("EvtChi2_Top_Leptonic_Phi_El" )->Fill( top_leptonic.Phi               , wrtevt     );
                     h1.GetTH1("EvtChi2_O2_El"               )->Fill( O2/Owrt_                       , wrtevt     );
+                    h1.GetTH1("EvtChi2_Oa_El"               )->Fill( Oa/Owrt_                       , wrtevt     );
+                    h1.GetTH1("EvtChi2_Ob_El"               )->Fill( Ob/Owrt_                       , wrtevt     );
                     h1.GetTH1("EvtChi2_O3_El"               )->Fill( O3/Owrt_                       , wrtevt     );
                     h1.GetTH1("EvtChi2_O4_El"               )->Fill( O4/Owrt_                       , wrtevt     );
                     h1.GetTH1("EvtChi2_O7_El"               )->Fill( O7/Owrt_                       , wrtevt     );
                     fillAsym( h1.GetTH1("EvtChi2_O2Asym_El"), O2, wrtevt );
+                    fillAsym( h1.GetTH1("EvtChi2_OaAsym_El"), Oa, wrtevt );
+                    fillAsym( h1.GetTH1("EvtChi2_ObAsym_El"), Ob, wrtevt );
                     fillAsym( h1.GetTH1("EvtChi2_O3Asym_El"), O3, wrtevt );
                     fillAsym( h1.GetTH1("EvtChi2_O4Asym_El"), O4, wrtevt );
                     fillAsym( h1.GetTH1("EvtChi2_O7Asym_El"), O7, wrtevt );

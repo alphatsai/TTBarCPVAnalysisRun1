@@ -67,6 +67,8 @@ class SemiLeptanicResultsCheckObs : public edm::EDAnalyzer{
         int RunNo_;
         int isMuonEvt_;
         int isEleEvt_;
+        double Oa_;
+        double Ob_;
         double O2_;
         double O3_;
         double O4_;

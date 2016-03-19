@@ -104,6 +104,8 @@ class SemiLeptanicAnalysis : public edm::EDAnalyzer{
         int b_isEleEvt_;
         int b_isSignal_;
         double b_O2_;
+        double b_Oa_;
+        double b_Ob_;
         double b_O3_;
         double b_O4_;
         double b_O7_;
