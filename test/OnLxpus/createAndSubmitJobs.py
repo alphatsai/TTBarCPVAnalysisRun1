@@ -208,7 +208,7 @@ def main():
     eos_path = ' '
     if ( options.eos_path ):
       eos_path = ''.join([options.eos_path,"/",dataset]) 
-      proc = subprocess.Popen( [ '/afs/cern.ch/project/eos/installation/cms/bin/eos.select', 'mkdir', eos_path ], stdout = subprocess.PIPE, stderr = subprocess.STDOUT )
+      proc = subprocess.Popen( [ '/afs/cern.ch/project/eos/installation/cms/bin/eos.select', 'mkdir -p', eos_path ], stdout = subprocess.PIPE, stderr = subprocess.STDOUT )
       proc = subprocess.Popen( [ '/afs/cern.ch/project/eos/installation/cms/bin/eos.select', 'chmod 775', eos_path ], stdout = subprocess.PIPE, stderr = subprocess.STDOUT )
 
     filelist = []
