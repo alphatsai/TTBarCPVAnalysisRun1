@@ -1,0 +1,17 @@
+## Dataset_name    Number_of_jobs    EOS_location    PyCfg_parameters (optional)
+TTJets_SemiLeptMGDecays_BTagSFDown       10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/BTagSFDown/TTJets_SemiLeptMGDecays       outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_BTagSFUp         10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/BTagSFUp/TTJets_SemiLeptMGDecays         outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_ElectronIDSFDown 10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/ElectronIDSFDown/TTJets_SemiLeptMGDecays outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_ElectronIDSFUp   10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/ElectronIDSFUp/TTJets_SemiLeptMGDecays   outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_JERDown          10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/JERDown/TTJets_SemiLeptMGDecays          outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_JERUp            10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/JERUp/TTJets_SemiLeptMGDecays            outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_JESDown          10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/JESDown/TTJets_SemiLeptMGDecays          outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_JESUp            10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/JESUp/TTJets_SemiLeptMGDecays            outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_MuonIDSFDown     10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/MuonIDSFDown/TTJets_SemiLeptMGDecays     outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_MuonIDSFUp       10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/MuonIDSFUp/TTJets_SemiLeptMGDecays       outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_MuonIsoSFDown    10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/MuonIsoSFDown/TTJets_SemiLeptMGDecays    outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_MuonIsoSFUp      10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/MuonIsoSFUp/TTJets_SemiLeptMGDecays      outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_PUDown           10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/PUDown/TTJets_SemiLeptMGDecays           outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_PUUp             10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/PUUp/TTJets_SemiLeptMGDecays             outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_TopPtDown        10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/TopPtDown/TTJets_SemiLeptMGDecays        outFilename=SemiLeptanicResultsCheck.root GenACP=0
+TTJets_SemiLeptMGDecays_TopPtUp          10 /eos/cms/store/user/jtsai/TTBarCPV/results/06Apr_SemiLeptMGDecays_SystTree/TopPtUp/TTJets_SemiLeptMGDecays          outFilename=SemiLeptanicResultsCheck.root GenACP=0
