@@ -186,8 +186,8 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicControlRegion',
                                 jetCombinedSVBJetTagsMax = cms.double(0.244)
                                 ),
     SelPars_LooseLepton         = defaultLeptonSelectionParameters.clone(  # ARC asked...
-                                lepRelIsoR03Max = cms.double(infiniteMax),
-                                lepRelIsoR04Max = cms.double(infiniteMax),
+                                lepRelIsoR03Max = cms.double(infiniteMax), # Only for 0 b
+                                lepRelIsoR04Max = cms.double(infiniteMax), # Only for 0 b
                                 #EgammaMVATrigMin = cms.double(infiniteMax),
                                 #EgammaMVATrigMax = cms.double(infiniteMin),
                                 ), 
