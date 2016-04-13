@@ -865,7 +865,7 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
         double wrtobs = WrtObs_;
         if( !doWrtEvt_ ){ wrtevt=1; };
         // ---- * Checking generator info
-        //int lepWpid=0;
+        int nTop=0;
         vector<GenParticle> particles;
         vector<GenParticle> wJets;
         vector<GenParticle> wLeps;
@@ -879,7 +879,6 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
                 h1.GetTH1("Gen_PID")->Fill( particle.PdgID );  
                 if( particle.PdgID == -24 )
                 {
-                    
                     h1.GetTH1("Gen_W_Mass")->Fill( particle.Mass );   
                     h1.GetTH1("Gen_PID_wpDa1")->Fill( particle.Da1PdgID );   
                     h1.GetTH1("Gen_PID_wpDa2")->Fill( particle.Da2PdgID );   
@@ -892,6 +891,7 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
                 }
                 if( abs(particle.PdgID) == 6 )
                 {
+                    nTop++;
                     if( particle.PdgID > 0 ) t_quark    = particle; 
                     if( particle.PdgID < 0 ) tbar_quark = particle; 
                     h1.GetTH1("Gen_Top_Mass")->Fill( particle.Mass );   
@@ -933,6 +933,8 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
         }
         h1.GetTH1("Num_wJets")->Fill(wJets.size());
         h1.GetTH1("Num_wLeps")->Fill(wLeps.size());
+        
+        if( wLeps.size() != 1 || nTop != 2 ) continue; // Lepton+jets of ttbar
 
         // * GEN ACP
         int charge=0;
@@ -950,13 +952,13 @@ void SemiLeptanicResultsCheckObs::analyze(const edm::Event& iEvent, const edm::E
             }
             j1=wJets[idx];
 
-        }else{ std::cout<<"[WARNING] More or less than 2 jets from W: "<<wJets.size()<<std::endl; }
+        }else{ std::cout<<"[WARNING] More or less than 2 jets from W: "<<wJets.size()<<std::endl; continue; }
         if( wLeps.size() == 1 )
         {
                 lepton = wLeps[0];
                 if( lepton.PdgID < 0 )      charge=1;
                 else if( lepton.PdgID > 0 ) charge=-1;
-        }else{ std::cout<<"[WARNING] More or less than 1 jets from W: "<<wLeps.size()<<std::endl; }
+        }else{ std::cout<<"[WARNING] More or less than 1 lep from W: "<<wLeps.size()<<std::endl; continue; }
 
         double GenO2(0), GenO3(0), GenO4(0), GenO7(0), GenOa(0), GenOb(0); 
         GenOa = Obs4( lepton.P3, j1.P3, b_quark.P3, bbar_quark.P3 );
