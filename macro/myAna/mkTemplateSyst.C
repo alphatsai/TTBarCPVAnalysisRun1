@@ -8,7 +8,9 @@ std::string fileName="Final_histograms_SemiLeptanic.root";
 std::string systDir="Syst";
 //std::string fName="../results/11Jan_LepJet_MCDATA";
 //std::string fName="../results/02Mar_LepJet_eEta25";
-std::string fName="../results/09Mar_LepJet_Mlb200";
+//std::string fName="../results/09Mar_LepJet_Mlb200";
+//std::string fName="../results/16Mar_LepJet_ObOa";
+std::string fName="../results/16Mar_LepJet_Aprroval";
 std::string hName="EvtChi2_Top_Leptonic_Mbl";
 //std::string hName="EvtChi2_Top_Hadronic_Mass";
 //std::string hName="EvtChi2_Ht";
@@ -54,13 +56,13 @@ void mkTemplateSyst()
 {
     const int nPDF=50;
     const int nSyst0=6;
-    const int nCh=3, nSyst=nSyst0+8, nMC=3, nTune=2, nObs=4;
+    const int nCh=3, nSyst=nSyst0+8, nMC=3, nTune=2, nObs=6;
     std::string mcName[nMC]={"TTJets", "BkgMC_TTJetsNonSemiLeptMGDecaysExcluded", "MC"}; // sig=0, bkg=1
     std::string mcName0[nMC]={"SigMC", "BkgMC", "MC"}; // sig=0, bkg=1
     std::string chName[nCh]={"", "_El", "_Mu"};
     std::string tuneName[nTune]={"up", "down"};
     std::string systName[nSyst]={"", "Stat", "TopMatch", "TopScale", "TopGen", "TopMass", "TopPT", "PU", "JER", "JES", "BTagSF", "elID", "muID", "muISO"};
-    std::string oName[nObs]={"O2", "O3", "O4", "O7"}; 
+    std::string oName[nObs]={"O2", "O3", "O4", "O7", "Oa", "Ob"}; 
     
     TFile* fin[nSyst][nTune];
     fin[0][0] = new TFile((fName+"/"+fileName).c_str()); //nominal hist
@@ -76,33 +78,95 @@ void mkTemplateSyst()
     //// * Copy the obs
     TH1D *hAsym_data[nCh][nObs];
     TH1D *hAsym_mc[nMC][nCh][nObs][nSyst][nTune];
+    TH1D *hO_data[nCh][nObs];
+    TH1D *hO_mc[nMC][nCh][nObs][nSyst][nTune];
    
     std::cout<<"[INFO] Copying data obs..."<<std::endl;
     for( int o=0; o<nObs; o++ )
     { 
-        hAsym_data[CoCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Electron__"+oEvtType+"_"+oName[o]+"Asym_El").c_str()))->Clone(("DATA_"+oName[o]).c_str());
+        hAsym_data[CoCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Electron__"+oEvtType+"_"+oName[o]+"Asym_El").c_str()))->Clone(("DATA_"+oName[o]+"").c_str());
         hAsym_data[ElCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Electron__"+oEvtType+"_"+oName[o]+"Asym_El").c_str()))->Clone(("DATA_"+oName[o]+"_El").c_str());
         hAsym_data[MuCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Muon__"+oEvtType+"_"+oName[o]+"Asym_Mu").c_str()))->Clone(("DATA_"+oName[o]+"_Mu").c_str());
         hAsym_data[CoCH][o]->Add(hAsym_data[MuCH][o]);
+        hO_data[CoCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Electron__"+oEvtType+"_"+oName[o]+"_El").c_str()))->Clone(("DATA_"+oName[o]+"Hist").c_str());
+        hO_data[ElCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Electron__"+oEvtType+"_"+oName[o]+"_El").c_str()))->Clone(("DATA_"+oName[o]+"Hist_El").c_str());
+        hO_data[MuCH][o] = (TH1D*)((TH1D*)fin[0][0]->Get(("DATA_Muon__"+oEvtType+"_"+oName[o]+"_Mu").c_str()))->Clone(("DATA_"+oName[o]+"Hist_Mu").c_str());
+        fix(hO_data[CoCH][o]); 
+        fix(hO_data[ElCH][o]); 
+        fix(hO_data[MuCH][o]); 
+        hO_data[CoCH][o]->Add(hO_data[MuCH][o]);
     } 
     std::cout<<"[INFO] Copying MC obs..."<<std::endl;
     for( int mc=0; mc<nMC; mc++ ){
         for( int o=0; o<nObs; o++ ){
             for( int ch=0; ch<nCh; ch++ ){
-                std::string hname = mcName[mc]+"__"+oEvtType+"_"+oName[o]+"Asym"+chName[ch];
+                std::string hname1 = mcName[mc]+"__"+oEvtType+"_"+oName[o]+"Asym"+chName[ch];
+                std::string hname2 = mcName[mc]+"__"+oEvtType+"_"+oName[o]+chName[ch];
                 std::string name1 = mcName0[mc]+"_"+oName[o]+chName[ch];
-                hAsym_mc[mc][ch][o][0][0] = (TH1D*)((TH1D*)fin[0][0]->Get(hname.c_str()))->Clone(name1.c_str());
-                for( int s=2; s<nSyst; s++ ){
-                    for( int t=2; t<nTune; t++ ){
-                        name1 = mcName0[mc]+"_"+oName[o]+chName[ch]+"_"+systName[s]+tuneName[t];
-                        hAsym_mc[mc][ch][o][s][t] = (TH1D*)((TH1D*)fin[s][t]->Get(hname.c_str()))->Clone(name1.c_str());
+                std::string name2 = mcName0[mc]+"_"+oName[o]+"Hist"+chName[ch];
+                hAsym_mc[mc][ch][o][0][0] = (TH1D*)((TH1D*)fin[0][0]->Get(hname1.c_str()))->Clone(name1.c_str());
+                hO_mc[mc][ch][o][0][0] = (TH1D*)((TH1D*)fin[0][0]->Get(hname2.c_str()))->Clone(name2.c_str());
+                fix(hO_mc[mc][ch][o][0][0]);
+                // Syst.
+                for( int s=2; s<nSyst; s++ )
+                {
+                    std::cout<<" "<<systName[s];
+                    std::string name12 = name1+"_"+systName[s];
+                    std::string name22 = name2+"_"+systName[s];
+                    if( s > 1 && s < nSyst0 )
+                    {
+                        // top scale and matching are stored in nominal file
+                        std::string hnameTopUa, hnameTopUo;
+                        std::string hnameTopDa, hnameTopDo;
+                        if( mc==sig ){
+                            std::string systname="";
+                            if( s==2 ) systname="Matching";
+                            else if( s==3 ) systname="Scale";
+                            else if( s==4 ) systname="Gen";
+                            else if( s==5 ) systname="Mass";
+                            hnameTopUa = mcName[mc]+"_"+systname+"Up__"+oEvtType+"_"+oName[o]+"Asym"+chName[ch];
+                            hnameTopUo = mcName[mc]+"_"+systname+"Up__"+oEvtType+"_"+oName[o]+chName[ch];
+                            hnameTopDa = mcName[mc]+"_"+systname+"Down__"+oEvtType+"_"+oName[o]+"Asym"+chName[ch];
+                            hnameTopDo = mcName[mc]+"_"+systname+"Down__"+oEvtType+"_"+oName[o]+chName[ch];
+                        }else if( mc== bkg ){
+                            hnameTopUa = mcName[mc]+"__"+oEvtType+"_"+oName[o]+"Asym"+chName[ch];
+                            hnameTopUo = mcName[mc]+"__"+oEvtType+"_"+oName[o]+chName[ch];
+                            hnameTopDa = mcName[mc]+"__"+oEvtType+"_"+oName[o]+"Asym"+chName[ch];
+                            hnameTopDo = mcName[mc]+"__"+oEvtType+"_"+oName[o]+chName[ch];
+                        }else{
+                            hnameTopUa = mcName[mc]+"_"+systName[s]+"Up__"+oEvtType+"_"+oName[o]+"Asym"+chName[ch];
+                            hnameTopUo = mcName[mc]+"_"+systName[s]+"Up__"+oEvtType+"_"+oName[o]+chName[ch];
+                            hnameTopDa = mcName[mc]+"_"+systName[s]+"Down__"+oEvtType+"_"+oName[o]+"Asym"+chName[ch];
+                            hnameTopDo = mcName[mc]+"_"+systName[s]+"Down__"+oEvtType+"_"+oName[o]+chName[ch];
+                        }
+                        std::string nameTopUa = name12+tuneName[0];
+                        std::string nameTopDa = name12+tuneName[1];
+                        std::string nameTopUo = name22+tuneName[0];
+                        std::string nameTopDo = name22+tuneName[1];
+                        hAsym_mc[mc][ch][o][s][0] = (TH1D*)((TH1D*)fin[0][0]->Get(hnameTopUa.c_str()))->Clone(nameTopUa.c_str());;
+                        hAsym_mc[mc][ch][o][s][1] = (TH1D*)((TH1D*)fin[0][0]->Get(hnameTopDa.c_str()))->Clone(nameTopDa.c_str());;
+                        hO_mc[mc][ch][o][s][0] = (TH1D*)((TH1D*)fin[0][0]->Get(hnameTopUo.c_str()))->Clone(nameTopUo.c_str());;
+                        hO_mc[mc][ch][o][s][1] = (TH1D*)((TH1D*)fin[0][0]->Get(hnameTopDo.c_str()))->Clone(nameTopDo.c_str());;
+                        fix(hO_mc[mc][ch][o][s][0]);
+                        fix(hO_mc[mc][ch][o][s][1]);
+                    }
+                    else
+                    {
+                        for( int t=0; t<nTune; t++ )
+                        {
+                            std::string nameTopA = name12 + tuneName[t];
+                            std::string nameTopO = name22 + tuneName[t];
+                            hAsym_mc[mc][ch][o][s][t] = (TH1D*)((TH1D*)fin[s][t]->Get(hname1.c_str()))->Clone(nameTopA.c_str());
+                            hO_mc[mc][ch][o][s][t] = (TH1D*)((TH1D*)fin[s][t]->Get(hname2.c_str()))->Clone(nameTopO.c_str());
+                            fix(hO_mc[mc][ch][o][s][t]); 
+                        } 
                     }
                 }
             }
         }
     }
 
-
+    
     //// * Create and copy templates 
     // Data
     std::cout<<"[INFO] Copying data templates..."<<std::endl;

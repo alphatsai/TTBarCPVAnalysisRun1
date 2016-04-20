@@ -67,9 +67,9 @@ void drawObservableData( TFile* f, std::string output=".", std::string oName="O2
     leg->SetLineWidth(0);
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
-    leg->AddEntry(Oh_mu,"Muon",    "le");
-    leg->AddEntry(Oh_el,"Electron","le");
-    leg->AddEntry(Oh,   "Combined","le");
+    leg->AddEntry(Oh_el,"e+jets","le");
+    leg->AddEntry(Oh_mu,"#mu+jets",    "le");
+    leg->AddEntry(Oh,   " l+jets","le");
     leg->Draw();
 
     TPaveText* t_title;
@@ -95,7 +95,7 @@ void drawObservableData( TFile* f, std::string output=".", std::string oName="O2
 
     TPaveText* t_perliminary;
     t_perliminary = new TPaveText(0.2022613,0.7853403,0.2952261,0.8307155,"brNDC");
-    t_perliminary->AddText("Perliminary");
+    t_perliminary->AddText("Preliminary");
     t_perliminary->SetFillColor(0);
     t_perliminary->SetFillStyle(0);
     t_perliminary->SetBorderSize(0);

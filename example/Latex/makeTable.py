@@ -30,47 +30,69 @@ lines1 = filter( None, ( line.strip() for line in lines0 ))                     
 lines2 = filter( lambda x: not x.startswith('#'),  ( line.strip() for line in lines1 )) # Remove # comments lines
 
 nLines=len(lines2)
-obsEl={"O2":"0", "O3":"0", "O4":"0", "O7":"0" }
+#obsEl={"O2":"0", "O3":"0", "O4":"0", "O7":"0", "Oa":"0", "Ob":"0" }
+obsEl={"O2":"0", "O3":"0", "O4":"0", "O7":"0", "Oa":"0", "Ob":"0" }
 systEl={"O2":{"+1Sigma":[],"-1Sigma":[]}, 
         "O3":{"+1Sigma":[],"-1Sigma":[]}, 
         "O4":{"+1Sigma":[],"-1Sigma":[]}, 
-        "O7":{"+1Sigma":[],"-1Sigma":[]}}
+        "O7":{"+1Sigma":[],"-1Sigma":[]},
+        "Oa":{"+1Sigma":[],"-1Sigma":[]},
+        "Ob":{"+1Sigma":[],"-1Sigma":[]}}
 sumSystEl={"O2":{"+1Sigma":"","-1Sigma":""}, 
         "O3":{"+1Sigma":"","-1Sigma":""}, 
         "O4":{"+1Sigma":"","-1Sigma":""}, 
-        "O7":{"+1Sigma":"","-1Sigma":""}}
+        "O7":{"+1Sigma":"","-1Sigma":""},
+        "Oa":{"+1Sigma":"","-1Sigma":""},
+        "Ob":{"+1Sigma":"","-1Sigma":""}}
 sumEl={"O2":{"+1Sigma":"","-1Sigma":""}, 
         "O3":{"+1Sigma":"","-1Sigma":""}, 
         "O4":{"+1Sigma":"","-1Sigma":""}, 
-        "O7":{"+1Sigma":"","-1Sigma":""}}
-obsMu={"O2":"0", "O3":"0", "O4":"0", "O7":"0" }
+        "O7":{"+1Sigma":"","-1Sigma":""},
+        "Oa":{"+1Sigma":"","-1Sigma":""},
+        "Ob":{"+1Sigma":"","-1Sigma":""}}
+#obsMu={"O2":"0", "O3":"0", "O4":"0", "O7":"0" }
+obsMu={"O2":"0", "O3":"0", "O4":"0", "O7":"0", "Oa":"0", "Ob":"0" }
 systMu={"O2":{"+1Sigma":[],"-1Sigma":[]}, 
         "O3":{"+1Sigma":[],"-1Sigma":[]}, 
         "O4":{"+1Sigma":[],"-1Sigma":[]}, 
-        "O7":{"+1Sigma":[],"-1Sigma":[]}}
+        "O7":{"+1Sigma":[],"-1Sigma":[]},
+        "Oa":{"+1Sigma":[],"-1Sigma":[]},
+        "Ob":{"+1Sigma":[],"-1Sigma":[]}}
 sumSystMu={"O2":{"+1Sigma":"","-1Sigma":""}, 
         "O3":{"+1Sigma":"","-1Sigma":""}, 
         "O4":{"+1Sigma":"","-1Sigma":""}, 
-        "O7":{"+1Sigma":"","-1Sigma":""}}
+        "O7":{"+1Sigma":"","-1Sigma":""},
+        "Oa":{"+1Sigma":"","-1Sigma":""},
+        "Ob":{"+1Sigma":"","-1Sigma":""}}
 sumMu={"O2":{"+1Sigma":"","-1Sigma":""}, 
         "O3":{"+1Sigma":"","-1Sigma":""}, 
         "O4":{"+1Sigma":"","-1Sigma":""}, 
-        "O7":{"+1Sigma":"","-1Sigma":""}}
-obsCo={"O2":"0", "O3":"0", "O4":"0", "O7":"0" }
+        "O7":{"+1Sigma":"","-1Sigma":""},
+        "Oa":{"+1Sigma":"","-1Sigma":""},
+        "Ob":{"+1Sigma":"","-1Sigma":""}}
+#obsCo={"O2":"0", "O3":"0", "O4":"0", "O7":"0" }
+obsCo={"O2":"0", "O3":"0", "O4":"0", "O7":"0", "Oa":"0", "Ob":"0" }
 systCo={"O2":{"+1Sigma":[],"-1Sigma":[]}, 
         "O3":{"+1Sigma":[],"-1Sigma":[]}, 
         "O4":{"+1Sigma":[],"-1Sigma":[]}, 
-        "O7":{"+1Sigma":[],"-1Sigma":[]}}
+        "O7":{"+1Sigma":[],"-1Sigma":[]},
+        "Oa":{"+1Sigma":[],"-1Sigma":[]},
+        "Ob":{"+1Sigma":[],"-1Sigma":[]}}
 sumSystCo={"O2":{"+1Sigma":"","-1Sigma":""}, 
         "O3":{"+1Sigma":"","-1Sigma":""}, 
         "O4":{"+1Sigma":"","-1Sigma":""}, 
-        "O7":{"+1Sigma":"","-1Sigma":""}}
+        "O7":{"+1Sigma":"","-1Sigma":""},
+        "Oa":{"+1Sigma":"","-1Sigma":""},
+        "Ob":{"+1Sigma":"","-1Sigma":""}}
 sumCo={"O2":{"+1Sigma":"","-1Sigma":""}, 
         "O3":{"+1Sigma":"","-1Sigma":""}, 
         "O4":{"+1Sigma":"","-1Sigma":""}, 
-        "O7":{"+1Sigma":"","-1Sigma":""}}
+        "O7":{"+1Sigma":"","-1Sigma":""},
+        "Oa":{"+1Sigma":"","-1Sigma":""},
+        "Ob":{"+1Sigma":"","-1Sigma":""}}
 
-latexObs={"O2":"\Otwo", "O3":"\Othree", "O4":"\Ofour", "O7":"\Oseven"}
+#latexObs={"O2":"\Otwo", "O3":"\Othree", "O4":"\Ofour", "O7":"\Oseven"}
+latexObs={"O2":"\Otwo", "O3":"\Othree", "O4":"\Ofour", "O7":"\Oseven", "Oa":"\Oa", "Ob":"\Ob"}
 latexSig={"+1Sigma":"+1", "-1Sigma":"-1"}
 
 def outputElInfo( obsName, sigmaName ):

@@ -102,23 +102,33 @@ void resultsDATAMC(TFile* f, string output=".", bool unblind=false ){
         drawACP2Ch( f, 0, "", "DATA_Electron__Evt", "DATA_Muon__Evt", "O3", output, "A'_{CP} [%]", "O_{3}", "Signal region");
         drawACP2Ch( f, 0, "", "DATA_Electron__Evt", "DATA_Muon__Evt", "O4", output, "A'_{CP} [%]", "O_{4}", "Signal region");
         drawACP2Ch( f, 0, "", "DATA_Electron__Evt", "DATA_Muon__Evt", "O7", output, "A'_{CP} [%]", "O_{7}", "Signal region");
+        drawACP2Ch( f, 0, "", "DATA_Electron__Evt", "DATA_Muon__Evt", "Oa", output, "A'_{CP} [%]", "O_{a}", "Signal region");
+        drawACP2Ch( f, 0, "", "DATA_Electron__Evt", "DATA_Muon__Evt", "Ob", output, "A'_{CP} [%]", "O_{b}", "Signal region");
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "O2", output, "A'_{CP} [%]", "O_{2}", "Signal region");
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "O3", output, "A'_{CP} [%]", "O_{3}", "Signal region");
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "O4", output, "A'_{CP} [%]", "O_{4}", "Signal region");
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "O7", output, "A'_{CP} [%]", "O_{7}", "Signal region");
+        drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "Oa", output, "A'_{CP} [%]", "O_{a}", "Signal region");
+        drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "Ob", output, "A'_{CP} [%]", "O_{b}", "Signal region");
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtMlb",  "DATA_Muon__EvtMlb",  "O2", output, "A'_{CP} [%]", "O_{2}", "Signal region");
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtMlb",  "DATA_Muon__EvtMlb",  "O3", output, "A'_{CP} [%]", "O_{3}", "Signal region");
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtMlb",  "DATA_Muon__EvtMlb",  "O4", output, "A'_{CP} [%]", "O_{4}", "Signal region");
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtMlb",  "DATA_Muon__EvtMlb",  "O7", output, "A'_{CP} [%]", "O_{7}", "Signal region");
+        drawACP2Ch( f, 0, "", "DATA_Electron__EvtMlb",  "DATA_Muon__EvtMlb",  "Oa", output, "A'_{CP} [%]", "O_{a}", "Signal region");
+        drawACP2Ch( f, 0, "", "DATA_Electron__EvtMlb",  "DATA_Muon__EvtMlb",  "Ob", output, "A'_{CP} [%]", "O_{b}", "Signal region");
         float scaleY=0.001;
         drawObservableData(f, output, "O2", "EvtMlb", "Signal region", "O_{2}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
         drawObservableData(f, output, "O3", "EvtMlb", "Signal region", "O_{3}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
         drawObservableData(f, output, "O4", "EvtMlb", "Signal region", "O_{4}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
         drawObservableData(f, output, "O7", "EvtMlb", "Signal region", "O_{7}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
+        drawObservableData(f, output, "Oa", "EvtMlb", "Signal region", "O_{a}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
+        drawObservableData(f, output, "Ob", "EvtMlb", "Signal region", "O_{b}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
         drawObservableData(f, output, "O2", "EvtChi2", "Signal region", "O_{2}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
         drawObservableData(f, output, "O3", "EvtChi2", "Signal region", "O_{3}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
         drawObservableData(f, output, "O4", "EvtChi2", "Signal region", "O_{4}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
         drawObservableData(f, output, "O7", "EvtChi2", "Signal region", "O_{7}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
+        drawObservableData(f, output, "Oa", "EvtChi2", "Signal region", "O_{a}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
+        drawObservableData(f, output, "Ob", "EvtChi2", "Signal region", "O_{b}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
     }
 
     //float o_min=-3, o_max=3;
@@ -134,6 +144,10 @@ void resultsDATAMC(TFile* f, string output=".", bool unblind=false ){
         drawStackWithData( f, "Evt_O4",        "O_{4}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "Evt_O7",        "O_{7}^{e+#mu}/M_{top}^{3}", "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "Evt_O7",        "O_{7}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "Evt_Oa",        "O_{a}^{e+#mu}/M_{top}^{3}", "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "Evt_Oa",        "O_{a}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "Evt_Ob",        "O_{b}^{e+#mu}/M_{top}^{3}", "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "Evt_Ob",        "O_{b}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "Evt_O2_Mu",     "O_{2}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "Evt_O2_Mu",     "O_{2}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "Evt_O3_Mu",     "O_{3}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
@@ -142,6 +156,10 @@ void resultsDATAMC(TFile* f, string output=".", bool unblind=false ){
         drawStackWithData( f, "Evt_O4_Mu",     "O_{4}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "Evt_O7_Mu",     "O_{7}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "Evt_O7_Mu",     "O_{7}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "Evt_Oa_Mu",     "O_{a}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "Evt_Oa_Mu",     "O_{a}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "Evt_Ob_Mu",     "O_{b}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "Evt_Ob_Mu",     "O_{b}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "Evt_O2_El",     "O_{2}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "Evt_O2_El",     "O_{2}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "Evt_O3_El",     "O_{3}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
@@ -150,6 +168,10 @@ void resultsDATAMC(TFile* f, string output=".", bool unblind=false ){
         drawStackWithData( f, "Evt_O4_El",     "O_{4}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "Evt_O7_El",     "O_{7}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "Evt_O7_El",     "O_{7}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "Evt_Oa_El",     "O_{a}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "Evt_Oa_El",     "O_{a}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "Evt_Ob_El",     "O_{b}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "Evt_Ob_El",     "O_{b}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O2",    "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O2",    "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O3",    "O_{3}^{e+#mu}/M_{top}^{3}", "Events", output, bin, false ,0, o_min, o_max);
@@ -158,6 +180,10 @@ void resultsDATAMC(TFile* f, string output=".", bool unblind=false ){
         drawStackWithData( f, "EvtChi2_O4",    "O_{4}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O7",    "O_{7}^{e+#mu}/M_{top}^{3}", "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O7",    "O_{7}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "EvtChi2_Oa",    "O_{a}^{e+#mu}/M_{top}^{3}", "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "EvtChi2_Oa",    "O_{a}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "EvtChi2_Ob",    "O_{b}^{e+#mu}/M_{top}^{3}", "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "EvtChi2_Ob",    "O_{b}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O2_Mu", "O_{2}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O2_Mu", "O_{2}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O3_Mu", "O_{3}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
@@ -166,6 +192,10 @@ void resultsDATAMC(TFile* f, string output=".", bool unblind=false ){
         drawStackWithData( f, "EvtChi2_O4_Mu", "O_{4}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O7_Mu", "O_{7}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O7_Mu", "O_{7}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "EvtChi2_Oa_Mu", "O_{a}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "EvtChi2_Oa_Mu", "O_{a}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "EvtChi2_Ob_Mu", "O_{b}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "EvtChi2_Ob_Mu", "O_{b}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O2_El", "O_{2}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O2_El", "O_{2}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O3_El", "O_{3}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
@@ -174,6 +204,10 @@ void resultsDATAMC(TFile* f, string output=".", bool unblind=false ){
         drawStackWithData( f, "EvtChi2_O4_El", "O_{4}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O7_El", "O_{7}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "EvtChi2_O7_El", "O_{7}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "EvtChi2_Oa_El", "O_{a}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "EvtChi2_Oa_El", "O_{a}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "EvtChi2_Ob_El", "O_{b}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "EvtChi2_Ob_El", "O_{b}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O2",    "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O2",    "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O3",    "O_{3}^{e+#mu}/M_{top}^{3}", "Events", output, bin, false ,0, o_min, o_max);
@@ -182,6 +216,10 @@ void resultsDATAMC(TFile* f, string output=".", bool unblind=false ){
         drawStackWithData( f, "EvtMlb_O4",    "O_{4}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O7",    "O_{7}^{e+#mu}/M_{top}^{3}", "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O7",    "O_{7}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "EvtMlb_Oa",    "O_{a}^{e+#mu}/M_{top}^{3}", "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "EvtMlb_Oa",    "O_{a}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "EvtMlb_Ob",    "O_{b}^{e+#mu}/M_{top}^{3}", "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "EvtMlb_Ob",    "O_{b}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O2_Mu", "O_{2}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O2_Mu", "O_{2}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O3_Mu", "O_{3}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
@@ -190,6 +228,10 @@ void resultsDATAMC(TFile* f, string output=".", bool unblind=false ){
         drawStackWithData( f, "EvtMlb_O4_Mu", "O_{4}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O7_Mu", "O_{7}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O7_Mu", "O_{7}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "EvtMlb_Oa_Mu", "O_{a}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "EvtMlb_Oa_Mu", "O_{a}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "EvtMlb_Ob_Mu", "O_{b}^{#mu}/M_{top}^{3}",   "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "EvtMlb_Ob_Mu", "O_{b}^{#mu}/M_{top}^{3}",   "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O2_El", "O_{2}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O2_El", "O_{2}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O3_El", "O_{3}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
@@ -198,6 +240,10 @@ void resultsDATAMC(TFile* f, string output=".", bool unblind=false ){
         drawStackWithData( f, "EvtMlb_O4_El", "O_{4}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O7_El", "O_{7}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
         drawStackWithData( f, "EvtMlb_O7_El", "O_{7}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "EvtMlb_Oa_El", "O_{a}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "EvtMlb_Oa_El", "O_{a}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
+        drawStackWithData( f, "EvtMlb_Ob_El", "O_{b}^{e}/M_{top}^{3}",     "Events", output, bin, false ,0, o_min, o_max);
+        drawStackWithData( f, "EvtMlb_Ob_El", "O_{b}^{e}/M_{top}^{3}",     "Events", output, bin, true  ,0, o_min, o_max);
     }else{
         drawStack( f, "Evt_O2",    "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, bin, false , o_min, o_max);
         drawStack( f, "Evt_O2",    "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, bin, true  , o_min, o_max);
