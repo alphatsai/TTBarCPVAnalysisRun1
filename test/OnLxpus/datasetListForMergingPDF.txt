@@ -1,0 +1,282 @@
+###### Dataset_name xs (in pb, for data set to -1)
+#DATA:
+#SingleElectron_Run2012A-22Jan2013-v1_190645-193621 -1
+#SingleElectron_Run2012B-22Jan2013-v1_193834-194833 -1
+#SingleElectron_Run2012B-22Jan2013-v1_194834-195833 -1
+#SingleElectron_Run2012B-22Jan2013-v1_195834-196531 -1
+#SingleElectron_Run2012C-22Jan2013-v1_198049-199649 -1
+#SingleElectron_Run2012C-22Jan2013-v1_199650-200649 -1
+#SingleElectron_Run2012C-22Jan2013-v1_200650-201949 -1
+#SingleElectron_Run2012C-22Jan2013-v1_201950-203002 -1
+#SingleElectron_Run2012D-22Jan2013-v1_203709-205509 -1
+#SingleElectron_Run2012D-22Jan2013-v1_205510-206509 -1
+#SingleElectron_Run2012D-22Jan2013-v1_206510-207409 -1
+#SingleElectron_Run2012D-22Jan2013-v1_207410-208686 -1
+#SingleMu_Run2012A-22Jan2013-v1_190645-193621 -1
+#SingleMu_Run2012B-22Jan2013-v1_193834-194833 -1
+#SingleMu_Run2012B-22Jan2013-v1_194834-195833 -1
+#SingleMu_Run2012B-22Jan2013-v1_195834-196531 -1
+#SingleMu_Run2012C-22Jan2013-v1_198049-199649 -1
+#SingleMu_Run2012C-22Jan2013-v1_199650-200649 -1
+#SingleMu_Run2012C-22Jan2013-v1_200650-201949 -1
+#SingleMu_Run2012C-22Jan2013-v1_201950-203002 -1
+#SingleMu_Run2012D-22Jan2013-v1_203709-205509 -1
+#SingleMu_Run2012D-22Jan2013-v1_205510-206509 -1
+#SingleMu_Run2012D-22Jan2013-v1_206510-207409 -1
+#SingleMu_Run2012D-22Jan2013-v1_207410-208686 -1
+#
+#DATA_Electron:
+#SingleElectron_Run2012A-22Jan2013-v1_190645-193621 -1
+#SingleElectron_Run2012B-22Jan2013-v1_193834-194833 -1
+#SingleElectron_Run2012B-22Jan2013-v1_194834-195833 -1
+#SingleElectron_Run2012B-22Jan2013-v1_195834-196531 -1
+#SingleElectron_Run2012C-22Jan2013-v1_198049-199649 -1
+#SingleElectron_Run2012C-22Jan2013-v1_199650-200649 -1
+#SingleElectron_Run2012C-22Jan2013-v1_200650-201949 -1
+#SingleElectron_Run2012C-22Jan2013-v1_201950-203002 -1
+#SingleElectron_Run2012D-22Jan2013-v1_203709-205509 -1
+#SingleElectron_Run2012D-22Jan2013-v1_205510-206509 -1
+#SingleElectron_Run2012D-22Jan2013-v1_206510-207409 -1
+#SingleElectron_Run2012D-22Jan2013-v1_207410-208686 -1
+#
+#DATA_Muon:
+#SingleMu_Run2012A-22Jan2013-v1_190645-193621 -1
+#SingleMu_Run2012B-22Jan2013-v1_193834-194833 -1
+#SingleMu_Run2012B-22Jan2013-v1_194834-195833 -1
+#SingleMu_Run2012B-22Jan2013-v1_195834-196531 -1
+#SingleMu_Run2012C-22Jan2013-v1_198049-199649 -1
+#SingleMu_Run2012C-22Jan2013-v1_199650-200649 -1
+#SingleMu_Run2012C-22Jan2013-v1_200650-201949 -1
+#SingleMu_Run2012C-22Jan2013-v1_201950-203002 -1
+#SingleMu_Run2012D-22Jan2013-v1_203709-205509 -1
+#SingleMu_Run2012D-22Jan2013-v1_205510-206509 -1
+#SingleMu_Run2012D-22Jan2013-v1_206510-207409 -1
+#SingleMu_Run2012D-22Jan2013-v1_207410-208686 -1
+#
+# https://hypernews.cern.ch/HyperNews/CMS/get/top/2069.html
+##### Dataset_name xs (in pb, for data set to -1)
+# HadronicMGDecays : 252.89*67.6%*67.6% 
+# SemiLeptMGDecays : 252.89*2*(10.75+10.57+11.25)%*67.6% 
+# FullLeptMGDecays : 252.89*(10.75+10.57+11.25)%^2
+TTJets: L=19707
+TTJets_HadronicMGDecays 115.56466064
+TTJets_SemiLeptMGDecays 111.3592011
+TTJets_FullLeptMGDecays 26.826695116
+
+TTJets_NonSemiLeptMGDecays: L=19707
+TTJets_FullLeptMGDecays 26.826695116
+TTJets_HadronicMGDecays 115.56466064
+
+TTJets_SemiLeptMGDecays: L=19707
+TTJets_SemiLeptMGDecays 111.3592011
+
+TTJets_HadronicMGDecays: L=19707
+TTJets_HadronicMGDecays 115.56466064
+
+TTJets_FullLeptMGDecays: L=19707
+TTJets_FullLeptMGDecays 26.826695116
+
+TTJets_MatchingUp: L=19707
+TTJets_MatchingUp 252.89
+
+TTJets_MatchingDown: L=19707
+TTJets_MatchingDown 252.89
+
+TTJets_ScaleUp: L=19707
+TTJets_ScaleUp 252.89
+
+TTJets_ScaleDown: L=19707
+TTJets_ScaleDown 252.89
+
+##### Dataset_name xs (in pb, for data set to -1)
+SingleT: L=19707
+T_t-channel 54.87
+T_s-channel 3.34
+T_tW-channel 11.1
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
+Tbar_tW-channel 11.1
+
+T_t-channel: L=19707
+T_t-channel 54.87
+T_s-channel: L=19707
+T_s-channel 3.34
+T_tW-channel: L=19707
+T_tW-channel 11.1
+Tbar_t-channel: L=19707
+Tbar_t-channel 29.74
+Tbar_s-channel: L=19707
+Tbar_s-channel 1.9
+Tbar_tW-channel: L=19707
+Tbar_tW-channel 11.1
+
+##### Dataset_name xs (in pb, for data set to -1)
+Boson: L=19707
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
+#ZZJetsTo2L2Q 1.28
+
+BosonJets: L=19707
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+
+DiBoson: L=19707
+WW 56.0
+WZ 33.6
+ZZ 8.2
+
+DYJetsToLL: L=19707
+DYJetsToLL 3503.7
+WJetsToLNu: L=19707
+WJetsToLNu 37509
+WW: L=19707
+WW 56.0
+WZ: L=19707
+WZ 33.6
+ZZ: L=19707
+ZZ 8.2
+
+##### Dataset_name xs (in pb, for data set to -1)
+BkgMC_TTJetsNonSemiLeptMGDecaysExcluded: L=19707
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
+T_t-channel 54.87
+T_s-channel 3.34
+T_tW-channel 11.1
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
+Tbar_tW-channel 11.1
+
+BkgMC: L=19707
+TTJets_FullLeptMGDecays 26.826695116
+TTJets_HadronicMGDecays 115.56466064
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
+T_t-channel 54.87
+T_s-channel 3.34
+T_tW-channel 11.1
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
+Tbar_tW-channel 11.1
+
+##### Dataset_name xs (in pb, for data set to -1)
+MC: L=19707
+TTJets_HadronicMGDecays 115.56466064
+TTJets_SemiLeptMGDecays 111.3592011
+TTJets_FullLeptMGDecays 26.826695116
+T_t-channel 54.87
+T_s-channel 3.34
+T_tW-channel 11.1
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
+Tbar_tW-channel 11.1
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
+
+MC_TopMatchUp: L=19707
+TTJets_MatchingUp 252.89
+T_t-channel 54.87
+T_s-channel 3.34
+T_tW-channel 11.1
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
+Tbar_tW-channel 11.1
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
+
+MC_TopMatchDown: L=19707
+TTJets_MatchingDown 252.89
+T_t-channel 54.87
+T_s-channel 3.34
+T_tW-channel 11.1
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
+Tbar_tW-channel 11.1
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
+
+MC_TopScaleUp: L=19707
+TTJets_ScaleUp 252.89
+T_t-channel 54.87
+T_s-channel 3.34
+T_tW-channel 11.1
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
+Tbar_tW-channel 11.1
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
+
+MC_TopScaleDown: L=19707
+TTJets_ScaleDown 252.89
+T_t-channel 54.87
+T_s-channel 3.34
+T_tW-channel 11.1
+Tbar_t-channel 29.74
+Tbar_s-channel 1.9
+Tbar_tW-channel 11.1
+DYJetsToLL 3503.7
+WJetsToLNu 37509
+WW 56.0
+WZ 33.6
+ZZ 8.2
+
+#### Dataset_name xs (in pb, for data set to -1)
+# http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt-*_MuEnrichedPt5_TuneZ2star_8TeV_pythia6*
+# XS = gen-XS * gen-eff
+QCDMu: L=19707
+QCD_Pt-20to30_MuEnrichedPt5       1865500.0
+QCD_Pt-30to50_MuEnrichedPt5        806298.0
+QCD_Pt-50to80_MuEnrichedPt5        176187.6 
+QCD_Pt-80to120_MuEnrichedPt5        40448.0
+QCD_Pt-120to170_MuEnrichedPt5       7463.94
+QCD_Pt-170to300_MuEnrichedPt5      2229.752
+QCD_Pt-300to470_MuEnrichedPt5      151.8048
+QCD_Pt-470to600_MuEnrichedPt5      11.79648
+QCD_Pt-600to800_MuEnrichedPt5      2.690196
+QCD_Pt-800to1000_MuEnrichedPt5     0.368781
+QCD_Pt-1000_MuEnrichedPt5          0.0849078
+
+#### Dataset_name xs (in pb, for data set to -1)
+# http://cms.cern.ch/iCMS/jsp/mcprod/admin/requestmanagement.jsp?dsn=QCD_Pt_*_*_EMEnriched_TuneZ2star_8TeV_pythia6*
+# XS = gen-XS * gen-eff
+QCDEM: L=19707
+QCD_Pt_20_30_EMEnriched    2914860.0
+QCD_Pt_30_80_EMEnriched    4615893.0
+QCD_Pt_80_170_EMEnriched   183294.9
+QCD_Pt_170_250_EMEnriched  4586.52
+QCD_Pt_250_350_EMEnriched  556.75
+QCD_Pt_350_EMEnriched      89.1 
+
+#TTJets_TopPtReWrtUp: L=19707
+#/TTJets_TopPtReWrtUp_HadronicMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 115.56466064
+#TTJets_TopPtReWrtDown: L=19707
+#/TTJets_TopPtReWrtDown_HadronicMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 115.56466064
+#TTJets_ScaleUp: L=19707
+#/TTJets_scaleup_TuneZ2star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 252.89 
+#TTJets_ScaleDown: L=19707
+#/TTJets_scaledown_TuneZ2star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 252.89 
+#TTJets_MatchingUp: L=19707
+#/TTJets_matchingup_TuneZ2star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 252.89 
+#TTJets_MatchingDown: L=19707
+#/TTJets_matchingdown_TuneZ2star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM 252.89 
