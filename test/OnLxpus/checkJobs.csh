@@ -160,6 +160,14 @@ cd $1
 				bsub -q $sq -o $nowPath/$sample/output/job_$nn.log source $nowPath/$sample/input/job_$nn.sh
 			end	
 		endif
+		if ( $3 == 'reSubmit' && $kRootNum != 0 ) then
+			foreach kn($kRoot)
+				mv $nowPath/$sample/output/job_$kn.log $nowPath/$sample
+				rm -f $sample/output/$rootname'_'$kn.root
+				echo resubmit job_$kn.sh...
+				bsub -q $sq -o $nowPath/$sample/output/job_$kn.log source $nowPath/$sample/input/job_$kn.sh
+			end	
+		endif
 		if ( $3 == 'reSubmit' && $killedNum != 0 ) then
 			foreach kn($killedJobs)
 				mv $nowPath/$sample/output/job_$kn.log $nowPath/$sample

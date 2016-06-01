@@ -91,6 +91,7 @@ class SemiLeptanicControlRegion : public edm::EDAnalyzer{
         const int Shift_TightMuonIDSF_;
         const int Shift_TightMuonIsoSF_;
         const int Shift_TightElectronIDSF_;
+        bool  doSortCSVin0b_;
         bool  Debug_;
         bool  isSkim_;
         bool  doSaveTree_;

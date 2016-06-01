@@ -89,6 +89,7 @@ SemiLeptanicControlRegion::SemiLeptanicControlRegion(const edm::ParameterSet& iC
     Shift_TightMuonIDSF_(         iConfig.getParameter<int>("Shift_TightMuonIDSF")),
     Shift_TightMuonIsoSF_(        iConfig.getParameter<int>("Shift_TightMuonIsoSF")),
     Shift_TightElectronIDSF_(     iConfig.getParameter<int>("Shift_TightElectronIDSF")),
+    doSortCSVin0b_(               iConfig.getParameter<bool>("DoSortCSVin0b")),
     Debug_(                       iConfig.getParameter<bool>("Debug")),
     isSkim_(                      iConfig.getParameter<bool>("IsSkim")),
     doSaveTree_(                  iConfig.getParameter<bool>("DoSaveTree"))
@@ -119,7 +120,7 @@ void SemiLeptanicControlRegion::setCutFlow( TH1* h )
         h->GetXaxis()->SetBinLabel(9,  ("#geq"+num2str(NJets_)+" Jets").c_str()    );
         h->GetXaxis()->SetBinLabel(10, ("#geq"+num2str(NbJetsCSVM_)+" bjets").c_str()  );
         h->GetXaxis()->SetBinLabel(11, ("="+num2str(NbJetsCSVM_)+" bjets").c_str()     );
-        h->GetXaxis()->SetBinLabel(12, "=2 CSVL-bjets"                             );
+        h->GetXaxis()->SetBinLabel(12, ("="+num2str(NbJetsCSVL_)+" CSVL-bjets").c_str()     );
         if( minChi2_ == 0 )
             h->GetXaxis()->SetBinLabel(13, ("#chi^{2}<"+num2str(maxChi2_)).c_str() );
         else
@@ -136,7 +137,7 @@ void SemiLeptanicControlRegion::setCutFlow( TH1* h )
         h->GetXaxis()->SetBinLabel(8,  ("#geq"+num2str(NJets_)+" Jets").c_str()    );
         h->GetXaxis()->SetBinLabel(9,  ("#geq"+num2str(NbJetsCSVM_)+" bjets").c_str()  );
         h->GetXaxis()->SetBinLabel(10, ("="+num2str(NbJetsCSVM_)+" bjets").c_str()     );
-        h->GetXaxis()->SetBinLabel(11, "=2 CSVL-bjets"                             );
+        h->GetXaxis()->SetBinLabel(11, ("="+num2str(NbJetsCSVL_)+" CSVL-bjets").c_str()     );
         if( minChi2_ == 0 )
             h->GetXaxis()->SetBinLabel(12, ("#chi^{2}<"+num2str(maxChi2_)).c_str() );
         else
@@ -1074,7 +1075,6 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                         h1.GetTH1("Evt_Wrtevt_BTagSF_CSVM")->Fill(wrtevt_btagSF_CSVM);
                         if( passMuonSel )     h1.GetTH1("Evt_CutFlow_Mu")->Fill(("="+num2str(NbJetsCSVM_)+" bjets").c_str(), wrtevt*wrtevt_tightMuID*wrtevt_tightMuIso );
                         if( passElectronSel ) h1.GetTH1("Evt_CutFlow_El")->Fill(("="+num2str(NbJetsCSVM_)+" bjets").c_str(), wrtevt*wrtevt_tightElID                   );
-                        //if( sizeBJetCol_CSVL == 2 )
                         if( sizeBJetCol_CSVL == NbJetsCSVL_ )
                         {
                             BTagSFUtil BTagSF;
@@ -1106,6 +1106,7 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                                 h1.GetTH1("Evt_CutFlow_El"        )->Fill("=2 CSVL-bjets", wrtevt);
                             }
 
+                            //// * 2-CSVL b CR region
                             const int sizeNonBJetCol = nonBJetCol.size();
                             int topjet1(-1), topjet2(-1), hadronicTopbjet(-1), leptonicTopbjet(-1); 
                             if( NbJetsCSVL_ > 0 )
@@ -1116,7 +1117,8 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
 
                                 //// * Distinguish hadronic-top and leptonic-top's b-jet by chi^2
                                 for( int ij1=1; ij1<sizeNonBJetCol; ij1++){
-                                    for( int ij2=ij1-1; ij2<ij1; ij2++){
+                                    //for( int ij2=ij1-1; ij2<ij1; ij2++){
+                                    for( int ij2=0; ij2<ij1; ij2++){
                                         for( int bj=0; bj<2; bj++)
                                         {
                                             float chi2_ = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], BJetCol_CSVL[bj] );
@@ -1151,16 +1153,43 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                                 else
                                 { std::cout<<">> [ERROR] There an nuetral lepton!? "<<std::endl; }
                             }
+
+                            //// * 0b CR region (main)
                             else
                             {
                                 if( JetColSelected.size() != nonBJetCol.size() ) std::cout<<">> [WARNING] JetColSelected.size() "<<JetColSelected.size()<<" !=  nonBJetCol.size() "<<nonBJetCol.size()<<std::endl;
-                                for( int ij1=1; ij1<sizeNonBJetCol; ij1++ ){
-                                    for( int ij2=ij1-1; ij2<ij1; ij2++ ){
-                                        for( int bj=0; bj<sizeNonBJetCol; bj++ )
-                                        {
-                                            if( bj != ij1 && bj != ij2 )
-                                            {
-                                                float chi2_ = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], nonBJetCol[bj] );
+                                if( doSortCSVin0b_ )
+                                {
+                                    //// Use sort CSV in paper work
+                                    int bj1=-1;
+                                    int bj2=-1;
+                                    float csvmin1=-100000000000;
+                                    float csvmin2=-100000000000;
+                                    for( int ij=0; ij<sizeNonBJetCol; ij++ )
+                                    {
+                                        if( nonBJetCol[ij].CombinedSVBJetTags > csvmin1 ){
+                                            bj2=bj1;   
+                                            bj1=ij;
+                                            csvmin2=csvmin1;   
+                                            csvmin1=nonBJetCol[ij].CombinedSVBJetTags;   
+                                        }else if( nonBJetCol[ij].CombinedSVBJetTags > csvmin2 ){
+                                            csvmin2=nonBJetCol[ij].CombinedSVBJetTags;
+                                            bj2=ij;
+                                        } 
+                                    }
+                                    if( Debug_ ) std::cout<<"[ALPHA] "<<sizeNonBJetCol<<", bj1 "<<bj1<<", bj2 "<<bj2<<std::endl;
+                                    for( int ij1=1; ij1<sizeNonBJetCol; ij1++ ){
+                                        for( int ij2=0; ij2<ij1; ij2++ ){
+                                            if( ij1 != bj1 && ij1 != bj2 && ij2 != bj1 && ij2 != bj2 )
+                                            { 
+                                                float chi2_1 = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], nonBJetCol[bj1] );
+                                                float chi2_2 = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], nonBJetCol[bj2] );
+                                                float chi2_ = (chi2_1<chi2_2) ? chi2_1:chi2_2;
+                                                float bj    = (chi2_1<chi2_2) ? bj1:bj2;
+                                                if( Debug_ ) std::cout<<"  [ALPHA] j1 "<<ij1<<", j2 "<<ij2<<std::endl;
+                                                if( Debug_ ) std::cout<<"  [ALPHA] chi2_1 "<<chi2_1<<", bj1 "<<bj1<<std::endl;
+                                                if( Debug_ ) std::cout<<"  [ALPHA] chi2_2 "<<chi2_2<<", bj2 "<<bj2<<std::endl;
+                                                if( Debug_ ) std::cout<<"  [ALPHA] chi2 "<<chi2_<<", bj "<<bj<<std::endl;
                                                 if( chi2_ < minChi2 )
                                                 { 
                                                     topjet1  = ij1;
@@ -1168,21 +1197,47 @@ void SemiLeptanicControlRegion::analyze(const edm::Event& iEvent, const edm::Eve
                                                     hadronicTopbjet = bj;
                                                     minChi2 = chi2_;
                                                 }
+                                                if( Debug_ ) std::cout<<"  [ALPHA] minChi2 "<<minChi2<<", hbj "<<hadronicTopbjet<<", j1 "<<topjet1<<", j2 "<<topjet2<<std::endl;
                                             } 
                                         }
                                     }
+                                    leptonicTopbjet = (hadronicTopbjet == bj1 ) ? bj2:bj1;
+                                    if( Debug_ ) std::cout<<"[ALPHA] "<<sizeNonBJetCol<<", hbj1 "<<hadronicTopbjet<<", lbj "<<leptonicTopbjet<<std::endl;
                                 }
-                                float minPt=0.;
-                                for( int ij=0; ij<sizeNonBJetCol; ij++ )
+                                else
                                 {
-                                    if( ij != topjet1 && ij != topjet2 && ij != hadronicTopbjet ){
-                                        if( nonBJetCol[ij].Pt > minPt )
-                                        {
+                                    //// Without sorting CSV for non-b-jet in approval
+                                    for( int ij1=1; ij1<sizeNonBJetCol; ij1++ ){
+                                        for( int ij2=0; ij2<ij1; ij2++ ){
+                                            for( int bj=0; bj<sizeNonBJetCol; bj++ )
+                                            {
+                                                if( bj != ij1 && bj != ij2 )
+                                                {
+                                                    float chi2_ = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], nonBJetCol[bj] );
+                                                    if( chi2_ < minChi2 )
+                                                    { 
+                                                        topjet1  = ij1;
+                                                        topjet2  = ij2;
+                                                        hadronicTopbjet = bj;
+                                                        minChi2 = chi2_;
+                                                    }
+                                                } 
+                                            }
+                                        }
+                                    }
+                                    float minPt=0.;
+                                    for( int ij=0; ij<sizeNonBJetCol; ij++ )
+                                    {
+                                        if( ij != topjet1 && ij != topjet2 && ij != hadronicTopbjet ){
+                                            if( nonBJetCol[ij].Pt > minPt )
+                                            {
                                                 minPt = nonBJetCol[ij].Pt;
                                                 leptonicTopbjet = ij;
+                                            }
                                         }
                                     }
                                 }
+
                                 if( isoLep.Charge < 0 ) // tbar->bbar w- ( w- > l- v )
                                 {
                                     b_jet    = nonBJetCol[hadronicTopbjet]; b_jet.Index    = hadronicTopbjet;

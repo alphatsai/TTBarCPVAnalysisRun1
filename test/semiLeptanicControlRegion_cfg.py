@@ -117,6 +117,11 @@ options.register('Owrt', 'MT:3',
     VarParsing.varType.string,
     "Weight the obseverble in top mass"
     )
+options.register('DoSortCSVin0b', True,
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.bool,
+    "Do sort CSV in 0b CR"
+    )
 options.register('DoSaveTree', False,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
@@ -181,15 +186,21 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicControlRegion',
     SelPars_CSVL_BJet           = defaultBJetSelectionParameters.clone(
                                 jetType = cms.string('CSVL_BJet'), 
                                 jetCombinedSVBJetTagsMin = cms.double(0.244)
+                                #jetCombinedSVBJetTagsMin = cms.double(0.2)
+                                #jetCombinedSVBJetTagsMin = cms.double(0.15)
                                 ), 
     SelPars_NonBJet             = defaultNonBJetSelectionParameters.clone( 
                                 jetCombinedSVBJetTagsMax = cms.double(0.244)
+                                #jetCombinedSVBJetTagsMax = cms.double(0.2)
+                                #jetCombinedSVBJetTagsMax = cms.double(0.15)
                                 ),
     SelPars_LooseLepton         = defaultLeptonSelectionParameters.clone(  # ARC asked...
                                 lepRelIsoR03Max = cms.double(infiniteMax), # Only for 0 b
                                 lepRelIsoR04Max = cms.double(infiniteMax), # Only for 0 b
-                                #EgammaMVATrigMin = cms.double(infiniteMax),
-                                #EgammaMVATrigMax = cms.double(infiniteMin),
+                                lepPtMin = cms.double(infiniteMin), # Test
+                                lepEtMin = cms.double(infiniteMin), # Test
+                                #EgammaMVATrigMin = cms.double(infiniteMax), # Test
+                                #EgammaMVATrigMax = cms.double(infiniteMin), # Test
                                 ), 
     SelPars_TightMuon           = defaultMounSelectionParameters.clone(), 
     SelPars_TightElectron       = defaultElectronSelectionParameters.clone(),
@@ -209,6 +220,7 @@ process.SemiLeptanic = cms.EDAnalyzer('SemiLeptanicControlRegion',
     Shift_TightMuonIDSF         = cms.int32(options.ShiftTightMuonIDSF),
     Shift_TightMuonIsoSF        = cms.int32(options.ShiftTightMuonIsoSF),
     Shift_TightElectronIDSF     = cms.int32(options.ShiftTightElectronIDSF),
+    DoSortCSVin0b               = cms.bool(options.DoSortCSVin0b),
     Debug                       = cms.bool(options.Debug),
     IsSkim                      = cms.bool(isSkim),
     DoSaveTree                  = cms.bool(options.DoSaveTree), 

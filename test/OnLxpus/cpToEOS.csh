@@ -11,7 +11,7 @@ if ( ! ( -e $1 ) ) then
 endif
 
 cmsenv
-set eosDir="eos/cms/store/user/jtsai/TTBarCPV/results/Jan2016"
+set eosDir="eos/cms/store/user/jtsai/TTBarCPV/results/Mar2016"
     eos mkdir -p $eosDir/$1
     set roots=`\ls -l "$1" | grep root | awk '{print $9}'`
     set nroots=`\ls -l "$1" | grep root | awk '{print $9}' | wc -l `

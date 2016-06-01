@@ -1,6 +1,6 @@
 # Dataset_name    Number_of_jobs    EOS_location    PyCfg_parameters (optional)
 TTJets_SemiLeptMGDecays 45 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_SemiLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1 outFilename=SemiLeptanicAnalysis.root ttreedir=Skim   ShiftTightMuonIDSF=-1
-TTJets_FullLeptMGDecays 15 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim   ShiftTightMuonIDSF=-1
+TTJets_FullLeptMGDecays 15 /eos/cms/store/user/jtsai/TTBarCPV/skim/v1/TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim   ShiftTightMuonIDSF=-1
 TTJets_HadronicMGDecays 15 /eos/cms/store/user/jtsai/TTBarCPV/skim/TTJets_HadronicMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A_ext-v1     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim   ShiftTightMuonIDSF=-1
 #
 T_t-channel  1 /eos/cms/store/user/jtsai/TTBarCPV/skim/T_t-channel_TuneZ2star_8TeV-powheg-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1     outFilename=SemiLeptanicAnalysis.root ttreedir=Skim   ShiftTightMuonIDSF=-1

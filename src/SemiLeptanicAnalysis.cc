@@ -1232,7 +1232,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
                         //// * Distinguish hadronic-top and leptonic-top's b-jet by chi^2
                         int topjet1(-1), topjet2(-1), hadronicTopbjet(-1), leptonicTopbjet(-1); 
                         for( int ij1=1; ij1<int(nonBJetCol.size()); ij1++){
-                            for( int ij2=ij1-1; ij2<ij1; ij2++){
+                            //for( int ij2=ij1-1; ij2<ij1; ij2++){
+                            for( int ij2=0; ij2<ij1; ij2++){
                                 for( int bj=0; bj<2; bj++)
                                 {
                                     float chi2_ = getChi2( nonBJetCol[ij1], nonBJetCol[ij2], BJetCol[bj] );
