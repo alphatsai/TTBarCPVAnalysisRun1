@@ -43,15 +43,21 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
         drawACP2Ch( f, 0, "", "DATA_Electron__Evt", "DATA_Muon__Evt", "O3", output, "A'_{CP} [%]", "O_{3}", legHead);
         drawACP2Ch( f, 0, "", "DATA_Electron__Evt", "DATA_Muon__Evt", "O4", output, "A'_{CP} [%]", "O_{4}", legHead);
         drawACP2Ch( f, 0, "", "DATA_Electron__Evt", "DATA_Muon__Evt", "O7", output, "A'_{CP} [%]", "O_{7}", legHead);
+        drawACP2Ch( f, 0, "", "DATA_Electron__Evt", "DATA_Muon__Evt", "Oa", output, "A'_{CP} [%]", "O_{a}", legHead);
+        drawACP2Ch( f, 0, "", "DATA_Electron__Evt", "DATA_Muon__Evt", "Ob", output, "A'_{CP} [%]", "O_{b}", legHead);
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "O2", output, "A'_{CP} [%]", "O_{2}", legHead);
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "O3", output, "A'_{CP} [%]", "O_{3}", legHead);
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "O4", output, "A'_{CP} [%]", "O_{4}", legHead);
         drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "O7", output, "A'_{CP} [%]", "O_{7}", legHead);
+        drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "Oa", output, "A'_{CP} [%]", "O_{a}", legHead);
+        drawACP2Ch( f, 0, "", "DATA_Electron__EvtChi2", "DATA_Muon__EvtChi2", "Ob", output, "A'_{CP} [%]", "O_{b}", legHead);
         float scaleY=0.001;
         drawObservableData(f, output, "O2", "EvtChi2", legHead, "O_{2}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
         drawObservableData(f, output, "O3", "EvtChi2", legHead, "O_{3}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
         drawObservableData(f, output, "O4", "EvtChi2", legHead, "O_{4}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
         drawObservableData(f, output, "O7", "EvtChi2", legHead, "O_{7}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
+        drawObservableData(f, output, "Oa", "EvtChi2", legHead, "O_{a}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
+        drawObservableData(f, output, "Ob", "EvtChi2", legHead, "O_{b}", "Events #times 10^{3} / 0.1", scaleY, -1, 1, 1 );
     }
 
     drawACP( f, 1, "", "MC__Evt",                          "O2", output, "A'_{CP} [%]", "O_{2}",legHead, 1, 1, "QCDEM__Evt", "QCDMu__Evt");
@@ -119,7 +125,7 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
     drawACP( f, 1, "", "BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__EvtChi2", "O4", output, "A'_{CP} [%]", "O_{4}", legHead);
     drawACP( f, 1, "", "BkgMC_TTJetsNonSemiLeptMGDecaysExcluded__EvtChi2", "O7", output, "A'_{CP} [%]", "O_{7}", legHead);
 
-    float o_min=-3, o_max=3;
+    float o_min=-1, o_max=1;
     if( unblind )
     {
         drawStackWithDataQCD( f, "Evt_O2",        "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, 2, false ,0, o_min, o_max);
@@ -130,6 +136,10 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
         drawStackWithDataQCD( f, "Evt_O4",        "O_{4}^{e+#mu}/M_{top}^{3}", "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "Evt_O7",        "O_{7}^{e+#mu}/M_{top}^{3}", "Events", output, 2, false ,0, o_min, o_max);
         drawStackWithDataQCD( f, "Evt_O7",        "O_{7}^{e+#mu}/M_{top}^{3}", "Events", output, 2, true  ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "Evt_Oa",        "O_{a}^{e+#mu}/M_{top}^{3}", "Events", output, 2, false ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "Evt_Oa",        "O_{a}^{e+#mu}/M_{top}^{3}", "Events", output, 2, true  ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "Evt_Ob",        "O_{b}^{e+#mu}/M_{top}^{3}", "Events", output, 2, false ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "Evt_Ob",        "O_{b}^{e+#mu}/M_{top}^{3}", "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "Evt_O2_Mu",     "O_{2}^{#mu}/M_{top}^{3}",   "Events", output, 2, false ,0, o_min, o_max);
         drawStackWithDataQCD( f, "Evt_O2_Mu",     "O_{2}^{#mu}/M_{top}^{3}",   "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "Evt_O3_Mu",     "O_{3}^{#mu}/M_{top}^{3}",   "Events", output, 2, false ,0, o_min, o_max);
@@ -138,6 +148,10 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
         drawStackWithDataQCD( f, "Evt_O4_Mu",     "O_{4}^{#mu}/M_{top}^{3}",   "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "Evt_O7_Mu",     "O_{7}^{#mu}/M_{top}^{3}",   "Events", output, 2, false ,0, o_min, o_max);
         drawStackWithDataQCD( f, "Evt_O7_Mu",     "O_{7}^{#mu}/M_{top}^{3}",   "Events", output, 2, true  ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "Evt_Oa_Mu",     "O_{a}^{#mu}/M_{top}^{3}",   "Events", output, 2, false ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "Evt_Oa_Mu",     "O_{a}^{#mu}/M_{top}^{3}",   "Events", output, 2, true  ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "Evt_Ob_Mu",     "O_{b}^{#mu}/M_{top}^{3}",   "Events", output, 2, false ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "Evt_Ob_Mu",     "O_{b}^{#mu}/M_{top}^{3}",   "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "Evt_O2_El",     "O_{2}^{e}/M_{top}^{3}",     "Events", output, 2, false ,0, o_min, o_max);
         drawStackWithDataQCD( f, "Evt_O2_El",     "O_{2}^{e}/M_{top}^{3}",     "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "Evt_O3_El",     "O_{3}^{e}/M_{top}^{3}",     "Events", output, 2, false ,0, o_min, o_max);
@@ -146,6 +160,10 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
         drawStackWithDataQCD( f, "Evt_O4_El",     "O_{4}^{e}/M_{top}^{3}",     "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "Evt_O7_El",     "O_{7}^{e}/M_{top}^{3}",     "Events", output, 2, false ,0, o_min, o_max);
         drawStackWithDataQCD( f, "Evt_O7_El",     "O_{7}^{e}/M_{top}^{3}",     "Events", output, 2, true  ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "Evt_Oa_El",     "O_{a}^{e}/M_{top}^{3}",     "Events", output, 2, false ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "Evt_Oa_El",     "O_{a}^{e}/M_{top}^{3}",     "Events", output, 2, true  ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "Evt_Ob_El",     "O_{b}^{e}/M_{top}^{3}",     "Events", output, 2, false ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "Evt_Ob_El",     "O_{b}^{e}/M_{top}^{3}",     "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O2",    "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, 2, false ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O2",    "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O3",    "O_{3}^{e+#mu}/M_{top}^{3}", "Events", output, 2, false ,0, o_min, o_max);
@@ -154,6 +172,10 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
         drawStackWithDataQCD( f, "EvtChi2_O4",    "O_{4}^{e+#mu}/M_{top}^{3}", "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O7",    "O_{7}^{e+#mu}/M_{top}^{3}", "Events", output, 2, false ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O7",    "O_{7}^{e+#mu}/M_{top}^{3}", "Events", output, 2, true  ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "EvtChi2_Oa",    "O_{a}^{e+#mu}/M_{top}^{3}", "Events", output, 2, false ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "EvtChi2_Oa",    "O_{a}^{e+#mu}/M_{top}^{3}", "Events", output, 2, true  ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "EvtChi2_Ob",    "O_{b}^{e+#mu}/M_{top}^{3}", "Events", output, 2, false ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "EvtChi2_Ob",    "O_{b}^{e+#mu}/M_{top}^{3}", "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O2_Mu", "O_{2}^{#mu}/M_{top}^{3}",   "Events", output, 2, false ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O2_Mu", "O_{2}^{#mu}/M_{top}^{3}",   "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O3_Mu", "O_{3}^{#mu}/M_{top}^{3}",   "Events", output, 2, false ,0, o_min, o_max);
@@ -162,6 +184,10 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
         drawStackWithDataQCD( f, "EvtChi2_O4_Mu", "O_{4}^{#mu}/M_{top}^{3}",   "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O7_Mu", "O_{7}^{#mu}/M_{top}^{3}",   "Events", output, 2, false ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O7_Mu", "O_{7}^{#mu}/M_{top}^{3}",   "Events", output, 2, true  ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "EvtChi2_Oa_Mu", "O_{a}^{#mu}/M_{top}^{3}",   "Events", output, 2, false ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "EvtChi2_Oa_Mu", "O_{a}^{#mu}/M_{top}^{3}",   "Events", output, 2, true  ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "EvtChi2_Ob_Mu", "O_{b}^{#mu}/M_{top}^{3}",   "Events", output, 2, false ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "EvtChi2_Ob_Mu", "O_{b}^{#mu}/M_{top}^{3}",   "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O2_El", "O_{2}^{e}/M_{top}^{3}",     "Events", output, 2, false ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O2_El", "O_{2}^{e}/M_{top}^{3}",     "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O3_El", "O_{3}^{e}/M_{top}^{3}",     "Events", output, 2, false ,0, o_min, o_max);
@@ -170,6 +196,10 @@ void resultsDATAMCQCD(TFile* f, string output=".", bool unblind=false, std::stri
         drawStackWithDataQCD( f, "EvtChi2_O4_El", "O_{4}^{e}/M_{top}^{3}",     "Events", output, 2, true  ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O7_El", "O_{7}^{e}/M_{top}^{3}",     "Events", output, 2, false ,0, o_min, o_max);
         drawStackWithDataQCD( f, "EvtChi2_O7_El", "O_{7}^{e}/M_{top}^{3}",     "Events", output, 2, true  ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "EvtChi2_Oa_El", "O_{a}^{e}/M_{top}^{3}",     "Events", output, 2, false ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "EvtChi2_Oa_El", "O_{a}^{e}/M_{top}^{3}",     "Events", output, 2, true  ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "EvtChi2_Ob_El", "O_{b}^{e}/M_{top}^{3}",     "Events", output, 2, false ,0, o_min, o_max);
+        drawStackWithDataQCD( f, "EvtChi2_Ob_El", "O_{b}^{e}/M_{top}^{3}",     "Events", output, 2, true  ,0, o_min, o_max);
     }else{
         drawStackWithQCD( f, "Evt_O2",        "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, 2, false ,0, o_min, o_max);
         drawStackWithQCD( f, "Evt_O2",        "O_{2}^{e+#mu}/M_{top}^{3}", "Events", output, 2, true  ,0, o_min, o_max);

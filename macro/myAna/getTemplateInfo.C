@@ -4,6 +4,9 @@
 #include "../caculate.C"
 #include "../CMS_lumi.C"
 #include "../help.C"
+int CoCH=0;
+int ElCH=1;
+int MuCH=2;
 const int cmslumi=0;
 const float topMassUncRescale=6;
 void drawDifference( TH1D* h_data, TH1D* h_fit, float yRange=0.5, std::string xtitle="M_{eb} [GeV]", std::string ytitle="#frac{Data}{Fitted} / 10 GeV")
@@ -276,8 +279,10 @@ void drawFittedStack( TFile* f, std::string hName, std::string* systName, int sy
     for( int b=1; b<=bins; b++ )
     {
         float nomV = h_all->GetBinContent(b);
-        float sigUp   = h_all->GetBinContent(b); // Has been cross check with h_all->IntegralAndError(0,50,error); 
-        float sigDown = h_all->GetBinContent(b); // cout<<error; The error is after weighting
+        float sigUp   = h_all->GetBinError(b)*h_all->GetBinError(b); // Has been cross check with h_all->IntegralAndError(0,50,error); 
+        float sigDown = h_all->GetBinError(b)*h_all->GetBinError(b); // cout<<error; The error is after weighting
+        //float sigUp   = h_all->GetBinContent(b); // Has been cross check with h_all->IntegralAndError(0,50,error); 
+        //float sigDown = h_all->GetBinContent(b); // cout<<error; The error is after weighting
         //float sigUp   = 0;
         //float sigDown = 0;
         for( int i=0; i<systN; i++ ){
@@ -1332,3 +1337,717 @@ void drawSubtractBkgResultsCombined( TFile* f, std::string* systName, int systNi
     delete hsig;
     delete hbkg;
 }
+
+void drawFittedStackObs( TFile* f, std::string hName, float minMlb=0, float maxMlb=0, int rebin=1, float xmin=0, float xmax=0, std::string output=".", std::string xTitle="", std::string yTitle="Events", bool logy=false )
+{
+    int lineWidth=3;
+
+    const int nCh=3;
+    std::string chName[nCh]={"", "_El", "_Mu"};
+
+    TH1D* hO_data[nCh];
+    TH1D* hO_bkg[nCh];
+    TH1D* hO_sig[nCh];
+    TH1D* hO_all[nCh];
+
+    int iTopMass=-1;
+    for( int ch=nCh-1; ch>=0; ch--)
+    {
+        hO_data[ch] = (TH1D*)((TH1D*)f->Get((("DATA_"+hName+chName[ch]).c_str())))->Clone();
+        hO_data[ch]->Rebin(rebin);
+        if( xmin < xmax )
+        {
+            fixNewRange( hO_data[ch], xmin, xmax );
+        }
+        if( ch != 0 )
+        {
+            TH1D* h_sig = (TH1D*)f->Get(("SigFitted"+chName[ch]).c_str()); 
+            TH1D* h_bkg = (TH1D*)f->Get(("BkgFitted"+chName[ch]).c_str()); 
+            if( ch==nCh-1 )
+            {
+                int bins = h_sig->GetNbinsX();
+                if( minMlb == maxMlb )
+                {
+                    minMlb = 1;
+                    maxMlb = bins;
+                }
+                else
+                {
+                    for( int b=1; b<=bins; b++ )
+                    {
+                        if( h_sig->GetXaxis()->GetBinLowEdge(b) == minMlb ) minMlb=b;
+                        if( h_sig->GetXaxis()->GetBinLowEdge(b) == maxMlb ) maxMlb=b-1;
+                    }
+                }
+            }
+            float meanSig = h_sig->Integral(minMlb,maxMlb); 
+            float meanBkg = h_bkg->Integral(minMlb,maxMlb);
+
+            cout<<chName[ch]<<": meanSig "<<meanSig<<", meanBkg "<<meanBkg<<endl;
+            hO_sig[ch] = (TH1D*)((TH1D*)f->Get((("SigMC_"+hName+chName[ch]).c_str())))->Clone(); 
+            hO_bkg[ch] = (TH1D*)((TH1D*)f->Get((("BkgMC_"+hName+chName[ch]).c_str())))->Clone();
+            hO_sig[ch]->Scale(meanSig/hO_sig[ch]->Integral());
+            hO_bkg[ch]->Scale(meanBkg/hO_bkg[ch]->Integral());
+            hO_sig[ch]->Rebin(rebin);
+            hO_bkg[ch]->Rebin(rebin);
+            if( xmin < xmax )
+            {
+                fixNewRange(hO_sig[ch], xmin, xmax ); 
+                fixNewRange(hO_bkg[ch], xmin, xmax ); 
+            }
+            hO_all[ch] = (TH1D*)hO_sig[ch]->Clone();
+            hO_all[ch]->Add(hO_bkg[ch]);
+        }
+        else
+        {
+            hO_sig[ch] = (TH1D*)hO_sig[ElCH]->Clone();
+            hO_bkg[ch] = (TH1D*)hO_bkg[ElCH]->Clone();
+            hO_sig[ch]->Add(hO_sig[MuCH]);
+            hO_bkg[ch]->Add(hO_bkg[MuCH]);
+            hO_all[ch] = (TH1D*)hO_sig[ch]->Clone();
+            hO_all[ch]->Add(hO_bkg[ch]);
+        }
+    }
+
+    //// Draw plots
+    for( int ch=0; ch<nCh; ch++)
+    {
+        hO_data[ch]->SetLineWidth(lineWidth);
+        hO_data[ch]->SetLineColor(1);
+        hO_data[ch]->SetMarkerColor(1);
+        hO_data[ch]->SetMarkerStyle(8);
+
+        hO_sig[ch]->SetLineWidth(lineWidth-1);
+        hO_sig[ch]->SetLineColor(1);
+        hO_sig[ch]->SetFillColor(50);
+
+        hO_bkg[ch]->SetLineWidth(lineWidth-1);
+        hO_bkg[ch]->SetLineColor(1);
+        hO_bkg[ch]->SetFillColor(8);
+
+        hO_all[ch]->SetLineColor(13);
+        hO_all[ch]->SetFillColor(13);
+        hO_all[ch]->SetFillStyle(3001);
+
+        int bins = hO_all[ch]->GetNbinsX();
+        float xMin = hO_all[ch]->GetXaxis()->GetBinLowEdge(1);
+        float xMax = hO_all[ch]->GetXaxis()->GetBinUpEdge(bins);
+        TH1D* hs;
+        if( logy )
+            hs = new TH1D(("TH1DinStackLog"+hName+chName[ch]).c_str(), "", bins, xMin, xMax);
+        else
+            hs = new TH1D(("TH1DinStackLinear"+hName+chName[ch]).c_str(), "", bins, xMin, xMax);
+        if( xmin < xmax ) fixNewRange( hs, xmin, xmax );
+        hs->GetXaxis()->SetTitle(xTitle.c_str());
+        hs->GetYaxis()->SetTitle(yTitle.c_str());
+        hs->GetXaxis()->SetNdivisions(509);
+        hs->GetXaxis()->SetLabelFont(42);
+        hs->GetXaxis()->SetLabelSize(0.06);
+        hs->GetXaxis()->SetTitleSize(0.07);
+        hs->GetXaxis()->SetTitleOffset(1.03);
+        hs->GetXaxis()->SetTitleFont(42);
+        hs->GetYaxis()->SetLabelFont(42);
+        hs->GetYaxis()->SetLabelSize(0.06);
+        hs->GetYaxis()->SetTitleSize(0.079);
+        hs->GetYaxis()->SetTitleOffset(1.11);
+        hs->GetYaxis()->SetTitleFont(42);
+
+        THStack* h_stack = new THStack(("THStcak"+hName+chName[ch]).c_str(), "");
+        h_stack->SetHistogram(hs);
+
+        h_stack->Add(hO_bkg[ch]);
+        h_stack->Add(hO_sig[ch]);
+
+        TCanvas* c1;
+        if( logy ){
+            c1 = new TCanvas( ("C_Log_"+hName+chName[ch]).c_str(), "",59,72,W,H);
+        }else{
+            c1 = new TCanvas( ("C_Linear_"+hName+chName[ch]).c_str(), "",59,72,W,H);
+        }
+        c1->Range(-123.0964,-841.8412,557.1066,3883.14);
+        c1->SetFillColor(0);
+        c1->SetBorderMode(0);
+        c1->SetBorderSize(2);
+        c1->SetLeftMargin(0.1997487);
+        c1->SetRightMargin(0.06909548);
+        c1->SetTopMargin(0.08900524);
+        c1->SetBottomMargin(0.1797557);
+        c1->SetFrameBorderMode(0);
+        c1->SetFrameBorderMode(0);
+
+        gStyle->SetOptStat(0);
+        gStyle->SetOptTitle(0);
+
+        if( logy ) c1->SetLogy(1);
+        else c1->SetLogy(0);
+
+        TLegend *leg;
+        leg = new TLegend(0.6256281,0.617801,0.9258794,0.904014,NULL,"brNDC");
+        if( ch == ElCH )
+            leg->SetHeader("e+jets channel");
+        else if( ch == MuCH )
+            leg->SetHeader("#mu+jets channel");
+        else if( ch == CoCH )
+            leg->SetHeader("l+jets channel");
+        leg->SetBorderSize(0);
+        leg->SetLineStyle(0);
+        leg->SetLineWidth(0);
+        leg->SetFillColor(0);
+        leg->SetFillStyle(0);
+        leg->AddEntry(hO_data[ch], "Data", "lpe");
+        leg->AddEntry(hO_sig[ch],  "S.M. t#bar{t} ",    "f");
+        leg->AddEntry(hO_bkg[ch],  "S.M. non-t#bar{t}", "f");
+        leg->AddEntry(hO_all[ch],  "1#sigma, MC stat.", "f");
+
+        h_stack->Draw("HIST");
+        hO_all[ch]->Draw("E2SAME");
+        hO_data[ch]->Draw("ESAME");
+        leg->Draw();
+        //t_title->Draw();
+
+        writeExtraText=true;
+        CMS_lumi( c1, 2, cmslumi, true );
+
+        if( logy )
+            c1->SaveAs((output+"/StackFitted_Log_"+hName+chName[ch]+".pdf").c_str());
+        else
+            c1->SaveAs((output+"/StackFitted_Linear_"+hName+chName[ch]+".pdf").c_str());
+    }
+}
+
+void drawFittedStackObsSyst( TFile* f, std::string hName, std::string* systName, int systNi, int nPDFup=0, int nPDFdown=0, float minMlb=0, float maxMlb=0, int rebin=1, float xmin=0, float xmax=0, float scaleY=0.001, std::string output=".", std::string xTitle="", std::string yTitle="Events  / 0.1", bool logy=false, bool doTopMassUncRescale=true )
+{
+    int lineWidth=3;
+
+    const int nCh=3;
+    std::string chName[nCh]={"", "_El", "_Mu"};
+    std::string tune[2] = {"up", "down"};
+    const int systN = systNi+1;
+
+    TH1D* hO_allUnc[nCh][systN][2];
+    TH1D* hO_data[nCh];
+    TH1D* hO_bkg[nCh];
+    TH1D* hO_sig[nCh];
+    TH1D* hO_all[nCh];
+
+    int iTopMass=-1;
+    for( int ch=nCh-1; ch>=0; ch--)
+    {
+        hO_data[ch] = (TH1D*)((TH1D*)f->Get((("DATA_"+hName+chName[ch]).c_str())))->Clone();
+        hO_data[ch]->Rebin(rebin);
+        if( xmin < xmax )
+        {
+            fixNewRange( hO_data[ch], xmin, xmax );
+        }
+        if( ch != 0 )
+        {
+            TH1D* h_sig = (TH1D*)f->Get(("SigFitted"+chName[ch]).c_str()); 
+            TH1D* h_bkg = (TH1D*)f->Get(("BkgFitted"+chName[ch]).c_str()); 
+            if( ch==nCh-1 )
+            {
+                int bins = h_sig->GetNbinsX();
+                if( minMlb == maxMlb )
+                {
+                    minMlb = 1;
+                    maxMlb = bins;
+                }
+                else
+                {
+                    for( int b=1; b<=bins; b++ )
+                    {
+                        if( h_sig->GetXaxis()->GetBinLowEdge(b) == minMlb ) minMlb=b;
+                        if( h_sig->GetXaxis()->GetBinLowEdge(b) == maxMlb ) maxMlb=b-1;
+                    }
+                }
+            }
+            float meanSig = h_sig->Integral(minMlb,maxMlb); 
+            float meanBkg = h_bkg->Integral(minMlb,maxMlb);
+
+            cout<<chName[ch]<<": meanSig "<<meanSig<<", meanBkg "<<meanBkg<<endl;
+            hO_sig[ch] = (TH1D*)((TH1D*)f->Get((("SigMC_"+hName+chName[ch]).c_str())))->Clone(); 
+            hO_bkg[ch] = (TH1D*)((TH1D*)f->Get((("BkgMC_"+hName+chName[ch]).c_str())))->Clone();
+            hO_sig[ch]->Scale(meanSig/hO_sig[ch]->Integral());
+            hO_bkg[ch]->Scale(meanBkg/hO_bkg[ch]->Integral());
+            hO_sig[ch]->Rebin(rebin);
+            hO_bkg[ch]->Rebin(rebin);
+            if( xmin < xmax )
+            {
+                fixNewRange(hO_sig[ch], xmin, xmax ); 
+                fixNewRange(hO_bkg[ch], xmin, xmax ); 
+            }
+            hO_all[ch] = (TH1D*)hO_sig[ch]->Clone();
+            hO_all[ch]->Add(hO_bkg[ch]);
+
+            for( int i=0; i<systN; i++ )
+            {   
+                if( i != systN-1 )
+                {
+                    if( systName[i].find("TopMass")!=std::string::npos && doTopMassUncRescale ) iTopMass=i;
+                    for( int t=0; t<2; t++)
+                    {
+                        std::string name = systName[i]+tune[t];
+                        //hO_allUnc[ch][i][t] = (TH1D*)hO_sig[ch]->Clone();
+                        //TH1D* hO_bkgTmp = (TH1D*)hO_bkg[ch]->Clone();
+                        hO_allUnc[ch][i][t] = (TH1D*)((TH1D*)f->Get(("SigMC_"+hName+chName[ch]+"_"+name).c_str()))->Clone();
+                        TH1D* hO_bkgTmp = (TH1D*)f->Get(("BkgMC_"+hName+chName[ch]+"_"+name).c_str());
+                        TH1D* h_sigUnc  = (TH1D*)f->Get(("SigFitted"+chName[ch]+"_"+name).c_str());
+                        TH1D* h_bkgUnc  = (TH1D*)f->Get(("BkgFitted"+chName[ch]+"_"+name).c_str());
+                        float meanSigSyst = h_sigUnc->Integral(minMlb,maxMlb);
+                        float meanBkgSyst = h_bkgUnc->Integral(minMlb,maxMlb);
+
+                        if( iTopMass == i )
+                        {
+                            meanSigSyst=(meanSigSyst+(topMassUncRescale-1)*meanSig)/topMassUncRescale;
+                            meanBkgSyst=(meanBkgSyst+(topMassUncRescale-1)*meanBkg)/topMassUncRescale;
+                        }
+
+                        hO_bkgTmp->Scale(meanBkgSyst/hO_bkgTmp->Integral()); 
+                        hO_allUnc[ch][i][t]->Scale(meanSigSyst/hO_allUnc[ch][i][t]->Integral());
+                        hO_allUnc[ch][i][t]->Add(hO_bkgTmp);
+                    }
+                }
+                else
+                { 
+                    // For PDF
+                    hO_allUnc[ch][i][0] = (TH1D*)hO_sig[ch]->Clone();
+                    hO_allUnc[ch][i][1] = (TH1D*)hO_sig[ch]->Clone();
+                    TH1D* hO_bkgTmpU = (TH1D*)hO_bkg[ch]->Clone();
+                    TH1D* hO_bkgTmpD = (TH1D*)hO_bkg[ch]->Clone();
+                    TH1D* h_sigUncU = (TH1D*)f->Get((("SigFitted"+chName[ch]+"_PDF"+int2str(nPDFup)).c_str()));
+                    TH1D* h_sigUncD = (TH1D*)f->Get((("SigFitted"+chName[ch]+"_PDF"+int2str(nPDFdown)).c_str()));
+                    TH1D* h_bkgUncU = (TH1D*)f->Get(("BkgFitted"+chName[ch]+"_PDF"+int2str(nPDFup)).c_str());
+                    TH1D* h_bkgUncD = (TH1D*)f->Get(("BkgFitted"+chName[ch]+"_PDF"+int2str(nPDFdown)).c_str());
+                    float meanSigSystU=h_sigUncU->Integral(minMlb,maxMlb);
+                    float meanSigSystD=h_sigUncD->Integral(minMlb,maxMlb);
+                    float meanBkgSystU=h_bkgUncU->Integral(minMlb,maxMlb);
+                    float meanBkgSystD=h_bkgUncD->Integral(minMlb,maxMlb);
+                    hO_bkgTmpU->Scale(meanBkgSystU/hO_bkgTmpU->Integral()); 
+                    hO_bkgTmpD->Scale(meanBkgSystD/hO_bkgTmpU->Integral()); 
+                    hO_allUnc[ch][i][0]->Scale(meanSigSystU/hO_allUnc[ch][i][0]->Integral());
+                    hO_allUnc[ch][i][0]->Add(hO_bkgTmpU);
+                    hO_allUnc[ch][i][1]->Scale(meanSigSystD/hO_allUnc[ch][i][1]->Integral());
+                    hO_allUnc[ch][i][1]->Add(hO_bkgTmpD);
+                }
+            }
+        }
+        else
+        {
+            hO_sig[ch] = (TH1D*)hO_sig[ElCH]->Clone();
+            hO_bkg[ch] = (TH1D*)hO_bkg[ElCH]->Clone();
+            hO_sig[ch]->Add(hO_sig[MuCH]);
+            hO_bkg[ch]->Add(hO_bkg[MuCH]);
+            hO_all[ch] = (TH1D*)hO_sig[ch]->Clone();
+            hO_all[ch]->Add(hO_bkg[ch]);
+            for( int i=0; i<systN; i++ ){
+                    for( int t=0; t<2; t++){
+                        hO_allUnc[ch][i][t] = (TH1D*)hO_allUnc[ElCH][i][t]->Clone();
+                        hO_allUnc[ch][i][t]->Add(hO_allUnc[MuCH][i][t]);
+                }
+            }
+        }
+    }
+
+    //// Draw plots
+    for( int ch=0; ch<nCh; ch++)
+    {
+        int bins = hO_all[ch]->GetNbinsX();
+        hO_data[ch]->Scale(scaleY);
+        hO_sig[ch]->Scale(scaleY);
+        hO_bkg[ch]->Scale(scaleY);
+        hO_all[ch]->Scale(scaleY);
+
+        TGraphAsymmErrors* h_allAsymErr = new TGraphAsymmErrors(hO_all[ch]);
+        for( int b=1; b<=bins; b++ )
+        {
+            float nomV = hO_all[ch]->GetBinContent(b);
+            float sigUp   = hO_all[ch]->GetBinError(b)*hO_all[ch]->GetBinError(b); // Has been cross check with h_all->IntegralAndError(0,50,error); 
+            float sigDown = hO_all[ch]->GetBinError(b)*hO_all[ch]->GetBinError(b); // cout<<error; The error is after weighting
+            for( int i=0; i<systN; i++ ){
+                for( int t=0; t<2; t++ )
+                {
+                    float err = hO_allUnc[ch][i][t]->GetBinContent(b)*scaleY - nomV;
+                    if( iTopMass == i ) err = err/topMassUncRescale;
+                    if( err > 0. ) sigUp +=err*err;
+                    else sigDown += err*err;
+                }
+            }
+            h_allAsymErr->SetPointEYhigh( b-1, sqrt(sigUp));
+            h_allAsymErr->SetPointEYlow(  b-1, sqrt(sigDown));
+        }
+
+        hO_data[ch]->SetLineWidth(lineWidth);
+        hO_data[ch]->SetLineColor(1);
+        hO_data[ch]->SetMarkerColor(1);
+        hO_data[ch]->SetMarkerStyle(8);
+
+        hO_sig[ch]->SetLineWidth(lineWidth-1);
+        hO_sig[ch]->SetLineColor(1);
+        hO_sig[ch]->SetFillColor(50);
+
+        hO_bkg[ch]->SetLineWidth(lineWidth-1);
+        hO_bkg[ch]->SetLineColor(1);
+        hO_bkg[ch]->SetFillColor(8);
+
+        h_allAsymErr->SetLineColor(13);
+        h_allAsymErr->SetFillColor(13);
+        h_allAsymErr->SetFillStyle(3001);
+
+        float xMin = hO_all[ch]->GetXaxis()->GetBinLowEdge(1);
+        float xMax = hO_all[ch]->GetXaxis()->GetBinUpEdge(bins);
+        TH1D* hs;
+        if( logy )
+            hs = new TH1D(("TH1DinStackLog"+hName+chName[ch]).c_str(), "", bins, xMin, xMax);
+        else
+            hs = new TH1D(("TH1DinStackLinear"+hName+chName[ch]).c_str(), "", bins, xMin, xMax);
+        if( xmin < xmax ) fixNewRange( hs, xmin, xmax );
+        hs->GetXaxis()->SetTitle(xTitle.c_str());
+        hs->GetYaxis()->SetTitle(yTitle.c_str());
+        hs->GetXaxis()->SetNdivisions(509);
+        hs->GetXaxis()->SetLabelFont(42);
+        hs->GetXaxis()->SetLabelSize(0.06);
+        hs->GetXaxis()->SetTitleSize(0.07);
+        //hs->GetXaxis()->SetTitleOffset(1.03);
+        hs->GetXaxis()->SetTitleFont(42);
+        hs->GetYaxis()->SetLabelFont(42);
+        hs->GetYaxis()->SetLabelSize(0.06);
+        hs->GetYaxis()->SetTitleSize(0.079);
+        hs->GetYaxis()->SetTitleOffset(0.79);
+        hs->GetYaxis()->SetTitleFont(42);
+
+        THStack* h_stack = new THStack(("THStcak"+hName+chName[ch]).c_str(), "");
+        h_stack->SetHistogram(hs);
+
+        h_stack->Add(hO_bkg[ch]);
+        h_stack->Add(hO_sig[ch]);
+
+        TCanvas* c1;
+        if( logy ){
+            c1 = new TCanvas( ("C_Log_"+hName+chName[ch]).c_str(), "",59,72,W,H);
+        }else{
+            c1 = new TCanvas( ("C_Linear_"+hName+chName[ch]).c_str(), "",1394, 85, W, H);
+        }
+        c1->Range(-123.0964,-841.8412,557.1066,3883.14);
+        c1->SetFillColor(0);
+        c1->SetBorderMode(0);
+        c1->SetBorderSize(2);
+    c1->SetLeftMargin(0.1620603);
+    c1->SetRightMargin(0.0879397);
+    c1->SetTopMargin(0.07329843);
+    c1->SetBottomMargin(0.1640489);
+        //c1->SetLeftMargin(0.1733668);
+        //c1->SetRightMargin(0.06909548);
+        //c1->SetTopMargin(0.08900524);
+        //c1->SetBottomMargin(0.1797557);
+
+        //c1->SetLeftMargin(0.1997487);
+        //c1->SetRightMargin(0.06909548);
+        //c1->SetTopMargin(0.08900524);
+        //c1->SetBottomMargin(0.1797557);
+        c1->SetFrameBorderMode(0);
+        c1->SetFrameBorderMode(0);
+
+        gStyle->SetOptStat(0);
+        gStyle->SetOptTitle(0);
+
+        if( logy ) c1->SetLogy(1);
+        else c1->SetLogy(0);
+
+        TLegend *leg;
+        leg = new TLegend(0.6074121,0.617801,0.9076633,0.904014,NULL,"brNDC");
+        if( ch == ElCH )
+            leg->SetHeader("e+jets channel");
+        else if( ch == MuCH )
+            leg->SetHeader("#mu+jets channel");
+        else if( ch == CoCH )
+            leg->SetHeader("l+jets channel");
+        leg->SetBorderSize(0);
+        leg->SetLineStyle(0);
+        leg->SetLineWidth(0);
+        leg->SetFillColor(0);
+        leg->SetFillStyle(0);
+        leg->AddEntry(hO_data[ch], "Data", "lpe");
+        leg->AddEntry(hO_sig[ch],  "SM t#bar{t}",    "f");
+        leg->AddEntry(hO_bkg[ch],  "SM non-t#bar{t}", "f");
+        leg->AddEntry(h_allAsymErr,  "1#sigma, Stat.+Syst.", "f");
+
+        h_stack->Draw("HIST");
+        h_allAsymErr->Draw("E2SAME");
+        hO_data[ch]->Draw("ESAME");
+        leg->Draw();
+        //t_title->Draw();
+
+        //writeExtraText=true;
+        //CMS_lumi( c1, 2, cmslumi, true );
+
+    TPaveText* t_title;
+    t_title = new TPaveText(0.6595477,0.938918,0.9396985,0.9842932,"brNDC");
+    t_title->AddText("19.7 fb^{-1} (8TeV)");
+    t_title->SetFillColor(0);
+    t_title->SetFillStyle(0);
+    t_title->SetBorderSize(0);
+    t_title->SetTextAlign(12);
+    t_title->SetTextFont(42);
+    t_title->SetTextSize(0.05235602);
+    t_title->Draw();
+
+    TPaveText* t_CMS;
+    t_CMS = new TPaveText(0.2022613,0.8481675,0.2952261,0.8935428,"brNDC");
+    t_CMS->AddText("CMS");
+    t_CMS->SetFillColor(0);
+    t_CMS->SetFillStyle(0);
+    t_CMS->SetBorderSize(0);
+    t_CMS->SetTextAlign(12);
+    t_CMS->SetTextSize(0.06108203);
+    t_CMS->Draw();
+
+    TPaveText* t_perliminary;
+    t_perliminary = new TPaveText(0.2022613,0.7853403,0.2952261,0.8307155,"brNDC");
+    t_perliminary->AddText("Preliminary");
+    t_perliminary->SetFillColor(0);
+    t_perliminary->SetFillStyle(0);
+    t_perliminary->SetBorderSize(0);
+    t_perliminary->SetTextAlign(12);
+    t_perliminary->SetTextFont(52);
+    t_perliminary->SetTextSize(0.05235602);
+    t_perliminary->Draw();
+
+        if( logy )
+            c1->SaveAs((output+"/StackFitted_Log_"+hName+chName[ch]+".pdf").c_str());
+        else
+            c1->SaveAs((output+"/StackFitted_Linear_"+hName+chName[ch]+".pdf").c_str());
+    }
+}
+//void drawFittedStackObs( TFile* f, std::string hName, std::string* systName, int systNi, int nPDFup=0, int nPDFdown=0, float minMlb=0, float maxMlb=0, int rebin=1, float xmin=0, float xmax=0, std::string output=".", std::string xTitle="", std::string yTitle="Events", bool logy=false, bool doTopMassUncRescale=true )
+//{
+//    int lineWidth=3;
+//
+//    const int nCh=3;
+//    std::string chName[nCh]={"", "_El", "_Mu"};
+//    std::string tune[2] = {"up", "down"};
+//
+//    const int systN = systNi+1;
+//    TH1D* hs;
+//    TH1D* h_bkg[nCh];
+//    TH1D* h_sig[nCh];
+//    TH1D* h_all[nCh][systN][2];
+//    double uncSig[nCh][systN][2]; 
+//    double uncBkg[nCh][systN][2]; 
+//    double meanSig[nCh]; 
+//    double meanBkg[nCh]; 
+//
+//    TH1D* hO_data[nCh];
+//    TH1D* hO_bkg[nCh];
+//    TH1D* hO_sig[nCh];
+//
+//    int bins = h_data->GetNbinsX();
+//    if( minMlb == maxMlb )
+//    {
+//        minMlb = 1;
+//        maxMlb = bins;
+//    }
+//    else
+//    {
+//        for( int b=1; b<=h_data->GetNbinsX(); b++ )
+//        {
+//            if( h_data->GetXaxis()->GetBinLowEdge(b) == minMlb ) minMlb=b;
+//            if( h_data->GetXaxis()->GetBinLowEdge(b) == maxMlb ) maxMlb=b-1;
+//        }
+//    }
+//
+//    int iTopMass=-1;
+//    hO_data[CoCh] = (TH1D*)((TH1D*)f->Get((("DATA_"+hName).c_str())))->Clone();
+//    for( int ch=1; ch<nCh; ch++)
+//    {
+//        h_sig[ch] = (TH1D*)((TH1D*)f->Get(("SigFitted"+chName[ch]).c_str()))->Clone(); 
+//        h_bkg[ch] = (TH1D*)((TH1D*)f->Get(("BkgFitted"+chName[ch]).c_str()))->Clone(); 
+//        meanSig[ch] = h_sig[ch]->Integral(minMlb,maxMlb); 
+//        meanBkg[ch] = h_bkg[ch]->Integral(minMlb,maxMlb);
+//
+//        hO_data[ch] = (TH1D*)((TH1D*)f->Get((("DATA_"+hName+chName[ch]).c_str())))->Clone();
+//        hO_sig[ch]  = (TH1D*)((TH1D*)f->Get((("SigMC_"+hName+chName[ch]).c_str())))->Clone(); 
+//        hO_bkg[ch]  = (TH1D*)((TH1D*)f->Get((("BkgMC_"+hName+chName[ch]).c_str())))->Clone();
+//        hO_sig[ch]->Scale(meanSig[ch]/hO_sig[ch]->Integral());
+//        hO_bkg[ch]->Scale(meanBkg[ch]/hO_bkg[ch]->Integral());
+//        hO_sig[ch]->Rebin(rebin);
+//        hO_bkg[ch]->Rebin(rebin);
+//        fixNewRange(hO_sig[ch], xmin, xmax ); 
+//        fixNewRange(hO_bkg[ch], xmin, xmax ); 
+//
+//        for( int i=0; i<systN; i++ )
+//        {   
+//            //cout<<systName[i]<<endl;
+//            TH1D* h_sigUnc[2];
+//            TH1D* h_bkgUnc[2];
+//            if( i != systN-1 )
+//            {
+//                if( systName[i].find("TopMass")!=std::string::npos && doTopMassUncRescale ) iTopMass=i;
+//                for( int t=0; t<2; t++)
+//                {
+//                    std::string name = systName[i]+tune[t];
+//                    cout<<name<<endl;
+//                    h_sigUnc[t] = (TH1D*)f->Get(("SigFitted"+chName[ch]+"_"+name).c_str());
+//                    h_bkgUnc[t] = (TH1D*)f->Get(("BkgFitted"+chName[ch]+"_"+name).c_str());
+//                    uncSig[ch][i][t]=h_sigUnc[t]->Integral(minMlb,maxMlb);
+//                    uncBkg[ch][i][t]=h_bkgUnc[t]->Integral(minMlb,maxMlb);
+// 
+//                    if( iTopMass == i )
+//                    {
+//                        uncSig[ch][i][t]=(uncSig[ch][i][t]+(topMassUncRescale-1)*meanSig[ch])/topMassUncRescale;
+//                        uncBkg[ch][i][t]=(uncBkg[ch][i][t]+(topMassUncRescale-1)*meanBkg[ch])/topMassUncRescale;
+//                    }
+//
+//                    h_all[ch][i][t] = (TH1D*)hO_sig[ch]->Clone();
+//                    h_all[ch][i][t]->Scale(uncSig[ch][i][t]/h_all[ch][i][t]->Integral());
+//                    h_all[ch][i][t]->Add(hO_bkg[ch]);
+//                }
+//            }
+//            else
+//            { 
+//                // For PDF
+//                cout<<"PDF"<<endl;
+//                h_sigUnc[0] = (TH1D*)f->Get((("SigFitted"+ch+"_PDF"+int2str(nPDFup)).c_str()));
+//                h_sigUnc[1] = (TH1D*)f->Get((("SigFitted"+ch+"_PDF"+int2str(nPDFdown)).c_str()));
+//                h_bkgUnc[0] = (TH1D*)((TH1D*)f->Get((("BkgFitted"+ch+"_PDF"+int2str(nPDFup)).c_str())))->Clone("UNC_PDFup");
+//                h_bkgUnc[1] = (TH1D*)((TH1D*)f->Get((("BkgFitted"+ch+"_PDF"+int2str(nPDFdown)).c_str())))->Clone("UNC_PDFdown");
+//                uncSig[i][0]=h_sigUnc[0]->Integral(minMlb,maxMlb);
+//                uncSig[i][1]=h_sigUnc[1]->Integral(minMlb,maxMlb);
+//                uncBkg[i][0]=h_bkgUnc[0]->Integral(minMlb,maxMlb);
+//                uncBkg[i][1]=h_bkgUnc[1]->Integral(minMlb,maxMlb);
+//            }
+//            delete *h_sigUnc;
+//            delete *h_bkgUnc;
+//        }
+//    }
+//
+//    //// Draw plots
+//    TGraphAsymmErrors* h_allAsymErr = new TGraphAsymmErrors(h_all);
+//    for( int b=1; b<=bins; b++ )
+//    {
+//        float nomV = h_all->GetBinContent(b);
+//        float sigUp   = h_all->GetBinContent(b); // Has been cross check with h_all->IntegralAndError(0,50,error); 
+//        float sigDown = h_all->GetBinContent(b); // cout<<error; The error is after weighting
+//        //float sigUp   = 0;
+//        //float sigDown = 0;
+//        for( int i=0; i<systN; i++ ){
+//            for( int t=0; t<2; t++ )
+//            {
+//                float err = h_allUnc[i][t]->GetBinContent(b) - nomV;
+//                if( iTopMass == i ) err = err/topMassUncRescale;
+//                if( err > 0. ) sigUp +=err*err;
+//                else sigDown += err*err;
+//            }
+//        }
+//        //cout<<b<<": "<<sqrt(sigUp)<<" "<<sqrt(sigDown)<<endl;
+//        h_allAsymErr->SetPointEYhigh( b-1, sqrt(sigUp));
+//        h_allAsymErr->SetPointEYlow(  b-1, sqrt(sigDown));
+//    }
+//
+//    h_data->SetLineWidth(lineWidth);
+//    h_data->SetLineColor(1);
+//    h_data->SetMarkerColor(1);
+//    h_data->SetMarkerStyle(8);
+//
+//    h_sig->SetLineWidth(lineWidth-1);
+//    h_sig->SetLineColor(1);
+//    h_sig->SetFillColor(50);
+//
+//    h_bkg->SetLineWidth(lineWidth-1);
+//    h_bkg->SetLineColor(1);
+//    h_bkg->SetFillColor(8);
+//
+//    h_allAsymErr->SetLineColor(13);
+//    h_allAsymErr->SetFillColor(13);
+//    h_allAsymErr->SetFillStyle(3001);
+//
+//    float xMin = h_all->GetXaxis()->GetBinLowEdge(1);
+//    float xMax = h_all->GetXaxis()->GetBinUpEdge(bins);
+//    if( logy )
+//        hs = new TH1D(("TH1DinStackLog"+hName+channel).c_str(), "", bins, xMin, xMax);
+//    else
+//        hs = new TH1D(("TH1DinStackLinear"+hName+channel).c_str(), "", bins, xMin, xMax);
+//
+//    if( cuthist ) hs->GetXaxis()->SetRange(minMlb, maxMlb);
+//    hs->GetXaxis()->SetTitle(xTitle.c_str());
+//    hs->GetYaxis()->SetTitle(yTitle.c_str());
+//    hs->GetXaxis()->SetNdivisions(509);
+//    hs->GetXaxis()->SetLabelFont(42);
+//    hs->GetXaxis()->SetLabelSize(0.06);
+//    hs->GetXaxis()->SetTitleSize(0.07);
+//    hs->GetXaxis()->SetTitleOffset(1.03);
+//    hs->GetXaxis()->SetTitleFont(42);
+//    hs->GetYaxis()->SetLabelFont(42);
+//    hs->GetYaxis()->SetLabelSize(0.06);
+//    hs->GetYaxis()->SetTitleSize(0.079);
+//    hs->GetYaxis()->SetTitleOffset(1.11);
+//    hs->GetYaxis()->SetTitleFont(42);
+//
+//    THStack* h_stack = new THStack("THStcak", "");
+//    h_stack->SetHistogram(hs);
+//
+//    h_stack->Add(h_bkg);
+//    h_stack->Add(h_sig);
+//
+//    TCanvas* c1;
+//    TPad *p1, *p2; 
+//    if( logy ){
+//        c1 = new TCanvas( ("C_Log_"+hName).c_str(), "",59,72,W,H);
+//    }else{
+//        c1 = new TCanvas( ("C_Linear_"+hName).c_str(), "",59,72,W,H);
+//    }
+//    c1->Range(-123.0964,-841.8412,557.1066,3883.14);
+//    c1->SetFillColor(0);
+//    c1->SetBorderMode(0);
+//    c1->SetBorderSize(2);
+//    c1->SetLeftMargin(0.1997487);
+//    c1->SetRightMargin(0.06909548);
+//    c1->SetTopMargin(0.08900524);
+//    c1->SetBottomMargin(0.1797557);
+//    c1->SetFrameBorderMode(0);
+//    c1->SetFrameBorderMode(0);
+//
+//    gStyle->SetOptStat(0);
+//    gStyle->SetOptTitle(0);
+//
+//    if( logy ) c1->SetLogy(1);
+//    else c1->SetLogy(0);
+//
+//    TLegend *leg;
+//    leg = new TLegend(0.6256281,0.617801,0.9258794,0.904014,NULL,"brNDC");
+//    leg->SetBorderSize(0);
+//    leg->SetLineStyle(0);
+//    leg->SetLineWidth(0);
+//    leg->SetFillColor(0);
+//    leg->SetFillStyle(0);
+//    leg->AddEntry(h_data, "Data", "lpe");
+//    leg->AddEntry(h_sig,  "Estimated sig.", "f");
+//    leg->AddEntry(h_bkg,  "Estimated bkg.", "f");
+//    leg->AddEntry(h_allAsymErr, "1#sigma, Stat.+Syst.", "f");
+//    //leg->AddEntry(h_allAsymErr, "1#sigma, Syst.", "f");
+//
+//    //TPaveText* t_title;
+//    //t_title = new TPaveText(0.1455224,0.9134253,0.7751866,0.9974906,"brNDC");
+//    ////t_title = new TPaveText(0.07088487,0.9153846,0.7007612,1,"brNDC");
+//    //t_title->AddText("CMS #sqrt{s} = 8TeV, L = 19.7/fb");
+//    //t_title->SetTextColor(kBlack);
+//    //t_title->SetFillColor(kWhite);
+//    //t_title->SetFillStyle(0);
+//    //t_title->SetBorderSize(0);
+//    //t_title->SetTextAlign(11);
+//    //t_title->SetTextSize(0.04805273);
+//
+//    h_stack->Draw("HIST");
+//    h_allAsymErr->Draw("E2SAME");
+//    h_data->Draw("ESAME");
+//    leg->Draw();
+//    //t_title->Draw();
+//
+//    writeExtraText=true;
+//    CMS_lumi( c1, 2, cmslumi, true );
+//
+//    if( logy )
+//        c1->SaveAs((output+"/StackFitted_Log_"+hName+ch+".pdf").c_str());
+//    else
+//        c1->SaveAs((output+"/StackFitted_Linear_"+hName+ch+".pdf").c_str());
+//
+//}
+

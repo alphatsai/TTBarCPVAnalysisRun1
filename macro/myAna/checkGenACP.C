@@ -48,6 +48,135 @@ char* getChanges( TH1D* h_change )
     std::cout<<text<<std::endl;
     return text; 
 }
+float getSumChangeValue( TH1D* h_change, int idx=0 )
+{
+    float value=0;
+    if( idx == 0 ) value = h_change->GetBinContent(1) + h_change->GetBinContent(2);
+    else           value = h_change->GetBinContent(3) + h_change->GetBinContent(4);
+    return value;
+}
+float getDilution( float sameN, float exN )
+{
+    return (sameN-exN)/(sameN+exN);
+}
+void getChagnesSyst( FILE* outTxt, std::string dirPath, std::string* systName, int systNi, std::string Obs="O2", std::string nreco="EvtChi2" )
+{
+    const int systN = systNi;
+    std::string tune[2]={"up","down"};
+    std::string chName[3]={"","_El","_Mu"};
+    std::string chName_[3]={"Combined","Electron","Muon"};
+    TH1D *h[3];
+    TH1D *h_syst[3][systN][2];
+    float v[3][3];
+    float v_syst[3][systN][2][3];
+
+    std::string hdirName = "CheckEventsOfLepJets/";
+    std::string rootname="TTJets_SemiLeptMGDecays.root"; 
+    std::string nominalDir="nominal"; 
+
+    TFile* f = new TFile((dirPath+"/"+nominalDir+"/"+rootname).c_str());
+    for( int c=0; c<3; c++ )
+    { 
+        h[c] = (TH1D*)((TH1D*)f->Get((hdirName+nreco+"_Change"+Obs+chName[c]).c_str()))->Clone();
+        h[c]->Scale(100/(h[c]->Integral())); 
+        v[c][0] = getSumChangeValue( h[c], 0 );
+        v[c][1] = getSumChangeValue( h[c], 1 );
+        v[c][2] = getDilution( v[c][0], v[c][1] );
+    } 
+
+    int iTopMass=-1;
+    for( int i=0; i<systN; i++ )
+    {
+        if( systName[i].find("topMass")!=std::string::npos ) iTopMass=i; 
+        for( int j=0; j<2; j++)
+        {
+            TFile* fs = new TFile((dirPath+"/"+systName[i]+tune[j]+"/"+rootname).c_str());
+            for( int c=0; c<3; c++ )
+            { 
+                h_syst[c][i][j] = (TH1D*)((TH1D*)fs->Get((hdirName+nreco+"_Change"+Obs+chName[c]).c_str()))->Clone(); 
+                h_syst[c][i][j]->Scale(100/(h_syst[c][i][j]->Integral()));
+                float rateS = getSumChangeValue( h_syst[c][i][j], 0 );
+                float rateE = getSumChangeValue( h_syst[c][i][j], 1 );
+                if( iTopMass == i ) // rescale top mass uncertaity to 1 GeV
+                {
+                    rateS = (rateS+5*v[c][0])/6;
+                    rateE = (rateE+5*v[c][1])/6;
+                }
+                v_syst[c][i][j][2] = getDilution( rateS, rateE );
+                v_syst[c][i][j][2] = v_syst[c][i][j][2] - v[c][2];
+                v_syst[c][i][j][0] = rateS - v[c][0];
+                v_syst[c][i][j][1] = rateE - v[c][1];
+            }          
+        }
+    }
+   
+    float sumw2Dsyst[3][2]; 
+    // Print texts
+    fprintf( outTxt, "### Observable %s\n", Obs.c_str() );
+    for( int c=0; c<3; c++ )
+    { 
+        sumw2Dsyst[c][0] = 0;
+        sumw2Dsyst[c][1] = 0;
+        for( int i=0; i<systN; i++ )
+        {
+            if( v_syst[c][i][0][2]*v_syst[c][i][1][2] < 0 )
+            {
+                if( v_syst[c][i][0][2] > v_syst[c][i][1][2] ){
+                    sumw2Dsyst[c][0] += v_syst[c][i][0][2]*v_syst[c][i][0][2];
+                    sumw2Dsyst[c][1] += v_syst[c][i][1][2]*v_syst[c][i][1][2];
+                }else{
+                    sumw2Dsyst[c][0] += v_syst[c][i][1][2]*v_syst[c][i][1][2];
+                    sumw2Dsyst[c][1] += v_syst[c][i][0][2]*v_syst[c][i][0][2];
+                }
+            }
+            else
+            {
+                if( v_syst[c][i][0][2] > 0 ){
+                    if( v_syst[c][i][0][2] > v_syst[c][i][1][2] ){
+                        sumw2Dsyst[c][0] += v_syst[c][i][0][2]*v_syst[c][i][0][2];
+                    }else{
+                        sumw2Dsyst[c][0] += v_syst[c][i][1][2]*v_syst[c][i][1][2];
+                    }
+                }else{
+                    if( v_syst[c][i][0][2] < v_syst[c][i][1][2] ){
+                        sumw2Dsyst[c][1] += v_syst[c][i][0][2]*v_syst[c][i][0][2];
+                    }else{
+                        sumw2Dsyst[c][1] += v_syst[c][i][1][2]*v_syst[c][i][1][2];
+                    }
+                }
+
+            }
+        }
+
+        fprintf( outTxt, "## %s channel\n", chName_[c].c_str() );
+        fprintf( outTxt, "Nominal R(no)/R(ex)/D : %.2f/%.2f/%.3f\n", v[c][0], v[c][1], v[c][2] );
+        fprintf( outTxt, "SystUnc ");
+        for( int i=0; i<systN; i++ ) fprintf( outTxt, "%7s ", systName[i].c_str());
+        fprintf( outTxt, "\n" );
+        fprintf( outTxt, "dR(no)+ ");
+        for( int i=0; i<systN; i++ ) fprintf( outTxt, "%7.2f ", v_syst[c][i][0][0] );
+        fprintf( outTxt, "\n" );
+        fprintf( outTxt, "dR(no)- ");
+        for( int i=0; i<systN; i++ ) fprintf( outTxt, "%7.2f ", v_syst[c][i][1][0] );
+        fprintf( outTxt, "\n" );
+        fprintf( outTxt, "dR(ex)+ ");
+        for( int i=0; i<systN; i++ ) fprintf( outTxt, "%7.2f ", v_syst[c][i][0][1] );
+        fprintf( outTxt, "\n" );
+        fprintf( outTxt, "dR(ex)- ");
+        for( int i=0; i<systN; i++ ) fprintf( outTxt, "%7.2f ", v_syst[c][i][1][1] );
+        fprintf( outTxt, "\n" );
+        fprintf( outTxt, "dD+     ");
+        for( int i=0; i<systN; i++ ) fprintf( outTxt, "%7.3f ", v_syst[c][i][0][2] );
+        fprintf( outTxt, "\n" );
+        fprintf( outTxt, "dD-     ");
+        for( int i=0; i<systN; i++ ) fprintf( outTxt, "%7.3f ", v_syst[c][i][1][2] );
+        fprintf( outTxt, "\n" );
+        fprintf( outTxt, "Total D +/- : %.3f/%.3f\n", sqrt(sumw2Dsyst[c][0]), -1*sqrt(sumw2Dsyst[c][1]));
+        fprintf( outTxt, "\n" );
+    }
+    fprintf( outTxt, "\n" );
+}
+
 void checkGenACP( TFile* f, std::string Obs="O2", bool chi2Cut=1, std::string output=".", std::string nreco="Evt", std::string ngen="Gen" )
 {
     cout<<"[INFO] checkGenACP "<<Obs<<endl;
@@ -308,13 +437,13 @@ void mkPlotSlopeACP( std::string inputDir, std::string* inputACPDir, int nGenACP
     std::string channel;
     if( ich == 1 ){
         ch="_El";
-        channel="Electron channel";
+        channel="e+jets";
     }else if( ich == 2){
         ch="_Mu";
-        channel="Muon channel";
+        channel="#mu+jets";
     }else{
         ch="";
-        channel="Combined channel";
+        channel="l+jets";
     }
     TH1D* h_asym[2][nGenACP];
     float acp[3][nGenACP];
@@ -415,12 +544,14 @@ void mkPlotSlopeACP( std::string inputDir, std::string* inputACPDir, int nGenACP
     hg0_2s->Draw("LESAME");
     hg0->Draw("LESAME");
 
+    extraText="Simulation Preliminary";
     writeExtraText=true;
-    CMS_lumi( c1, 2, 0, true );
+    CMS_lumi( c1, 2, 0, true, false );
 
     //TLegend *leg = new TLegend(0.1821608,0.6845754,0.5238693,0.9376083,NULL,"brNDC");
     TLegend *leg = new TLegend(0.1896985,0.6579407,0.531407,0.9109948,NULL,"brNDC");
-    leg->SetHeader(("Simulation in "+channel).c_str());
+    //leg->SetHeader(("Simulation in "+channel).c_str());
+    leg->SetHeader((channel+" channel").c_str());
     leg->SetBorderSize(0);
     leg->SetTextSize(0.05217391);
     leg->SetLineStyle(0);
@@ -428,7 +559,8 @@ void mkPlotSlopeACP( std::string inputDir, std::string* inputACPDir, int nGenACP
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
     char text[200];
-    sprintf(text, "Apply dilution factor D=%.2f", Dfactor );
+    //sprintf(text, "Apply dilution factor D=%.2f", Dfactor );
+    sprintf(text, "After dilution factor correction", Dfactor );
     leg->AddEntry( hgD,    text,                 "lpe");
     leg->AddEntry( hg0,    "No dilution factor", "lpe");
     leg->AddEntry( hg0_2s, "#pm2#sigma stat. error",        "lpe");
