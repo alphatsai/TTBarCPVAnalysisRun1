@@ -80,9 +80,8 @@ export SCRAM_ARCH=slc6_amd64_gcc481
 
 cd DATASET_WORKDIR ; echo "Here is ${PWD}"
 eval `scram runtime -sh`
-cd $BATCHDIR
-
 scram setup lhapdffull
+cd $BATCHDIR
 
 cp -v MAIN_WORKDIR/CMSSW_cfg.py      $BATCHDIR/
 cp -v MAIN_WORKDIR/inputJsons_cfi.py $BATCHDIR/

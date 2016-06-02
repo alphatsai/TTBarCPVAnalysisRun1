@@ -1960,7 +1960,8 @@ void SemiLeptanicAnalysis::analyze(const edm::Event& iEvent, const edm::EventSet
         } //// [END] Fill plots
         if( doPDFTree_ )
         {
-            if( passChi2Cut && passMlbCut )
+            //if( passChi2Cut && passMlbCut )
+            if( passChi2Cut )
             { 
                 b_TopMlb_=top_leptonic.Massbl;
                 b_WrtEvt_=wrtevt;

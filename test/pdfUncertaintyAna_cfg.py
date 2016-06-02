@@ -48,7 +48,7 @@ options.register('Debug', False,
     )
 options.parseArguments()
 
-process = cms.Process("CheckEventsOfLepJets")
+process = cms.Process("PDFAna")
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) ) 
 
 process.source = cms.Source("EmptySource")
@@ -61,6 +61,7 @@ process.CheckEventsOfLepJets = cms.EDAnalyzer('PDFUncertaintyAna',
     ReportEvery = cms.int32(options.reportEvery),  
     InputTTree  = cms.string(options.ttreedir+'/pdftree'),
     InputFiles  = cms.vstring(FileNames), 
+    #InputFiles  = cms.vstring("file:/eos/uscms/store/user/jtsai/TTBarCPV/results/09Feb_PDFTree/TTJets_FullLeptMGDecays_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v2/SemiLeptanicAnalysis_35.root"), 
     #InputFiles  = cms.vstring("root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/results/08Feb_PDFTree/TTJets_SemiLeptMGDecays/SemiLeptanicAnalysis_35.root"), 
     #InputFiles  = cms.vstring("root://eoscms//eos/cms/store/user/jtsai/TTBarCPV/results/08Feb_PDFTree/T_tW-channel/SemiLeptanicAnalysis_0.root"), 
     MaxChi2Cut  = cms.double(options.MaxChi2Cut),
