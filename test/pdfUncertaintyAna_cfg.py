@@ -56,7 +56,7 @@ process.TFileService = cms.Service("TFileService",
     fileName = cms.string(options.outFilename) 
 )
 
-process.CheckEventsOfLepJets = cms.EDAnalyzer('PDFUncertaintyAna',
+process.PDFAna = cms.EDAnalyzer('PDFUncertaintyAna',
     MaxEvents   = cms.int32(options.MaxEvents),
     ReportEvery = cms.int32(options.reportEvery),  
     InputTTree  = cms.string(options.ttreedir+'/pdftree'),
@@ -71,5 +71,5 @@ process.CheckEventsOfLepJets = cms.EDAnalyzer('PDFUncertaintyAna',
 ) 
 
 process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
-process.p = cms.Path(process.CheckEventsOfLepJets)
+process.p = cms.Path(process.PDFAna)
 
