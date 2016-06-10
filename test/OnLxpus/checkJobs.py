@@ -3,6 +3,7 @@
 import sys, os, shutil, re, subprocess, time, glob
 from optparse import OptionParser
 
+rootName='SemiLeptanicAnalysis'
 cmseos='/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select'
 
 ### * bsub Error description
@@ -77,7 +78,7 @@ def checkLogs( outputDir, nJobs, list_noDoneLogs ):
 
 
 # 4. Fill infomations 
-def storeInfo( dataPath, list_datasetDir, dict_failedInfo, list_noDoneRoot, list_noDoneLogs, rootName ):
+def storeInfo( dataPath, list_datasetDir, dict_failedInfo, list_noDoneRoot, list_noDoneLogs ):
 
     # Check if root output to eos
     isRootInEOS=False
@@ -96,6 +97,10 @@ def storeInfo( dataPath, list_datasetDir, dict_failedInfo, list_noDoneRoot, list
 
         eospath='./.'+eospath
         isRootInEOS=True
+
+    # Check root output name
+    cmd = 'grep \'Copying file\' '+dataPath+'/input/job_0.sh | grep EOSPATH | awk \'{print $4}\''
+    rootName = os.popen(cmd).read().strip().split('.root')[0]
 
     # Fill information
     list_datasetDir.append( len(glob.glob(dataPath+'/input/job_*.sh'))  )
@@ -146,7 +151,6 @@ def main():
     parser = OptionParser(usage=usage)
     parser.add_option("-w", "--workDir",     dest="workDir",     action='store',       help="Main working directory",       metavar="myWorkDir"                                   )
     parser.add_option("-d", "--dataset",     dest="dataset",     action='store',       help="Dataset in working directory", metavar="dataName",     default=''                    )
-    parser.add_option("-o", "--outputRoot",  dest="outRoot",     action='store',       help="Output root file name",        metavar="rootName",     default='SemiLeptanicAnalysis')
     parser.add_option("-q", "--queue",       dest="queue",       action='store',       help="LXBatch queue",                metavar="queueName",    default='cmscaf1nd'           )
     parser.add_option("-r", "--resubmit",    dest="resubmit",    action='store',       help="re-submit percific job",       metavar="resubmitJob",  default=None                  )
     parser.add_option("-R", "--resubmitAll", dest="resubmitAll", action='store_true',  help="re-submit all failed job",                             default=False                 )
@@ -195,7 +199,6 @@ def main():
         print '>>        Workspace : %s '%( options.workDir )
         if checkOneData:
             print '>>        Data name : %s '%( options.dataset )
-        print '>>        Root name : %s '%( options.outRoot )
         print '>> ------------------------------------------------------- '
 
     ## * Store the status of each datasets by log
@@ -211,7 +214,7 @@ def main():
         failedInfo[fname] = {}
         noDoneRoot[fname] = []
         noDoneLogs[fname] = []
-        storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname], options.outRoot )
+        storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname] )
     else:
         # Check all datasets
         for fname in allFiles:
@@ -221,7 +224,7 @@ def main():
                 failedInfo[fname] = {}
                 noDoneRoot[fname] = []
                 noDoneLogs[fname] = []
-                storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname], options.outRoot )
+                storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname] )
     
     ## * Print and summerize all information
     nData=len(datasetDir)
@@ -297,7 +300,7 @@ def main():
     
     # Simple summary
     print '>> [INFO] Workspace  : %s   '%( options.workDir )
-    print '>>        Root name  : %s   '%( options.outRoot )
+    print '>>        Root name  : %s   '%( rootName )
     if checkOneData:
         print '>>        Data name  : %s '%( options.dataset )
         print '>>        Done/Total : %d/1'%( nDone )
