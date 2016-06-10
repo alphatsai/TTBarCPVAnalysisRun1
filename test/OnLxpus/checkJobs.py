@@ -22,7 +22,14 @@ usage = """
 
 ### * Assistant functions
 #
-# 1. Check log and store the error according to 'errorMsg'
+# 1. Check if output in eos
+# def checkRootEOSandMount
+#   return eospath
+# 2. Check output root name
+# def checkRootName
+#   return rootname 
+
+# 3. Check log and store the error according to 'errorMsg'
 def checkError( outputDir, failJobDetail ):
 
     hasError=False
@@ -43,7 +50,7 @@ def checkError( outputDir, failJobDetail ):
     return hasError
 
 
-# 2. Check not done roots
+# 4. Check not done roots
 def checkRoots( outputDir, nJobs, list_noDoneRoot, rootName ):
 
     originDir = os.getcwd()
@@ -60,7 +67,7 @@ def checkRoots( outputDir, nJobs, list_noDoneRoot, rootName ):
     return len(list_noDoneRoot)
 
 
-# 3. Check not done logs
+# 5. Check not done logs
 def checkLogs( outputDir, nJobs, list_noDoneLogs ):
 
     originDir = os.getcwd()
@@ -76,7 +83,7 @@ def checkLogs( outputDir, nJobs, list_noDoneLogs ):
     return len(list_noDoneLogs)
 
 
-# 4. Fill infomations 
+# 6. Fill infomations 
 def storeInfo( dataPath, list_datasetDir, dict_failedInfo, list_noDoneRoot, list_noDoneLogs ):
 
     # Check if root output to eos
@@ -128,7 +135,7 @@ def storeInfo( dataPath, list_datasetDir, dict_failedInfo, list_noDoneRoot, list
     return rootName
 
 
-# 5. Resubmit
+# 7. Resubmit
 def resubmit( path, job, queue ):
 
     doneResubmit=False
@@ -194,7 +201,7 @@ def main():
                 resubmitJobs.append(int(i))
     else:
         print '>> ------------------------------------------------------- '
-        print '>> [INFO] Checking jot status...' 
+        print '>> [INFO] Checking job status...' 
         print '>>        Workspace : %s '%( options.workDir )
         if checkOneData:
             print '>>        Data name : %s '%( options.dataset )
