@@ -3,7 +3,6 @@
 import sys, os, shutil, re, subprocess, time, glob
 from optparse import OptionParser
 
-rootName='SemiLeptanicAnalysis'
 cmseos='/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select'
 
 ### * bsub Error description
@@ -126,7 +125,7 @@ def storeInfo( dataPath, list_datasetDir, dict_failedInfo, list_noDoneRoot, list
         print '>> [INFO] Output root in cmseos %s'%( '/'+eospath )
         print '>> ------------------------------------------------------- '
 
-    return list_datasetDir[0]
+    return rootName
 
 
 # 5. Resubmit
@@ -202,6 +201,7 @@ def main():
         print '>> ------------------------------------------------------- '
 
     ## * Store the status of each datasets by log
+    rootName=''
     datasetDir={}
     noDoneRoot={}
     noDoneLogs={}
@@ -214,7 +214,7 @@ def main():
         failedInfo[fname] = {}
         noDoneRoot[fname] = []
         noDoneLogs[fname] = []
-        storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname] )
+        rootName = storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname] )
     else:
         # Check all datasets
         for fname in allFiles:
@@ -224,7 +224,7 @@ def main():
                 failedInfo[fname] = {}
                 noDoneRoot[fname] = []
                 noDoneLogs[fname] = []
-                storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname] )
+                rootName = storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname] )
     
     ## * Print and summerize all information
     nData=len(datasetDir)
