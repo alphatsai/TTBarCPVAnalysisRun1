@@ -3,6 +3,8 @@
 import sys, os, shutil, re, subprocess, time, glob
 from optparse import OptionParser
 
+cmseos='/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select'
+
 ### * bsub Error description
 errorMsg = { 
 "Fail open root" : ["Fatal Root Error", "Failed to open the file"],
@@ -21,14 +23,14 @@ usage = """
 ### * Assistant functions
 #
 # 1. Check log and store the error according to 'errorMsg'
-def checkError( logsDir, failJobDetail ):
+def checkError( outputDir, failJobDetail ):
 
     hasError=False
     for errType in errorMsg:
         failJobDetail[errType] = {} 
         for err in errorMsg[errType]:
             failJobDetail[errType][err] = [] 
-            cmd = 'grep -r \''+err+'\' '+logsDir
+            cmd = 'grep -r \''+err+'\' '+outputDir
             errInJobs = os.popen(cmd).read()
             if errInJobs != '':
                 for errJob in errInJobs.split('\n'):
@@ -47,6 +49,7 @@ def checkRoots( outputDir, nJobs, list_noDoneRoot, rootName ):
     originDir = os.getcwd()
     os.chdir(outputDir)
     roots = glob.glob( rootName+'_*.root' )
+
     i = 0
     while ( i < nJobs ):
         if rootName+'_'+str(i)+'.root' not in roots:
@@ -74,13 +77,21 @@ def checkLogs( outputDir, nJobs, list_noDoneLogs ):
 
 
 # 4. Fill infomations 
-def storeInfo( dataPath, list_datasetDir, dict_failedInfo, list_noDoneRoot, list_noDoneLogs, rootName ):
+def storeInfo( dataPath, list_datasetDir, dict_failedInfo, list_noDoneRoot, list_noDoneLogs, rootName, isRootInEOS ):
 
-    list_datasetDir.append( len(glob.glob(dataPath+'/input/job_*.sh'))             )
-    list_datasetDir.append( len(glob.glob(dataPath+'/output/job_*.log'))           )
-    list_datasetDir.append( len(glob.glob(dataPath+'/output/'+rootName+'_*.root')) )
+    cmd = 'grep EOSPATH= '+dataPath+'/input/job_0.sh | awk -F \'"\' \'{print $2}\' | sed \'s/^\///g\''
+    eospath = './.'+os.popen(cmd).read().strip()
 
-    checkRoots( dataPath+'/output', list_datasetDir[0], list_noDoneRoot, rootName )
+    list_datasetDir.append( len(glob.glob(dataPath+'/input/job_*.sh'))  )
+    list_datasetDir.append( len(glob.glob(dataPath+'/output/job_*.log')))
+
+    if isRootInEOS:
+        list_datasetDir.append( len(glob.glob(eospath+'/'+rootName+'_*.root')) )
+        checkRoots( eospath, list_datasetDir[0], list_noDoneRoot, rootName )
+    else:
+        list_datasetDir.append( len(glob.glob(dataPath+'/output/'+rootName+'_*.root')) )
+        checkRoots( dataPath+'/output', list_datasetDir[0], list_noDoneRoot, rootName )
+
     checkLogs(  dataPath+'/output', list_datasetDir[0], list_noDoneLogs )
     checkError( dataPath+'/output', dict_failedInfo )
 
@@ -113,6 +124,7 @@ def main():
     parser.add_option("-q", "--queue",       dest="queue",       action='store',       help="LXBatch queue",                metavar="queueName",    default='cmscaf1nd'           )
     parser.add_option("-r", "--resubmit",    dest="resubmit",    action='store',       help="re-submit percific job",       metavar="resubmitJob",  default=None                  )
     parser.add_option("-R", "--resubmitAll", dest="resubmitAll", action='store_true',  help="re-submit all failed job",                             default=False                 )
+    parser.add_option("-E", "--eosOuput",    dest="eosOuput",    action='store_true',  help="If root output in eos",                                default=False                 )
     (options, args) = parser.parse_args()
 
     ## * make sure all necessary input parameters are provided
@@ -161,6 +173,17 @@ def main():
         print '>>        Root name : %s '%( options.outRoot )
         print '>> ------------------------------------------------------- '
 
+    ## * Mount eos if output in eos
+    if options.eosOuput: 
+        if not os.path.isdir('.eos') or os.listdir('.eos') == []:
+            print '>> [INFO] Mounting eos to .eos ...' 
+            cmd=cmseos+' -b fuse mount $PWD/.eos'
+            os.system(cmd)
+        else:
+            print '>> [WARNING] .eos is not empty.' 
+            print '>>           Did not mount eos again.'
+        print '>> ------------------------------------------------------- '
+
     ## * Store the status of each datasets by log
     datasetDir={}
     noDoneRoot={}
@@ -174,7 +197,7 @@ def main():
         failedInfo[fname] = {}
         noDoneRoot[fname] = []
         noDoneLogs[fname] = []
-        storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname], options.outRoot )
+        storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname], options.outRoot, options.eosOuput )
     else:
         # Check all datasets
         for fname in allFiles:
@@ -184,7 +207,7 @@ def main():
                 failedInfo[fname] = {}
                 noDoneRoot[fname] = []
                 noDoneLogs[fname] = []
-                storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname], options.outRoot )
+                storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname], options.outRoot, options.eosOuput )
     
     ## * Print and summerize all information
     nData=len(datasetDir)
@@ -258,6 +281,11 @@ def main():
                 
         print '>> ------------------------------------------------------- '
     
+    if options.eosOuput:
+        if os.path.isdir('.eos') and os.listdir('.eos') != []:
+            print '>> [INFO] unMounting eos from .eos ...' 
+            cmd=cmseos+' -b fuse umount $PWD/.eos'
+            os.system(cmd)  
     # Simple summary
     print '>> [INFO] Workspace  : %s   '%( options.workDir )
     print '>>        Root name  : %s   '%( options.outRoot )
