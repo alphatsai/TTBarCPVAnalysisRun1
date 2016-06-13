@@ -84,25 +84,24 @@ def checkLogs( outputDir, nJobs, list_noDoneLogs ):
 
 
 # 6. Fill infomations 
-def storeInfo( dataPath, list_datasetDir, dict_failedInfo, list_noDoneRoot, list_noDoneLogs ):
+def storeInfo( dataPath, list_datasetDir, dict_failedInfo, list_noDoneRoot, list_noDoneLogs, isEOSmounted ):
 
     # Check if root output to eos
     isRootInEOS=False
     cmd = 'grep EOSPATH= '+dataPath+'/input/job_0.sh | awk -F \'"\' \'{print $2}\' | sed \'s/^\///g\''
-    eospath=os.popen(cmd).read().strip()
-    if eospath != '':
-        print '>> ------------------------------------------------------- '
-        ## * Mount eos if output in eos
-        if not os.path.isdir('.eos') or os.listdir('.eos') == []:
-            print '>> [INFO] Mounting eos to .eos ...' 
-            cmd=cmseos+' -b fuse mount $PWD/.eos'
-            os.system(cmd)
-        else:
-            print '>> [WARNING] .eos is not empty.' 
-            print '>>           Did not mount eos again.'
-
-        eospath='./.'+eospath
+    eospath0=os.popen(cmd).read().strip()
+    if eospath0 != '':
+        eospath='./.'+eospath0
         isRootInEOS=True
+        ## * Mount eos if output in eos
+        if not isEOSmounted:
+            if not os.path.isdir('.eos') or os.listdir('.eos') == []:
+                print '>> [INFO] Mounting eos to .eos ...' 
+                cmd=cmseos+' -b fuse mount $PWD/.eos'
+                os.system(cmd)
+            else:
+                print '>> [WARNING] .eos is not empty.' 
+                print '>>           Did not mount eos again.'
 
     # Check root output name
     cmd = 'grep \'Copying file\' '+dataPath+'/input/job_0.sh | grep EOSPATH | awk \'{print $4}\''
@@ -122,17 +121,8 @@ def storeInfo( dataPath, list_datasetDir, dict_failedInfo, list_noDoneRoot, list
     checkLogs(  dataPath+'/output', list_datasetDir[0], list_noDoneLogs )
     checkError( dataPath+'/output', dict_failedInfo )
 
-    # unMount eos if output in eos
-    if isRootInEOS:
-        if os.path.isdir('.eos') and os.listdir('.eos') != []:
-            print '>> [INFO] unMounting eos from .eos ...' 
-            cmd=cmseos+' -b fuse umount $PWD/.eos'
-            os.system(cmd)
-            print '>> ------------------------------------------------------- '
-        print '>> [INFO] Output root in cmseos %s'%( '/'+eospath )
-        print '>> ------------------------------------------------------- '
-
-    return rootName
+    output = [rootName,isRootInEOS,eospath0]
+    return output
 
 
 # 7. Resubmit
@@ -208,11 +198,13 @@ def main():
         print '>> ------------------------------------------------------- '
 
     ## * Store the status of each datasets by log
+    isEOSmounted=False
     rootName=''
     datasetDir={}
     noDoneRoot={}
     noDoneLogs={}
     failedInfo={}
+    eospathes={}
 
     if doOneResubmit or checkOneData:
         # Only check one percific dataset
@@ -221,7 +213,11 @@ def main():
         failedInfo[fname] = {}
         noDoneRoot[fname] = []
         noDoneLogs[fname] = []
-        rootName = storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname] )
+        getInfos = storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname], isEOSmounted )
+        rootName = getInfos[0]
+        eospathes[fname]  = getInfos[2] 
+        if getInfos[1]:
+            isEOSmounted=True                   
     else:
         # Check all datasets
         for fname in allFiles:
@@ -231,7 +227,11 @@ def main():
                 failedInfo[fname] = {}
                 noDoneRoot[fname] = []
                 noDoneLogs[fname] = []
-                rootName = storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname] )
+                getInfos = storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname], isEOSmounted )
+                rootName = getInfos[0]
+                eospathes[fname]  = getInfos[2] 
+                if getInfos[1]:
+                    isEOSmounted=True                  
     
     ## * Print and summerize all information
     nData=len(datasetDir)
@@ -289,6 +289,10 @@ def main():
         if len(noDoneRoot[name]) != 0:
             print '> %-15s %s'%( 'Not found roots', str(sorted(noDoneRoot[name])).replace(" ", ""))
 
+        # Print eos root path
+        if eospathes[name] != '':
+            print 'Output root in cmseos %s'%( '/'+eospathes[name] ) 
+
         # Resubmit  
         if options.resubmitAll or doOneResubmit:
             if not doOneResubmit:
@@ -304,7 +308,15 @@ def main():
                     print '  --- ERROR: %d out of [%d-%d]'%(job, 0, nJobs-1)         
                 
         print '>> ------------------------------------------------------- '
-    
+   
+    # unMount eos if output in eos
+    if isEOSmounted:
+        if os.path.isdir('.eos') and os.listdir('.eos') != []:
+            print '>> [INFO] unMounting eos from .eos ...' 
+            cmd=cmseos+' -b fuse umount $PWD/.eos'
+            os.system(cmd)
+            print '>> ------------------------------------------------------- '
+ 
     # Simple summary
     print '>> [INFO] Workspace  : %s   '%( options.workDir )
     print '>>        Root name  : %s   '%( rootName )
